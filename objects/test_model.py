@@ -16,8 +16,7 @@ class TestModel(TestCase):
         a1 = model.add_actor("TestActor1")
         a2 = model.add_actor("TestActor2")
 
-        self.assertEqual(a1.Id, 0)
-        self.assertEqual(a2.Id, 1)
+        self.assertEqual(len(model.Actors), 2)
 
     def test_get_actor_issue(self):
         pass
@@ -52,6 +51,25 @@ class TestModel(TestCase):
         e = model.highest_gain()
 
         self.assertAlmostEqual(e.gain, 1.128903122498, delta=1e-8)
+        self.assertEqual(len(model.Exchanges), 102)
+        realized = list()
+        realized.append(e)
+
+        model.update_exchanges(e)
+
+        e1 = model.highest_gain()
+        model.update_exchanges(e1)
+        realized.append(e1)
+
+        self.assertAlmostEqual(e1.gain, 0.756186984, delta=1e-8)
+
+        while len(model.Exchanges) > 0:
+            realize = model.highest_gain()
+            model.update_exchanges(realize)
+            realized.append(realize)
+
+        self.assertEqual(len(realized), 20)
+
 
     def test_calc_combinations(self):
         self.model.calc_combinations()

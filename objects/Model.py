@@ -1,5 +1,4 @@
 from itertools import combinations
-from typing import List
 
 from calculations import calc_nbs
 from objects.Actor import Actor
@@ -8,11 +7,6 @@ from objects.Exchange import Exchange
 
 
 class Model:
-    Issues = {}
-    Actors = {}
-    ActorIssues = {}  # type: List[ActorIssue]
-    Exchanges = []  # type: List[Exchange]
-
     def __init__(self):
         self.Issues = []
         self.ActorIssues = {}
@@ -21,10 +15,11 @@ class Model:
         self.nbs = {}
         self.issue_combinations = []
         self.groups = {}
+        self.moves = {}  # dict with issue,actor[move_1,move_2,move_3]
 
     def get_actor_issue(self, actor: Actor, issue: str):
         try:
-            return self.ActorIssues[issue][actor.Id]
+            return self.ActorIssues[issue][actor.Name]
         except IndexError:
             return None
 
@@ -33,7 +28,7 @@ class Model:
         a = None
 
         try:
-            a = self.ActorIssues[issue][actor.Id]
+            a = self.ActorIssues[issue][actor.Name]
         except IndexError:
             return None
 
@@ -46,29 +41,27 @@ class Model:
 
     def add_actor(self, actor: str) -> Actor:
         a = Actor(actor)
-        a.Id = len(self.Actors)
         self.Actors[actor] = a
         return a
 
     def add_issue(self, name: str, human: str):
         self.Issues.append(name)
-        self.ActorIssues[name] = []
+        self.ActorIssues[name] = {}
 
     def add_actor_issue(self, actor: str, issue: str, position: float, salience: float, power: float) -> ActorIssue:
         a = self.Actors[actor]
-        # i = self.Issues[issue]
 
-        ai = ActorIssue(position, salience, power)
+        ai = ActorIssue(a, position, salience, power)
         ai.Issue = issue
 
-        self.ActorIssues[issue].append(ai)
+        self.ActorIssues[issue][a.Name] = ai
 
         return ActorIssue
 
     def add_exchange(self, i: Actor, j: Actor, p: str, q: str) -> None:
 
         e = Exchange(i, j, p, q, self)
-        e.calc()
+        e.calculate()
         self.Exchanges.append(e)
         return e
 
@@ -78,7 +71,7 @@ class Model:
 
     def determine_positions(self):
         for k, v in self.nbs.items():
-            for actorIssue in self.ActorIssues[k]:
+            for actorIssue in self.ActorIssues[k].values():
                 actorIssue.is_left_to_nbs(v)
 
     def calc_combinations(self):
@@ -111,8 +104,22 @@ class Model:
 
             self.groups[id] = {"a": pos[0], "b": pos[1], "c": pos[2], "d": pos[3]}
 
-    def highest_gain(self):
+    def highest_gain(self) -> Exchange:
         # To sort the list in place...
         self.Exchanges.sort(key=lambda x: x.gain, reverse=True)  # .sort(key=lambda x: x.count, reverse=True)
 
         return self.Exchanges.pop(0)
+
+    def update_exchanges(self, res: Exchange):
+
+        length = len(self.Exchanges)
+
+        valid_exchanges = []
+
+        for i in range(length):
+            self.Exchanges[i].recalculate(res)
+
+            if self.Exchanges[i].is_valid:
+                valid_exchanges.append(self.Exchanges[i])
+
+        self.Exchanges = valid_exchanges

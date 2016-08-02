@@ -1,19 +1,16 @@
-from typing import List
-
-
 def calc_nbs(actor_issues):
     numerator = 0
     denominator = 0
 
-    for actorIssue in actor_issues:
-        numerator += (actorIssue.Position * actorIssue.Salience * actorIssue.Power)
-        denominator += (actorIssue.Salience * actorIssue.Power)
+    for k, v in actor_issues.items():
+        numerator += (v.Position * v.Salience * v.Power)
+        denominator += (v.Salience * v.Power)
 
     return numerator / denominator
 
 
 def calc_adjusted_nbs(actor_issues, actor: 'Actor', new_position: float):
-    actor_issues[actor.Id].Position = new_position
+    actor_issues[actor.Name].Position = new_position
 
     return calc_nbs(actor_issues)
 
@@ -22,15 +19,13 @@ def reverse_move(actor_issues, actor: 'ExchangeActor', exchange_ratio):
     si = actor.s
     ci = actor.c
 
-    return (exchange_ratio * sum_salience_power(actor_issues) / (ci * si))
+    return (exchange_ratio * sum_salience_power(actor_issues)) / (ci * si)
 
 
 def by_exchange_ratio(s_actor: 'ExchangeActor', exchange_ratio: float):
     """
 
-    :param model: Model
     :param s_actor: ExchangeActor
-    :param d_actor: ExchangeActor
     :param exchange_ratio: float
     :return: float
     """
@@ -62,8 +57,8 @@ def by_absolute_move(actor_issues, s_actor: 'ExchangeActor'):
     return dp
 
 
-def sum_salience_power(actor_issues: List['ActorIssue']):
-    return sum(c.Power * c.Salience for c in actor_issues)
+def sum_salience_power(actor_issues):
+    return sum(c.Power * c.Salience for k, c in actor_issues.items())
 
 
 def gain(actor: 'ExchangeActor', demand_exchange_ratio, supply_exchange_ratio):

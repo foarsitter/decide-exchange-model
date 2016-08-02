@@ -10,24 +10,21 @@ from objects.Exchange import Exchange
 
 class TestNBSCalculations(TestCase):
     def setUp(self):
-        self.a = ActorIssue(position=0, salience=1, power=1)
-        self.b = ActorIssue(position=100, salience=1, power=1)
-        self.c = ActorIssue(position=100, salience=1, power=1)
-        self.actor_issues = [self.a, self.b, self.c]
+        self.a = ActorIssue(Actor("a"), position=0, salience=1, power=1)
+        self.b = ActorIssue(Actor("b"), position=100, salience=1, power=1)
+        self.c = ActorIssue(Actor("c"), position=100, salience=1, power=1)
+        self.actor_issues = {"a": self.a, "b": self.b, "c": self.c}
 
     def test_calc_nbs(self):
-        self.assertEqual(calc_nbs([self.a, self.b]), 50)
+        self.assertEqual(calc_nbs({"a": self.a, "b": self.b}), 50)
         self.assertEqual(calc_nbs(self.actor_issues), 200 / 3)
 
     def test_calc_adjusted_nbs(self):
-        a1 = Actor("Mock")
-        a1.Id = 0
+        a1 = Actor("a")
 
-        a2 = Actor("Mock2")
-        a2.Id = 1
+        a2 = Actor("b")
 
-        a3 = Actor("Mock3")
-        a3.Id = 2
+        a3 = Actor("c")
 
         self.assertEqual(calc_adjusted_nbs(self.actor_issues, a1, 100), 100)
         self.assertEqual(calc_adjusted_nbs(self.actor_issues, a2, 0), 200 / 3)
@@ -72,8 +69,8 @@ class TestBy_absolute_move(TestCase):
         self.assertGreater(move_1, 100)
 
     def test_sumSaliencePower(self):
-        a1 = ActorIssue(50, 0.75, 0.75)
-        a2 = ActorIssue(50, 0.25, 0.25)
-        a3 = ActorIssue(10, 1, 1)
+        a1 = ActorIssue(Actor("a"), 50, 0.75, 0.75)
+        a2 = ActorIssue(Actor("b"), 50, 0.25, 0.25)
+        a3 = ActorIssue(Actor("c"), 10, 1, 1)
 
-        self.assertEqual(sum_salience_power([a1, a2, a3]), (0.75 * 0.75 + 0.25 * 0.25 + 1 * 1))
+        self.assertEqual(sum_salience_power({"a": a1, "b": a2, "c": a3}), (0.75 * 0.75 + 0.25 * 0.25 + 1 * 1))
