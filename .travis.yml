@@ -5,5 +5,8 @@ python:
 install:
     pip install codecov
 script: nosetests
-after_success:
-    codecov
+#after_success:
+#    codecov
+addons:
+    code_climate:
+        repo_token: a579ac57e49d8392727c84b216289c4754fc55e5a125743810db4333c5b47b42
