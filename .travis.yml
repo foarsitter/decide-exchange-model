@@ -2,6 +2,8 @@ language: python
 python:
   - "3.5"
 # command to run tests
+install:
+    pip install codecov
 script: nosetests
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+    codecov
