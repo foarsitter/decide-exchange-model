@@ -49,8 +49,8 @@ class TestBy_absolute_move(TestCase):
 
         i = model.Actors["USA"]
         j = model.Actors["China"]
-        p = "eaa"
-        q = "financevol"
+        p = "financevol"
+        q = "eaa"
         e = Exchange(i, j, p, q, model)
 
         dp = by_absolute_move(model.ActorIssues[e.i.supply], e.i)

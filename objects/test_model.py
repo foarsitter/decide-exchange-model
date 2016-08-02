@@ -8,7 +8,7 @@ from objects.Model import Model
 class TestModel(TestCase):
     def setUp(self):
         csv = csvParser.Parser()
-        self.model = csv.read("C:/Users/jelmer/PycharmProjects/EqualGain/data/data_short.csv")
+        self.model = csv.read("data/data_short.csv")
 
     def test_addActor(self):
         model = Model()
