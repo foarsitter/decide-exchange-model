@@ -1,0 +1,283 @@
+#O;CoP21 Paris negotiations (power scores based on expert judgements);;;;
+#/;Data consolidated on 2 Oct 2015 after extensive interviews with DG Clmate. Ciciero. and input from experts from Earth Negotiation Bulletin and NL gov;;;;
+#/;ID;Full name;;;
+#A;Africangrp;Africangroup;;;
+#A;AILAC;AILAC;;;
+#A;ALBA;ALBA;;;
+#A;AOSIS;AOSIS;;;
+#A;Arabstates;Arabstates;;;
+#A;LDC;LDCsrepresentedbyBangladesh;;;
+#A;Brazil;Brazil;;;
+#A;China;China;;;
+#A;EIG;EIG;;;
+#A;EU28;EU28;;;
+#A;India;India;;;
+#A;Umbrellamin;UmbrellagroupminusJapanRussiaUSA;;;
+#A;Japan;Japan;;;
+#A;Russia;Russia;;;
+#A;USA;USA;;;
+#/;ID;full name;;;
+#P;differentiation;differentiation;;;
+#P;mrv;mitigation mrv and compliance;;;
+#P;legal;mitigation legal form;;;
+#P;adaptlegal;adaptation legal framework;;;
+#P;adaptinst;adaptatiion institutions;;;
+#P;financevol;finance volume;;;
+#P;financewho;finance who pays;;;
+#P;adaptfinance;adaptation reserved financing;;;
+#P;ld;loss and damage;;;
+#P;progress;ambition level mitigation mechanism;;;
+#P;amb2050;ambition 2050;;;
+#P;amb2100;ambition 2100;;;
+#P;eaa;ex ante assessment of future indcs;;;
+#/;issue details;;;;
+#/;Issue ID;position;meaning;;
+#M;differentiation;0;No explicit differentiation (self-differentiation);;
+#M;differentiation;25;National circumstances;;
+#M;differentiation;50;CBDR-Respective Capabilities in light of national circumstances;;
+#M;differentiation;75;CBDR-Respective Capabilities (with no direct reference to the Convention�s Annexes or Articles referring to those Annexes);;
+#M;differentiation;100;Annexes I and II of the Convention;;
+#M;mrv;0;International Consultation and Analysis (ICA);;
+#M;mrv;45;ICA plus multilateral consultative process;;
+#M;mrv;65;International Assessment and Review (IAR);;
+#M;mrv;75;IAR plus committee on implementation and/or compliance;;
+#M;mrv;100; Kyoto compliance regime;;
+#M;legal;0;No binding agreement or binding country-specific targets;;
+#M;legal;30;Binding agreement without country-specific targets. ;;
+#M;legal;50;Binding agreement plus obligation to have a (nonbinding) country-specific target (NDC);;
+#M;legal;70;The above plus obligation on measuring. reporting and verification.;;
+#M;legal;100;Binding agreement plus binding. country-specific targets. ;;
+#M;adaptlegal;0;No new commitments to adaptation;;
+#M;adaptlegal;40;Collective. non-binding provisions. ;;
+#M;adaptlegal;80;Non-binding country-specific commitments;;
+#M;adaptlegal;100;Legally binding country-specific commitments;;
+#M;adaptinst;0;No strengthening;;
+#M;adaptinst;60;Strengthen present institutions ;;
+#M;adaptinst;80;Establish new institutions stronger than present ones.;;
+#M;adaptinst;100;Establish subsidiary body on adaptation;;
+#M;financevol;0;no new target (i.e. $100b p.a.);;
+#M;financevol;20;Unspecified increase above $100b p.a.;;
+#M;financevol;40;$ 200b p.a.;;
+#M;financevol;60;$ 300b p.a.;;
+#M;financevol;80;$ 400b p.a.;;
+#M;financevol;100;?$500 b (in excess of 1% of present OECD GDP p.a.);;
+#M;financewho;0;developed countries only required to contribute;;
+#M;financewho;20;developed countries required to contribute. and other countries invited to contribute voluntarily;;
+#M;financewho;60;developed countries and certain other countries required to contribute (e.g. �countries in a position to do so� or emerging economies).;;
+#M;financewho;80;All countries minus LDCs and SIDS required to contribute;;
+#M;financewho;100;All countries required to contribute.;;
+#M;adaptfinance;0;No earmarking for adaptation;;
+#M;adaptfinance;50;Approximately 50% earmarked for adaptation;;
+#M;adaptfinance;100;Dedicated levy for adaptation;;
+#M;ld;0;no mention/omission of L&D;;
+#M;ld;10;preambular reference only;;
+#M;ld;20;reference to Warsaw International Mechanism (WIM) (under adaptation);;
+#M;ld;30;separate chapter on L&D with little substance;;
+#M;ld;40;separate chapter on L&D and new institutional arrangements with little substance;;
+#M;ld;50;separate chapter on L&D and new institutional arrangements with new non-financial elements (such as coordination and capacity-building);;
+#M;ld;70;separate chapter on L&D and new mechanism with new non-financial and financial elements (such as insurance) but no compensation regime;;
+#M;ld;100;separate chapter on L&D and new non-financial and financial elements. including a compensation regime;;
+#M;progress;0;No ambition mechanism;;
+#M;progress;30;No backsliding principle;;
+#M;progress;40;A non-binding progression principle;;
+#M;progress;65; binding progression principle;;
+#M;progress;100;A binding commitment to strengthen targets in line with the 2 degrees goal;;
+#M;amb2050;0;No 2050 goal;;
+#M;amb2050;20;qualitative goal;;
+#M;amb2050;30;qualitative goal with a roadmap;;
+#M;amb2050;50;goal of 40% GHG reduction relative to 2010;;
+#M;amb2050;70;goal of 70% GHG reduction relative to 2010;;
+#M;amb2050;100;Goal of zero net emissions;;
+#M;amb2100;0;No 2050 goal;;
+#M;amb2100;20;qualitative goal;;
+#M;amb2100;30;qualitative goal with a roadmap;;
+#M;amb2100;80;Goal of zero net emissions;;
+#M;amb2100;100;Goal of negative net emissions ;;
+#M;eaa;0;Option 1: No EAA;;
+#M;eaa;20;Option 2: EAA of aggregate ambition;;
+#M;eaa;60;Option 3: EAA of aggregate ambition and technical EAA of individual INDCs (transparency. clarity. comparability. etc.) ;;
+#M;eaa;90;Option 4: Option 3 plus a political assessment of individual INDCs (ambition and equity/fairness);;
+#M;eaa;100;Option 5: Option 4 and a formal mechanism for involving inputs from civil society;;
+#/;data input;;;;
+#/;actor;issue;position;salience;power
+#D;Africangrp;differentiation;70;0.75;0.25
+#D;AILAC;differentiation;50;0.6;0.35
+#D;ALBA;differentiation;80;0.65;0.05
+#D;AOSIS;differentiation;40;0.6;0.5
+#D;Arabstates;differentiation;100;0.75;0.4
+#D;LDC;differentiation;60;0.6;0.5
+#D;Brazil;differentiation;80;0.8;0.7
+#D;China;differentiation;80;0.75;1
+#D;EIG;differentiation;40;0.75;0.35
+#D;EU28;differentiation;30;0.75;0.75
+#D;India;differentiation;90;0.75;0.6
+#D;Umbrellamin;differentiation;25;0.9;0.4
+#D;Japan;differentiation;25;0.9;0.6
+#D;Russia;differentiation;15;0.8;0.6
+#D;USA;differentiation;20;0.95;1
+#D;Africangrp;mrv;50;0.65;0.25
+#D;AILAC;mrv;85;0.75;0.35
+#D;ALBA;mrv;0;0.4;0.05
+#D;AOSIS;mrv;80;0.75;0.5
+#D;Arabstates;mrv;0;0.55;0.4
+#D;LDC;mrv;70;0.7;0.5
+#D;Brazil;mrv;50;0.55;0.7
+#D;China;mrv;0;0.8;1
+#D;EIG;mrv;85;0.8;0.35
+#D;EU28;mrv;100;0.8;0.75
+#D;India;mrv;0;0.55;0.6
+#D;Umbrellamin;mrv;70;0.7;0.4
+#D;Japan;mrv;100;0.7;0.6
+#D;Russia;mrv;50;0.45;0.6
+#D;USA;mrv;70;0.7;1
+#D;Africangrp;legal;80;0.6;0.25
+#D;AILAC;legal;50;0.75;0.35
+#D;ALBA;legal;70;0.3;0.05
+#D;AOSIS;legal;100;0.8;0.5
+#D;Arabstates;legal;0;0.5;0.4
+#D;LDC;legal;100;0.75;0.5
+#D;Brazil;legal;50;0.5;0.7
+#D;China;legal;20;0.65;1
+#D;EIG;legal;100;0.75;0.35
+#D;EU28;legal;100;0.7;0.75
+#D;India;legal;20;0.7;0.6
+#D;Umbrellamin;legal;70;0.75;0.4
+#D;Japan;legal;70;0.65;0.6
+#D;Russia;legal;50;0.5;0.6
+#D;USA;legal;40;1;1
+#D;Africangrp;adaptlegal;80;0.7;0.25
+#D;AILAC;adaptlegal;80;0.8;0.35
+#D;ALBA;adaptlegal;80;0.6;0.05
+#D;AOSIS;adaptlegal;70;0.7;0.5
+#D;Arabstates;adaptlegal;80;0.8;0.4
+#D;LDC;adaptlegal;80;0.8;0.5
+#D;Brazil;adaptlegal;40;0.3;0.7
+#D;China;adaptlegal;50;0.3;1
+#D;EIG;adaptlegal;40;0.3;0.35
+#D;EU28;adaptlegal;40;0.3;0.75
+#D;India;adaptlegal;70;0.5;0.6
+#D;Umbrellamin;adaptlegal;40;0.2;0.4
+#D;Japan;adaptlegal;40;0.3;0.6
+#D;Russia;adaptlegal;0;0.2;0.6
+#D;USA;adaptlegal;30;0.2;1
+#D;Africangrp;adaptinst;90;0.7;0.25
+#D;AILAC;adaptinst;80;0.9;0.35
+#D;ALBA;adaptinst;70;0.6;0.05
+#D;AOSIS;adaptinst;80;0.85;0.5
+#D;Arabstates;adaptinst;30;0.85;0.4
+#D;LDC;adaptinst;90;0.85;0.5
+#D;Brazil;adaptinst;70;0.4;0.7
+#D;China;adaptinst;60;0.6;1
+#D;EIG;adaptinst;60;0.7;0.35
+#D;EU28;adaptinst;50;0.6;0.75
+#D;India;adaptinst;90;0.7;0.6
+#D;Umbrellamin;adaptinst;40;0.5;0.4
+#D;Japan;adaptinst;40;0.6;0.6
+#D;Russia;adaptinst;0;0.4;0.6
+#D;USA;adaptinst;40;0.5;1
+#D;Africangrp;financevol;100;0.8;0.25
+#D;AILAC;financevol;20;0.55;0.35
+#D;ALBA;financevol;100;0.9;0.05
+#D;AOSIS;financevol;100;0.85;0.5
+#D;Arabstates;financevol;100;0.35;0.4
+#D;LDC;financevol;100;0.85;0.5
+#D;Brazil;financevol;50;0.45;0.7
+#D;China;financevol;100;0.5;1
+#D;EIG;financevol;20;0.5;0.35
+#D;EU28;financevol;0;0.65;0.75
+#D;India;financevol;100;0.65;0.6
+#D;Umbrellamin;financevol;0;0.65;0.4
+#D;Japan;financevol;0;0.65;0.6
+#D;Russia;financevol;0;0.5;0.6
+#D;USA;financevol;0;0.7;1
+#D;Africangrp;financewho;0;0.5;0.25
+#D;AILAC;financewho;60;0.3;0.35
+#D;ALBA;financewho;0;0.8;0.05
+#D;AOSIS;financewho;60;0.5;0.5
+#D;Arabstates;financewho;0;0.9;0.4
+#D;LDC;financewho;60;0.9;0.5
+#D;Brazil;financewho;0;0.7;0.7
+#D;China;financewho;0;0.8;1
+#D;EIG;financewho;60;0.3;0.35
+#D;EU28;financewho;80;0.8;0.75
+#D;India;financewho;0;0.7;0.6
+#D;Umbrellamin;financewho;80;0.8;0.4
+#D;Japan;financewho;80;0.5;0.6
+#D;Russia;financewho;0;0.3;0.6
+#D;USA;financewho;80;0.5;1
+#D;Africangrp;adaptfinance;100;0.8;0.25
+#D;AILAC;adaptfinance;100;0.85;0.35
+#D;ALBA;adaptfinance;100;0.65;0.05
+#D;AOSIS;adaptfinance;100;0.9;0.5
+#D;Arabstates;adaptfinance;50;0.8;0.4
+#D;LDC;adaptfinance;100;0.9;0.5
+#D;Brazil;adaptfinance;50;0.5;0.7
+#D;China;adaptfinance;50;0.55;1
+#D;EIG;adaptfinance;40;0.75;0.35
+#D;EU28;adaptfinance;40;0.6;0.75
+#D;India;adaptfinance;100;0.75;0.6
+#D;Umbrellamin;adaptfinance;30;0.75;0.4
+#D;Japan;adaptfinance;30;0.75;0.6
+#D;Russia;adaptfinance;0;0.3;0.6
+#D;USA;adaptfinance;0;0.7;1
+#D;Africangrp;ld;70;0.75;0.25
+#D;AILAC;ld;75;0.6;0.35
+#D;ALBA;ld;100;0.65;0.05
+#D;AOSIS;ld;100;0.9;0.5
+#D;Arabstates;ld;20;0.6;0.4
+#D;LDC;ld;90;0.95;0.5
+#D;Brazil;ld;50;0.55;0.7
+#D;China;ld;50;0.7;1
+#D;EIG;ld;20;0.85;0.35
+#D;EU28;ld;20;0.85;0.75
+#D;India;ld;90;0.6;0.6
+#D;Umbrellamin;ld;20;0.85;0.4
+#D;Japan;ld;0;0.85;0.6
+#D;Russia;ld;0;0.3;0.6
+#D;USA;ld;0;0.9;1
+#D;Africangrp;progress;100;0.75;0.25
+#D;AILAC;progress;80;0.7;0.35
+#D;ALBA;progress;0;0.6;0.05
+#D;AOSIS;progress;100;0.85;0.5
+#D;Arabstates;progress;0;0.8;0.4
+#D;LDC;progress;100;0.85;0.5
+#D;Brazil;progress;30;0.7;0.7
+#D;China;progress;0;0.8;1
+#D;EIG;progress;80;0.75;0.35
+#D;EU28;progress;65;0.8;0.75
+#D;India;progress;0;0.8;0.6
+#D;Umbrellamin;progress;50;0.65;0.4
+#D;Japan;progress;50;0.65;0.6
+#D;Russia;progress;30;0.3;0.6
+#D;USA;progress;40;0.65;1
+#D;Africangrp;amb2050;100;0.6;0.25
+#D;AILAC;amb2050;90;0.7;0.35
+#D;AOSIS;amb2050;100;0.8;0.5
+#D;LDC;amb2050;80;0.8;0.5
+#D;EIG;amb2050;65;0.75;0.35
+#D;EU28;amb2050;65;0.75;0.75
+#D;Japan;amb2050;60;0.6;0.6
+#D;USA;amb2050;30;0.6;1
+#D;Africangrp;amb2100;90;0.6;0.25
+#D;AILAC;amb2100;90;0.7;0.35
+#D;AOSIS;amb2100;90;0.85;0.5
+#D;LDC;amb2100;100;0.85;0.5
+#D;EIG;amb2100;80;0.7;0.35
+#D;EU28;amb2100;80;0.5;0.75
+#D;Japan;amb2100;70;0.4;0.6
+#D;USA;amb2100;80;0.4;1
+#D;Africangrp;eaa;100;0.55;0.25
+#D;AILAC;eaa;100;0.45;0.35
+#D;ALBA;eaa;0;0.55;0.05
+#D;AOSIS;eaa;100;0.65;0.5
+#D;Arabstates;eaa;0;0.6;0.4
+#D;LDC;eaa;90;0.45;0.5
+#D;Brazil;eaa;90;0.35;0.7
+#D;China;eaa;0;0.65;1
+#D;EIG;eaa;100;0.45;0.35
+#D;EU28;eaa;100;0.5;0.75
+#D;India;eaa;0;0.6;0.6
+#D;Umbrellamin;eaa;60;0.4;0.4
+#D;Japan;eaa;60;0.4;0.6
+#D;Russia;eaa;0;0.3;0.6
+#D;USA;eaa;100;0.4;1
