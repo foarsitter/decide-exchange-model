@@ -4,7 +4,7 @@ python:
 # command to run tests
 install:
   - pip install codecov coverage pytest-cov
-script: pytest
+script: nosetest --with-coverage
 after_success:
   - coverage combine
   - codecov
