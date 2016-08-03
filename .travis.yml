@@ -3,8 +3,8 @@ python:
   - "3.5"
 # command to run tests
 install:
-  - pip install codecov coverage pytest-cov
-script: nosetest --with-coverage
+  - pip install codecov coverage
+script: nosetests --with-coverage
 after_success:
   - coverage combine
   - codecov
