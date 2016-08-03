@@ -2,11 +2,7 @@ language: python
 python:
   - "3.5"
 # command to run tests
-install:
-    pip install codecov
-script: nosetests
-#after_success:
-#    codecov
+script: nosetests --with-coverage
 addons:
     code_climate:
         repo_token: a579ac57e49d8392727c84b216289c4754fc55e5a125743810db4333c5b47b42
