@@ -27,9 +27,12 @@ class TestNBSCalculations(TestCase):
         a3 = Actor("c")
 
         self.assertEqual(calc_adjusted_nbs(self.actor_issues, a1, 100), 100)
-        self.assertEqual(calc_adjusted_nbs(self.actor_issues, a2, 0), 200 / 3)
-        self.assertEqual(calc_adjusted_nbs(self.actor_issues, a1, 0), 100 / 3)
-        self.assertEqual(calc_adjusted_nbs(self.actor_issues, a3, 0), 0)
+
+        self.assertEqual(calc_adjusted_nbs(self.actor_issues, a2, 0), 100 / 3)
+
+        self.assertEqual(calc_adjusted_nbs(self.actor_issues, a1, 0), 200 / 3)
+
+        self.assertEqual(calc_adjusted_nbs(self.actor_issues, a3, 0), 100 / 3)
 
 
 class TestBy_absolute_move(TestCase):
