@@ -18,26 +18,26 @@ class Model:
         self.moves = {}  # dict with issue,actor[move_1,move_2,move_3]
 
     def get_actor_issue(self, actor: Actor, issue: str):
-        try:
+
+        if actor.Name in self.ActorIssues[issue]:
             return self.ActorIssues[issue][actor.Name]
-        except IndexError:
-            return None
+        else:
+            return False
 
     def get(self, actor: Actor, issue: str, field: str):
 
         a = None
 
-        try:
-            a = self.ActorIssues[issue][actor.Name]
-        except IndexError:
-            return None
+        a = self.ActorIssues[issue][actor.Name]
 
-        if field is "c":
-            return a.Power
-        if field is "s":
-            return a.Salience
-        if field is "x":
-            return a.Position
+        if a is not False:
+
+            if field is "c":
+                return a.Power
+            if field is "s":
+                return a.Salience
+            if field is "x":
+                return a.Position
 
     def add_actor(self, actor: str) -> Actor:
         a = Actor(actor)
@@ -59,7 +59,6 @@ class Model:
         return ActorIssue
 
     def add_exchange(self, i: Actor, j: Actor, p: str, q: str) -> None:
-
         e = Exchange(i, j, p, q, self)
         e.calculate()
         self.Exchanges.append(e)
@@ -87,10 +86,14 @@ class Model:
                 a0 = self.get_actor_issue(actor=actor, issue=combination[0])
                 a1 = self.get_actor_issue(actor=actor, issue=combination[1])
 
-                if a0 is not None and a1 is not None:
+                if a0 is not False and a1 is not False:
                     position = a0.Left | a1.Left * 2
 
                     pos[position].append(actor)
+
+            id = "{0}-{1}".format(combination[0], combination[1])
+
+            self.groups[id] = {"a": pos[0], "b": pos[1], "c": pos[2], "d": pos[3]}
 
             for i in pos[0]:
                 for j in pos[3]:
@@ -100,18 +103,16 @@ class Model:
                 for j in pos[2]:
                     self.add_exchange(i, j, combination[0], combination[1])
 
-            id = "{0}-{1}".format(combination[0], combination[1])
-
-            self.groups[id] = {"a": pos[0], "b": pos[1], "c": pos[2], "d": pos[3]}
+    def sort_exchanges(self):
+        self.Exchanges.sort(key=lambda x: x.gain, reverse=True)  # .sort(key=lambda x: x.count, reverse=True)
 
     def highest_gain(self) -> Exchange:
         # To sort the list in place...
-        self.Exchanges.sort(key=lambda x: x.gain, reverse=True)  # .sort(key=lambda x: x.count, reverse=True)
+        self.sort_exchanges()
 
         return self.Exchanges.pop(0)
 
     def update_exchanges(self, res: Exchange):
-
         length = len(self.Exchanges)
 
         valid_exchanges = []

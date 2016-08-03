@@ -10,9 +10,13 @@ def calc_nbs(actor_issues):
 
 
 def calc_adjusted_nbs(actor_issues, actor: 'Actor', new_position: float):
-    actor_issues[actor.Name].Position = new_position
+    import copy
 
-    return calc_nbs(actor_issues)
+    copy_ai = copy.deepcopy(actor_issues)
+
+    copy_ai[actor.Name].Position = new_position
+
+    return calc_nbs(copy_ai)
 
 
 def reverse_move(actor_issues, actor: 'ExchangeActor', exchange_ratio):

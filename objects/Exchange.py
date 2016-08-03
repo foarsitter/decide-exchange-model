@@ -73,12 +73,35 @@ class Exchange:
 
         self.is_valid = b1 and b2
 
+        if self.is_valid:
+            # TODO garbage code, korsakov code or something like that
+            # Need sto be methodical approached
+            nbs_i0 = self.model.nbs[self.i.supply]
+            nbs_i = calculations.calc_adjusted_nbs(self.model.ActorIssues[self.i.supply], self.i.actor, self.i.y)
+
+            if self.j.x_demand > nbs_i0 and self.j.x_demand > nbs_i:
+                pass
+            elif self.j.x_demand < nbs_i0 and self.j.x_demand < nbs_i:
+                pass
+            else:
+                self.is_valid = False
+
+            nbs_j0 = self.model.nbs[self.j.supply]
+            nbs_j = calculations.calc_adjusted_nbs(self.model.ActorIssues[self.j.supply], self.j.actor, self.j.y)
+
+            if self.i.x_demand > nbs_j0 and self.i.x_demand > nbs_j:
+                pass
+            elif self.i.x_demand < nbs_j0 and self.i.x_demand < nbs_j:
+                pass
+            else:
+                self.is_valid = False
+
     def recalculate(self, exchange: 'Exchange'):
         # update supply positions
 
         self.re_calc = False
 
-        # TODO create a method inside ExchangeActor for comparison
+        # TODO create a method inside ExchangeActor for comparison, gets ugly
         if self.i.actor.Name == exchange.i.actor.Name and self.i.supply == exchange.i.supply:
             self.i.x = exchange.i.y
             self.i.moves.pop()
@@ -136,7 +159,7 @@ class ExchangeActor:
 
     def is_move_valid(self, move):
         # a move cannot exceed the interval [0,100]
-        if abs(move) > 100 or abs(move) <= 0:
+        if abs(move) > 100 or abs(move) <= 1e-10:
             return False
 
         # if an exchange is on the edges there is no move posible
