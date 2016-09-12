@@ -1,6 +1,8 @@
+from decimal import *
 from itertools import combinations
+from operator import attrgetter
 
-from calculations import calc_nbs
+from calculations import calc_nbs, calc_nbs_denominator
 from objects.Actor import Actor
 from objects.ActorIssue import ActorIssue
 from objects.Exchange import Exchange
@@ -16,6 +18,7 @@ class Model:
         self.issue_combinations = []
         self.groups = {}
         self.moves = {}  # dict with issue,actor[move_1,move_2,move_3]
+        self.nbs_denominators = {}
 
     def get_actor_issue(self, actor: Actor, issue: str):
 
@@ -33,11 +36,11 @@ class Model:
         if a is not False:
 
             if field is "c":
-                return a.Power
+                return a.power
             if field is "s":
-                return a.Salience
+                return a.salience
             if field is "x":
-                return a.Position
+                return a.position
 
     def add_actor(self, actor: str) -> Actor:
         a = Actor(actor)
@@ -48,7 +51,8 @@ class Model:
         self.Issues.append(name)
         self.ActorIssues[name] = {}
 
-    def add_actor_issue(self, actor: str, issue: str, position: float, salience: float, power: float) -> ActorIssue:
+    def add_actor_issue(self, actor: str, issue: str, position: Decimal, salience: Decimal,
+                        power: Decimal) -> ActorIssue:
         a = self.Actors[actor]
 
         ai = ActorIssue(a, position, salience, power)
@@ -58,15 +62,17 @@ class Model:
 
         return ActorIssue
 
-    def add_exchange(self, i: Actor, j: Actor, p: str, q: str) -> None:
-        e = Exchange(i, j, p, q, self)
+    def add_exchange(self, i: Actor, j: Actor, p: str, q: str, groups) -> None:
+        e = Exchange(i, j, p, q, self, groups)
         e.calculate()
         self.Exchanges.append(e)
         return e
 
     def calc_nbs(self):
         for k, v in self.ActorIssues.items():
-            self.nbs[k] = calc_nbs(v)
+            self.nbs_denominators[k] = calc_nbs_denominator(v)
+
+            self.nbs[k] = calc_nbs(v, self.nbs_denominators[k])
 
     def determine_positions(self):
         for k, v in self.nbs.items():
@@ -87,7 +93,7 @@ class Model:
                 a1 = self.get_actor_issue(actor=actor, issue=combination[1])
 
                 if a0 is not False and a1 is not False:
-                    position = a0.Left | a1.Left * 2
+                    position = a0.left | a1.left * 2
 
                     pos[position].append(actor)
 
@@ -97,14 +103,19 @@ class Model:
 
             for i in pos[0]:
                 for j in pos[3]:
-                    self.add_exchange(i, j, combination[0], combination[1])
+                    self.add_exchange(i, j, combination[0], combination[1], groups=['a', 'd'])
+
+                    self.ActorIssues[str(combination[0])][i.Name].group = "a"
+                    self.ActorIssues[str(combination[1])][j.Name].group = "d"
 
             for i in pos[1]:
                 for j in pos[2]:
-                    self.add_exchange(i, j, combination[0], combination[1])
+                    self.add_exchange(i, j, combination[0], combination[1], groups=['a', 'd'])
+                    self.ActorIssues[combination[0]][i.Name].group = "b"
+                    self.ActorIssues[combination[1]][j.Name].group = "c"
 
     def sort_exchanges(self):
-        self.Exchanges.sort(key=lambda x: x.gain, reverse=True)  # .sort(key=lambda x: x.count, reverse=True)
+        self.Exchanges.sort(key=attrgetter("gain"), reverse=True)  # .sort(key=lambda x: x.count, reverse=True)
 
     def highest_gain(self) -> Exchange:
         # To sort the list in place...

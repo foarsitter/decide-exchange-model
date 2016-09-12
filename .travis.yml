@@ -4,7 +4,7 @@ python:
 # command to run tests
 install:
   - pip install codecov coverage
-script: nosetests --with-coverage
+script: nosetests --with-coverage --cover-erase
 after_success:
-  - coverage combine
+  - coverage
   - bash <(curl -s https://codecov.io/bash)

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import csv
+import os
 
 from objects.Model import Model
-
 # csv row identifiers
 cA = "#A"  # A = actor
 # P = issues
@@ -20,6 +20,7 @@ rSalience = 4
 rPower = 5
 
 
+
 class Parser:
     data = None
 
@@ -27,6 +28,10 @@ class Parser:
         self.data = Model()
 
     def read(self, filename: str):
+
+        if not filename.startswith("/"):
+            filename = "{0}\\{1}".format(os.path.dirname(os.path.abspath(__file__)), filename)
+
         with open(filename, 'rt') as csv_file:
             reader = csv.reader(csv_file, delimiter=';')
 
