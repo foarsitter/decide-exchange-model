@@ -22,16 +22,16 @@ class Model:
 
     def get_actor_issue(self, actor: Actor, issue: str):
 
-        if actor.Name in self.ActorIssues[issue]:
-            return self.ActorIssues[issue][actor.Name]
+        if actor.Name in self.ActorIssues[issue.lower()]:
+            return self.ActorIssues[issue.lower()][actor.Name]
         else:
             return False
 
-    def get(self, actor: Actor, issue: str, field: str):
+    def get_value(self, actor: Actor, issue: str, field: str):
 
         a = None
 
-        a = self.ActorIssues[issue][actor.Name]
+        a = self.ActorIssues[issue.lower()][actor.Name]
 
         if a is not False:
 
@@ -44,21 +44,21 @@ class Model:
 
     def add_actor(self, actor: str) -> Actor:
         a = Actor(actor)
-        self.Actors[actor] = a
+        self.Actors[a.Name] = a
         return a
 
     def add_issue(self, name: str, human: str):
-        self.Issues.append(name)
-        self.ActorIssues[name] = {}
+        self.Issues.append(name.lower())
+        self.ActorIssues[name.lower()] = {}
 
     def add_actor_issue(self, actor: str, issue: str, position: Decimal, salience: Decimal,
                         power: Decimal) -> ActorIssue:
-        a = self.Actors[actor]
+        a = self.Actors[actor.lower()]
 
         ai = ActorIssue(a, position, salience, power)
-        ai.Issue = issue
+        ai.Issue = issue.lower()
 
-        self.ActorIssues[issue][a.Name] = ai
+        self.ActorIssues[issue.lower()][a.Name] = ai
 
         return ActorIssue
 
@@ -110,7 +110,7 @@ class Model:
 
             for i in pos[1]:
                 for j in pos[2]:
-                    self.add_exchange(i, j, combination[0], combination[1], groups=['a', 'd'])
+                    self.add_exchange(i, j, combination[0], combination[1], groups=['b', 'c'])
                     self.ActorIssues[combination[0]][i.Name].group = "b"
                     self.ActorIssues[combination[1]][j.Name].group = "c"
 
@@ -123,15 +123,19 @@ class Model:
 
         return self.Exchanges.pop(0)
 
-    def update_exchanges(self, res: Exchange):
+    def remove_invalid_exchanges(self, res: Exchange):
         length = len(self.Exchanges)
 
         valid_exchanges = []
-
+        invalid_exchanges = []
         for i in range(length):
             self.Exchanges[i].recalculate(res)
 
             if self.Exchanges[i].is_valid:
                 valid_exchanges.append(self.Exchanges[i])
+            else:
+                invalid_exchanges.append(self.Exchanges[i])
 
         self.Exchanges = valid_exchanges
+
+        return invalid_exchanges

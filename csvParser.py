@@ -3,6 +3,7 @@ import csv
 import os
 
 from objects.Model import Model
+
 # csv row identifiers
 cA = "#A"  # A = actor
 # P = issues
@@ -12,6 +13,8 @@ cD = "#D"
 # M = issue dimensions (not used in the program)
 cM = "#M"
 
+cI = "#/"
+
 # /	actor	issue	position	salience	power
 rActor = 1
 rIssue = 2
@@ -20,12 +23,13 @@ rSalience = 4
 rPower = 5
 
 
-
 class Parser:
     data = None
 
     def __init__(self):
         self.data = Model()
+
+        print(self.info())
 
     def read(self, filename: str):
 
@@ -57,3 +61,12 @@ class Parser:
     def parseRowD(self, row):
         self.data.add_actor_issue(actor=row[rActor], issue=row[rIssue], power=row[rPower], salience=row[rSalience],
                                   position=row[rPosition])
+
+    def info(self):
+
+        print("This program accepts input with a dot (.) as decimal separator. \n"
+              "Parameters:\n{0} is for defining an actor,\n"
+              "{1} for an issue,\n"
+              "{2} for actor values for each issue.\n"
+              "We expect for {2} the following order in values: "
+              "actor, issue, position, salience, power".format(cA, cP, cD))

@@ -24,7 +24,7 @@ class Exchange:
         # If (2) holds,
         # issue q is the supply issue of i and issue p is the supply issue of j.
         # if ( (model$s_matrix[p, i] / model$s_matrix[q, i]) < (model$s_matrix[p, j] / model$s_matrix[q, j]))
-        if (m.get(i, p, "s") / m.get(i, q, "s")) < (m.get(j, p, "s") / m.get(j, q, "s")):
+        if (m.get_value(i, p, "s") / m.get_value(i, q, "s")) < (m.get_value(j, p, "s") / m.get_value(j, q, "s")):
             self.i = ExchangeActor(m, j, supply=q, demand=p, group=groups[0])
             self.j = ExchangeActor(m, i, supply=p, demand=q, group=groups[1])
         else:
@@ -35,6 +35,10 @@ class Exchange:
         self.i.opposite_actor = self.j
 
     def calculate(self):
+        # TODO REWRITE
+        # smaller functions
+        # less repeating
+
         # first we try to move j to the position of i on issue p
         # we start with the calculation for j
         self.dp = calculations.by_absolute_move(self.model.ActorIssues[self.j.supply], self.j)
@@ -84,141 +88,161 @@ class Exchange:
 
         if self.is_valid:  # TODO and self.re_calc:
 
-            self.j.nbs_0 = self.model.nbs[self.j.supply]
-            self.j.nbs_1 = calculations.calc_adjusted_nbs(self.model.ActorIssues[self.j.supply],
-                                                          self.updates[self.j.supply],
-                                                          self.j.actor, self.j.y,
-                                                          self.model.nbs_denominators[self.j.supply])
+            self.check_nbs_j()
+            self.check_nbs_i()
 
-            if self.i.x_demand >= self.j.nbs_0 and self.i.x_demand >= self.j.nbs_1:
-                pass
-            elif self.i.x_demand <= self.j.nbs_0 and self.i.x_demand <= self.j.nbs_1:
-                pass
+    def check_nbs_i(self):
+        # TODO garbage code, korsakov code or something like that
+        # Need sto be methodical approached
+        self.i.nbs_0 = calculations.calc_adjusted_nbs(self.model.ActorIssues[self.i.supply],
+                                                      self.updates[self.i.supply],
+                                                      self.i.actor, self.i.x,
+                                                      self.model.nbs_denominators[self.i.supply])
+
+        self.i.nbs_1 = calculations.calc_adjusted_nbs(self.model.ActorIssues[self.i.supply],
+                                                      self.updates[self.i.supply],
+                                                      self.i.actor, self.i.y,
+                                                      self.model.nbs_denominators[self.i.supply])
+
+        # TODO this should be a method
+        if self.j.x_demand >= self.i.nbs_0 and self.j.x_demand >= self.i.nbs_1:
+            pass
+        elif self.j.x_demand <= self.i.nbs_0 and self.j.x_demand <= self.i.nbs_1:
+            pass
+        else:
+            new_pos = calculations.calc_adjusted_nbs_by_position(self.model.ActorIssues[self.i.supply],
+                                                                 self.updates[self.i.supply],
+                                                                 self.i.actor, self.i.x, self.j.x_demand,
+                                                                 self.model.nbs_denominators[self.i.supply])
+
+            self.dq = (abs(new_pos - self.i.x) * self.i.s * self.i.c) / self.model.nbs_denominators[self.i.supply]
+            self.dp = calculations.by_exchange_ratio(self.i, self.dq)
+
+            self.i.move = abs(new_pos - self.i.x)
+            self.j.move = calculations.reverse_move(self.model.ActorIssues[self.j.supply], self.j, self.dp)
+
+            if self.i.x > self.j.x_demand:
+                self.i.move *= -1
+
+            if self.j.x > self.i.x_demand:
+                self.j.move *= -1
+
+            self.i.moves.pop()
+            self.j.moves.pop()
+            self.i.moves.append(self.i.move)
+            self.j.moves.append(self.j.move)
+
+            self.i.y = self.i.x + self.i.move
+            self.j.y = self.j.x + self.j.move
+
+            # # TODO less arguments for this function, too long.
+            # nbs_1 = calculations.calc_adjusted_nbs(self.model.ActorIssues[self.i.supply],
+            #                                        self.updates[self.i.supply],
+            #                                        self.i.actor, self.i.y,
+            #                                        self.model.nbs_denominators[self.i.supply])
+            #
+            # # TODO what is this?
+            # if abs(nbs_1 - self.j.x_demand) > 0.000001:
+            #     new_pos = calculations.calc_adjusted_nbs_by_position(self.model.ActorIssues[self.i.supply],
+            #                                                          self.updates[self.i.supply],
+            #                                                          self.i.actor, self.i.x, self.j.x_demand,
+            #                                                          self.model.nbs_denominators[self.i.supply])
+            #     # self.is_valid = False
+            #     # raise Exception("Not Posible!")
+            #     return
+
+            eui = calculations.gain(self.i, self.dq, self.dp)
+            euj = calculations.gain(self.j, self.dp, self.dq)
+
+            if abs(eui - euj) > 0.0001:
+                raise Exception("Expected equal gain")
             else:
+                self.gain = abs(eui)
 
+            b1 = self.i.is_move_valid(self.i.move)
+            b2 = self.j.is_move_valid(self.j.move)
+
+            self.is_valid = b1 and b2
+
+    def check_nbs_j(self):
+        self.j.nbs_0 = calculations.calc_adjusted_nbs(self.model.ActorIssues[self.j.supply],
+                                                      self.updates[self.j.supply],
+                                                      self.j.actor, self.j.x,
+                                                      self.model.nbs_denominators[self.j.supply])
+
+        self.j.nbs_1 = calculations.calc_adjusted_nbs(self.model.ActorIssues[self.j.supply],
+                                                      self.updates[self.j.supply],
+                                                      self.j.actor, self.j.y,
+                                                      self.model.nbs_denominators[self.j.supply])
+
+        if self.i.x_demand >= self.j.nbs_0 and self.i.x_demand >= self.j.nbs_1:
+            pass
+        elif self.i.x_demand <= self.j.nbs_0 and self.i.x_demand <= self.j.nbs_1:
+            pass
+        else:
+
+            new_pos = calculations.calc_adjusted_nbs_by_position(self.model.ActorIssues[self.j.supply],
+                                                                 self.updates[self.j.supply],
+                                                                 self.j.actor, self.j.x, self.i.x_demand,
+                                                                 self.model.nbs_denominators[self.j.supply])
+
+            self.dp = (abs(new_pos - self.j.x) * self.j.s * self.j.c) / self.model.nbs_denominators[
+                self.j.supply]
+            self.dq = calculations.by_exchange_ratio(self.j, self.dp)
+
+            self.i.move = calculations.reverse_move(self.model.ActorIssues[self.i.supply], self.i, self.dq)
+            self.j.move = abs(new_pos - self.j.x)
+
+            if self.i.x > self.j.x_demand:
+                self.i.move *= -1
+
+            if self.j.x > self.i.x_demand:
+                self.j.move *= -1
+
+            self.i.moves.pop()
+            self.j.moves.pop()
+            self.i.moves.append(self.i.move)
+            self.j.moves.append(self.j.move)
+
+            self.i.y = self.i.x + self.i.move
+            self.j.y = self.j.x + self.j.move
+
+            nbs_1 = calculations.calc_adjusted_nbs(self.model.ActorIssues[self.j.supply],
+                                                   self.updates[self.j.supply],
+                                                   self.j.actor, self.j.y,
+                                                   self.model.nbs_denominators[self.j.supply])
+
+            if abs(nbs_1 - self.i.x_demand) > 0.000001:
                 new_pos = calculations.calc_adjusted_nbs_by_position(self.model.ActorIssues[self.j.supply],
                                                                      self.updates[self.j.supply],
                                                                      self.j.actor, self.j.x, self.i.x_demand,
                                                                      self.model.nbs_denominators[self.j.supply])
 
-                self.dp = (abs(new_pos - self.j.x) * self.j.s * self.j.c) / self.model.nbs_denominators[
-                    self.j.supply]
-                self.dq = calculations.by_exchange_ratio(self.j, self.dp)
+                # self.is_valid = False
+                # raise Exception("Not Posible!")
+                return
 
-                self.i.move = calculations.reverse_move(self.model.ActorIssues[self.i.supply], self.i, self.dq)
-                self.j.move = abs(new_pos - self.j.x)
+            eui = calculations.gain(self.i, self.dq, self.dp)
+            euj = calculations.gain(self.j, self.dp, self.dq)
 
-                if self.i.x > self.j.x_demand:
-                    self.i.move *= -1
-
-                if self.j.x > self.i.x_demand:
-                    self.j.move *= -1
-
-                self.i.moves.pop()
-                self.j.moves.pop()
-                self.i.moves.append(self.i.move)
-                self.j.moves.append(self.j.move)
-
-                self.i.y = self.i.x + self.i.move
-                self.j.y = self.j.x + self.j.move
-
-                nbs_1 = calculations.calc_adjusted_nbs(self.model.ActorIssues[self.j.supply],
-                                                       self.updates[self.j.supply],
-                                                       self.j.actor, self.j.y,
-                                                       self.model.nbs_denominators[self.j.supply])
-
-                if abs(nbs_1 - self.i.x_demand) > 0.000001:
-                    new_pos = calculations.calc_adjusted_nbs_by_position(self.model.ActorIssues[self.j.supply],
-                                                                         self.updates[self.j.supply],
-                                                                         self.j.actor, self.j.x, self.i.x_demand,
-                                                                         self.model.nbs_denominators[self.j.supply])
-
-                    # self.is_valid = False
-                    self.gain = 0.001
-                    return
-
-                eui = calculations.gain(self.i, self.dq, self.dp)
-                euj = calculations.gain(self.j, self.dp, self.dq)
-
-                if abs(eui - euj) > 0.0001:
-                    raise Exception("Expected equal gain")
-                else:
-                    self.gain = abs(eui)
-
-                b1 = self.i.is_move_valid(self.i.move)
-                b2 = self.j.is_move_valid(self.j.move)
-
-                self.is_valid = b1 and b2
-
-            # TODO garbage code, korsakov code or something like that
-            # Need sto be methodical approached
-            self.i.nbs_0 = self.model.nbs[self.i.supply]
-
-            self.i.nbs_1 = calculations.calc_adjusted_nbs(self.model.ActorIssues[self.i.supply],
-                                                          self.updates[self.i.supply],
-                                                          self.i.actor, self.i.y,
-                                                          self.model.nbs_denominators[self.i.supply])
-
-            if self.j.x_demand >= self.i.nbs_0 and self.j.x_demand >= self.i.nbs_1:
-                pass
-            elif self.j.x_demand <= self.i.nbs_0 and self.j.x_demand <= self.i.nbs_1:
-                pass
+            if abs(eui - euj) > 0.0001:
+                raise Exception("Expected equal gain")
             else:
-                new_pos = calculations.calc_adjusted_nbs_by_position(self.model.ActorIssues[self.i.supply],
-                                                                     self.updates[self.i.supply],
-                                                                     self.i.actor, self.i.x, self.j.x_demand,
-                                                                     self.model.nbs_denominators[self.i.supply])
+                self.gain = abs(eui)
 
-                self.dq = (abs(new_pos - self.i.x) * self.i.s * self.i.c) / self.model.nbs_denominators[self.i.supply]
-                self.dp = calculations.by_exchange_ratio(self.i, self.dq)
+            b1 = self.i.is_move_valid(self.i.move)
+            b2 = self.j.is_move_valid(self.j.move)
 
-                self.i.move = abs(new_pos - self.i.x)
-                self.j.move = calculations.reverse_move(self.model.ActorIssues[self.j.supply], self.j, self.dp)
-
-                if self.i.x > self.j.x_demand:
-                    self.i.move *= -1
-
-                if self.j.x > self.i.x_demand:
-                    self.j.move *= -1
-
-                self.i.moves.pop()
-                self.j.moves.pop()
-                self.i.moves.append(self.i.move)
-                self.j.moves.append(self.j.move)
-
-                self.i.y = self.i.x + self.i.move
-                self.j.y = self.j.x + self.j.move
-
-                nbs_1 = calculations.calc_adjusted_nbs(self.model.ActorIssues[self.i.supply],
-                                                       self.updates[self.i.supply],
-                                                       self.i.actor, self.i.y,
-                                                       self.model.nbs_denominators[self.i.supply])
-
-                if abs(nbs_1 - self.j.x_demand) > 0.000001:
-                    new_pos = calculations.calc_adjusted_nbs_by_position(self.model.ActorIssues[self.i.supply],
-                                                                         self.updates[self.i.supply],
-                                                                         self.i.actor, self.i.x, self.j.x_demand,
-                                                                         self.model.nbs_denominators[self.i.supply])
-                    self.gain = 0.001
-                    # self.is_valid = False
-                    return
-
-                eui = calculations.gain(self.i, self.dq, self.dp)
-                euj = calculations.gain(self.j, self.dp, self.dq)
-
-                if abs(eui - euj) > 0.0001:
-                    raise Exception("Expected equal gain")
-                else:
-                    self.gain = abs(eui)
-
-                b1 = self.i.is_move_valid(self.i.move)
-                b2 = self.j.is_move_valid(self.j.move)
-
-                self.is_valid = b1 and b2
+            self.is_valid = b1 and b2
 
     def equals(self, i, j, p, q):
+        return self.i.equals_with_supply(i, q) and self.j.equals_with_supply(j, p) or self.i.equals_with_supply(j, p) and self.j.equals_with_supply(i, q)
 
-        return self.i.equals(i, q) and self.j.equals(j, p) or self.i.equals(j, p) and self.j.equals(i, q)
+    def equals(self, exchange):
+        return self.equals(i=exchange.i, j=exchange.j, p=exchange.p, q=exchange.q)
+
+    def contains_actor_with_supply(self, actor, issue):
+        return self.i.equals_with_supply(actor.Name, issue) or self.j.equals_with_supply(actor.Name, issue)
 
     def recalculate(self, exchange: 'Exchange'):
         # update supply positions
@@ -227,28 +251,26 @@ class Exchange:
 
         # TODO create a method inside ExchangeActor for comparison, gets ugly.
 
-        if self.i.actor.Name == exchange.i.actor.Name and self.i.supply == exchange.i.supply:
+        if self.i.equals_with_supply(exchange.i):
             self.i.x = exchange.i.y
             self.i.moves.pop()
             self.j.moves.pop()
             self.i.moves.append(exchange.i.moves[-1])
             self.re_calc = True
-            # self.updates[exchange.i.supply][exchange.i.actor.Name] = exchange.i.y
-        elif self.i.actor.Name == exchange.j.actor.Name and self.i.supply == exchange.j.supply:
+        elif self.i.equals_with_supply(exchange.j):
             self.i.x = exchange.j.y
             self.i.moves.pop()
             self.j.moves.pop()
             self.i.moves.append(exchange.j.moves[-1])
             self.re_calc = True
-            # self.updates[exchange.j.supply][exchange.j.actor.Name] = exchange.j.y
-        if self.j.actor.Name == exchange.i.actor.Name and self.j.supply == exchange.i.supply:
+
+        if self.j.equals_with_supply(exchange.i):
             self.j.x = exchange.i.y
             self.i.moves.pop()
             self.j.moves.pop()
             self.j.moves.append(exchange.i.moves[-1])
             self.re_calc = True
-            # self.updates[exchange.i.supply][exchange.i.actor.Name] = exchange.i.y
-        elif self.j.actor.Name == exchange.j.actor.Name and self.j.supply == exchange.j.supply:
+        elif self.j.equals_with_supply(exchange.j):
             self.j.x = exchange.j.y
             self.i.moves.pop()
             self.j.moves.pop()
@@ -256,7 +278,6 @@ class Exchange:
             self.re_calc = True
 
         # update the positions for the demand actors...
-
         if (self.j.actor.Name == exchange.j.actor.Name and self.j.demand == exchange.j.demand) or (
                         self.i.actor.Name == exchange.j.actor.Name and self.i.demand == exchange.j.demand):
 
@@ -346,14 +367,14 @@ class Exchange:
 
 class ExchangeActor:
     def __init__(self, model, actor: Actor, demand: str, supply: str, group: str):
-        self.c = model.get(actor, supply, "c")
-        self.s = model.get(actor, supply, "s")
-        self.x = model.get(actor, supply, "x")
+        self.c = model.get_value(actor, supply, "c")
+        self.s = model.get_value(actor, supply, "s")
+        self.x = model.get_value(actor, supply, "x")
         self.y = 0
 
-        self.c_demand = model.get(actor, demand, "c")
-        self.s_demand = model.get(actor, demand, "s")
-        self.x_demand = model.get(actor, demand, "x")
+        self.c_demand = model.get_value(actor, demand, "c")
+        self.s_demand = model.get_value(actor, demand, "s")
+        self.x_demand = model.get_value(actor, demand, "x")
 
         self.start_position = self.x
 
@@ -414,9 +435,12 @@ class ExchangeActor:
         # iii.pv = (1 – (1 – s)*sw –fw)*x(t)
         # iv.x(t + 1) = swv + fwv + pv
 
-    def equals(self, name, supply):
+    def equals_with_supply(self, exchange_actor):
 
-        if self.actor.Name == name and self.supply == supply:
+        if self.actor.Name == exchange_actor.actor.Name and self.supply == exchange_actor.supply:
             return True
 
         return False
+
+    def equals(self, exchange_actor):
+        return self.equals_with_supply(name=exchange_actor.name, supply=exchange_actor.supply)

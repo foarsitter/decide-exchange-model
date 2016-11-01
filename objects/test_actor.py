@@ -8,5 +8,5 @@ class TestActor(TestCase):
         name = "TestActor"
         actor = Actor(name)
 
-        self.assertEqual(actor.Name, name)
-        self.assertEqual(str(actor), name)
+        self.assertEqual(actor.Name, name.lower())
+        self.assertEqual(str(actor), name.lower())

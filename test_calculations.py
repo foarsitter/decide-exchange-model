@@ -3,7 +3,7 @@ from unittest import TestCase
 
 import csvParser
 from calculations import by_exchange_ratio, by_absolute_move, calc_adjusted_nbs, calc_nbs, reverse_move, \
-    sum_salience_power, calc_nbs_denominator, externalities
+    sum_salience_power, calc_nbs_denominator, calc_actor_externalities as externalities
 from objects.Actor import Actor
 from objects.ActorIssue import ActorIssue
 from objects.Exchange import Exchange
@@ -112,13 +112,13 @@ class TestBy_absolute_move(TestCase):
         nbs_1 = calc_adjusted_nbs(model.ActorIssues[p], e.updates, e.j.actor, e.j.y,
                                   model.nbs_denominators[p])
 
-        Russia = model.ActorIssues[p]["Russia"]  # russia is an D group actor, so he is inner
-        Umbrellamin = model.ActorIssues[p]["Umbrellamin"]  # Umbrellamin is and B group actor, so he is outer
-        Arabstates = model.ActorIssues[p]["Arabstates"]  # Arabstates is and C group actor, so he is outer
+        Russia = model.ActorIssues[p]["russia"]  # russia is an D group actor, so he is inner
+        Umbrellamin = model.ActorIssues[p]["umbrellamin"]  # Umbrellamin is and B group actor, so he is outer
+        Arabstates = model.ActorIssues[p]["arabstates"]  # Arabstates is and C group actor, so he is outer
 
         # todo add type checks for op,ip,in,on and own
 
-        ext_russia = externalities(Russia, nbs_0, nbs_1, e)
+        ext_russia =  externalities(Russia, nbs_0, nbs_1, e)
         self.assertEqual(ext_russia["value"], ((nbs_0 - Russia.position) - (nbs_1 - Russia.position)) * Russia.salience)
 
         ext_umbrella = externalities(Umbrellamin, nbs_0, nbs_1, e)

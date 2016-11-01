@@ -1,0 +1,1790 @@
+<DC-project creation="2012-09-13T09:20:55.000Z" name="120912 verkiezing nl.1.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<dataset name="120912 verkiezingen-rvo-1.3" tst="false" willingness="false">
+		<issue key="hypotheek" name="Hypotheekrenteaftrek" ordering="1">
+			<domain discrete="false">
+				<position key="Status quo plus verplichte aflossing voor nieuwe hypotheken" value="0.0">Status quo plus verplichte aflossing voor nieuwe hypotheken</position>
+				<position key="gelijk houden en verlagen via vlaktaks" value="10.0">gelijk houden en verlagen via vlaktaks</position>
+				<position key="geleidelijke afbouw in 30 jaar tot 30%; max geleidelijk afbouwen tot gem. huizenprijzen" value="75.0">geleidelijke afbouw in 30 jaar tot 30%; max geleidelijk afbouwen tot gem. huizenprijzen</position>
+				<position key="geleidelijke afbouw naar 30% in 25 jaar met max huizenprijzen" value="80.0">geleidelijke afbouw naar 30% in 25 jaar met max huizenprijzen</position>
+				<position key="naar 30% in 22 jaar" value="85.0">naar 30% in 22 jaar</position>
+				<position key="max 42% + max. 350000 in 10 jaar" value="90.0">max 42% + max. 350000 in 10 jaar</position>
+				<position key="&quot;Afbouw % in 17 jaar naar 30%; plus max 750000 tot 1017, daarna 500000&quot;" value="100.0">"Afbouw % in 17 jaar naar 30%; plus max 750000 tot 1017, daarna 500000"</position>
+			</domain>
+		</issue>
+		<issue key="huur" name="maatregelen rond huren" ordering="2">
+			<domain discrete="false">
+				<position key="Status quo (max huurverhogingen voor sociale sector)" value="0.0">Status quo (max huurverhogingen voor sociale sector)</position>
+				<position key="hogere huur voor hogere inkomens in sociale sector" value="25.0">hogere huur voor hogere inkomens in sociale sector</position>
+				<position key="beperkte huurverhoging boven inflatie" value="40.0">beperkte huurverhoging boven inflatie</position>
+				<position key="geleidelijk marktconform maar hogere huurtoeslag" value="50.0">geleidelijk marktconform maar hogere huurtoeslag</position>
+				<position key="meer marktconform met huurtoeslag" value="60.0">meer marktconform met huurtoeslag</position>
+				<position key="huren marktconform maken" value="100.0">huren marktconform maken</position>
+			</domain>
+		</issue>
+		<issue key="AOW" name="AOW leeftijd" ordering="3">
+			<domain discrete="false">
+				<position key="Status quo handhaven" value="0.0">Status quo handhaven</position>
+				<position key="tot 2020 gelijk daarna nader bekijken" value="10.0">tot 2020 gelijk daarna nader bekijken</position>
+				<position key="vanaf 2018 stapsgewijs in 2030 67 jaar plus na 45 jaar arbeid" value="40.0">vanaf 2018 stapsgewijs in 2030 67 jaar plus na 45 jaar arbeid</position>
+				<position key="in 2025 67 jaar plus flexibeler" value="65.0">in 2025 67 jaar plus flexibeler</position>
+				<position key="in 2023 67 jaar plus flexibeler en daarna koppelen aan levensverwachting" value="75.0">in 2023 67 jaar plus flexibeler en daarna koppelen aan levensverwachting</position>
+				<position key="in 2023 67 jaar daarna koppelen aan levensverwachting" value="80.0">in 2023 67 jaar daarna koppelen aan levensverwachting</position>
+				<position key="in 2021 67 jaar daarna koppelen aan levensverwachting plus flexibeler" value="85.0">in 2021 67 jaar daarna koppelen aan levensverwachting plus flexibeler</position>
+				<position key="in 2020 67 jaar daarna koppelen aan levensverwachting" value="90.0">in 2020 67 jaar daarna koppelen aan levensverwachting</position>
+				<position key="in 2018 67 jaar daarna koppelen aan levensverwachting" value="100.0">in 2018 67 jaar daarna koppelen aan levensverwachting</position>
+			</domain>
+		</issue>
+		<issue key="zorg" name="marktwerking zorg" ordering="4">
+			<domain discrete="false">
+				<position key="&quot;meer markt (privaat kapitaal), eigen risico en premie onafhankelijk van inkomen, eigen risico omhoog, verzekerd pakket kleiner &quot;" value="0.0">"meer markt (privaat kapitaal), eigen risico en premie onafhankelijk van inkomen, eigen risico omhoog, verzekerd pakket kleiner "</position>
+				<position key="&quot;meer markt (privaat kapitaal), eigen risico afhankelijk van inkomen omhoog, pakket iets kleiner &quot;" value="20.0">"meer markt (privaat kapitaal), eigen risico afhankelijk van inkomen omhoog, pakket iets kleiner "</position>
+				<position key="&quot;iets meer markt, eigen risico afhankelijk van inkomen omhoog, pakket iets kleiner&quot;" value="30.0">"iets meer markt, eigen risico afhankelijk van inkomen omhoog, pakket iets kleiner"</position>
+				<position key="&quot;iets meer markt, eigen risico ongeveer als nu, verzekerd pakket ook bijna hetzelfde, eigen bijdrage iets hoger&quot;" value="45.0">"iets meer markt, eigen risico ongeveer als nu, verzekerd pakket ook bijna hetzelfde, eigen bijdrage iets hoger"</position>
+				<position key="Status Quo" value="50.0">Status Quo</position>
+				<position key="&quot;weinig marktwerking, premie  inkomensafhankelijker en eigen risico ook&quot;" value="70.0">"weinig marktwerking, premie  inkomensafhankelijker en eigen risico ook"</position>
+				<position key="&quot;marktwerking beeindigen, regionale organisatie, inkomensafhankelijke premie en eigen bijdrage&quot;" value="90.0">"marktwerking beeindigen, regionale organisatie, inkomensafhankelijke premie en eigen bijdrage"</position>
+				<position key="&quot;geen markt maar overheid, premie inkomensafhankelijk, lager eigen risico, preventie in pakket&quot;" value="100.0">"geen markt maar overheid, premie inkomensafhankelijk, lager eigen risico, preventie in pakket"</position>
+			</domain>
+		</issue>
+		<issue key="vreemd" name="vreemdelingenbeleid" ordering="5">
+			<domain discrete="false">
+				<position key="&quot;na 3 jaar automatisch vergunning; asielzoekers mogen leren en werken, huwelijksmigratie gemakkelijker;dubbele nationaliteit mogelijk; inburgeren in NL&quot;" value="0.0">"na 3 jaar automatisch vergunning; asielzoekers mogen leren en werken, huwelijksmigratie gemakkelijker;dubbele nationaliteit mogelijk; inburgeren in NL"</position>
+				<position key="inburgeren in NL en kostenloos; gezinshereniging versoepelen" value="10.0">inburgeren in NL en kostenloos; gezinshereniging versoepelen</position>
+				<position key="huwelijksmigratie niet moeilijker maken; asielzoekers mogen werken; pas later recht op sociale zekerheid; dubbele nationaliteit mag" value="20.0">huwelijksmigratie niet moeilijker maken; asielzoekers mogen werken; pas later recht op sociale zekerheid; dubbele nationaliteit mag</position>
+				<position key="humaner beleid inzake vluchtelingen; na 3 maanden leren en werken; inburgeren op eigen kosten" value="25.0">humaner beleid inzake vluchtelingen; na 3 maanden leren en werken; inburgeren op eigen kosten</position>
+				<position key="SQ" value="50.0">SQ</position>
+				<position key="inburgerexamen voorwaarde voor verblijfsvergunning; dubbele nationaliteit wel toestaan;  eisen huwelijksmigranten aanscherpen" value="55.0">inburgerexamen voorwaarde voor verblijfsvergunning; dubbele nationaliteit wel toestaan;  eisen huwelijksmigranten aanscherpen</position>
+				<position key="huwelijksmigratie beperken; inburgering op eigen kosten; sociale zekerheid na 10 jaar" value="80.0">huwelijksmigratie beperken; inburgering op eigen kosten; sociale zekerheid na 10 jaar</position>
+				<position key="geen immigranten uit islamitische landen; assimilatiecontracten;  illegaliteit strafbaar; geen dubbele nationaliteit; NL nationaliteit en uitkeringen na 10 jaar verblijf" value="100.0">geen immigranten uit islamitische landen; assimilatiecontracten;  illegaliteit strafbaar; geen dubbele nationaliteit; NL nationaliteit en uitkeringen na 10 jaar verblijf</position>
+			</domain>
+		</issue>
+		<issue key="duur" name="duurzaamheid" ordering="6">
+			<domain discrete="false">
+				<position key="kerncentrales blijven mits veilig; minder geld voor duurzame economie" value="0.0">kerncentrales blijven mits veilig; minder geld voor duurzame economie</position>
+				<position key="&quot;nieuwe kerncentrales,14% duurzame energie in 2020; minder subsidies;verduurzaming eigen verantwoordelijkheid bedrijven en burgers&quot;" value="30.0">"nieuwe kerncentrales,14% duurzame energie in 2020; minder subsidies;verduurzaming eigen verantwoordelijkheid bedrijven en burgers"</position>
+				<position key="SQ" value="50.0">SQ</position>
+				<position key="&quot;14% duurzame energie in 2020; biobransstoffen en warmtehergebruik, verduurzaming eigen verantwoordelijkheid bedrijfsleven en burgers&quot;" value="55.0">"14% duurzame energie in 2020; biobransstoffen en warmtehergebruik, verduurzaming eigen verantwoordelijkheid bedrijfsleven en burgers"</position>
+				<position key="&quot;1,5% per jaar extra duurzame energie; geen nieuwe kern- of kolencentrales, moratorium op megastallen; landbouw verduurzamen&quot;" value="65.0">"1,5% per jaar extra duurzame energie; geen nieuwe kern- of kolencentrales, moratorium op megastallen; landbouw verduurzamen"</position>
+				<position key="18% duurzame energie in 2020; afschaffing salderingsregeling kleinschalige opwekking" value="75.0">18% duurzame energie in 2020; afschaffing salderingsregeling kleinschalige opwekking</position>
+				<position key="20% duurzame energie in 2020; meer groene belastingen en heffingen op co2 uitstoot; geen nieuwe kerncentrales" value="90.0">20% duurzame energie in 2020; meer groene belastingen en heffingen op co2 uitstoot; geen nieuwe kerncentrales</position>
+				<position key="2020 20% schone energie 2050 100%; vergroening belastingstelsel; geen kern- en kolencentrales; verbod op megastallen; duurzame landbouw" value="100.0">2020 20% schone energie 2050 100%; vergroening belastingstelsel; geen kern- en kolencentrales; verbod op megastallen; duurzame landbouw</position>
+			</domain>
+		</issue>
+		<issue key="ontslag" name="ontslagrecht" ordering="7">
+			<domain discrete="false">
+				<position key="ontslagbescherming handhaven; ww niet door werkgevers betaald;ww duur niet verkorten; ambtenaren blijven beschermd; meer vaste contracten" value="0.0">ontslagbescherming handhaven; ww niet door werkgevers betaald;ww duur niet verkorten; ambtenaren blijven beschermd; meer vaste contracten</position>
+				<position key="ontslag via kantonrechter; helft ontslagvergoeding voor werk naar werk budget tbv bijscholing;duur ww handhaven" value="20.0">ontslag via kantonrechter; helft ontslagvergoeding voor werk naar werk budget tbv bijscholing;duur ww handhaven</position>
+				<position key="&quot;opzegtermijn verlengen tot max 1 jaar; bij kortere periode rest via ww, betaald door werkgever&quot;" value="40.0">"opzegtermijn verlengen tot max 1 jaar; bij kortere periode rest via ww, betaald door werkgever"</position>
+				<position key="Lenteakkoord" value="50.0">Lenteakkoord</position>
+				<position key="&quot;positie 80, maar duur ww max 18 maanden&quot;" value="55.0">"positie 80, maar duur ww max 18 maanden"</position>
+				<position key="maximale ww periode 1 jaar; verhoging ww uitkering; individueel scholingsbudget" value="70.0">maximale ww periode 1 jaar; verhoging ww uitkering; individueel scholingsbudget</position>
+				<position key="&quot;werkgever verantwoordelijk tijdens eerste half jaar; duale procedure afgeschaft, kantonrechter indien nodig achteraf; alle werknemersgelijk; recht op scholing&quot;" value="80.0">"werkgever verantwoordelijk tijdens eerste half jaar; duale procedure afgeschaft, kantonrechter indien nodig achteraf; alle werknemersgelijk; recht op scholing"</position>
+				<position key="&quot;ww korter en hoger, ontslag zonder kantonrechter, alle werknemers gelijk, vaste ontslagregels&quot;" value="100.0">"ww korter en hoger, ontslag zonder kantonrechter, alle werknemers gelijk, vaste ontslagregels"</position>
+			</domain>
+		</issue>
+		<issue key="Europa" name="Europa" ordering="8">
+			<domain discrete="false">
+				<position key="Verdere integratie en uitbreiding ESM" value="0.0">Verdere integratie en uitbreiding ESM</position>
+				<position key="eurobonds mogelijk; uitbreiding ESM" value="30.0">eurobonds mogelijk; uitbreiding ESM</position>
+				<position key="Status quo; huidig Europees beleid" value="50.0">Status quo; huidig Europees beleid</position>
+				<position key="geen euroobligaties geen federatieve organisatie en dereguleren" value="60.0">geen euroobligaties geen federatieve organisatie en dereguleren</position>
+				<position key="grotere effectiviteit samenwerking; minder Europa" value="80.0">grotere effectiviteit samenwerking; minder Europa</position>
+				<position key="Uittreden uit EU en uit euro" value="100.0">Uittreden uit EU en uit euro</position>
+			</domain>
+		</issue>
+		<issue key="belasting" name="belastingen" ordering="9">
+			<domain discrete="false">
+				<position key="&quot;topschijf van 65% vanaf 150000, winsten en vermogens meer belasten; vennootschapsbelasting met 5% omhoog&quot;" value="0.0">"topschijf van 65% vanaf 150000, winsten en vermogens meer belasten; vennootschapsbelasting met 5% omhoog"</position>
+				<position key="&quot;topschijf van 60% vanaf 150000, vermogensbelasting verhogen; vennootschapsbelasting met 0,5% verhogen&quot;" value="10.0">"topschijf van 60% vanaf 150000, vermogensbelasting verhogen; vennootschapsbelasting met 0,5% verhogen"</position>
+				<position key="&quot;topschijf van 60% vanaf 150000; box 3 tweede tarief van 1,6% boven 125.000 vermogen&quot;" value="20.0">"topschijf van 60% vanaf 150000; box 3 tweede tarief van 1,6% boven 125.000 vermogen"</position>
+				<position key="status quo" value="50.0">status quo</position>
+				<position key="verlaging 2de schijf inkomstenbelasting" value="55.0">verlaging 2de schijf inkomstenbelasting</position>
+				<position key="IB verlaging wegens btw verhoging ongedaan maken; arbeidskorting verhogen; winstbelasting verlagen" value="60.0">IB verlaging wegens btw verhoging ongedaan maken; arbeidskorting verhogen; winstbelasting verlagen</position>
+				<position key="vermindering aftrek hypotheekrente compenseren" value="75.0">vermindering aftrek hypotheekrente compenseren</position>
+				<position key="vlaktaks met topheffing" value="100.0">vlaktaks met topheffing</position>
+			</domain>
+		</issue>
+		<issue key="ontwikkeling" name="ontwikkelingssamenwerking" ordering="10">
+			<domain discrete="false">
+				<position key="geen ontwikkelingshulp" value="0.0">geen ontwikkelingshulp</position>
+				<position key="1% van het BNP" value="1.0">1% van het BNP</position>
+			</domain>
+		</issue>
+		<issue key="bezuinig" name="ombuigingen op collectieve uitgaven" ordering="11">
+			<domain discrete="false">
+				<position key="lowerbound" value="0.0">lowerbound</position>
+				<position key="upperbound" value="29.6">upperbound</position>
+			</domain>
+		</issue>
+		<actor color="#24897B" key="SP" name="SP" ordering="1" power="15.0">
+			<actorIssueLink issueRef="hypotheek" position="90.0" power="0.464159" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="0.0" power="0.464159" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="10.0" power="0.464159" salience="0.9"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="100.0" power="0.464159" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="10.0" power="0.464159" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="65.0" power="0.464159" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="0.0" power="0.464159" salience="0.9"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="80.0" power="0.464159" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="0.0" power="0.464159" salience="0.85"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.8" power="0.464159" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="21.0" power="0.464159" salience="0.85"></actorIssueLink>
+			<actorLink influence="0.0" targetActor="PvdD"></actorLink>
+			<actorLink influence="0.0" targetActor="GL"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdA"></actorLink>
+			<actorLink influence="0.0" targetActor="D66"></actorLink>
+			<actorLink influence="0.0" targetActor="CU"></actorLink>
+			<actorLink influence="0.0" targetActor="CDA"></actorLink>
+			<actorLink influence="0.0" targetActor="VVD"></actorLink>
+			<actorLink influence="0.0" targetActor="SGP"></actorLink>
+			<actorLink influence="0.0" targetActor="PVV"></actorLink>
+			<actorLink influence="0.0" targetActor="50+"></actorLink>
+		</actor>
+		<actor color="#E35ACB" key="PvdD" name="PvdD" ordering="2" power="2.0">
+			<actorIssueLink issueRef="hypotheek" position="70.0" power="0.237126" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="25.0" power="0.237126" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="40.0" power="0.237126" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="90.0" power="0.237126" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="30.0" power="0.237126" salience="0.2"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="100.0" power="0.237126" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="30.0" power="0.237126" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="70.0" power="0.237126" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="45.0" power="0.237126" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="1.0" power="0.237126" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="0.0" power="0.237126" salience="0.0"></actorIssueLink>
+			<actorLink influence="0.0" targetActor="SP"></actorLink>
+			<actorLink influence="0.0" targetActor="GL"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdA"></actorLink>
+			<actorLink influence="0.0" targetActor="D66"></actorLink>
+			<actorLink influence="0.0" targetActor="CU"></actorLink>
+			<actorLink influence="0.0" targetActor="CDA"></actorLink>
+			<actorLink influence="0.0" targetActor="VVD"></actorLink>
+			<actorLink influence="0.0" targetActor="SGP"></actorLink>
+			<actorLink influence="0.0" targetActor="PVV"></actorLink>
+			<actorLink influence="0.0" targetActor="50+"></actorLink>
+		</actor>
+		<actor color="#389A20" key="GL" name="GL" ordering="3" power="3.0">
+			<actorIssueLink issueRef="hypotheek" position="80.0" power="0.271442" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="40.0" power="0.271442" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="75.0" power="0.271442" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="70.0" power="0.271442" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="0.0" power="0.271442" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="100.0" power="0.271442" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="70.0" power="0.271442" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="10.0" power="0.271442" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="10.0" power="0.271442" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.8" power="0.271442" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="22.7" power="0.271442" salience="0.7"></actorIssueLink>
+			<actorLink influence="0.0" targetActor="SP"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdD"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdA"></actorLink>
+			<actorLink influence="0.0" targetActor="D66"></actorLink>
+			<actorLink influence="0.0" targetActor="CU"></actorLink>
+			<actorLink influence="0.0" targetActor="CDA"></actorLink>
+			<actorLink influence="0.0" targetActor="VVD"></actorLink>
+			<actorLink influence="0.0" targetActor="SGP"></actorLink>
+			<actorLink influence="0.0" targetActor="PVV"></actorLink>
+			<actorLink influence="0.0" targetActor="50+"></actorLink>
+		</actor>
+		<actor color="#3423AD" key="PvdA" name="PvdA" ordering="4" power="39.0">
+			<actorIssueLink issueRef="hypotheek" position="75.0" power="0.63825" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="40.0" power="0.63825" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="65.0" power="0.63825" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="90.0" power="0.63825" salience="0.9"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="20.0" power="0.63825" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="75.0" power="0.63825" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="20.0" power="0.63825" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="30.0" power="0.63825" salience="0.85"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="20.0" power="0.63825" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.7" power="0.63825" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="25.5" power="0.63825" salience="0.85"></actorIssueLink>
+			<actorLink influence="0.0" targetActor="SP"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdD"></actorLink>
+			<actorLink influence="0.0" targetActor="GL"></actorLink>
+			<actorLink influence="0.0" targetActor="D66"></actorLink>
+			<actorLink influence="0.0" targetActor="CU"></actorLink>
+			<actorLink influence="0.0" targetActor="CDA"></actorLink>
+			<actorLink influence="0.0" targetActor="VVD"></actorLink>
+			<actorLink influence="0.0" targetActor="SGP"></actorLink>
+			<actorLink influence="0.0" targetActor="PVV"></actorLink>
+			<actorLink influence="0.0" targetActor="50+"></actorLink>
+		</actor>
+		<actor color="#ED127D" key="D66" name="D66" ordering="5" power="12.0">
+			<actorIssueLink issueRef="hypotheek" position="85.0" power="0.430887" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="60.0" power="0.430887" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="85.0" power="0.430887" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="20.0" power="0.430887" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="20.0" power="0.430887" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="90.0" power="0.430887" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="80.0" power="0.430887" salience="0.9"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="0.0" power="0.430887" salience="0.85"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="75.0" power="0.430887" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.7" power="0.430887" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="20.7" power="0.430887" salience="0.7"></actorIssueLink>
+			<actorLink influence="0.0" targetActor="SP"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdD"></actorLink>
+			<actorLink influence="0.0" targetActor="GL"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdA"></actorLink>
+			<actorLink influence="0.0" targetActor="CU"></actorLink>
+			<actorLink influence="0.0" targetActor="CDA"></actorLink>
+			<actorLink influence="0.0" targetActor="VVD"></actorLink>
+			<actorLink influence="0.0" targetActor="SGP"></actorLink>
+			<actorLink influence="0.0" targetActor="PVV"></actorLink>
+			<actorLink influence="0.0" targetActor="50+"></actorLink>
+		</actor>
+		<actor color="#7E3A6C" key="CU" name="CU" ordering="6" power="5.0">
+			<actorIssueLink issueRef="hypotheek" position="100.0" power="0.32183" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="50.0" power="0.32183" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="80.0" power="0.32183" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="30.0" power="0.32183" salience="0.45"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="25.0" power="0.32183" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="90.0" power="0.32183" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="40.0" power="0.32183" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="75.0" power="0.32183" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="55.0" power="0.32183" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.7" power="0.32183" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="16.200008" power="0.32183" salience="0.6"></actorIssueLink>
+			<actorLink influence="0.0" targetActor="SP"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdD"></actorLink>
+			<actorLink influence="0.0" targetActor="GL"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdA"></actorLink>
+			<actorLink influence="0.0" targetActor="D66"></actorLink>
+			<actorLink influence="0.0" targetActor="CDA"></actorLink>
+			<actorLink influence="0.0" targetActor="VVD"></actorLink>
+			<actorLink influence="0.0" targetActor="SGP"></actorLink>
+			<actorLink influence="0.0" targetActor="PVV"></actorLink>
+			<actorLink influence="0.0" targetActor="50+"></actorLink>
+		</actor>
+		<actor color="#085F00" key="CDA" name="CDA" ordering="7" power="13.0">
+			<actorIssueLink issueRef="hypotheek" position="10.0" power="0.442538" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="50.0" power="0.442538" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="90.0" power="0.442538" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="45.0" power="0.442538" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="55.0" power="0.442538" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="55.0" power="0.442538" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="55.0" power="0.442538" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="50.0" power="0.442538" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="100.0" power="0.442538" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.7" power="0.442538" salience="0.85"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="19.7" power="0.442538" salience="0.8"></actorIssueLink>
+			<actorLink influence="0.0" targetActor="SP"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdD"></actorLink>
+			<actorLink influence="0.0" targetActor="GL"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdA"></actorLink>
+			<actorLink influence="0.0" targetActor="D66"></actorLink>
+			<actorLink influence="0.0" targetActor="CU"></actorLink>
+			<actorLink influence="0.0" targetActor="VVD"></actorLink>
+			<actorLink influence="0.0" targetActor="SGP"></actorLink>
+			<actorLink influence="0.0" targetActor="PVV"></actorLink>
+			<actorLink influence="0.0" targetActor="50+"></actorLink>
+		</actor>
+		<actor color="#BA88C9" key="VVD" name="VVD" ordering="8" power="41.0">
+			<actorIssueLink issueRef="hypotheek" position="0.0" power="0.648979" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="100.0" power="0.648979" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="100.0" power="0.648979" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="0.0" power="0.648979" salience="0.9"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="80.0" power="0.648979" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="30.0" power="0.648979" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="100.0" power="0.648979" salience="0.85"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="60.0" power="0.648979" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="60.0" power="0.648979" salience="0.9"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.25" power="0.648979" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="29.6" power="0.648979" salience="0.9"></actorIssueLink>
+			<actorLink influence="0.0" targetActor="SP"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdD"></actorLink>
+			<actorLink influence="0.0" targetActor="GL"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdA"></actorLink>
+			<actorLink influence="0.0" targetActor="D66"></actorLink>
+			<actorLink influence="0.0" targetActor="CU"></actorLink>
+			<actorLink influence="0.0" targetActor="CDA"></actorLink>
+			<actorLink influence="0.0" targetActor="SGP"></actorLink>
+			<actorLink influence="0.0" targetActor="PVV"></actorLink>
+			<actorLink influence="0.0" targetActor="50+"></actorLink>
+		</actor>
+		<actor color="#4521F9" key="SGP" name="SGP" ordering="9" power="3.0">
+			<actorIssueLink issueRef="hypotheek" position="90.0" power="0.271442" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="50.0" power="0.271442" salience="0.3"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="90.0" power="0.271442" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="60.0" power="0.271442" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="65.0" power="0.271442" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="25.0" power="0.271442" salience="0.45"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="15.0" power="0.271442" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="80.0" power="0.271442" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="60.0" power="0.271442" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.6" power="0.271442" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="27.8" power="0.271442" salience="0.0"></actorIssueLink>
+			<actorLink influence="0.0" targetActor="SP"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdD"></actorLink>
+			<actorLink influence="0.0" targetActor="GL"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdA"></actorLink>
+			<actorLink influence="0.0" targetActor="D66"></actorLink>
+			<actorLink influence="0.0" targetActor="CU"></actorLink>
+			<actorLink influence="0.0" targetActor="CDA"></actorLink>
+			<actorLink influence="0.0" targetActor="VVD"></actorLink>
+			<actorLink influence="0.0" targetActor="PVV"></actorLink>
+			<actorLink influence="0.0" targetActor="50+"></actorLink>
+		</actor>
+		<actor color="#DEBD83" key="PVV" name="PVV" ordering="10" power="15.0">
+			<actorIssueLink issueRef="hypotheek" position="0.0" power="0.464159" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="0.0" power="0.464159" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="0.0" power="0.464159" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="55.0" power="0.464159" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="100.0" power="0.464159" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="0.0" power="0.464159" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="10.0" power="0.464159" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="100.0" power="0.464159" salience="0.9"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="60.0" power="0.464159" salience="0.3"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.0" power="0.464159" salience="0.85"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="18.8" power="0.464159" salience="0.5"></actorIssueLink>
+			<actorLink influence="0.0" targetActor="SP"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdD"></actorLink>
+			<actorLink influence="0.0" targetActor="GL"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdA"></actorLink>
+			<actorLink influence="0.0" targetActor="D66"></actorLink>
+			<actorLink influence="0.0" targetActor="CU"></actorLink>
+			<actorLink influence="0.0" targetActor="CDA"></actorLink>
+			<actorLink influence="0.0" targetActor="VVD"></actorLink>
+			<actorLink influence="0.0" targetActor="SGP"></actorLink>
+			<actorLink influence="0.0" targetActor="50+"></actorLink>
+		</actor>
+		<actor color="#46B305" key="50+" name="50+" ordering="11" power="3.0">
+			<actorLink influence="0.0" targetActor="SP"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdD"></actorLink>
+			<actorLink influence="0.0" targetActor="GL"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdA"></actorLink>
+			<actorLink influence="0.0" targetActor="D66"></actorLink>
+			<actorLink influence="0.0" targetActor="CU"></actorLink>
+			<actorLink influence="0.0" targetActor="CDA"></actorLink>
+			<actorLink influence="0.0" targetActor="VVD"></actorLink>
+			<actorLink influence="0.0" targetActor="SGP"></actorLink>
+			<actorLink influence="0.0" targetActor="PVV"></actorLink>
+		</actor>
+	</dataset>
+	<dataset name="pvda verhoogde sal" tst="false" willingness="false">
+		<issue key="hypotheek" name="Hypotheekrenteaftrek" ordering="1">
+			<domain discrete="false">
+				<position key="Status quo plus verplichte aflossing voor nieuwe hypotheken" value="0.0">Status quo plus verplichte aflossing voor nieuwe hypotheken</position>
+				<position key="gelijk houden en verlagen via vlaktaks" value="10.0">gelijk houden en verlagen via vlaktaks</position>
+				<position key="geleidelijke afbouw in 30 jaar tot 30%; max geleidelijk afbouwen tot gem. huizenprijzen" value="75.0">geleidelijke afbouw in 30 jaar tot 30%; max geleidelijk afbouwen tot gem. huizenprijzen</position>
+				<position key="geleidelijke afbouw naar 30% in 25 jaar met max huizenprijzen" value="80.0">geleidelijke afbouw naar 30% in 25 jaar met max huizenprijzen</position>
+				<position key="naar 30% in 22 jaar" value="85.0">naar 30% in 22 jaar</position>
+				<position key="max 42% + max. 350000 in 10 jaar" value="90.0">max 42% + max. 350000 in 10 jaar</position>
+				<position key="&quot;Afbouw % in 17 jaar naar 30%; plus max 750000 tot 1017, daarna 500000&quot;" value="100.0">"Afbouw % in 17 jaar naar 30%; plus max 750000 tot 1017, daarna 500000"</position>
+			</domain>
+		</issue>
+		<issue key="huur" name="maatregelen rond huren" ordering="2">
+			<domain discrete="false">
+				<position key="Status quo (max huurverhogingen voor sociale sector)" value="0.0">Status quo (max huurverhogingen voor sociale sector)</position>
+				<position key="hogere huur voor hogere inkomens in sociale sector" value="25.0">hogere huur voor hogere inkomens in sociale sector</position>
+				<position key="beperkte huurverhoging boven inflatie" value="40.0">beperkte huurverhoging boven inflatie</position>
+				<position key="geleidelijk marktconform maar hogere huurtoeslag" value="50.0">geleidelijk marktconform maar hogere huurtoeslag</position>
+				<position key="meer marktconform met huurtoeslag" value="60.0">meer marktconform met huurtoeslag</position>
+				<position key="huren marktconform maken" value="100.0">huren marktconform maken</position>
+			</domain>
+		</issue>
+		<issue key="AOW" name="AOW leeftijd" ordering="3">
+			<domain discrete="false">
+				<position key="Status quo handhaven" value="0.0">Status quo handhaven</position>
+				<position key="tot 2020 gelijk daarna nader bekijken" value="10.0">tot 2020 gelijk daarna nader bekijken</position>
+				<position key="vanaf 2018 stapsgewijs in 2030 67 jaar plus na 45 jaar arbeid" value="40.0">vanaf 2018 stapsgewijs in 2030 67 jaar plus na 45 jaar arbeid</position>
+				<position key="in 2025 67 jaar plus flexibeler" value="65.0">in 2025 67 jaar plus flexibeler</position>
+				<position key="in 2023 67 jaar plus flexibeler en daarna koppelen aan levensverwachting" value="75.0">in 2023 67 jaar plus flexibeler en daarna koppelen aan levensverwachting</position>
+				<position key="in 2023 67 jaar daarna koppelen aan levensverwachting" value="80.0">in 2023 67 jaar daarna koppelen aan levensverwachting</position>
+				<position key="in 2021 67 jaar daarna koppelen aan levensverwachting plus flexibeler" value="85.0">in 2021 67 jaar daarna koppelen aan levensverwachting plus flexibeler</position>
+				<position key="in 2020 67 jaar daarna koppelen aan levensverwachting" value="90.0">in 2020 67 jaar daarna koppelen aan levensverwachting</position>
+				<position key="in 2018 67 jaar daarna koppelen aan levensverwachting" value="100.0">in 2018 67 jaar daarna koppelen aan levensverwachting</position>
+			</domain>
+		</issue>
+		<issue key="zorg" name="marktwerking zorg" ordering="4">
+			<domain discrete="false">
+				<position key="&quot;meer markt (privaat kapitaal), eigen risico en premie onafhankelijk van inkomen, eigen risico omhoog, verzekerd pakket kleiner &quot;" value="0.0">"meer markt (privaat kapitaal), eigen risico en premie onafhankelijk van inkomen, eigen risico omhoog, verzekerd pakket kleiner "</position>
+				<position key="&quot;meer markt (privaat kapitaal), eigen risico afhankelijk van inkomen omhoog, pakket iets kleiner &quot;" value="20.0">"meer markt (privaat kapitaal), eigen risico afhankelijk van inkomen omhoog, pakket iets kleiner "</position>
+				<position key="&quot;iets meer markt, eigen risico afhankelijk van inkomen omhoog, pakket iets kleiner&quot;" value="30.0">"iets meer markt, eigen risico afhankelijk van inkomen omhoog, pakket iets kleiner"</position>
+				<position key="&quot;iets meer markt, eigen risico ongeveer als nu, verzekerd pakket ook bijna hetzelfde, eigen bijdrage iets hoger&quot;" value="45.0">"iets meer markt, eigen risico ongeveer als nu, verzekerd pakket ook bijna hetzelfde, eigen bijdrage iets hoger"</position>
+				<position key="Status Quo" value="50.0">Status Quo</position>
+				<position key="&quot;weinig marktwerking, premie  inkomensafhankelijker en eigen risico ook&quot;" value="70.0">"weinig marktwerking, premie  inkomensafhankelijker en eigen risico ook"</position>
+				<position key="&quot;marktwerking beeindigen, regionale organisatie, inkomensafhankelijke premie en eigen bijdrage&quot;" value="90.0">"marktwerking beeindigen, regionale organisatie, inkomensafhankelijke premie en eigen bijdrage"</position>
+				<position key="&quot;geen markt maar overheid, premie inkomensafhankelijk, lager eigen risico, preventie in pakket&quot;" value="100.0">"geen markt maar overheid, premie inkomensafhankelijk, lager eigen risico, preventie in pakket"</position>
+			</domain>
+		</issue>
+		<issue key="vreemd" name="vreemdelingenbeleid" ordering="5">
+			<domain discrete="false">
+				<position key="&quot;na 3 jaar automatisch vergunning; asielzoekers mogen leren en werken, huwelijksmigratie gemakkelijker;dubbele nationaliteit mogelijk; inburgeren in NL&quot;" value="0.0">"na 3 jaar automatisch vergunning; asielzoekers mogen leren en werken, huwelijksmigratie gemakkelijker;dubbele nationaliteit mogelijk; inburgeren in NL"</position>
+				<position key="inburgeren in NL en kostenloos; gezinshereniging versoepelen" value="10.0">inburgeren in NL en kostenloos; gezinshereniging versoepelen</position>
+				<position key="huwelijksmigratie niet moeilijker maken; asielzoekers mogen werken; pas later recht op sociale zekerheid; dubbele nationaliteit mag" value="20.0">huwelijksmigratie niet moeilijker maken; asielzoekers mogen werken; pas later recht op sociale zekerheid; dubbele nationaliteit mag</position>
+				<position key="humaner beleid inzake vluchtelingen; na 3 maanden leren en werken; inburgeren op eigen kosten" value="25.0">humaner beleid inzake vluchtelingen; na 3 maanden leren en werken; inburgeren op eigen kosten</position>
+				<position key="SQ" value="50.0">SQ</position>
+				<position key="inburgerexamen voorwaarde voor verblijfsvergunning; dubbele nationaliteit wel toestaan;  eisen huwelijksmigranten aanscherpen" value="55.0">inburgerexamen voorwaarde voor verblijfsvergunning; dubbele nationaliteit wel toestaan;  eisen huwelijksmigranten aanscherpen</position>
+				<position key="huwelijksmigratie beperken; inburgering op eigen kosten; sociale zekerheid na 10 jaar" value="80.0">huwelijksmigratie beperken; inburgering op eigen kosten; sociale zekerheid na 10 jaar</position>
+				<position key="geen immigranten uit islamitische landen; assimilatiecontracten;  illegaliteit strafbaar; geen dubbele nationaliteit; NL nationaliteit en uitkeringen na 10 jaar verblijf" value="100.0">geen immigranten uit islamitische landen; assimilatiecontracten;  illegaliteit strafbaar; geen dubbele nationaliteit; NL nationaliteit en uitkeringen na 10 jaar verblijf</position>
+			</domain>
+		</issue>
+		<issue key="duur" name="duurzaamheid" ordering="6">
+			<domain discrete="false">
+				<position key="kerncentrales blijven mits veilig; minder geld voor duurzame economie" value="0.0">kerncentrales blijven mits veilig; minder geld voor duurzame economie</position>
+				<position key="&quot;nieuwe kerncentrales,14% duurzame energie in 2020; minder subsidies;verduurzaming eigen verantwoordelijkheid bedrijven en burgers&quot;" value="30.0">"nieuwe kerncentrales,14% duurzame energie in 2020; minder subsidies;verduurzaming eigen verantwoordelijkheid bedrijven en burgers"</position>
+				<position key="SQ" value="50.0">SQ</position>
+				<position key="&quot;14% duurzame energie in 2020; biobransstoffen en warmtehergebruik, verduurzaming eigen verantwoordelijkheid bedrijfsleven en burgers&quot;" value="55.0">"14% duurzame energie in 2020; biobransstoffen en warmtehergebruik, verduurzaming eigen verantwoordelijkheid bedrijfsleven en burgers"</position>
+				<position key="&quot;1,5% per jaar extra duurzame energie; geen nieuwe kern- of kolencentrales, moratorium op megastallen; landbouw verduurzamen&quot;" value="65.0">"1,5% per jaar extra duurzame energie; geen nieuwe kern- of kolencentrales, moratorium op megastallen; landbouw verduurzamen"</position>
+				<position key="18% duurzame energie in 2020; afschaffing salderingsregeling kleinschalige opwekking" value="75.0">18% duurzame energie in 2020; afschaffing salderingsregeling kleinschalige opwekking</position>
+				<position key="20% duurzame energie in 2020; meer groene belastingen en heffingen op co2 uitstoot; geen nieuwe kerncentrales" value="90.0">20% duurzame energie in 2020; meer groene belastingen en heffingen op co2 uitstoot; geen nieuwe kerncentrales</position>
+				<position key="2020 20% schone energie 2050 100%; vergroening belastingstelsel; geen kern- en kolencentrales; verbod op megastallen; duurzame landbouw" value="100.0">2020 20% schone energie 2050 100%; vergroening belastingstelsel; geen kern- en kolencentrales; verbod op megastallen; duurzame landbouw</position>
+			</domain>
+		</issue>
+		<issue key="ontslag" name="ontslagrecht" ordering="7">
+			<domain discrete="false">
+				<position key="ontslagbescherming handhaven; ww niet door werkgevers betaald;ww duur niet verkorten; ambtenaren blijven beschermd; meer vaste contracten" value="0.0">ontslagbescherming handhaven; ww niet door werkgevers betaald;ww duur niet verkorten; ambtenaren blijven beschermd; meer vaste contracten</position>
+				<position key="ontslag via kantonrechter; helft ontslagvergoeding voor werk naar werk budget tbv bijscholing;duur ww handhaven" value="20.0">ontslag via kantonrechter; helft ontslagvergoeding voor werk naar werk budget tbv bijscholing;duur ww handhaven</position>
+				<position key="&quot;opzegtermijn verlengen tot max 1 jaar; bij kortere periode rest via ww, betaald door werkgever&quot;" value="40.0">"opzegtermijn verlengen tot max 1 jaar; bij kortere periode rest via ww, betaald door werkgever"</position>
+				<position key="Lenteakkoord" value="50.0">Lenteakkoord</position>
+				<position key="&quot;positie 80, maar duur ww max 18 maanden&quot;" value="55.0">"positie 80, maar duur ww max 18 maanden"</position>
+				<position key="maximale ww periode 1 jaar; verhoging ww uitkering; individueel scholingsbudget" value="70.0">maximale ww periode 1 jaar; verhoging ww uitkering; individueel scholingsbudget</position>
+				<position key="&quot;werkgever verantwoordelijk tijdens eerste half jaar; duale procedure afgeschaft, kantonrechter indien nodig achteraf; alle werknemersgelijk; recht op scholing&quot;" value="80.0">"werkgever verantwoordelijk tijdens eerste half jaar; duale procedure afgeschaft, kantonrechter indien nodig achteraf; alle werknemersgelijk; recht op scholing"</position>
+				<position key="&quot;ww korter en hoger, ontslag zonder kantonrechter, alle werknemers gelijk, vaste ontslagregels&quot;" value="100.0">"ww korter en hoger, ontslag zonder kantonrechter, alle werknemers gelijk, vaste ontslagregels"</position>
+			</domain>
+		</issue>
+		<issue key="Europa" name="Europa" ordering="8">
+			<domain discrete="false">
+				<position key="Verdere integratie en uitbreiding ESM" value="0.0">Verdere integratie en uitbreiding ESM</position>
+				<position key="eurobonds mogelijk; uitbreiding ESM" value="30.0">eurobonds mogelijk; uitbreiding ESM</position>
+				<position key="Status quo; huidig Europees beleid" value="50.0">Status quo; huidig Europees beleid</position>
+				<position key="geen euroobligaties geen federatieve organisatie en dereguleren" value="60.0">geen euroobligaties geen federatieve organisatie en dereguleren</position>
+				<position key="grotere effectiviteit samenwerking; minder Europa" value="80.0">grotere effectiviteit samenwerking; minder Europa</position>
+				<position key="Uittreden uit EU en uit euro" value="100.0">Uittreden uit EU en uit euro</position>
+			</domain>
+		</issue>
+		<issue key="belasting" name="belastingen" ordering="9">
+			<domain discrete="false">
+				<position key="&quot;topschijf van 65% vanaf 150000, winsten en vermogens meer belasten; vennootschapsbelasting met 5% omhoog&quot;" value="0.0">"topschijf van 65% vanaf 150000, winsten en vermogens meer belasten; vennootschapsbelasting met 5% omhoog"</position>
+				<position key="&quot;topschijf van 60% vanaf 150000, vermogensbelasting verhogen; vennootschapsbelasting met 0,5% verhogen&quot;" value="10.0">"topschijf van 60% vanaf 150000, vermogensbelasting verhogen; vennootschapsbelasting met 0,5% verhogen"</position>
+				<position key="&quot;topschijf van 60% vanaf 150000; box 3 tweede tarief van 1,6% boven 125.000 vermogen&quot;" value="20.0">"topschijf van 60% vanaf 150000; box 3 tweede tarief van 1,6% boven 125.000 vermogen"</position>
+				<position key="status quo" value="50.0">status quo</position>
+				<position key="verlaging 2de schijf inkomstenbelasting" value="55.0">verlaging 2de schijf inkomstenbelasting</position>
+				<position key="IB verlaging wegens btw verhoging ongedaan maken; arbeidskorting verhogen; winstbelasting verlagen" value="60.0">IB verlaging wegens btw verhoging ongedaan maken; arbeidskorting verhogen; winstbelasting verlagen</position>
+				<position key="vermindering aftrek hypotheekrente compenseren" value="75.0">vermindering aftrek hypotheekrente compenseren</position>
+				<position key="vlaktaks met topheffing" value="100.0">vlaktaks met topheffing</position>
+			</domain>
+		</issue>
+		<issue key="ontwikkeling" name="ontwikkelingssamenwerking" ordering="10">
+			<domain discrete="false">
+				<position key="geen ontwikkelingshulp" value="0.0">geen ontwikkelingshulp</position>
+				<position key="1% van het BNP" value="1.0">1% van het BNP</position>
+			</domain>
+		</issue>
+		<issue key="bezuinig" name="ombuigingen op collectieve uitgaven" ordering="11">
+			<domain discrete="false"></domain>
+		</issue>
+		<actor color="#24897B" key="SP" name="SP" ordering="1" power="15.0">
+			<actorIssueLink issueRef="hypotheek" position="90.0" power="0.464159" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="0.0" power="0.464159" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="10.0" power="0.464159" salience="0.9"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="100.0" power="0.464159" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="10.0" power="0.464159" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="65.0" power="0.464159" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="0.0" power="0.464159" salience="0.9"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="80.0" power="0.464159" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="0.0" power="0.464159" salience="0.85"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.8" power="0.464159" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="21.0" power="0.464159" salience="0.85"></actorIssueLink>
+		</actor>
+		<actor color="#E35ACB" key="PvdD" name="PvdD" ordering="2" power="2.0">
+			<actorIssueLink issueRef="hypotheek" position="70.0" power="0.237126" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="25.0" power="0.237126" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="40.0" power="0.237126" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="90.0" power="0.237126" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="30.0" power="0.237126" salience="0.2"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="100.0" power="0.237126" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="30.0" power="0.237126" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="70.0" power="0.237126" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="45.0" power="0.237126" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="1.0" power="0.237126" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="0.0" power="0.237126" salience="0.0"></actorIssueLink>
+		</actor>
+		<actor color="#389A20" key="GL" name="GL" ordering="3" power="3.0">
+			<actorIssueLink issueRef="hypotheek" position="80.0" power="0.271442" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="40.0" power="0.271442" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="75.0" power="0.271442" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="70.0" power="0.271442" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="0.0" power="0.271442" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="100.0" power="0.271442" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="70.0" power="0.271442" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="10.0" power="0.271442" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="10.0" power="0.271442" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.8" power="0.271442" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="22.7" power="0.271442" salience="0.7"></actorIssueLink>
+		</actor>
+		<actor color="#3423AD" key="PvdA" name="PvdA" ordering="4" power="39.0">
+			<actorIssueLink issueRef="hypotheek" position="75.0" power="0.63825" salience="0.85"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="40.0" power="0.63825" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="65.0" power="0.63825" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="90.0" power="0.63825" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="20.0" power="0.63825" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="75.0" power="0.63825" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="20.0" power="0.63825" salience="0.85"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="30.0" power="0.63825" salience="0.9"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="20.0" power="0.63825" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.7" power="0.63825" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="25.5" power="0.63825" salience="0.9"></actorIssueLink>
+		</actor>
+		<actor color="#ED127D" key="D66" name="D66" ordering="5" power="12.0">
+			<actorIssueLink issueRef="hypotheek" position="85.0" power="0.430887" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="60.0" power="0.430887" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="85.0" power="0.430887" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="20.0" power="0.430887" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="20.0" power="0.430887" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="90.0" power="0.430887" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="80.0" power="0.430887" salience="0.9"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="0.0" power="0.430887" salience="0.85"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="75.0" power="0.430887" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.7" power="0.430887" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="20.7" power="0.430887" salience="0.7"></actorIssueLink>
+		</actor>
+		<actor color="#7E3A6C" key="CU" name="CU" ordering="6" power="5.0">
+			<actorIssueLink issueRef="hypotheek" position="100.0" power="0.32183" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="50.0" power="0.32183" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="80.0" power="0.32183" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="30.0" power="0.32183" salience="0.45"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="25.0" power="0.32183" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="90.0" power="0.32183" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="40.0" power="0.32183" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="75.0" power="0.32183" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="55.0" power="0.32183" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.7" power="0.32183" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="16.200008" power="0.32183" salience="0.6"></actorIssueLink>
+		</actor>
+		<actor color="#085F00" key="CDA" name="CDA" ordering="7" power="13.0">
+			<actorIssueLink issueRef="hypotheek" position="10.0" power="0.442538" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="50.0" power="0.442538" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="90.0" power="0.442538" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="45.0" power="0.442538" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="55.0" power="0.442538" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="55.0" power="0.442538" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="55.0" power="0.442538" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="50.0" power="0.442538" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="100.0" power="0.442538" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.7" power="0.442538" salience="0.85"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="19.7" power="0.442538" salience="0.8"></actorIssueLink>
+		</actor>
+		<actor color="#BA88C9" key="VVD" name="VVD" ordering="8" power="41.0">
+			<actorIssueLink issueRef="hypotheek" position="0.0" power="0.648979" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="100.0" power="0.648979" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="100.0" power="0.648979" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="0.0" power="0.648979" salience="0.9"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="80.0" power="0.648979" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="30.0" power="0.648979" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="100.0" power="0.648979" salience="0.85"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="60.0" power="0.648979" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="60.0" power="0.648979" salience="0.9"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.25" power="0.648979" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="29.6" power="0.648979" salience="0.9"></actorIssueLink>
+		</actor>
+		<actor color="#4521F9" key="SGP" name="SGP" ordering="9" power="3.0">
+			<actorIssueLink issueRef="hypotheek" position="90.0" power="0.271442" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="50.0" power="0.271442" salience="0.3"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="90.0" power="0.271442" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="60.0" power="0.271442" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="65.0" power="0.271442" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="25.0" power="0.271442" salience="0.45"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="15.0" power="0.271442" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="80.0" power="0.271442" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="60.0" power="0.271442" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.6" power="0.271442" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="27.8" power="0.271442" salience="0.0"></actorIssueLink>
+		</actor>
+		<actor color="#DEBD83" key="PVV" name="PVV" ordering="10" power="15.0">
+			<actorIssueLink issueRef="hypotheek" position="0.0" power="0.464159" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="0.0" power="0.464159" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="0.0" power="0.464159" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="55.0" power="0.464159" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="100.0" power="0.464159" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="0.0" power="0.464159" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="10.0" power="0.464159" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="100.0" power="0.464159" salience="0.9"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="60.0" power="0.464159" salience="0.3"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.0" power="0.464159" salience="0.85"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="18.8" power="0.464159" salience="0.5"></actorIssueLink>
+		</actor>
+		<actor color="#46B305" key="50+" name="50+" ordering="11" power="3.0"></actor>
+	</dataset>
+	<dataset name="vvd verhoogde sal" tst="false" willingness="false">
+		<issue key="hypotheek" name="Hypotheekrenteaftrek" ordering="1">
+			<domain discrete="false">
+				<position key="Status quo plus verplichte aflossing voor nieuwe hypotheken" value="0.0">Status quo plus verplichte aflossing voor nieuwe hypotheken</position>
+				<position key="gelijk houden en verlagen via vlaktaks" value="10.0">gelijk houden en verlagen via vlaktaks</position>
+				<position key="geleidelijke afbouw in 30 jaar tot 30%; max geleidelijk afbouwen tot gem. huizenprijzen" value="75.0">geleidelijke afbouw in 30 jaar tot 30%; max geleidelijk afbouwen tot gem. huizenprijzen</position>
+				<position key="geleidelijke afbouw naar 30% in 25 jaar met max huizenprijzen" value="80.0">geleidelijke afbouw naar 30% in 25 jaar met max huizenprijzen</position>
+				<position key="naar 30% in 22 jaar" value="85.0">naar 30% in 22 jaar</position>
+				<position key="max 42% + max. 350000 in 10 jaar" value="90.0">max 42% + max. 350000 in 10 jaar</position>
+				<position key="&quot;Afbouw % in 17 jaar naar 30%; plus max 750000 tot 1017, daarna 500000&quot;" value="100.0">"Afbouw % in 17 jaar naar 30%; plus max 750000 tot 1017, daarna 500000"</position>
+			</domain>
+		</issue>
+		<issue key="huur" name="maatregelen rond huren" ordering="2">
+			<domain discrete="false">
+				<position key="Status quo (max huurverhogingen voor sociale sector)" value="0.0">Status quo (max huurverhogingen voor sociale sector)</position>
+				<position key="hogere huur voor hogere inkomens in sociale sector" value="25.0">hogere huur voor hogere inkomens in sociale sector</position>
+				<position key="beperkte huurverhoging boven inflatie" value="40.0">beperkte huurverhoging boven inflatie</position>
+				<position key="geleidelijk marktconform maar hogere huurtoeslag" value="50.0">geleidelijk marktconform maar hogere huurtoeslag</position>
+				<position key="meer marktconform met huurtoeslag" value="60.0">meer marktconform met huurtoeslag</position>
+				<position key="huren marktconform maken" value="100.0">huren marktconform maken</position>
+			</domain>
+		</issue>
+		<issue key="AOW" name="AOW leeftijd" ordering="3">
+			<domain discrete="false">
+				<position key="Status quo handhaven" value="0.0">Status quo handhaven</position>
+				<position key="tot 2020 gelijk daarna nader bekijken" value="10.0">tot 2020 gelijk daarna nader bekijken</position>
+				<position key="vanaf 2018 stapsgewijs in 2030 67 jaar plus na 45 jaar arbeid" value="40.0">vanaf 2018 stapsgewijs in 2030 67 jaar plus na 45 jaar arbeid</position>
+				<position key="in 2025 67 jaar plus flexibeler" value="65.0">in 2025 67 jaar plus flexibeler</position>
+				<position key="in 2023 67 jaar plus flexibeler en daarna koppelen aan levensverwachting" value="75.0">in 2023 67 jaar plus flexibeler en daarna koppelen aan levensverwachting</position>
+				<position key="in 2023 67 jaar daarna koppelen aan levensverwachting" value="80.0">in 2023 67 jaar daarna koppelen aan levensverwachting</position>
+				<position key="in 2021 67 jaar daarna koppelen aan levensverwachting plus flexibeler" value="85.0">in 2021 67 jaar daarna koppelen aan levensverwachting plus flexibeler</position>
+				<position key="in 2020 67 jaar daarna koppelen aan levensverwachting" value="90.0">in 2020 67 jaar daarna koppelen aan levensverwachting</position>
+				<position key="in 2018 67 jaar daarna koppelen aan levensverwachting" value="100.0">in 2018 67 jaar daarna koppelen aan levensverwachting</position>
+			</domain>
+		</issue>
+		<issue key="zorg" name="marktwerking zorg" ordering="4">
+			<domain discrete="false">
+				<position key="&quot;meer markt (privaat kapitaal), eigen risico en premie onafhankelijk van inkomen, eigen risico omhoog, verzekerd pakket kleiner &quot;" value="0.0">"meer markt (privaat kapitaal), eigen risico en premie onafhankelijk van inkomen, eigen risico omhoog, verzekerd pakket kleiner "</position>
+				<position key="&quot;meer markt (privaat kapitaal), eigen risico afhankelijk van inkomen omhoog, pakket iets kleiner &quot;" value="20.0">"meer markt (privaat kapitaal), eigen risico afhankelijk van inkomen omhoog, pakket iets kleiner "</position>
+				<position key="&quot;iets meer markt, eigen risico afhankelijk van inkomen omhoog, pakket iets kleiner&quot;" value="30.0">"iets meer markt, eigen risico afhankelijk van inkomen omhoog, pakket iets kleiner"</position>
+				<position key="&quot;iets meer markt, eigen risico ongeveer als nu, verzekerd pakket ook bijna hetzelfde, eigen bijdrage iets hoger&quot;" value="45.0">"iets meer markt, eigen risico ongeveer als nu, verzekerd pakket ook bijna hetzelfde, eigen bijdrage iets hoger"</position>
+				<position key="Status Quo" value="50.0">Status Quo</position>
+				<position key="&quot;weinig marktwerking, premie  inkomensafhankelijker en eigen risico ook&quot;" value="70.0">"weinig marktwerking, premie  inkomensafhankelijker en eigen risico ook"</position>
+				<position key="&quot;marktwerking beeindigen, regionale organisatie, inkomensafhankelijke premie en eigen bijdrage&quot;" value="90.0">"marktwerking beeindigen, regionale organisatie, inkomensafhankelijke premie en eigen bijdrage"</position>
+				<position key="&quot;geen markt maar overheid, premie inkomensafhankelijk, lager eigen risico, preventie in pakket&quot;" value="100.0">"geen markt maar overheid, premie inkomensafhankelijk, lager eigen risico, preventie in pakket"</position>
+			</domain>
+		</issue>
+		<issue key="vreemd" name="vreemdelingenbeleid" ordering="5">
+			<domain discrete="false">
+				<position key="&quot;na 3 jaar automatisch vergunning; asielzoekers mogen leren en werken, huwelijksmigratie gemakkelijker;dubbele nationaliteit mogelijk; inburgeren in NL&quot;" value="0.0">"na 3 jaar automatisch vergunning; asielzoekers mogen leren en werken, huwelijksmigratie gemakkelijker;dubbele nationaliteit mogelijk; inburgeren in NL"</position>
+				<position key="inburgeren in NL en kostenloos; gezinshereniging versoepelen" value="10.0">inburgeren in NL en kostenloos; gezinshereniging versoepelen</position>
+				<position key="huwelijksmigratie niet moeilijker maken; asielzoekers mogen werken; pas later recht op sociale zekerheid; dubbele nationaliteit mag" value="20.0">huwelijksmigratie niet moeilijker maken; asielzoekers mogen werken; pas later recht op sociale zekerheid; dubbele nationaliteit mag</position>
+				<position key="humaner beleid inzake vluchtelingen; na 3 maanden leren en werken; inburgeren op eigen kosten" value="25.0">humaner beleid inzake vluchtelingen; na 3 maanden leren en werken; inburgeren op eigen kosten</position>
+				<position key="SQ" value="50.0">SQ</position>
+				<position key="inburgerexamen voorwaarde voor verblijfsvergunning; dubbele nationaliteit wel toestaan;  eisen huwelijksmigranten aanscherpen" value="55.0">inburgerexamen voorwaarde voor verblijfsvergunning; dubbele nationaliteit wel toestaan;  eisen huwelijksmigranten aanscherpen</position>
+				<position key="huwelijksmigratie beperken; inburgering op eigen kosten; sociale zekerheid na 10 jaar" value="80.0">huwelijksmigratie beperken; inburgering op eigen kosten; sociale zekerheid na 10 jaar</position>
+				<position key="geen immigranten uit islamitische landen; assimilatiecontracten;  illegaliteit strafbaar; geen dubbele nationaliteit; NL nationaliteit en uitkeringen na 10 jaar verblijf" value="100.0">geen immigranten uit islamitische landen; assimilatiecontracten;  illegaliteit strafbaar; geen dubbele nationaliteit; NL nationaliteit en uitkeringen na 10 jaar verblijf</position>
+			</domain>
+		</issue>
+		<issue key="duur" name="duurzaamheid" ordering="6">
+			<domain discrete="false">
+				<position key="kerncentrales blijven mits veilig; minder geld voor duurzame economie" value="0.0">kerncentrales blijven mits veilig; minder geld voor duurzame economie</position>
+				<position key="&quot;nieuwe kerncentrales,14% duurzame energie in 2020; minder subsidies;verduurzaming eigen verantwoordelijkheid bedrijven en burgers&quot;" value="30.0">"nieuwe kerncentrales,14% duurzame energie in 2020; minder subsidies;verduurzaming eigen verantwoordelijkheid bedrijven en burgers"</position>
+				<position key="SQ" value="50.0">SQ</position>
+				<position key="&quot;14% duurzame energie in 2020; biobransstoffen en warmtehergebruik, verduurzaming eigen verantwoordelijkheid bedrijfsleven en burgers&quot;" value="55.0">"14% duurzame energie in 2020; biobransstoffen en warmtehergebruik, verduurzaming eigen verantwoordelijkheid bedrijfsleven en burgers"</position>
+				<position key="&quot;1,5% per jaar extra duurzame energie; geen nieuwe kern- of kolencentrales, moratorium op megastallen; landbouw verduurzamen&quot;" value="65.0">"1,5% per jaar extra duurzame energie; geen nieuwe kern- of kolencentrales, moratorium op megastallen; landbouw verduurzamen"</position>
+				<position key="18% duurzame energie in 2020; afschaffing salderingsregeling kleinschalige opwekking" value="75.0">18% duurzame energie in 2020; afschaffing salderingsregeling kleinschalige opwekking</position>
+				<position key="20% duurzame energie in 2020; meer groene belastingen en heffingen op co2 uitstoot; geen nieuwe kerncentrales" value="90.0">20% duurzame energie in 2020; meer groene belastingen en heffingen op co2 uitstoot; geen nieuwe kerncentrales</position>
+				<position key="2020 20% schone energie 2050 100%; vergroening belastingstelsel; geen kern- en kolencentrales; verbod op megastallen; duurzame landbouw" value="100.0">2020 20% schone energie 2050 100%; vergroening belastingstelsel; geen kern- en kolencentrales; verbod op megastallen; duurzame landbouw</position>
+			</domain>
+		</issue>
+		<issue key="ontslag" name="ontslagrecht" ordering="7">
+			<domain discrete="false">
+				<position key="ontslagbescherming handhaven; ww niet door werkgevers betaald;ww duur niet verkorten; ambtenaren blijven beschermd; meer vaste contracten" value="0.0">ontslagbescherming handhaven; ww niet door werkgevers betaald;ww duur niet verkorten; ambtenaren blijven beschermd; meer vaste contracten</position>
+				<position key="ontslag via kantonrechter; helft ontslagvergoeding voor werk naar werk budget tbv bijscholing;duur ww handhaven" value="20.0">ontslag via kantonrechter; helft ontslagvergoeding voor werk naar werk budget tbv bijscholing;duur ww handhaven</position>
+				<position key="&quot;opzegtermijn verlengen tot max 1 jaar; bij kortere periode rest via ww, betaald door werkgever&quot;" value="40.0">"opzegtermijn verlengen tot max 1 jaar; bij kortere periode rest via ww, betaald door werkgever"</position>
+				<position key="Lenteakkoord" value="50.0">Lenteakkoord</position>
+				<position key="&quot;positie 80, maar duur ww max 18 maanden&quot;" value="55.0">"positie 80, maar duur ww max 18 maanden"</position>
+				<position key="maximale ww periode 1 jaar; verhoging ww uitkering; individueel scholingsbudget" value="70.0">maximale ww periode 1 jaar; verhoging ww uitkering; individueel scholingsbudget</position>
+				<position key="&quot;werkgever verantwoordelijk tijdens eerste half jaar; duale procedure afgeschaft, kantonrechter indien nodig achteraf; alle werknemersgelijk; recht op scholing&quot;" value="80.0">"werkgever verantwoordelijk tijdens eerste half jaar; duale procedure afgeschaft, kantonrechter indien nodig achteraf; alle werknemersgelijk; recht op scholing"</position>
+				<position key="&quot;ww korter en hoger, ontslag zonder kantonrechter, alle werknemers gelijk, vaste ontslagregels&quot;" value="100.0">"ww korter en hoger, ontslag zonder kantonrechter, alle werknemers gelijk, vaste ontslagregels"</position>
+			</domain>
+		</issue>
+		<issue key="Europa" name="Europa" ordering="8">
+			<domain discrete="false">
+				<position key="Verdere integratie en uitbreiding ESM" value="0.0">Verdere integratie en uitbreiding ESM</position>
+				<position key="eurobonds mogelijk; uitbreiding ESM" value="30.0">eurobonds mogelijk; uitbreiding ESM</position>
+				<position key="Status quo; huidig Europees beleid" value="50.0">Status quo; huidig Europees beleid</position>
+				<position key="geen euroobligaties geen federatieve organisatie en dereguleren" value="60.0">geen euroobligaties geen federatieve organisatie en dereguleren</position>
+				<position key="grotere effectiviteit samenwerking; minder Europa" value="80.0">grotere effectiviteit samenwerking; minder Europa</position>
+				<position key="Uittreden uit EU en uit euro" value="100.0">Uittreden uit EU en uit euro</position>
+			</domain>
+		</issue>
+		<issue key="belasting" name="belastingen" ordering="9">
+			<domain discrete="false">
+				<position key="&quot;topschijf van 65% vanaf 150000, winsten en vermogens meer belasten; vennootschapsbelasting met 5% omhoog&quot;" value="0.0">"topschijf van 65% vanaf 150000, winsten en vermogens meer belasten; vennootschapsbelasting met 5% omhoog"</position>
+				<position key="&quot;topschijf van 60% vanaf 150000, vermogensbelasting verhogen; vennootschapsbelasting met 0,5% verhogen&quot;" value="10.0">"topschijf van 60% vanaf 150000, vermogensbelasting verhogen; vennootschapsbelasting met 0,5% verhogen"</position>
+				<position key="&quot;topschijf van 60% vanaf 150000; box 3 tweede tarief van 1,6% boven 125.000 vermogen&quot;" value="20.0">"topschijf van 60% vanaf 150000; box 3 tweede tarief van 1,6% boven 125.000 vermogen"</position>
+				<position key="status quo" value="50.0">status quo</position>
+				<position key="verlaging 2de schijf inkomstenbelasting" value="55.0">verlaging 2de schijf inkomstenbelasting</position>
+				<position key="IB verlaging wegens btw verhoging ongedaan maken; arbeidskorting verhogen; winstbelasting verlagen" value="60.0">IB verlaging wegens btw verhoging ongedaan maken; arbeidskorting verhogen; winstbelasting verlagen</position>
+				<position key="vermindering aftrek hypotheekrente compenseren" value="75.0">vermindering aftrek hypotheekrente compenseren</position>
+				<position key="vlaktaks met topheffing" value="100.0">vlaktaks met topheffing</position>
+			</domain>
+		</issue>
+		<issue key="ontwikkeling" name="ontwikkelingssamenwerking" ordering="10">
+			<domain discrete="false">
+				<position key="geen ontwikkelingshulp" value="0.0">geen ontwikkelingshulp</position>
+				<position key="1% van het BNP" value="1.0">1% van het BNP</position>
+			</domain>
+		</issue>
+		<issue key="bezuinig" name="ombuigingen op collectieve uitgaven" ordering="11">
+			<domain discrete="false"></domain>
+		</issue>
+		<actor color="#24897B" key="SP" name="SP" ordering="1" power="15.0">
+			<actorIssueLink issueRef="hypotheek" position="90.0" power="0.464159" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="0.0" power="0.464159" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="10.0" power="0.464159" salience="0.9"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="100.0" power="0.464159" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="10.0" power="0.464159" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="65.0" power="0.464159" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="0.0" power="0.464159" salience="0.9"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="80.0" power="0.464159" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="0.0" power="0.464159" salience="0.85"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.8" power="0.464159" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="21.0" power="0.464159" salience="0.85"></actorIssueLink>
+		</actor>
+		<actor color="#E35ACB" key="PvdD" name="PvdD" ordering="2" power="2.0">
+			<actorIssueLink issueRef="hypotheek" position="70.0" power="0.237126" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="25.0" power="0.237126" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="40.0" power="0.237126" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="90.0" power="0.237126" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="30.0" power="0.237126" salience="0.2"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="100.0" power="0.237126" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="30.0" power="0.237126" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="70.0" power="0.237126" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="45.0" power="0.237126" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="1.0" power="0.237126" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="0.0" power="0.237126" salience="0.0"></actorIssueLink>
+		</actor>
+		<actor color="#389A20" key="GL" name="GL" ordering="3" power="3.0">
+			<actorIssueLink issueRef="hypotheek" position="80.0" power="0.271442" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="40.0" power="0.271442" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="75.0" power="0.271442" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="70.0" power="0.271442" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="0.0" power="0.271442" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="100.0" power="0.271442" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="70.0" power="0.271442" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="10.0" power="0.271442" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="10.0" power="0.271442" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.8" power="0.271442" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="22.7" power="0.271442" salience="0.7"></actorIssueLink>
+		</actor>
+		<actor color="#3423AD" key="PvdA" name="PvdA" ordering="4" power="39.0">
+			<actorIssueLink issueRef="hypotheek" position="75.0" power="0.63825" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="40.0" power="0.63825" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="65.0" power="0.63825" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="90.0" power="0.63825" salience="0.9"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="20.0" power="0.63825" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="75.0" power="0.63825" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="20.0" power="0.63825" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="30.0" power="0.63825" salience="0.85"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="20.0" power="0.63825" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.7" power="0.63825" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="25.5" power="0.63825" salience="0.85"></actorIssueLink>
+		</actor>
+		<actor color="#ED127D" key="D66" name="D66" ordering="5" power="12.0">
+			<actorIssueLink issueRef="hypotheek" position="85.0" power="0.430887" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="60.0" power="0.430887" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="85.0" power="0.430887" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="20.0" power="0.430887" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="20.0" power="0.430887" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="90.0" power="0.430887" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="80.0" power="0.430887" salience="0.9"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="0.0" power="0.430887" salience="0.85"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="75.0" power="0.430887" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.7" power="0.430887" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="20.7" power="0.430887" salience="0.7"></actorIssueLink>
+		</actor>
+		<actor color="#7E3A6C" key="CU" name="CU" ordering="6" power="5.0">
+			<actorIssueLink issueRef="hypotheek" position="100.0" power="0.32183" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="50.0" power="0.32183" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="80.0" power="0.32183" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="30.0" power="0.32183" salience="0.45"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="25.0" power="0.32183" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="90.0" power="0.32183" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="40.0" power="0.32183" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="75.0" power="0.32183" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="55.0" power="0.32183" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.7" power="0.32183" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="16.200008" power="0.32183" salience="0.6"></actorIssueLink>
+		</actor>
+		<actor color="#085F00" key="CDA" name="CDA" ordering="7" power="13.0">
+			<actorIssueLink issueRef="hypotheek" position="10.0" power="0.442538" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="50.0" power="0.442538" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="90.0" power="0.442538" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="45.0" power="0.442538" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="55.0" power="0.442538" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="55.0" power="0.442538" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="55.0" power="0.442538" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="50.0" power="0.442538" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="100.0" power="0.442538" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.7" power="0.442538" salience="0.85"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="19.7" power="0.442538" salience="0.8"></actorIssueLink>
+		</actor>
+		<actor color="#BA88C9" key="VVD" name="VVD" ordering="8" power="41.0">
+			<actorIssueLink issueRef="hypotheek" position="0.0" power="0.648979" salience="1.0"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="100.0" power="0.648979" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="100.0" power="0.648979" salience="0.85"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="0.0" power="0.648979" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="80.0" power="0.648979" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="30.0" power="0.648979" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="100.0" power="0.648979" salience="0.9"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="60.0" power="0.648979" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="60.0" power="0.648979" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.25" power="0.648979" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="29.6" power="0.648979" salience="0.95"></actorIssueLink>
+		</actor>
+		<actor color="#4521F9" key="SGP" name="SGP" ordering="9" power="3.0">
+			<actorIssueLink issueRef="hypotheek" position="90.0" power="0.271442" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="50.0" power="0.271442" salience="0.3"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="90.0" power="0.271442" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="60.0" power="0.271442" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="65.0" power="0.271442" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="25.0" power="0.271442" salience="0.45"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="15.0" power="0.271442" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="80.0" power="0.271442" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="60.0" power="0.271442" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.6" power="0.271442" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="27.8" power="0.271442" salience="0.0"></actorIssueLink>
+		</actor>
+		<actor color="#DEBD83" key="PVV" name="PVV" ordering="10" power="15.0">
+			<actorIssueLink issueRef="hypotheek" position="0.0" power="0.464159" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="0.0" power="0.464159" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="0.0" power="0.464159" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="55.0" power="0.464159" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="100.0" power="0.464159" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="0.0" power="0.464159" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="10.0" power="0.464159" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="100.0" power="0.464159" salience="0.9"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="60.0" power="0.464159" salience="0.3"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.0" power="0.464159" salience="0.85"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="18.8" power="0.464159" salience="0.5"></actorIssueLink>
+		</actor>
+		<actor color="#46B305" key="50+" name="50+" ordering="11" power="3.0"></actor>
+	</dataset>
+	<dataset name="vvd-pvda verhoogde sal" tst="false" willingness="false">
+		<issue key="hypotheek" name="Hypotheekrenteaftrek" ordering="1">
+			<domain discrete="false">
+				<position key="Status quo plus verplichte aflossing voor nieuwe hypotheken" value="0.0">Status quo plus verplichte aflossing voor nieuwe hypotheken</position>
+				<position key="gelijk houden en verlagen via vlaktaks" value="10.0">gelijk houden en verlagen via vlaktaks</position>
+				<position key="geleidelijke afbouw in 30 jaar tot 30%; max geleidelijk afbouwen tot gem. huizenprijzen" value="75.0">geleidelijke afbouw in 30 jaar tot 30%; max geleidelijk afbouwen tot gem. huizenprijzen</position>
+				<position key="geleidelijke afbouw naar 30% in 25 jaar met max huizenprijzen" value="80.0">geleidelijke afbouw naar 30% in 25 jaar met max huizenprijzen</position>
+				<position key="naar 30% in 22 jaar" value="85.0">naar 30% in 22 jaar</position>
+				<position key="max 42% + max. 350000 in 10 jaar" value="90.0">max 42% + max. 350000 in 10 jaar</position>
+				<position key="&quot;Afbouw % in 17 jaar naar 30%; plus max 750000 tot 1017, daarna 500000&quot;" value="100.0">"Afbouw % in 17 jaar naar 30%; plus max 750000 tot 1017, daarna 500000"</position>
+			</domain>
+		</issue>
+		<issue key="huur" name="maatregelen rond huren" ordering="2">
+			<domain discrete="false">
+				<position key="Status quo (max huurverhogingen voor sociale sector)" value="0.0">Status quo (max huurverhogingen voor sociale sector)</position>
+				<position key="hogere huur voor hogere inkomens in sociale sector" value="25.0">hogere huur voor hogere inkomens in sociale sector</position>
+				<position key="beperkte huurverhoging boven inflatie" value="40.0">beperkte huurverhoging boven inflatie</position>
+				<position key="geleidelijk marktconform maar hogere huurtoeslag" value="50.0">geleidelijk marktconform maar hogere huurtoeslag</position>
+				<position key="meer marktconform met huurtoeslag" value="60.0">meer marktconform met huurtoeslag</position>
+				<position key="huren marktconform maken" value="100.0">huren marktconform maken</position>
+			</domain>
+		</issue>
+		<issue key="AOW" name="AOW leeftijd" ordering="3">
+			<domain discrete="false">
+				<position key="Status quo handhaven" value="0.0">Status quo handhaven</position>
+				<position key="tot 2020 gelijk daarna nader bekijken" value="10.0">tot 2020 gelijk daarna nader bekijken</position>
+				<position key="vanaf 2018 stapsgewijs in 2030 67 jaar plus na 45 jaar arbeid" value="40.0">vanaf 2018 stapsgewijs in 2030 67 jaar plus na 45 jaar arbeid</position>
+				<position key="in 2025 67 jaar plus flexibeler" value="65.0">in 2025 67 jaar plus flexibeler</position>
+				<position key="in 2023 67 jaar plus flexibeler en daarna koppelen aan levensverwachting" value="75.0">in 2023 67 jaar plus flexibeler en daarna koppelen aan levensverwachting</position>
+				<position key="in 2023 67 jaar daarna koppelen aan levensverwachting" value="80.0">in 2023 67 jaar daarna koppelen aan levensverwachting</position>
+				<position key="in 2021 67 jaar daarna koppelen aan levensverwachting plus flexibeler" value="85.0">in 2021 67 jaar daarna koppelen aan levensverwachting plus flexibeler</position>
+				<position key="in 2020 67 jaar daarna koppelen aan levensverwachting" value="90.0">in 2020 67 jaar daarna koppelen aan levensverwachting</position>
+				<position key="in 2018 67 jaar daarna koppelen aan levensverwachting" value="100.0">in 2018 67 jaar daarna koppelen aan levensverwachting</position>
+			</domain>
+		</issue>
+		<issue key="zorg" name="marktwerking zorg" ordering="4">
+			<domain discrete="false">
+				<position key="&quot;meer markt (privaat kapitaal), eigen risico en premie onafhankelijk van inkomen, eigen risico omhoog, verzekerd pakket kleiner &quot;" value="0.0">"meer markt (privaat kapitaal), eigen risico en premie onafhankelijk van inkomen, eigen risico omhoog, verzekerd pakket kleiner "</position>
+				<position key="&quot;meer markt (privaat kapitaal), eigen risico afhankelijk van inkomen omhoog, pakket iets kleiner &quot;" value="20.0">"meer markt (privaat kapitaal), eigen risico afhankelijk van inkomen omhoog, pakket iets kleiner "</position>
+				<position key="&quot;iets meer markt, eigen risico afhankelijk van inkomen omhoog, pakket iets kleiner&quot;" value="30.0">"iets meer markt, eigen risico afhankelijk van inkomen omhoog, pakket iets kleiner"</position>
+				<position key="&quot;iets meer markt, eigen risico ongeveer als nu, verzekerd pakket ook bijna hetzelfde, eigen bijdrage iets hoger&quot;" value="45.0">"iets meer markt, eigen risico ongeveer als nu, verzekerd pakket ook bijna hetzelfde, eigen bijdrage iets hoger"</position>
+				<position key="Status Quo" value="50.0">Status Quo</position>
+				<position key="&quot;weinig marktwerking, premie  inkomensafhankelijker en eigen risico ook&quot;" value="70.0">"weinig marktwerking, premie  inkomensafhankelijker en eigen risico ook"</position>
+				<position key="&quot;marktwerking beeindigen, regionale organisatie, inkomensafhankelijke premie en eigen bijdrage&quot;" value="90.0">"marktwerking beeindigen, regionale organisatie, inkomensafhankelijke premie en eigen bijdrage"</position>
+				<position key="&quot;geen markt maar overheid, premie inkomensafhankelijk, lager eigen risico, preventie in pakket&quot;" value="100.0">"geen markt maar overheid, premie inkomensafhankelijk, lager eigen risico, preventie in pakket"</position>
+			</domain>
+		</issue>
+		<issue key="vreemd" name="vreemdelingenbeleid" ordering="5">
+			<domain discrete="false">
+				<position key="&quot;na 3 jaar automatisch vergunning; asielzoekers mogen leren en werken, huwelijksmigratie gemakkelijker;dubbele nationaliteit mogelijk; inburgeren in NL&quot;" value="0.0">"na 3 jaar automatisch vergunning; asielzoekers mogen leren en werken, huwelijksmigratie gemakkelijker;dubbele nationaliteit mogelijk; inburgeren in NL"</position>
+				<position key="inburgeren in NL en kostenloos; gezinshereniging versoepelen" value="10.0">inburgeren in NL en kostenloos; gezinshereniging versoepelen</position>
+				<position key="huwelijksmigratie niet moeilijker maken; asielzoekers mogen werken; pas later recht op sociale zekerheid; dubbele nationaliteit mag" value="20.0">huwelijksmigratie niet moeilijker maken; asielzoekers mogen werken; pas later recht op sociale zekerheid; dubbele nationaliteit mag</position>
+				<position key="humaner beleid inzake vluchtelingen; na 3 maanden leren en werken; inburgeren op eigen kosten" value="25.0">humaner beleid inzake vluchtelingen; na 3 maanden leren en werken; inburgeren op eigen kosten</position>
+				<position key="SQ" value="50.0">SQ</position>
+				<position key="inburgerexamen voorwaarde voor verblijfsvergunning; dubbele nationaliteit wel toestaan;  eisen huwelijksmigranten aanscherpen" value="55.0">inburgerexamen voorwaarde voor verblijfsvergunning; dubbele nationaliteit wel toestaan;  eisen huwelijksmigranten aanscherpen</position>
+				<position key="huwelijksmigratie beperken; inburgering op eigen kosten; sociale zekerheid na 10 jaar" value="80.0">huwelijksmigratie beperken; inburgering op eigen kosten; sociale zekerheid na 10 jaar</position>
+				<position key="geen immigranten uit islamitische landen; assimilatiecontracten;  illegaliteit strafbaar; geen dubbele nationaliteit; NL nationaliteit en uitkeringen na 10 jaar verblijf" value="100.0">geen immigranten uit islamitische landen; assimilatiecontracten;  illegaliteit strafbaar; geen dubbele nationaliteit; NL nationaliteit en uitkeringen na 10 jaar verblijf</position>
+			</domain>
+		</issue>
+		<issue key="duur" name="duurzaamheid" ordering="6">
+			<domain discrete="false">
+				<position key="kerncentrales blijven mits veilig; minder geld voor duurzame economie" value="0.0">kerncentrales blijven mits veilig; minder geld voor duurzame economie</position>
+				<position key="&quot;nieuwe kerncentrales,14% duurzame energie in 2020; minder subsidies;verduurzaming eigen verantwoordelijkheid bedrijven en burgers&quot;" value="30.0">"nieuwe kerncentrales,14% duurzame energie in 2020; minder subsidies;verduurzaming eigen verantwoordelijkheid bedrijven en burgers"</position>
+				<position key="SQ" value="50.0">SQ</position>
+				<position key="&quot;14% duurzame energie in 2020; biobransstoffen en warmtehergebruik, verduurzaming eigen verantwoordelijkheid bedrijfsleven en burgers&quot;" value="55.0">"14% duurzame energie in 2020; biobransstoffen en warmtehergebruik, verduurzaming eigen verantwoordelijkheid bedrijfsleven en burgers"</position>
+				<position key="&quot;1,5% per jaar extra duurzame energie; geen nieuwe kern- of kolencentrales, moratorium op megastallen; landbouw verduurzamen&quot;" value="65.0">"1,5% per jaar extra duurzame energie; geen nieuwe kern- of kolencentrales, moratorium op megastallen; landbouw verduurzamen"</position>
+				<position key="18% duurzame energie in 2020; afschaffing salderingsregeling kleinschalige opwekking" value="75.0">18% duurzame energie in 2020; afschaffing salderingsregeling kleinschalige opwekking</position>
+				<position key="20% duurzame energie in 2020; meer groene belastingen en heffingen op co2 uitstoot; geen nieuwe kerncentrales" value="90.0">20% duurzame energie in 2020; meer groene belastingen en heffingen op co2 uitstoot; geen nieuwe kerncentrales</position>
+				<position key="2020 20% schone energie 2050 100%; vergroening belastingstelsel; geen kern- en kolencentrales; verbod op megastallen; duurzame landbouw" value="100.0">2020 20% schone energie 2050 100%; vergroening belastingstelsel; geen kern- en kolencentrales; verbod op megastallen; duurzame landbouw</position>
+			</domain>
+		</issue>
+		<issue key="ontslag" name="ontslagrecht" ordering="7">
+			<domain discrete="false">
+				<position key="ontslagbescherming handhaven; ww niet door werkgevers betaald;ww duur niet verkorten; ambtenaren blijven beschermd; meer vaste contracten" value="0.0">ontslagbescherming handhaven; ww niet door werkgevers betaald;ww duur niet verkorten; ambtenaren blijven beschermd; meer vaste contracten</position>
+				<position key="ontslag via kantonrechter; helft ontslagvergoeding voor werk naar werk budget tbv bijscholing;duur ww handhaven" value="20.0">ontslag via kantonrechter; helft ontslagvergoeding voor werk naar werk budget tbv bijscholing;duur ww handhaven</position>
+				<position key="&quot;opzegtermijn verlengen tot max 1 jaar; bij kortere periode rest via ww, betaald door werkgever&quot;" value="40.0">"opzegtermijn verlengen tot max 1 jaar; bij kortere periode rest via ww, betaald door werkgever"</position>
+				<position key="Lenteakkoord" value="50.0">Lenteakkoord</position>
+				<position key="&quot;positie 80, maar duur ww max 18 maanden&quot;" value="55.0">"positie 80, maar duur ww max 18 maanden"</position>
+				<position key="maximale ww periode 1 jaar; verhoging ww uitkering; individueel scholingsbudget" value="70.0">maximale ww periode 1 jaar; verhoging ww uitkering; individueel scholingsbudget</position>
+				<position key="&quot;werkgever verantwoordelijk tijdens eerste half jaar; duale procedure afgeschaft, kantonrechter indien nodig achteraf; alle werknemersgelijk; recht op scholing&quot;" value="80.0">"werkgever verantwoordelijk tijdens eerste half jaar; duale procedure afgeschaft, kantonrechter indien nodig achteraf; alle werknemersgelijk; recht op scholing"</position>
+				<position key="&quot;ww korter en hoger, ontslag zonder kantonrechter, alle werknemers gelijk, vaste ontslagregels&quot;" value="100.0">"ww korter en hoger, ontslag zonder kantonrechter, alle werknemers gelijk, vaste ontslagregels"</position>
+			</domain>
+		</issue>
+		<issue key="Europa" name="Europa" ordering="8">
+			<domain discrete="false">
+				<position key="Verdere integratie en uitbreiding ESM" value="0.0">Verdere integratie en uitbreiding ESM</position>
+				<position key="eurobonds mogelijk; uitbreiding ESM" value="30.0">eurobonds mogelijk; uitbreiding ESM</position>
+				<position key="Status quo; huidig Europees beleid" value="50.0">Status quo; huidig Europees beleid</position>
+				<position key="geen euroobligaties geen federatieve organisatie en dereguleren" value="60.0">geen euroobligaties geen federatieve organisatie en dereguleren</position>
+				<position key="grotere effectiviteit samenwerking; minder Europa" value="80.0">grotere effectiviteit samenwerking; minder Europa</position>
+				<position key="Uittreden uit EU en uit euro" value="100.0">Uittreden uit EU en uit euro</position>
+			</domain>
+		</issue>
+		<issue key="belasting" name="belastingen" ordering="9">
+			<domain discrete="false">
+				<position key="&quot;topschijf van 65% vanaf 150000, winsten en vermogens meer belasten; vennootschapsbelasting met 5% omhoog&quot;" value="0.0">"topschijf van 65% vanaf 150000, winsten en vermogens meer belasten; vennootschapsbelasting met 5% omhoog"</position>
+				<position key="&quot;topschijf van 60% vanaf 150000, vermogensbelasting verhogen; vennootschapsbelasting met 0,5% verhogen&quot;" value="10.0">"topschijf van 60% vanaf 150000, vermogensbelasting verhogen; vennootschapsbelasting met 0,5% verhogen"</position>
+				<position key="&quot;topschijf van 60% vanaf 150000; box 3 tweede tarief van 1,6% boven 125.000 vermogen&quot;" value="20.0">"topschijf van 60% vanaf 150000; box 3 tweede tarief van 1,6% boven 125.000 vermogen"</position>
+				<position key="status quo" value="50.0">status quo</position>
+				<position key="verlaging 2de schijf inkomstenbelasting" value="55.0">verlaging 2de schijf inkomstenbelasting</position>
+				<position key="IB verlaging wegens btw verhoging ongedaan maken; arbeidskorting verhogen; winstbelasting verlagen" value="60.0">IB verlaging wegens btw verhoging ongedaan maken; arbeidskorting verhogen; winstbelasting verlagen</position>
+				<position key="vermindering aftrek hypotheekrente compenseren" value="75.0">vermindering aftrek hypotheekrente compenseren</position>
+				<position key="vlaktaks met topheffing" value="100.0">vlaktaks met topheffing</position>
+			</domain>
+		</issue>
+		<issue key="ontwikkeling" name="ontwikkelingssamenwerking" ordering="10">
+			<domain discrete="false">
+				<position key="geen ontwikkelingshulp" value="0.0">geen ontwikkelingshulp</position>
+				<position key="1% van het BNP" value="1.0">1% van het BNP</position>
+			</domain>
+		</issue>
+		<issue key="bezuinig" name="ombuigingen op collectieve uitgaven" ordering="11">
+			<domain discrete="false"></domain>
+		</issue>
+		<actor color="#24897B" key="SP" name="SP" ordering="1" power="15.0">
+			<actorIssueLink issueRef="hypotheek" position="90.0" power="0.464159" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="0.0" power="0.464159" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="10.0" power="0.464159" salience="0.9"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="100.0" power="0.464159" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="10.0" power="0.464159" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="65.0" power="0.464159" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="0.0" power="0.464159" salience="0.9"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="80.0" power="0.464159" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="0.0" power="0.464159" salience="0.85"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.8" power="0.464159" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="21.0" power="0.464159" salience="0.85"></actorIssueLink>
+		</actor>
+		<actor color="#E35ACB" key="PvdD" name="PvdD" ordering="2" power="2.0">
+			<actorIssueLink issueRef="hypotheek" position="70.0" power="0.237126" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="25.0" power="0.237126" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="40.0" power="0.237126" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="90.0" power="0.237126" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="30.0" power="0.237126" salience="0.2"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="100.0" power="0.237126" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="30.0" power="0.237126" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="70.0" power="0.237126" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="45.0" power="0.237126" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="1.0" power="0.237126" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="0.0" power="0.237126" salience="0.0"></actorIssueLink>
+		</actor>
+		<actor color="#389A20" key="GL" name="GL" ordering="3" power="3.0">
+			<actorIssueLink issueRef="hypotheek" position="80.0" power="0.271442" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="40.0" power="0.271442" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="75.0" power="0.271442" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="70.0" power="0.271442" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="0.0" power="0.271442" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="100.0" power="0.271442" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="70.0" power="0.271442" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="10.0" power="0.271442" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="10.0" power="0.271442" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.8" power="0.271442" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="22.7" power="0.271442" salience="0.7"></actorIssueLink>
+		</actor>
+		<actor color="#3423AD" key="PvdA" name="PvdA" ordering="4" power="39.0">
+			<actorIssueLink issueRef="hypotheek" position="75.0" power="0.63825" salience="0.85"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="40.0" power="0.63825" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="65.0" power="0.63825" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="90.0" power="0.63825" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="20.0" power="0.63825" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="75.0" power="0.63825" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="20.0" power="0.63825" salience="0.85"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="30.0" power="0.63825" salience="0.9"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="20.0" power="0.63825" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.7" power="0.63825" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="25.5" power="0.63825" salience="0.9"></actorIssueLink>
+		</actor>
+		<actor color="#ED127D" key="D66" name="D66" ordering="5" power="12.0">
+			<actorIssueLink issueRef="hypotheek" position="85.0" power="0.430887" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="60.0" power="0.430887" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="85.0" power="0.430887" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="20.0" power="0.430887" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="20.0" power="0.430887" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="90.0" power="0.430887" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="80.0" power="0.430887" salience="0.9"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="0.0" power="0.430887" salience="0.85"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="75.0" power="0.430887" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.7" power="0.430887" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="20.7" power="0.430887" salience="0.7"></actorIssueLink>
+		</actor>
+		<actor color="#7E3A6C" key="CU" name="CU" ordering="6" power="5.0">
+			<actorIssueLink issueRef="hypotheek" position="100.0" power="0.32183" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="50.0" power="0.32183" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="80.0" power="0.32183" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="30.0" power="0.32183" salience="0.45"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="25.0" power="0.32183" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="90.0" power="0.32183" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="40.0" power="0.32183" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="75.0" power="0.32183" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="55.0" power="0.32183" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.7" power="0.32183" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="16.200008" power="0.32183" salience="0.6"></actorIssueLink>
+		</actor>
+		<actor color="#085F00" key="CDA" name="CDA" ordering="7" power="13.0">
+			<actorIssueLink issueRef="hypotheek" position="10.0" power="0.442538" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="50.0" power="0.442538" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="90.0" power="0.442538" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="45.0" power="0.442538" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="55.0" power="0.442538" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="55.0" power="0.442538" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="55.0" power="0.442538" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="50.0" power="0.442538" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="100.0" power="0.442538" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.7" power="0.442538" salience="0.85"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="19.7" power="0.442538" salience="0.8"></actorIssueLink>
+		</actor>
+		<actor color="#BA88C9" key="VVD" name="VVD" ordering="8" power="41.0">
+			<actorIssueLink issueRef="hypotheek" position="0.0" power="0.648979" salience="1.0"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="100.0" power="0.648979" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="100.0" power="0.648979" salience="0.85"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="0.0" power="0.648979" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="80.0" power="0.648979" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="30.0" power="0.648979" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="100.0" power="0.648979" salience="0.9"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="60.0" power="0.648979" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="60.0" power="0.648979" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.25" power="0.648979" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="29.6" power="0.648979" salience="0.95"></actorIssueLink>
+		</actor>
+		<actor color="#4521F9" key="SGP" name="SGP" ordering="9" power="3.0">
+			<actorIssueLink issueRef="hypotheek" position="90.0" power="0.271442" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="50.0" power="0.271442" salience="0.3"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="90.0" power="0.271442" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="60.0" power="0.271442" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="65.0" power="0.271442" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="25.0" power="0.271442" salience="0.45"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="15.0" power="0.271442" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="80.0" power="0.271442" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="60.0" power="0.271442" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.6" power="0.271442" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="27.8" power="0.271442" salience="0.0"></actorIssueLink>
+		</actor>
+		<actor color="#DEBD83" key="PVV" name="PVV" ordering="10" power="15.0">
+			<actorIssueLink issueRef="hypotheek" position="0.0" power="0.464159" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="0.0" power="0.464159" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="0.0" power="0.464159" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="55.0" power="0.464159" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="100.0" power="0.464159" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="0.0" power="0.464159" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="10.0" power="0.464159" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="100.0" power="0.464159" salience="0.9"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="60.0" power="0.464159" salience="0.3"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.0" power="0.464159" salience="0.85"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="18.8" power="0.464159" salience="0.5"></actorIssueLink>
+		</actor>
+		<actor color="#46B305" key="50+" name="50+" ordering="11" power="3.0"></actor>
+	</dataset>
+	<dataset name="ombuiging" tst="false" willingness="false">
+		<issue key="hypotheek" name="Hypotheekrenteaftrek" ordering="1">
+			<domain discrete="false">
+				<position key="Status quo plus verplichte aflossing voor nieuwe hypotheken" value="0.0">Status quo plus verplichte aflossing voor nieuwe hypotheken</position>
+				<position key="gelijk houden en verlagen via vlaktaks" value="10.0">gelijk houden en verlagen via vlaktaks</position>
+				<position key="geleidelijke afbouw in 30 jaar tot 30%; max geleidelijk afbouwen tot gem. huizenprijzen" value="75.0">geleidelijke afbouw in 30 jaar tot 30%; max geleidelijk afbouwen tot gem. huizenprijzen</position>
+				<position key="geleidelijke afbouw naar 30% in 25 jaar met max huizenprijzen" value="80.0">geleidelijke afbouw naar 30% in 25 jaar met max huizenprijzen</position>
+				<position key="naar 30% in 22 jaar" value="85.0">naar 30% in 22 jaar</position>
+				<position key="max 42% + max. 350000 in 10 jaar" value="90.0">max 42% + max. 350000 in 10 jaar</position>
+				<position key="&quot;Afbouw % in 17 jaar naar 30%; plus max 750000 tot 1017, daarna 500000&quot;" value="100.0">"Afbouw % in 17 jaar naar 30%; plus max 750000 tot 1017, daarna 500000"</position>
+			</domain>
+		</issue>
+		<issue key="huur" name="maatregelen rond huren" ordering="2">
+			<domain discrete="false">
+				<position key="Status quo (max huurverhogingen voor sociale sector)" value="0.0">Status quo (max huurverhogingen voor sociale sector)</position>
+				<position key="hogere huur voor hogere inkomens in sociale sector" value="25.0">hogere huur voor hogere inkomens in sociale sector</position>
+				<position key="beperkte huurverhoging boven inflatie" value="40.0">beperkte huurverhoging boven inflatie</position>
+				<position key="geleidelijk marktconform maar hogere huurtoeslag" value="50.0">geleidelijk marktconform maar hogere huurtoeslag</position>
+				<position key="meer marktconform met huurtoeslag" value="60.0">meer marktconform met huurtoeslag</position>
+				<position key="huren marktconform maken" value="100.0">huren marktconform maken</position>
+			</domain>
+		</issue>
+		<issue key="AOW" name="AOW leeftijd" ordering="3">
+			<domain discrete="false">
+				<position key="Status quo handhaven" value="0.0">Status quo handhaven</position>
+				<position key="tot 2020 gelijk daarna nader bekijken" value="10.0">tot 2020 gelijk daarna nader bekijken</position>
+				<position key="vanaf 2018 stapsgewijs in 2030 67 jaar plus na 45 jaar arbeid" value="40.0">vanaf 2018 stapsgewijs in 2030 67 jaar plus na 45 jaar arbeid</position>
+				<position key="in 2025 67 jaar plus flexibeler" value="65.0">in 2025 67 jaar plus flexibeler</position>
+				<position key="in 2023 67 jaar plus flexibeler en daarna koppelen aan levensverwachting" value="75.0">in 2023 67 jaar plus flexibeler en daarna koppelen aan levensverwachting</position>
+				<position key="in 2023 67 jaar daarna koppelen aan levensverwachting" value="80.0">in 2023 67 jaar daarna koppelen aan levensverwachting</position>
+				<position key="in 2021 67 jaar daarna koppelen aan levensverwachting plus flexibeler" value="85.0">in 2021 67 jaar daarna koppelen aan levensverwachting plus flexibeler</position>
+				<position key="in 2020 67 jaar daarna koppelen aan levensverwachting" value="90.0">in 2020 67 jaar daarna koppelen aan levensverwachting</position>
+				<position key="in 2018 67 jaar daarna koppelen aan levensverwachting" value="100.0">in 2018 67 jaar daarna koppelen aan levensverwachting</position>
+			</domain>
+		</issue>
+		<issue key="zorg" name="marktwerking zorg" ordering="4">
+			<domain discrete="false">
+				<position key="&quot;meer markt (privaat kapitaal), eigen risico en premie onafhankelijk van inkomen, eigen risico omhoog, verzekerd pakket kleiner &quot;" value="0.0">"meer markt (privaat kapitaal), eigen risico en premie onafhankelijk van inkomen, eigen risico omhoog, verzekerd pakket kleiner "</position>
+				<position key="&quot;meer markt (privaat kapitaal), eigen risico afhankelijk van inkomen omhoog, pakket iets kleiner &quot;" value="20.0">"meer markt (privaat kapitaal), eigen risico afhankelijk van inkomen omhoog, pakket iets kleiner "</position>
+				<position key="&quot;iets meer markt, eigen risico afhankelijk van inkomen omhoog, pakket iets kleiner&quot;" value="30.0">"iets meer markt, eigen risico afhankelijk van inkomen omhoog, pakket iets kleiner"</position>
+				<position key="&quot;iets meer markt, eigen risico ongeveer als nu, verzekerd pakket ook bijna hetzelfde, eigen bijdrage iets hoger&quot;" value="45.0">"iets meer markt, eigen risico ongeveer als nu, verzekerd pakket ook bijna hetzelfde, eigen bijdrage iets hoger"</position>
+				<position key="Status Quo" value="50.0">Status Quo</position>
+				<position key="&quot;weinig marktwerking, premie  inkomensafhankelijker en eigen risico ook&quot;" value="70.0">"weinig marktwerking, premie  inkomensafhankelijker en eigen risico ook"</position>
+				<position key="&quot;marktwerking beeindigen, regionale organisatie, inkomensafhankelijke premie en eigen bijdrage&quot;" value="90.0">"marktwerking beeindigen, regionale organisatie, inkomensafhankelijke premie en eigen bijdrage"</position>
+				<position key="&quot;geen markt maar overheid, premie inkomensafhankelijk, lager eigen risico, preventie in pakket&quot;" value="100.0">"geen markt maar overheid, premie inkomensafhankelijk, lager eigen risico, preventie in pakket"</position>
+			</domain>
+		</issue>
+		<issue key="vreemd" name="vreemdelingenbeleid" ordering="5">
+			<domain discrete="false">
+				<position key="&quot;na 3 jaar automatisch vergunning; asielzoekers mogen leren en werken, huwelijksmigratie gemakkelijker;dubbele nationaliteit mogelijk; inburgeren in NL&quot;" value="0.0">"na 3 jaar automatisch vergunning; asielzoekers mogen leren en werken, huwelijksmigratie gemakkelijker;dubbele nationaliteit mogelijk; inburgeren in NL"</position>
+				<position key="inburgeren in NL en kostenloos; gezinshereniging versoepelen" value="10.0">inburgeren in NL en kostenloos; gezinshereniging versoepelen</position>
+				<position key="huwelijksmigratie niet moeilijker maken; asielzoekers mogen werken; pas later recht op sociale zekerheid; dubbele nationaliteit mag" value="20.0">huwelijksmigratie niet moeilijker maken; asielzoekers mogen werken; pas later recht op sociale zekerheid; dubbele nationaliteit mag</position>
+				<position key="humaner beleid inzake vluchtelingen; na 3 maanden leren en werken; inburgeren op eigen kosten" value="25.0">humaner beleid inzake vluchtelingen; na 3 maanden leren en werken; inburgeren op eigen kosten</position>
+				<position key="SQ" value="50.0">SQ</position>
+				<position key="inburgerexamen voorwaarde voor verblijfsvergunning; dubbele nationaliteit wel toestaan;  eisen huwelijksmigranten aanscherpen" value="55.0">inburgerexamen voorwaarde voor verblijfsvergunning; dubbele nationaliteit wel toestaan;  eisen huwelijksmigranten aanscherpen</position>
+				<position key="huwelijksmigratie beperken; inburgering op eigen kosten; sociale zekerheid na 10 jaar" value="80.0">huwelijksmigratie beperken; inburgering op eigen kosten; sociale zekerheid na 10 jaar</position>
+				<position key="geen immigranten uit islamitische landen; assimilatiecontracten;  illegaliteit strafbaar; geen dubbele nationaliteit; NL nationaliteit en uitkeringen na 10 jaar verblijf" value="100.0">geen immigranten uit islamitische landen; assimilatiecontracten;  illegaliteit strafbaar; geen dubbele nationaliteit; NL nationaliteit en uitkeringen na 10 jaar verblijf</position>
+			</domain>
+		</issue>
+		<issue key="duur" name="duurzaamheid" ordering="6">
+			<domain discrete="false">
+				<position key="kerncentrales blijven mits veilig; minder geld voor duurzame economie" value="0.0">kerncentrales blijven mits veilig; minder geld voor duurzame economie</position>
+				<position key="&quot;nieuwe kerncentrales,14% duurzame energie in 2020; minder subsidies;verduurzaming eigen verantwoordelijkheid bedrijven en burgers&quot;" value="30.0">"nieuwe kerncentrales,14% duurzame energie in 2020; minder subsidies;verduurzaming eigen verantwoordelijkheid bedrijven en burgers"</position>
+				<position key="SQ" value="50.0">SQ</position>
+				<position key="&quot;14% duurzame energie in 2020; biobransstoffen en warmtehergebruik, verduurzaming eigen verantwoordelijkheid bedrijfsleven en burgers&quot;" value="55.0">"14% duurzame energie in 2020; biobransstoffen en warmtehergebruik, verduurzaming eigen verantwoordelijkheid bedrijfsleven en burgers"</position>
+				<position key="&quot;1,5% per jaar extra duurzame energie; geen nieuwe kern- of kolencentrales, moratorium op megastallen; landbouw verduurzamen&quot;" value="65.0">"1,5% per jaar extra duurzame energie; geen nieuwe kern- of kolencentrales, moratorium op megastallen; landbouw verduurzamen"</position>
+				<position key="18% duurzame energie in 2020; afschaffing salderingsregeling kleinschalige opwekking" value="75.0">18% duurzame energie in 2020; afschaffing salderingsregeling kleinschalige opwekking</position>
+				<position key="20% duurzame energie in 2020; meer groene belastingen en heffingen op co2 uitstoot; geen nieuwe kerncentrales" value="90.0">20% duurzame energie in 2020; meer groene belastingen en heffingen op co2 uitstoot; geen nieuwe kerncentrales</position>
+				<position key="2020 20% schone energie 2050 100%; vergroening belastingstelsel; geen kern- en kolencentrales; verbod op megastallen; duurzame landbouw" value="100.0">2020 20% schone energie 2050 100%; vergroening belastingstelsel; geen kern- en kolencentrales; verbod op megastallen; duurzame landbouw</position>
+			</domain>
+		</issue>
+		<issue key="ontslag" name="ontslagrecht" ordering="7">
+			<domain discrete="false">
+				<position key="ontslagbescherming handhaven; ww niet door werkgevers betaald;ww duur niet verkorten; ambtenaren blijven beschermd; meer vaste contracten" value="0.0">ontslagbescherming handhaven; ww niet door werkgevers betaald;ww duur niet verkorten; ambtenaren blijven beschermd; meer vaste contracten</position>
+				<position key="ontslag via kantonrechter; helft ontslagvergoeding voor werk naar werk budget tbv bijscholing;duur ww handhaven" value="20.0">ontslag via kantonrechter; helft ontslagvergoeding voor werk naar werk budget tbv bijscholing;duur ww handhaven</position>
+				<position key="&quot;opzegtermijn verlengen tot max 1 jaar; bij kortere periode rest via ww, betaald door werkgever&quot;" value="40.0">"opzegtermijn verlengen tot max 1 jaar; bij kortere periode rest via ww, betaald door werkgever"</position>
+				<position key="Lenteakkoord" value="50.0">Lenteakkoord</position>
+				<position key="&quot;positie 80, maar duur ww max 18 maanden&quot;" value="55.0">"positie 80, maar duur ww max 18 maanden"</position>
+				<position key="maximale ww periode 1 jaar; verhoging ww uitkering; individueel scholingsbudget" value="70.0">maximale ww periode 1 jaar; verhoging ww uitkering; individueel scholingsbudget</position>
+				<position key="&quot;werkgever verantwoordelijk tijdens eerste half jaar; duale procedure afgeschaft, kantonrechter indien nodig achteraf; alle werknemersgelijk; recht op scholing&quot;" value="80.0">"werkgever verantwoordelijk tijdens eerste half jaar; duale procedure afgeschaft, kantonrechter indien nodig achteraf; alle werknemersgelijk; recht op scholing"</position>
+				<position key="&quot;ww korter en hoger, ontslag zonder kantonrechter, alle werknemers gelijk, vaste ontslagregels&quot;" value="100.0">"ww korter en hoger, ontslag zonder kantonrechter, alle werknemers gelijk, vaste ontslagregels"</position>
+			</domain>
+		</issue>
+		<issue key="Europa" name="Europa" ordering="8">
+			<domain discrete="false">
+				<position key="Verdere integratie en uitbreiding ESM" value="0.0">Verdere integratie en uitbreiding ESM</position>
+				<position key="eurobonds mogelijk; uitbreiding ESM" value="30.0">eurobonds mogelijk; uitbreiding ESM</position>
+				<position key="Status quo; huidig Europees beleid" value="50.0">Status quo; huidig Europees beleid</position>
+				<position key="geen euroobligaties geen federatieve organisatie en dereguleren" value="60.0">geen euroobligaties geen federatieve organisatie en dereguleren</position>
+				<position key="grotere effectiviteit samenwerking; minder Europa" value="80.0">grotere effectiviteit samenwerking; minder Europa</position>
+				<position key="Uittreden uit EU en uit euro" value="100.0">Uittreden uit EU en uit euro</position>
+			</domain>
+		</issue>
+		<issue key="belasting" name="belastingen" ordering="9">
+			<domain discrete="false">
+				<position key="&quot;topschijf van 65% vanaf 150000, winsten en vermogens meer belasten; vennootschapsbelasting met 5% omhoog&quot;" value="0.0">"topschijf van 65% vanaf 150000, winsten en vermogens meer belasten; vennootschapsbelasting met 5% omhoog"</position>
+				<position key="&quot;topschijf van 60% vanaf 150000, vermogensbelasting verhogen; vennootschapsbelasting met 0,5% verhogen&quot;" value="10.0">"topschijf van 60% vanaf 150000, vermogensbelasting verhogen; vennootschapsbelasting met 0,5% verhogen"</position>
+				<position key="&quot;topschijf van 60% vanaf 150000; box 3 tweede tarief van 1,6% boven 125.000 vermogen&quot;" value="20.0">"topschijf van 60% vanaf 150000; box 3 tweede tarief van 1,6% boven 125.000 vermogen"</position>
+				<position key="status quo" value="50.0">status quo</position>
+				<position key="verlaging 2de schijf inkomstenbelasting" value="55.0">verlaging 2de schijf inkomstenbelasting</position>
+				<position key="IB verlaging wegens btw verhoging ongedaan maken; arbeidskorting verhogen; winstbelasting verlagen" value="60.0">IB verlaging wegens btw verhoging ongedaan maken; arbeidskorting verhogen; winstbelasting verlagen</position>
+				<position key="vermindering aftrek hypotheekrente compenseren" value="75.0">vermindering aftrek hypotheekrente compenseren</position>
+				<position key="vlaktaks met topheffing" value="100.0">vlaktaks met topheffing</position>
+			</domain>
+		</issue>
+		<issue key="ontwikkeling" name="ontwikkelingssamenwerking" ordering="10">
+			<domain discrete="false">
+				<position key="geen ontwikkelingshulp" value="0.0">geen ontwikkelingshulp</position>
+				<position key="1% van het BNP" value="1.0">1% van het BNP</position>
+			</domain>
+		</issue>
+		<issue key="bezuinig" name="ombuigingen op collectieve uitgaven" ordering="11">
+			<domain discrete="false">
+				<position key="lowerbound" value="0.0">lowerbound</position>
+				<position key="upperbound" value="29.6">upperbound</position>
+			</domain>
+		</issue>
+		<actor color="#24897B" key="SP" name="SP" ordering="1" power="15.0">
+			<actorIssueLink issueRef="hypotheek" position="90.0" power="0.464159" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="0.0" power="0.464159" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="10.0" power="0.464159" salience="0.9"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="100.0" power="0.464159" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="10.0" power="0.464159" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="65.0" power="0.464159" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="0.0" power="0.464159" salience="0.9"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="80.0" power="0.464159" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="0.0" power="0.464159" salience="0.85"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.8" power="0.464159" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="11.2" power="0.464159" salience="0.85"></actorIssueLink>
+			<actorLink influence="0.0" targetActor="PvdD"></actorLink>
+			<actorLink influence="0.0" targetActor="GL"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdA"></actorLink>
+			<actorLink influence="0.0" targetActor="D66"></actorLink>
+			<actorLink influence="0.0" targetActor="CU"></actorLink>
+			<actorLink influence="0.0" targetActor="CDA"></actorLink>
+			<actorLink influence="0.0" targetActor="VVD"></actorLink>
+			<actorLink influence="0.0" targetActor="SGP"></actorLink>
+			<actorLink influence="0.0" targetActor="PVV"></actorLink>
+			<actorLink influence="0.0" targetActor="50+"></actorLink>
+		</actor>
+		<actor color="#E35ACB" key="PvdD" name="PvdD" ordering="2" power="2.0">
+			<actorIssueLink issueRef="hypotheek" position="70.0" power="0.237126" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="25.0" power="0.237126" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="40.0" power="0.237126" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="90.0" power="0.237126" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="30.0" power="0.237126" salience="0.2"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="100.0" power="0.237126" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="30.0" power="0.237126" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="70.0" power="0.237126" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="45.0" power="0.237126" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="1.0" power="0.237126" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="0.0" power="0.237126" salience="0.0"></actorIssueLink>
+			<actorLink influence="0.0" targetActor="SP"></actorLink>
+			<actorLink influence="0.0" targetActor="GL"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdA"></actorLink>
+			<actorLink influence="0.0" targetActor="D66"></actorLink>
+			<actorLink influence="0.0" targetActor="CU"></actorLink>
+			<actorLink influence="0.0" targetActor="CDA"></actorLink>
+			<actorLink influence="0.0" targetActor="VVD"></actorLink>
+			<actorLink influence="0.0" targetActor="SGP"></actorLink>
+			<actorLink influence="0.0" targetActor="PVV"></actorLink>
+			<actorLink influence="0.0" targetActor="50+"></actorLink>
+		</actor>
+		<actor color="#389A20" key="GL" name="GL" ordering="3" power="3.0">
+			<actorIssueLink issueRef="hypotheek" position="80.0" power="0.271442" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="40.0" power="0.271442" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="75.0" power="0.271442" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="70.0" power="0.271442" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="0.0" power="0.271442" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="100.0" power="0.271442" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="70.0" power="0.271442" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="10.0" power="0.271442" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="10.0" power="0.271442" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.8" power="0.271442" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="9.8" power="0.271442" salience="0.7"></actorIssueLink>
+			<actorLink influence="0.0" targetActor="SP"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdD"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdA"></actorLink>
+			<actorLink influence="0.0" targetActor="D66"></actorLink>
+			<actorLink influence="0.0" targetActor="CU"></actorLink>
+			<actorLink influence="0.0" targetActor="CDA"></actorLink>
+			<actorLink influence="0.0" targetActor="VVD"></actorLink>
+			<actorLink influence="0.0" targetActor="SGP"></actorLink>
+			<actorLink influence="0.0" targetActor="PVV"></actorLink>
+			<actorLink influence="0.0" targetActor="50+"></actorLink>
+		</actor>
+		<actor color="#3423AD" key="PvdA" name="PvdA" ordering="4" power="39.0">
+			<actorIssueLink issueRef="hypotheek" position="75.0" power="0.63825" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="40.0" power="0.63825" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="65.0" power="0.63825" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="90.0" power="0.63825" salience="0.9"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="20.0" power="0.63825" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="75.0" power="0.63825" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="20.0" power="0.63825" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="30.0" power="0.63825" salience="0.85"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="20.0" power="0.63825" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.7" power="0.63825" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="15.2" power="0.63825" salience="0.85"></actorIssueLink>
+			<actorLink influence="0.0" targetActor="SP"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdD"></actorLink>
+			<actorLink influence="0.0" targetActor="GL"></actorLink>
+			<actorLink influence="0.0" targetActor="D66"></actorLink>
+			<actorLink influence="0.0" targetActor="CU"></actorLink>
+			<actorLink influence="0.0" targetActor="CDA"></actorLink>
+			<actorLink influence="0.0" targetActor="VVD"></actorLink>
+			<actorLink influence="0.0" targetActor="SGP"></actorLink>
+			<actorLink influence="0.0" targetActor="PVV"></actorLink>
+			<actorLink influence="0.0" targetActor="50+"></actorLink>
+		</actor>
+		<actor color="#ED127D" key="D66" name="D66" ordering="5" power="12.0">
+			<actorIssueLink issueRef="hypotheek" position="85.0" power="0.430887" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="60.0" power="0.430887" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="85.0" power="0.430887" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="20.0" power="0.430887" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="20.0" power="0.430887" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="90.0" power="0.430887" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="80.0" power="0.430887" salience="0.9"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="0.0" power="0.430887" salience="0.85"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="75.0" power="0.430887" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.7" power="0.430887" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="12.7" power="0.430887" salience="0.7"></actorIssueLink>
+			<actorLink influence="0.0" targetActor="SP"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdD"></actorLink>
+			<actorLink influence="0.0" targetActor="GL"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdA"></actorLink>
+			<actorLink influence="0.0" targetActor="CU"></actorLink>
+			<actorLink influence="0.0" targetActor="CDA"></actorLink>
+			<actorLink influence="0.0" targetActor="VVD"></actorLink>
+			<actorLink influence="0.0" targetActor="SGP"></actorLink>
+			<actorLink influence="0.0" targetActor="PVV"></actorLink>
+			<actorLink influence="0.0" targetActor="50+"></actorLink>
+		</actor>
+		<actor color="#7E3A6C" key="CU" name="CU" ordering="6" power="5.0">
+			<actorIssueLink issueRef="hypotheek" position="100.0" power="0.32183" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="50.0" power="0.32183" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="80.0" power="0.32183" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="30.0" power="0.32183" salience="0.45"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="25.0" power="0.32183" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="90.0" power="0.32183" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="40.0" power="0.32183" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="75.0" power="0.32183" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="55.0" power="0.32183" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.7" power="0.32183" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="10.9" power="0.32183" salience="0.6"></actorIssueLink>
+			<actorLink influence="0.0" targetActor="SP"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdD"></actorLink>
+			<actorLink influence="0.0" targetActor="GL"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdA"></actorLink>
+			<actorLink influence="0.0" targetActor="D66"></actorLink>
+			<actorLink influence="0.0" targetActor="CDA"></actorLink>
+			<actorLink influence="0.0" targetActor="VVD"></actorLink>
+			<actorLink influence="0.0" targetActor="SGP"></actorLink>
+			<actorLink influence="0.0" targetActor="PVV"></actorLink>
+			<actorLink influence="0.0" targetActor="50+"></actorLink>
+		</actor>
+		<actor color="#085F00" key="CDA" name="CDA" ordering="7" power="13.0">
+			<actorIssueLink issueRef="hypotheek" position="10.0" power="0.442538" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="50.0" power="0.442538" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="90.0" power="0.442538" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="45.0" power="0.442538" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="55.0" power="0.442538" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="55.0" power="0.442538" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="55.0" power="0.442538" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="50.0" power="0.442538" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="100.0" power="0.442538" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.7" power="0.442538" salience="0.85"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="15.3" power="0.442538" salience="0.8"></actorIssueLink>
+			<actorLink influence="0.0" targetActor="SP"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdD"></actorLink>
+			<actorLink influence="0.0" targetActor="GL"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdA"></actorLink>
+			<actorLink influence="0.0" targetActor="D66"></actorLink>
+			<actorLink influence="0.0" targetActor="CU"></actorLink>
+			<actorLink influence="0.0" targetActor="VVD"></actorLink>
+			<actorLink influence="0.0" targetActor="SGP"></actorLink>
+			<actorLink influence="0.0" targetActor="PVV"></actorLink>
+			<actorLink influence="0.0" targetActor="50+"></actorLink>
+		</actor>
+		<actor color="#BA88C9" key="VVD" name="VVD" ordering="8" power="41.0">
+			<actorIssueLink issueRef="hypotheek" position="0.0" power="0.648979" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="100.0" power="0.648979" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="100.0" power="0.648979" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="0.0" power="0.648979" salience="0.9"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="80.0" power="0.648979" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="30.0" power="0.648979" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="100.0" power="0.648979" salience="0.85"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="60.0" power="0.648979" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="60.0" power="0.648979" salience="0.9"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.25" power="0.648979" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="22.2" power="0.648979" salience="0.9"></actorIssueLink>
+			<actorLink influence="0.0" targetActor="SP"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdD"></actorLink>
+			<actorLink influence="0.0" targetActor="GL"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdA"></actorLink>
+			<actorLink influence="0.0" targetActor="D66"></actorLink>
+			<actorLink influence="0.0" targetActor="CU"></actorLink>
+			<actorLink influence="0.0" targetActor="CDA"></actorLink>
+			<actorLink influence="0.0" targetActor="SGP"></actorLink>
+			<actorLink influence="0.0" targetActor="PVV"></actorLink>
+			<actorLink influence="0.0" targetActor="50+"></actorLink>
+		</actor>
+		<actor color="#4521F9" key="SGP" name="SGP" ordering="9" power="3.0">
+			<actorIssueLink issueRef="hypotheek" position="90.0" power="0.271442" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="50.0" power="0.271442" salience="0.3"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="90.0" power="0.271442" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="60.0" power="0.271442" salience="0.6"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="65.0" power="0.271442" salience="0.5"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="25.0" power="0.271442" salience="0.45"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="15.0" power="0.271442" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="80.0" power="0.271442" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="60.0" power="0.271442" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.6" power="0.271442" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="13.9" power="0.271442" salience="0.0"></actorIssueLink>
+			<actorLink influence="0.0" targetActor="SP"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdD"></actorLink>
+			<actorLink influence="0.0" targetActor="GL"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdA"></actorLink>
+			<actorLink influence="0.0" targetActor="D66"></actorLink>
+			<actorLink influence="0.0" targetActor="CU"></actorLink>
+			<actorLink influence="0.0" targetActor="CDA"></actorLink>
+			<actorLink influence="0.0" targetActor="VVD"></actorLink>
+			<actorLink influence="0.0" targetActor="PVV"></actorLink>
+			<actorLink influence="0.0" targetActor="50+"></actorLink>
+		</actor>
+		<actor color="#DEBD83" key="PVV" name="PVV" ordering="10" power="15.0">
+			<actorIssueLink issueRef="hypotheek" position="0.0" power="0.464159" salience="0.65"></actorIssueLink>
+			<actorIssueLink issueRef="huur" position="0.0" power="0.464159" salience="0.75"></actorIssueLink>
+			<actorIssueLink issueRef="AOW" position="0.0" power="0.464159" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="zorg" position="55.0" power="0.464159" salience="0.8"></actorIssueLink>
+			<actorIssueLink issueRef="vreemd" position="100.0" power="0.464159" salience="0.95"></actorIssueLink>
+			<actorIssueLink issueRef="duur" position="0.0" power="0.464159" salience="0.4"></actorIssueLink>
+			<actorIssueLink issueRef="ontslag" position="10.0" power="0.464159" salience="0.7"></actorIssueLink>
+			<actorIssueLink issueRef="Europa" position="100.0" power="0.464159" salience="0.9"></actorIssueLink>
+			<actorIssueLink issueRef="belasting" position="60.0" power="0.464159" salience="0.3"></actorIssueLink>
+			<actorIssueLink issueRef="ontwikkeling" position="0.0" power="0.464159" salience="0.85"></actorIssueLink>
+			<actorIssueLink issueRef="bezuinig" position="14.7" power="0.464159" salience="0.5"></actorIssueLink>
+			<actorLink influence="0.0" targetActor="SP"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdD"></actorLink>
+			<actorLink influence="0.0" targetActor="GL"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdA"></actorLink>
+			<actorLink influence="0.0" targetActor="D66"></actorLink>
+			<actorLink influence="0.0" targetActor="CU"></actorLink>
+			<actorLink influence="0.0" targetActor="CDA"></actorLink>
+			<actorLink influence="0.0" targetActor="VVD"></actorLink>
+			<actorLink influence="0.0" targetActor="SGP"></actorLink>
+			<actorLink influence="0.0" targetActor="50+"></actorLink>
+		</actor>
+		<actor color="#46B305" key="50+" name="50+" ordering="11" power="3.0">
+			<actorLink influence="0.0" targetActor="SP"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdD"></actorLink>
+			<actorLink influence="0.0" targetActor="GL"></actorLink>
+			<actorLink influence="0.0" targetActor="PvdA"></actorLink>
+			<actorLink influence="0.0" targetActor="D66"></actorLink>
+			<actorLink influence="0.0" targetActor="CU"></actorLink>
+			<actorLink influence="0.0" targetActor="CDA"></actorLink>
+			<actorLink influence="0.0" targetActor="VVD"></actorLink>
+			<actorLink influence="0.0" targetActor="SGP"></actorLink>
+			<actorLink influence="0.0" targetActor="PVV"></actorLink>
+		</actor>
+	</dataset>
+	<project creation="2012-11-01T11:01:47.000Z" name="vvd-pvda">
+		<dataset access="false" creation="2012-11-01T14:37:38.000Z" name="bezuinigingen" tst="false" willingness="false">
+			<issue key="hypotheek" name="Hypotheekrenteaftrek" ordering="1">
+				<domain discrete="false">
+					<position key="Status quo plus verplichte aflossing voor nieuwe hypotheken" value="0.0">Status quo plus verplichte aflossing voor nieuwe hypotheken</position>
+					<position key="gelijk houden en verlagen via vlaktaks" value="10.0">gelijk houden en verlagen via vlaktaks</position>
+					<position key="geleidelijke afbouw in 30 jaar tot 30%; max geleidelijk afbouwen tot gem. huizenprijzen" value="75.0">geleidelijke afbouw in 30 jaar tot 30%; max geleidelijk afbouwen tot gem. huizenprijzen</position>
+					<position key="geleidelijke afbouw naar 30% in 25 jaar met max huizenprijzen" value="80.0">geleidelijke afbouw naar 30% in 25 jaar met max huizenprijzen</position>
+					<position key="naar 30% in 22 jaar" value="85.0">naar 30% in 22 jaar</position>
+					<position key="max 42% + max. 350000 in 10 jaar" value="90.0">max 42% + max. 350000 in 10 jaar</position>
+					<position key="&quot;Afbouw % in 17 jaar naar 30%; plus max 750000 tot 1017, daarna 500000&quot;" value="100.0">"Afbouw % in 17 jaar naar 30%; plus max 750000 tot 1017, daarna 500000"</position>
+				</domain>
+			</issue>
+			<issue key="huur" name="maatregelen rond huren" ordering="2">
+				<domain discrete="false">
+					<position key="Status quo (max huurverhogingen voor sociale sector)" value="0.0">Status quo (max huurverhogingen voor sociale sector)</position>
+					<position key="hogere huur voor hogere inkomens in sociale sector" value="25.0">hogere huur voor hogere inkomens in sociale sector</position>
+					<position key="beperkte huurverhoging boven inflatie" value="40.0">beperkte huurverhoging boven inflatie</position>
+					<position key="geleidelijk marktconform maar hogere huurtoeslag" value="50.0">geleidelijk marktconform maar hogere huurtoeslag</position>
+					<position key="meer marktconform met huurtoeslag" value="60.0">meer marktconform met huurtoeslag</position>
+					<position key="huren marktconform maken" value="100.0">huren marktconform maken</position>
+				</domain>
+			</issue>
+			<issue key="AOW" name="AOW leeftijd" ordering="3">
+				<domain discrete="false">
+					<position key="Status quo handhaven" value="0.0">Status quo handhaven</position>
+					<position key="tot 2020 gelijk daarna nader bekijken" value="10.0">tot 2020 gelijk daarna nader bekijken</position>
+					<position key="vanaf 2018 stapsgewijs in 2030 67 jaar plus na 45 jaar arbeid" value="40.0">vanaf 2018 stapsgewijs in 2030 67 jaar plus na 45 jaar arbeid</position>
+					<position key="in 2025 67 jaar plus flexibeler" value="65.0">in 2025 67 jaar plus flexibeler</position>
+					<position key="in 2023 67 jaar plus flexibeler en daarna koppelen aan levensverwachting" value="75.0">in 2023 67 jaar plus flexibeler en daarna koppelen aan levensverwachting</position>
+					<position key="in 2023 67 jaar daarna koppelen aan levensverwachting" value="80.0">in 2023 67 jaar daarna koppelen aan levensverwachting</position>
+					<position key="in 2021 67 jaar daarna koppelen aan levensverwachting plus flexibeler" value="85.0">in 2021 67 jaar daarna koppelen aan levensverwachting plus flexibeler</position>
+					<position key="in 2020 67 jaar daarna koppelen aan levensverwachting" value="90.0">in 2020 67 jaar daarna koppelen aan levensverwachting</position>
+					<position key="in 2018 67 jaar daarna koppelen aan levensverwachting" value="100.0">in 2018 67 jaar daarna koppelen aan levensverwachting</position>
+				</domain>
+			</issue>
+			<issue key="zorg" name="marktwerking zorg" ordering="4">
+				<domain discrete="false">
+					<position key="&quot;meer markt (privaat kapitaal), eigen risico en premie onafhankelijk van inkomen, eigen risico omhoog, verzekerd pakket kleiner &quot;" value="0.0">"meer markt (privaat kapitaal), eigen risico en premie onafhankelijk van inkomen, eigen risico omhoog, verzekerd pakket kleiner "</position>
+					<position key="&quot;meer markt (privaat kapitaal), eigen risico afhankelijk van inkomen omhoog, pakket iets kleiner &quot;" value="20.0">"meer markt (privaat kapitaal), eigen risico afhankelijk van inkomen omhoog, pakket iets kleiner "</position>
+					<position key="&quot;iets meer markt, eigen risico afhankelijk van inkomen omhoog, pakket iets kleiner&quot;" value="30.0">"iets meer markt, eigen risico afhankelijk van inkomen omhoog, pakket iets kleiner"</position>
+					<position key="&quot;iets meer markt, eigen risico ongeveer als nu, verzekerd pakket ook bijna hetzelfde, eigen bijdrage iets hoger&quot;" value="45.0">"iets meer markt, eigen risico ongeveer als nu, verzekerd pakket ook bijna hetzelfde, eigen bijdrage iets hoger"</position>
+					<position key="Status Quo" value="50.0">Status Quo</position>
+					<position key="&quot;weinig marktwerking, premie  inkomensafhankelijker en eigen risico ook&quot;" value="70.0">"weinig marktwerking, premie  inkomensafhankelijker en eigen risico ook"</position>
+					<position key="&quot;marktwerking beeindigen, regionale organisatie, inkomensafhankelijke premie en eigen bijdrage&quot;" value="90.0">"marktwerking beeindigen, regionale organisatie, inkomensafhankelijke premie en eigen bijdrage"</position>
+					<position key="&quot;geen markt maar overheid, premie inkomensafhankelijk, lager eigen risico, preventie in pakket&quot;" value="100.0">"geen markt maar overheid, premie inkomensafhankelijk, lager eigen risico, preventie in pakket"</position>
+				</domain>
+			</issue>
+			<issue key="vreemd" name="vreemdelingenbeleid" ordering="5">
+				<domain discrete="false">
+					<position key="&quot;na 3 jaar automatisch vergunning; asielzoekers mogen leren en werken, huwelijksmigratie gemakkelijker;dubbele nationaliteit mogelijk; inburgeren in NL&quot;" value="0.0">"na 3 jaar automatisch vergunning; asielzoekers mogen leren en werken, huwelijksmigratie gemakkelijker;dubbele nationaliteit mogelijk; inburgeren in NL"</position>
+					<position key="inburgeren in NL en kostenloos; gezinshereniging versoepelen" value="10.0">inburgeren in NL en kostenloos; gezinshereniging versoepelen</position>
+					<position key="huwelijksmigratie niet moeilijker maken; asielzoekers mogen werken; pas later recht op sociale zekerheid; dubbele nationaliteit mag" value="20.0">huwelijksmigratie niet moeilijker maken; asielzoekers mogen werken; pas later recht op sociale zekerheid; dubbele nationaliteit mag</position>
+					<position key="humaner beleid inzake vluchtelingen; na 3 maanden leren en werken; inburgeren op eigen kosten" value="25.0">humaner beleid inzake vluchtelingen; na 3 maanden leren en werken; inburgeren op eigen kosten</position>
+					<position key="SQ" value="50.0">SQ</position>
+					<position key="inburgerexamen voorwaarde voor verblijfsvergunning; dubbele nationaliteit wel toestaan;  eisen huwelijksmigranten aanscherpen" value="55.0">inburgerexamen voorwaarde voor verblijfsvergunning; dubbele nationaliteit wel toestaan;  eisen huwelijksmigranten aanscherpen</position>
+					<position key="huwelijksmigratie beperken; inburgering op eigen kosten; sociale zekerheid na 10 jaar" value="80.0">huwelijksmigratie beperken; inburgering op eigen kosten; sociale zekerheid na 10 jaar</position>
+					<position key="geen immigranten uit islamitische landen; assimilatiecontracten;  illegaliteit strafbaar; geen dubbele nationaliteit; NL nationaliteit en uitkeringen na 10 jaar verblijf" value="100.0">geen immigranten uit islamitische landen; assimilatiecontracten;  illegaliteit strafbaar; geen dubbele nationaliteit; NL nationaliteit en uitkeringen na 10 jaar verblijf</position>
+				</domain>
+			</issue>
+			<issue key="duur" name="duurzaamheid" ordering="6">
+				<domain discrete="false">
+					<position key="kerncentrales blijven mits veilig; minder geld voor duurzame economie" value="0.0">kerncentrales blijven mits veilig; minder geld voor duurzame economie</position>
+					<position key="&quot;nieuwe kerncentrales,14% duurzame energie in 2020; minder subsidies;verduurzaming eigen verantwoordelijkheid bedrijven en burgers&quot;" value="30.0">"nieuwe kerncentrales,14% duurzame energie in 2020; minder subsidies;verduurzaming eigen verantwoordelijkheid bedrijven en burgers"</position>
+					<position key="SQ" value="50.0">SQ</position>
+					<position key="&quot;14% duurzame energie in 2020; biobransstoffen en warmtehergebruik, verduurzaming eigen verantwoordelijkheid bedrijfsleven en burgers&quot;" value="55.0">"14% duurzame energie in 2020; biobransstoffen en warmtehergebruik, verduurzaming eigen verantwoordelijkheid bedrijfsleven en burgers"</position>
+					<position key="&quot;1,5% per jaar extra duurzame energie; geen nieuwe kern- of kolencentrales, moratorium op megastallen; landbouw verduurzamen&quot;" value="65.0">"1,5% per jaar extra duurzame energie; geen nieuwe kern- of kolencentrales, moratorium op megastallen; landbouw verduurzamen"</position>
+					<position key="18% duurzame energie in 2020; afschaffing salderingsregeling kleinschalige opwekking" value="75.0">18% duurzame energie in 2020; afschaffing salderingsregeling kleinschalige opwekking</position>
+					<position key="20% duurzame energie in 2020; meer groene belastingen en heffingen op co2 uitstoot; geen nieuwe kerncentrales" value="90.0">20% duurzame energie in 2020; meer groene belastingen en heffingen op co2 uitstoot; geen nieuwe kerncentrales</position>
+					<position key="2020 20% schone energie 2050 100%; vergroening belastingstelsel; geen kern- en kolencentrales; verbod op megastallen; duurzame landbouw" value="100.0">2020 20% schone energie 2050 100%; vergroening belastingstelsel; geen kern- en kolencentrales; verbod op megastallen; duurzame landbouw</position>
+				</domain>
+			</issue>
+			<issue key="ontslag" name="ontslagrecht" ordering="7">
+				<domain discrete="false">
+					<position key="ontslagbescherming handhaven; ww niet door werkgevers betaald;ww duur niet verkorten; ambtenaren blijven beschermd; meer vaste contracten" value="0.0">ontslagbescherming handhaven; ww niet door werkgevers betaald;ww duur niet verkorten; ambtenaren blijven beschermd; meer vaste contracten</position>
+					<position key="ontslag via kantonrechter; helft ontslagvergoeding voor werk naar werk budget tbv bijscholing;duur ww handhaven" value="20.0">ontslag via kantonrechter; helft ontslagvergoeding voor werk naar werk budget tbv bijscholing;duur ww handhaven</position>
+					<position key="&quot;opzegtermijn verlengen tot max 1 jaar; bij kortere periode rest via ww, betaald door werkgever&quot;" value="40.0">"opzegtermijn verlengen tot max 1 jaar; bij kortere periode rest via ww, betaald door werkgever"</position>
+					<position key="Lenteakkoord" value="50.0">Lenteakkoord</position>
+					<position key="&quot;positie 80, maar duur ww max 18 maanden&quot;" value="55.0">"positie 80, maar duur ww max 18 maanden"</position>
+					<position key="maximale ww periode 1 jaar; verhoging ww uitkering; individueel scholingsbudget" value="70.0">maximale ww periode 1 jaar; verhoging ww uitkering; individueel scholingsbudget</position>
+					<position key="&quot;werkgever verantwoordelijk tijdens eerste half jaar; duale procedure afgeschaft, kantonrechter indien nodig achteraf; alle werknemersgelijk; recht op scholing&quot;" value="80.0">"werkgever verantwoordelijk tijdens eerste half jaar; duale procedure afgeschaft, kantonrechter indien nodig achteraf; alle werknemersgelijk; recht op scholing"</position>
+					<position key="&quot;ww korter en hoger, ontslag zonder kantonrechter, alle werknemers gelijk, vaste ontslagregels&quot;" value="100.0">"ww korter en hoger, ontslag zonder kantonrechter, alle werknemers gelijk, vaste ontslagregels"</position>
+				</domain>
+			</issue>
+			<issue key="Europa" name="Europa" ordering="8">
+				<domain discrete="false">
+					<position key="Verdere integratie en uitbreiding ESM" value="0.0">Verdere integratie en uitbreiding ESM</position>
+					<position key="eurobonds mogelijk; uitbreiding ESM" value="30.0">eurobonds mogelijk; uitbreiding ESM</position>
+					<position key="Status quo; huidig Europees beleid" value="50.0">Status quo; huidig Europees beleid</position>
+					<position key="geen euroobligaties geen federatieve organisatie en dereguleren" value="60.0">geen euroobligaties geen federatieve organisatie en dereguleren</position>
+					<position key="grotere effectiviteit samenwerking; minder Europa" value="80.0">grotere effectiviteit samenwerking; minder Europa</position>
+					<position key="Uittreden uit EU en uit euro" value="100.0">Uittreden uit EU en uit euro</position>
+				</domain>
+			</issue>
+			<issue key="belasting" name="belastingen" ordering="9">
+				<domain discrete="false">
+					<position key="&quot;topschijf van 65% vanaf 150000, winsten en vermogens meer belasten; vennootschapsbelasting met 5% omhoog&quot;" value="0.0">"topschijf van 65% vanaf 150000, winsten en vermogens meer belasten; vennootschapsbelasting met 5% omhoog"</position>
+					<position key="&quot;topschijf van 60% vanaf 150000, vermogensbelasting verhogen; vennootschapsbelasting met 0,5% verhogen&quot;" value="10.0">"topschijf van 60% vanaf 150000, vermogensbelasting verhogen; vennootschapsbelasting met 0,5% verhogen"</position>
+					<position key="&quot;topschijf van 60% vanaf 150000; box 3 tweede tarief van 1,6% boven 125.000 vermogen&quot;" value="20.0">"topschijf van 60% vanaf 150000; box 3 tweede tarief van 1,6% boven 125.000 vermogen"</position>
+					<position key="status quo" value="50.0">status quo</position>
+					<position key="verlaging 2de schijf inkomstenbelasting" value="55.0">verlaging 2de schijf inkomstenbelasting</position>
+					<position key="IB verlaging wegens btw verhoging ongedaan maken; arbeidskorting verhogen; winstbelasting verlagen" value="60.0">IB verlaging wegens btw verhoging ongedaan maken; arbeidskorting verhogen; winstbelasting verlagen</position>
+					<position key="vermindering aftrek hypotheekrente compenseren" value="75.0">vermindering aftrek hypotheekrente compenseren</position>
+					<position key="vlaktaks met topheffing" value="100.0">vlaktaks met topheffing</position>
+				</domain>
+			</issue>
+			<issue key="ontwikkeling" name="ontwikkelingssamenwerking" ordering="10">
+				<domain discrete="false">
+					<position key="geen ontwikkelingshulp" value="0.0">geen ontwikkelingshulp</position>
+					<position key="1% van het BNP" value="1.0">1% van het BNP</position>
+				</domain>
+			</issue>
+			<issue key="bezuinig" name="ombuigingen op collectieve uitgaven" ordering="11">
+				<domain discrete="false">
+					<position key="lowerbound" value="0.0">lowerbound</position>
+					<position key="upperbound" value="29.6">upperbound</position>
+				</domain>
+			</issue>
+			<actor color="#3423AD" key="PvdA" name="PvdA" ordering="1" power="39.0">
+				<actorIssueLink issueRef="hypotheek" position="75.0" power="0.63825" salience="0.8"></actorIssueLink>
+				<actorIssueLink issueRef="huur" position="40.0" power="0.63825" salience="0.7"></actorIssueLink>
+				<actorIssueLink issueRef="AOW" position="65.0" power="0.63825" salience="0.7"></actorIssueLink>
+				<actorIssueLink issueRef="zorg" position="90.0" power="0.63825" salience="0.9"></actorIssueLink>
+				<actorIssueLink issueRef="vreemd" position="20.0" power="0.63825" salience="0.75"></actorIssueLink>
+				<actorIssueLink issueRef="duur" position="75.0" power="0.63825" salience="0.75"></actorIssueLink>
+				<actorIssueLink issueRef="ontslag" position="20.0" power="0.63825" salience="0.8"></actorIssueLink>
+				<actorIssueLink issueRef="Europa" position="30.0" power="0.63825" salience="0.85"></actorIssueLink>
+				<actorIssueLink issueRef="belasting" position="20.0" power="0.63825" salience="0.65"></actorIssueLink>
+				<actorIssueLink issueRef="ontwikkeling" position="0.7" power="0.63825" salience="0.65"></actorIssueLink>
+				<actorIssueLink issueRef="bezuinig" position="25.5" power="0.63825" salience="0.85"></actorIssueLink>
+				<actorLink influence="0.0" targetActor="SP"></actorLink>
+				<actorLink influence="0.0" targetActor="PvdD"></actorLink>
+				<actorLink influence="0.0" targetActor="GL"></actorLink>
+				<actorLink influence="0.0" targetActor="D66"></actorLink>
+				<actorLink influence="0.0" targetActor="CU"></actorLink>
+				<actorLink influence="0.0" targetActor="CDA"></actorLink>
+				<actorLink influence="0.0" targetActor="VVD"></actorLink>
+				<actorLink influence="0.0" targetActor="SGP"></actorLink>
+				<actorLink influence="0.0" targetActor="PVV"></actorLink>
+				<actorLink influence="0.0" targetActor="50+"></actorLink>
+			</actor>
+			<actor color="#BA88C9" key="VVD" name="VVD" ordering="8" power="41.0">
+				<actorIssueLink issueRef="hypotheek" position="0.0" power="0.648979" salience="0.95"></actorIssueLink>
+				<actorIssueLink issueRef="huur" position="100.0" power="0.648979" salience="0.6"></actorIssueLink>
+				<actorIssueLink issueRef="AOW" position="100.0" power="0.648979" salience="0.8"></actorIssueLink>
+				<actorIssueLink issueRef="zorg" position="0.0" power="0.648979" salience="0.9"></actorIssueLink>
+				<actorIssueLink issueRef="vreemd" position="80.0" power="0.648979" salience="0.5"></actorIssueLink>
+				<actorIssueLink issueRef="duur" position="30.0" power="0.648979" salience="0.6"></actorIssueLink>
+				<actorIssueLink issueRef="ontslag" position="100.0" power="0.648979" salience="0.85"></actorIssueLink>
+				<actorIssueLink issueRef="Europa" position="60.0" power="0.648979" salience="0.7"></actorIssueLink>
+				<actorIssueLink issueRef="belasting" position="60.0" power="0.648979" salience="0.9"></actorIssueLink>
+				<actorIssueLink issueRef="ontwikkeling" position="0.25" power="0.648979" salience="0.4"></actorIssueLink>
+				<actorIssueLink issueRef="bezuinig" position="29.6" power="0.648979" salience="0.9"></actorIssueLink>
+				<actorLink influence="0.0" targetActor="PvdA"></actorLink>
+				<actorLink influence="0.0" targetActor="SP"></actorLink>
+				<actorLink influence="0.0" targetActor="PvdD"></actorLink>
+				<actorLink influence="0.0" targetActor="GL"></actorLink>
+				<actorLink influence="0.0" targetActor="D66"></actorLink>
+				<actorLink influence="0.0" targetActor="CU"></actorLink>
+				<actorLink influence="0.0" targetActor="CDA"></actorLink>
+				<actorLink influence="0.0" targetActor="SGP"></actorLink>
+				<actorLink influence="0.0" targetActor="PVV"></actorLink>
+				<actorLink influence="0.0" targetActor="50+"></actorLink>
+			</actor>
+		</dataset>
+		<dataset access="false" creation="2012-11-01T14:37:38.000Z" name="ombuiging" tst="false" willingness="false">
+			<issue key="hypotheek" name="Hypotheekrenteaftrek" ordering="1">
+				<domain discrete="false">
+					<position key="Status quo plus verplichte aflossing voor nieuwe hypotheken" value="0.0">Status quo plus verplichte aflossing voor nieuwe hypotheken</position>
+					<position key="gelijk houden en verlagen via vlaktaks" value="10.0">gelijk houden en verlagen via vlaktaks</position>
+					<position key="geleidelijke afbouw in 30 jaar tot 30%; max geleidelijk afbouwen tot gem. huizenprijzen" value="75.0">geleidelijke afbouw in 30 jaar tot 30%; max geleidelijk afbouwen tot gem. huizenprijzen</position>
+					<position key="geleidelijke afbouw naar 30% in 25 jaar met max huizenprijzen" value="80.0">geleidelijke afbouw naar 30% in 25 jaar met max huizenprijzen</position>
+					<position key="naar 30% in 22 jaar" value="85.0">naar 30% in 22 jaar</position>
+					<position key="max 42% + max. 350000 in 10 jaar" value="90.0">max 42% + max. 350000 in 10 jaar</position>
+					<position key="&quot;Afbouw % in 17 jaar naar 30%; plus max 750000 tot 1017, daarna 500000&quot;" value="100.0">"Afbouw % in 17 jaar naar 30%; plus max 750000 tot 1017, daarna 500000"</position>
+				</domain>
+			</issue>
+			<issue key="huur" name="maatregelen rond huren" ordering="2">
+				<domain discrete="false">
+					<position key="Status quo (max huurverhogingen voor sociale sector)" value="0.0">Status quo (max huurverhogingen voor sociale sector)</position>
+					<position key="hogere huur voor hogere inkomens in sociale sector" value="25.0">hogere huur voor hogere inkomens in sociale sector</position>
+					<position key="beperkte huurverhoging boven inflatie" value="40.0">beperkte huurverhoging boven inflatie</position>
+					<position key="geleidelijk marktconform maar hogere huurtoeslag" value="50.0">geleidelijk marktconform maar hogere huurtoeslag</position>
+					<position key="meer marktconform met huurtoeslag" value="60.0">meer marktconform met huurtoeslag</position>
+					<position key="huren marktconform maken" value="100.0">huren marktconform maken</position>
+				</domain>
+			</issue>
+			<issue key="AOW" name="AOW leeftijd" ordering="3">
+				<domain discrete="false">
+					<position key="Status quo handhaven" value="0.0">Status quo handhaven</position>
+					<position key="tot 2020 gelijk daarna nader bekijken" value="10.0">tot 2020 gelijk daarna nader bekijken</position>
+					<position key="vanaf 2018 stapsgewijs in 2030 67 jaar plus na 45 jaar arbeid" value="40.0">vanaf 2018 stapsgewijs in 2030 67 jaar plus na 45 jaar arbeid</position>
+					<position key="in 2025 67 jaar plus flexibeler" value="65.0">in 2025 67 jaar plus flexibeler</position>
+					<position key="in 2023 67 jaar plus flexibeler en daarna koppelen aan levensverwachting" value="75.0">in 2023 67 jaar plus flexibeler en daarna koppelen aan levensverwachting</position>
+					<position key="in 2023 67 jaar daarna koppelen aan levensverwachting" value="80.0">in 2023 67 jaar daarna koppelen aan levensverwachting</position>
+					<position key="in 2021 67 jaar daarna koppelen aan levensverwachting plus flexibeler" value="85.0">in 2021 67 jaar daarna koppelen aan levensverwachting plus flexibeler</position>
+					<position key="in 2020 67 jaar daarna koppelen aan levensverwachting" value="90.0">in 2020 67 jaar daarna koppelen aan levensverwachting</position>
+					<position key="in 2018 67 jaar daarna koppelen aan levensverwachting" value="100.0">in 2018 67 jaar daarna koppelen aan levensverwachting</position>
+				</domain>
+			</issue>
+			<issue key="zorg" name="marktwerking zorg" ordering="4">
+				<domain discrete="false">
+					<position key="&quot;meer markt (privaat kapitaal), eigen risico en premie onafhankelijk van inkomen, eigen risico omhoog, verzekerd pakket kleiner &quot;" value="0.0">"meer markt (privaat kapitaal), eigen risico en premie onafhankelijk van inkomen, eigen risico omhoog, verzekerd pakket kleiner "</position>
+					<position key="&quot;meer markt (privaat kapitaal), eigen risico afhankelijk van inkomen omhoog, pakket iets kleiner &quot;" value="20.0">"meer markt (privaat kapitaal), eigen risico afhankelijk van inkomen omhoog, pakket iets kleiner "</position>
+					<position key="&quot;iets meer markt, eigen risico afhankelijk van inkomen omhoog, pakket iets kleiner&quot;" value="30.0">"iets meer markt, eigen risico afhankelijk van inkomen omhoog, pakket iets kleiner"</position>
+					<position key="&quot;iets meer markt, eigen risico ongeveer als nu, verzekerd pakket ook bijna hetzelfde, eigen bijdrage iets hoger&quot;" value="45.0">"iets meer markt, eigen risico ongeveer als nu, verzekerd pakket ook bijna hetzelfde, eigen bijdrage iets hoger"</position>
+					<position key="Status Quo" value="50.0">Status Quo</position>
+					<position key="&quot;weinig marktwerking, premie  inkomensafhankelijker en eigen risico ook&quot;" value="70.0">"weinig marktwerking, premie  inkomensafhankelijker en eigen risico ook"</position>
+					<position key="&quot;marktwerking beeindigen, regionale organisatie, inkomensafhankelijke premie en eigen bijdrage&quot;" value="90.0">"marktwerking beeindigen, regionale organisatie, inkomensafhankelijke premie en eigen bijdrage"</position>
+					<position key="&quot;geen markt maar overheid, premie inkomensafhankelijk, lager eigen risico, preventie in pakket&quot;" value="100.0">"geen markt maar overheid, premie inkomensafhankelijk, lager eigen risico, preventie in pakket"</position>
+				</domain>
+			</issue>
+			<issue key="vreemd" name="vreemdelingenbeleid" ordering="5">
+				<domain discrete="false">
+					<position key="&quot;na 3 jaar automatisch vergunning; asielzoekers mogen leren en werken, huwelijksmigratie gemakkelijker;dubbele nationaliteit mogelijk; inburgeren in NL&quot;" value="0.0">"na 3 jaar automatisch vergunning; asielzoekers mogen leren en werken, huwelijksmigratie gemakkelijker;dubbele nationaliteit mogelijk; inburgeren in NL"</position>
+					<position key="inburgeren in NL en kostenloos; gezinshereniging versoepelen" value="10.0">inburgeren in NL en kostenloos; gezinshereniging versoepelen</position>
+					<position key="huwelijksmigratie niet moeilijker maken; asielzoekers mogen werken; pas later recht op sociale zekerheid; dubbele nationaliteit mag" value="20.0">huwelijksmigratie niet moeilijker maken; asielzoekers mogen werken; pas later recht op sociale zekerheid; dubbele nationaliteit mag</position>
+					<position key="humaner beleid inzake vluchtelingen; na 3 maanden leren en werken; inburgeren op eigen kosten" value="25.0">humaner beleid inzake vluchtelingen; na 3 maanden leren en werken; inburgeren op eigen kosten</position>
+					<position key="SQ" value="50.0">SQ</position>
+					<position key="inburgerexamen voorwaarde voor verblijfsvergunning; dubbele nationaliteit wel toestaan;  eisen huwelijksmigranten aanscherpen" value="55.0">inburgerexamen voorwaarde voor verblijfsvergunning; dubbele nationaliteit wel toestaan;  eisen huwelijksmigranten aanscherpen</position>
+					<position key="huwelijksmigratie beperken; inburgering op eigen kosten; sociale zekerheid na 10 jaar" value="80.0">huwelijksmigratie beperken; inburgering op eigen kosten; sociale zekerheid na 10 jaar</position>
+					<position key="geen immigranten uit islamitische landen; assimilatiecontracten;  illegaliteit strafbaar; geen dubbele nationaliteit; NL nationaliteit en uitkeringen na 10 jaar verblijf" value="100.0">geen immigranten uit islamitische landen; assimilatiecontracten;  illegaliteit strafbaar; geen dubbele nationaliteit; NL nationaliteit en uitkeringen na 10 jaar verblijf</position>
+				</domain>
+			</issue>
+			<issue key="duur" name="duurzaamheid" ordering="6">
+				<domain discrete="false">
+					<position key="kerncentrales blijven mits veilig; minder geld voor duurzame economie" value="0.0">kerncentrales blijven mits veilig; minder geld voor duurzame economie</position>
+					<position key="&quot;nieuwe kerncentrales,14% duurzame energie in 2020; minder subsidies;verduurzaming eigen verantwoordelijkheid bedrijven en burgers&quot;" value="30.0">"nieuwe kerncentrales,14% duurzame energie in 2020; minder subsidies;verduurzaming eigen verantwoordelijkheid bedrijven en burgers"</position>
+					<position key="SQ" value="50.0">SQ</position>
+					<position key="&quot;14% duurzame energie in 2020; biobransstoffen en warmtehergebruik, verduurzaming eigen verantwoordelijkheid bedrijfsleven en burgers&quot;" value="55.0">"14% duurzame energie in 2020; biobransstoffen en warmtehergebruik, verduurzaming eigen verantwoordelijkheid bedrijfsleven en burgers"</position>
+					<position key="&quot;1,5% per jaar extra duurzame energie; geen nieuwe kern- of kolencentrales, moratorium op megastallen; landbouw verduurzamen&quot;" value="65.0">"1,5% per jaar extra duurzame energie; geen nieuwe kern- of kolencentrales, moratorium op megastallen; landbouw verduurzamen"</position>
+					<position key="18% duurzame energie in 2020; afschaffing salderingsregeling kleinschalige opwekking" value="75.0">18% duurzame energie in 2020; afschaffing salderingsregeling kleinschalige opwekking</position>
+					<position key="20% duurzame energie in 2020; meer groene belastingen en heffingen op co2 uitstoot; geen nieuwe kerncentrales" value="90.0">20% duurzame energie in 2020; meer groene belastingen en heffingen op co2 uitstoot; geen nieuwe kerncentrales</position>
+					<position key="2020 20% schone energie 2050 100%; vergroening belastingstelsel; geen kern- en kolencentrales; verbod op megastallen; duurzame landbouw" value="100.0">2020 20% schone energie 2050 100%; vergroening belastingstelsel; geen kern- en kolencentrales; verbod op megastallen; duurzame landbouw</position>
+				</domain>
+			</issue>
+			<issue key="ontslag" name="ontslagrecht" ordering="7">
+				<domain discrete="false">
+					<position key="ontslagbescherming handhaven; ww niet door werkgevers betaald;ww duur niet verkorten; ambtenaren blijven beschermd; meer vaste contracten" value="0.0">ontslagbescherming handhaven; ww niet door werkgevers betaald;ww duur niet verkorten; ambtenaren blijven beschermd; meer vaste contracten</position>
+					<position key="ontslag via kantonrechter; helft ontslagvergoeding voor werk naar werk budget tbv bijscholing;duur ww handhaven" value="20.0">ontslag via kantonrechter; helft ontslagvergoeding voor werk naar werk budget tbv bijscholing;duur ww handhaven</position>
+					<position key="&quot;opzegtermijn verlengen tot max 1 jaar; bij kortere periode rest via ww, betaald door werkgever&quot;" value="40.0">"opzegtermijn verlengen tot max 1 jaar; bij kortere periode rest via ww, betaald door werkgever"</position>
+					<position key="Lenteakkoord" value="50.0">Lenteakkoord</position>
+					<position key="&quot;positie 80, maar duur ww max 18 maanden&quot;" value="55.0">"positie 80, maar duur ww max 18 maanden"</position>
+					<position key="maximale ww periode 1 jaar; verhoging ww uitkering; individueel scholingsbudget" value="70.0">maximale ww periode 1 jaar; verhoging ww uitkering; individueel scholingsbudget</position>
+					<position key="&quot;werkgever verantwoordelijk tijdens eerste half jaar; duale procedure afgeschaft, kantonrechter indien nodig achteraf; alle werknemersgelijk; recht op scholing&quot;" value="80.0">"werkgever verantwoordelijk tijdens eerste half jaar; duale procedure afgeschaft, kantonrechter indien nodig achteraf; alle werknemersgelijk; recht op scholing"</position>
+					<position key="&quot;ww korter en hoger, ontslag zonder kantonrechter, alle werknemers gelijk, vaste ontslagregels&quot;" value="100.0">"ww korter en hoger, ontslag zonder kantonrechter, alle werknemers gelijk, vaste ontslagregels"</position>
+				</domain>
+			</issue>
+			<issue key="Europa" name="Europa" ordering="8">
+				<domain discrete="false">
+					<position key="Verdere integratie en uitbreiding ESM" value="0.0">Verdere integratie en uitbreiding ESM</position>
+					<position key="eurobonds mogelijk; uitbreiding ESM" value="30.0">eurobonds mogelijk; uitbreiding ESM</position>
+					<position key="Status quo; huidig Europees beleid" value="50.0">Status quo; huidig Europees beleid</position>
+					<position key="geen euroobligaties geen federatieve organisatie en dereguleren" value="60.0">geen euroobligaties geen federatieve organisatie en dereguleren</position>
+					<position key="grotere effectiviteit samenwerking; minder Europa" value="80.0">grotere effectiviteit samenwerking; minder Europa</position>
+					<position key="Uittreden uit EU en uit euro" value="100.0">Uittreden uit EU en uit euro</position>
+				</domain>
+			</issue>
+			<issue key="belasting" name="belastingen" ordering="9">
+				<domain discrete="false">
+					<position key="&quot;topschijf van 65% vanaf 150000, winsten en vermogens meer belasten; vennootschapsbelasting met 5% omhoog&quot;" value="0.0">"topschijf van 65% vanaf 150000, winsten en vermogens meer belasten; vennootschapsbelasting met 5% omhoog"</position>
+					<position key="&quot;topschijf van 60% vanaf 150000, vermogensbelasting verhogen; vennootschapsbelasting met 0,5% verhogen&quot;" value="10.0">"topschijf van 60% vanaf 150000, vermogensbelasting verhogen; vennootschapsbelasting met 0,5% verhogen"</position>
+					<position key="&quot;topschijf van 60% vanaf 150000; box 3 tweede tarief van 1,6% boven 125.000 vermogen&quot;" value="20.0">"topschijf van 60% vanaf 150000; box 3 tweede tarief van 1,6% boven 125.000 vermogen"</position>
+					<position key="status quo" value="50.0">status quo</position>
+					<position key="verlaging 2de schijf inkomstenbelasting" value="55.0">verlaging 2de schijf inkomstenbelasting</position>
+					<position key="IB verlaging wegens btw verhoging ongedaan maken; arbeidskorting verhogen; winstbelasting verlagen" value="60.0">IB verlaging wegens btw verhoging ongedaan maken; arbeidskorting verhogen; winstbelasting verlagen</position>
+					<position key="vermindering aftrek hypotheekrente compenseren" value="75.0">vermindering aftrek hypotheekrente compenseren</position>
+					<position key="vlaktaks met topheffing" value="100.0">vlaktaks met topheffing</position>
+				</domain>
+			</issue>
+			<issue key="ontwikkeling" name="ontwikkelingssamenwerking" ordering="10">
+				<domain discrete="false">
+					<position key="geen ontwikkelingshulp" value="0.0">geen ontwikkelingshulp</position>
+					<position key="1% van het BNP" value="1.0">1% van het BNP</position>
+				</domain>
+			</issue>
+			<issue key="bezuinig" name="ombuigingen op collectieve uitgaven" ordering="11">
+				<domain discrete="false">
+					<position key="lowerbound" value="0.0">lowerbound</position>
+					<position key="upperbound" value="29.6">upperbound</position>
+				</domain>
+			</issue>
+			<actor color="#3423AD" key="PvdA" name="PvdA" ordering="1" power="39.0">
+				<actorIssueLink issueRef="hypotheek" position="75.0" power="0.63825" salience="0.8"></actorIssueLink>
+				<actorIssueLink issueRef="huur" position="40.0" power="0.63825" salience="0.7"></actorIssueLink>
+				<actorIssueLink issueRef="AOW" position="65.0" power="0.63825" salience="0.7"></actorIssueLink>
+				<actorIssueLink issueRef="zorg" position="90.0" power="0.63825" salience="0.9"></actorIssueLink>
+				<actorIssueLink issueRef="vreemd" position="20.0" power="0.63825" salience="0.75"></actorIssueLink>
+				<actorIssueLink issueRef="duur" position="75.0" power="0.63825" salience="0.75"></actorIssueLink>
+				<actorIssueLink issueRef="ontslag" position="20.0" power="0.63825" salience="0.8"></actorIssueLink>
+				<actorIssueLink issueRef="Europa" position="30.0" power="0.63825" salience="0.85"></actorIssueLink>
+				<actorIssueLink issueRef="belasting" position="20.0" power="0.63825" salience="0.65"></actorIssueLink>
+				<actorIssueLink issueRef="ontwikkeling" position="0.7" power="0.63825" salience="0.65"></actorIssueLink>
+				<actorIssueLink issueRef="bezuinig" position="15.2" power="0.63825" salience="0.85"></actorIssueLink>
+				<actorLink influence="0.0" targetActor="SP"></actorLink>
+				<actorLink influence="0.0" targetActor="PvdD"></actorLink>
+				<actorLink influence="0.0" targetActor="GL"></actorLink>
+				<actorLink influence="0.0" targetActor="D66"></actorLink>
+				<actorLink influence="0.0" targetActor="CU"></actorLink>
+				<actorLink influence="0.0" targetActor="CDA"></actorLink>
+				<actorLink influence="0.0" targetActor="VVD"></actorLink>
+				<actorLink influence="0.0" targetActor="SGP"></actorLink>
+				<actorLink influence="0.0" targetActor="PVV"></actorLink>
+				<actorLink influence="0.0" targetActor="50+"></actorLink>
+			</actor>
+			<actor color="#BA88C9" key="VVD" name="VVD" ordering="8" power="41.0">
+				<actorIssueLink issueRef="hypotheek" position="0.0" power="0.648979" salience="0.95"></actorIssueLink>
+				<actorIssueLink issueRef="huur" position="100.0" power="0.648979" salience="0.6"></actorIssueLink>
+				<actorIssueLink issueRef="AOW" position="100.0" power="0.648979" salience="0.8"></actorIssueLink>
+				<actorIssueLink issueRef="zorg" position="0.0" power="0.648979" salience="0.9"></actorIssueLink>
+				<actorIssueLink issueRef="vreemd" position="80.0" power="0.648979" salience="0.5"></actorIssueLink>
+				<actorIssueLink issueRef="duur" position="30.0" power="0.648979" salience="0.6"></actorIssueLink>
+				<actorIssueLink issueRef="ontslag" position="100.0" power="0.648979" salience="0.85"></actorIssueLink>
+				<actorIssueLink issueRef="Europa" position="60.0" power="0.648979" salience="0.7"></actorIssueLink>
+				<actorIssueLink issueRef="belasting" position="60.0" power="0.648979" salience="0.9"></actorIssueLink>
+				<actorIssueLink issueRef="ontwikkeling" position="0.25" power="0.648979" salience="0.4"></actorIssueLink>
+				<actorIssueLink issueRef="bezuinig" position="22.2" power="0.648979" salience="0.9"></actorIssueLink>
+				<actorLink influence="0.0" targetActor="PvdA"></actorLink>
+				<actorLink influence="0.0" targetActor="SP"></actorLink>
+				<actorLink influence="0.0" targetActor="PvdD"></actorLink>
+				<actorLink influence="0.0" targetActor="GL"></actorLink>
+				<actorLink influence="0.0" targetActor="D66"></actorLink>
+				<actorLink influence="0.0" targetActor="CU"></actorLink>
+				<actorLink influence="0.0" targetActor="CDA"></actorLink>
+				<actorLink influence="0.0" targetActor="SGP"></actorLink>
+				<actorLink influence="0.0" targetActor="PVV"></actorLink>
+				<actorLink influence="0.0" targetActor="50+"></actorLink>
+			</actor>
+		</dataset>
+	</project>
+</DC-project>

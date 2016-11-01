@@ -57,17 +57,17 @@ class TestModel(TestCase):
         realized = list()
         realized.append(e)
 
-        model.update_exchanges(e)
+        model.remove_invalid_exchanges(e)
 
         e1 = model.highest_gain()
-        model.update_exchanges(e1)
+        model.remove_invalid_exchanges(e1)
         realized.append(e1)
 
         self.assertAlmostEqual(e1.gain, Decimal(0.756186984), delta=1e-8)
 
         while len(model.Exchanges) > 0:
             realize = model.highest_gain()
-            model.update_exchanges(realize)
+            model.remove_invalid_exchanges(realize)
             realized.append(realize)
 
         self.assertEqual(len(realized), 20)
@@ -96,16 +96,16 @@ class TestModel(TestCase):
         in_iteration = 0
 
         for exchange in model.Exchanges:
-            if exchange.equals(i="EU28", q="financevol", j="AOSIS", p="amb2050"):
+            if exchange.equals_with_supply(i="EU28", q="financevol", j="AOSIS", p="amb2050"):
                 exchange_99 = exchange
 
         while len(model.Exchanges) > 0:
             realize = model.highest_gain()
-            model.update_exchanges(realize)
+            model.remove_invalid_exchanges(realize)
 
             founded_99 = False
             for exchange in model.Exchanges:
-                if exchange.equals(i="EU28", q="financevol", j="AOSIS", p="amb2050"):
+                if exchange.equals_with_supply(i="EU28", q="financevol", j="AOSIS", p="amb2050"):
                     founded_99 = True
 
             if not founded_99:
@@ -113,6 +113,7 @@ class TestModel(TestCase):
 
             in_iteration += 1
 
-        exchange_99.recalculate(realize)
+        if exchange_99 is not None:
+            exchange_99.recalculate(realize)
 
-        self.assertEqual(exchange_99.i.y, 0)
+            self.assertEqual(exchange_99.i.y, 0)

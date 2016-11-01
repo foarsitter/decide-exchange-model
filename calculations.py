@@ -11,6 +11,9 @@ def calc_nbs(actor_issues, denominator):
         numerator += (v.position * v.salience * v.power)
         # denominator += (v.Salience * v.Power)
 
+    if denominator == 0:
+        return 0
+
     return numerator / denominator
 
 
@@ -114,24 +117,48 @@ def gain(actor: 'ExchangeActor', demand_exchange_ratio, supply_exchange_ratio):
     return demand_exchange_ratio * actor.s - supply_exchange_ratio * actor.s_demand
 
 
-def externalities(actor_issue, nbs_0, nbs_1, exchange):
-    shift = (nbs_0 - actor_issue.position) - (nbs_1 - actor_issue.position)
-    eu_k = shift * actor_issue.salience
+# def externalities(actor_issue, nbs_0, nbs_1, exchange):
+#     shift = (nbs_0 - actor_issue.position) - (nbs_1 - actor_issue.position)
+#     eu_k = shift * actor_issue.salience
+#
+#     e_type = ""
+#
+#     if exchange.i.actor.Name == actor_issue.actor.Name or exchange.j.actor.Name == actor_issue.actor.Name:
+#         e_type = "own"
+#     else:
+#         if exchange.i.group == actor_issue.group or exchange.j.group == actor_issue.group:
+#             if eu_k > 0:
+#                 e_type = 'ip'
+#             else:
+#                 e_type = 'in'
+#         else:
+#             if eu_k > 0:
+#                 e_type = 'op'
+#             else:
+#                 e_type = 'on'
+#
+#     return {"type": e_type, "value": eu_k}
 
-    e_type = ""
 
-    if exchange.i.actor.Name == actor_issue.actor.Name or exchange.j.actor.Name == actor_issue.actor.Name:
-        e_type = "own"
-    else:
-        if exchange.i.group == actor_issue.group or exchange.j.group == actor_issue.group:
-            if eu_k > 0:
-                e_type = 'ip'
-            else:
-                e_type = 'in'
-        else:
-            if eu_k > 0:
-                e_type = 'op'
-            else:
-                e_type = 'on'
+def calc_actor_externalities(actor, model, realized):
 
-    return {"type": e_type, "value": eu_k}
+
+    if actor in model.ActorIssues[realized.j.supply] and  actor in model.ActorIssues[realized.i.supply]:
+
+        xp = model.ActorIssues[realized.j.supply][actor].position
+        sp = model.ActorIssues[realized.j.supply][actor].salience
+
+        xq = model.ActorIssues[realized.i.supply][actor].position
+        sq = model.ActorIssues[realized.i.supply][actor].salience
+
+        l0 = abs(realized.j.nbs_0 - xp)
+        l1 = abs(realized.j.nbs_1 - xp)
+        r0 = abs(realized.i.nbs_0 - xq)
+        r1 = abs(realized.i.nbs_1 - xq)
+
+        l = (l0 - l1)
+        r = (r0 - r1)
+        ext = l * sp + r * sq
+
+        return ext
+    return 0
