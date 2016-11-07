@@ -1,6 +1,6 @@
 import csv
 from csv import excel
-
+from random import random
 import csvWriter
 from datetime import datetime
 import collections
@@ -69,29 +69,14 @@ for iteration_number in range(stop):
 
         # TODO: write a method to check is there are more exchanges with an equal gain.
 
-        # TEST BLOCK
-        # if len(model.Exchanges) > 0:
-        #
-        #     # TODO: this should be done in an unit-test
-        #     if abs(realize.gain - model.Exchanges[0].gain) == 0:
-        #         if realize.i.actor_name == "ALBA" and realize.i.supply == "financewho" and realize.j.actor_name == "Umbrellamin":
-        #             model.Exchanges.append(realize)
-        #             realize = model.highest_gain()
-        #         elif realize.i.actor_name == "EU28" and realize.i.supply == "eaa" and realize.j.actor_name == "China" and realize.j.supply == "mrv":
-        #             model.Exchanges.append(realize)
-        #             realize = model.highest_gain()
-        #         elif realize.i.actor_name == "LDC" and realize.i.supply == "progress" and realize.j.actor_name == "Brazil" and realize.j.supply == "adaptfinance":
-        #             model.Exchanges.append(realize)
-        #             realize = model.highest_gain()
-        #         elif realize.i.actor_name == "Arabstates" and realize.i.supply == "progress" and realize.j.actor_name == "LDC" and realize.j.supply == "financewho":
-        #             model.Exchanges.append(realize)
-        #             realize = model.highest_gain()
-        #         elif realize.i.actor_name == "EU28" and realize.i.supply == "financewho" and realize.j.actor_name == "Brazil" and realize.j.supply == "legal":
-        #             model.Exchanges.append(realize)
-        #             realize = model.highest_gain()
-        #             # else:
-        #             #     # print(str(model.Exchanges[0]))
-        # # end if
+
+        if len(model.Exchanges) > 0:
+            next = model.highest_gain()
+
+            if abs(realize.gain - next.gain) < 1e-10:
+                if random() >= 0.5:
+                    model.Exchanges.append(realize)
+                    realize = next
 
         removed_exchanges = model.remove_invalid_exchanges(realize)
         eventHandler.notify(Observable.REMOVED, model, removed_exchanges)

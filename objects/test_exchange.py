@@ -1,7 +1,7 @@
 from unittest import TestCase
 
-from objects.Exchange import Exchange
-from objects.Model import Model
+from objects.EqualExchange import Exchange
+from objects.EqualGainModel import Model
 
 
 class TestExchange(TestCase):
@@ -34,6 +34,7 @@ class TestExchange(TestCase):
         e2.calculate()
         # TODO: fix this test
         # self.assertEqual(e2.j.move, 10)
+
 
 class TestExchangeActor(TestCase):
     def test_equals(self):

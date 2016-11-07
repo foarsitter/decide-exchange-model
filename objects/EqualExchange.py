@@ -317,31 +317,6 @@ class Exchange:
                 self.j.moves.pop()
                 self.re_calc = True
 
-        # if self.i.actor == exchange.j.actor and self.i.demand == exchange.j.demand:
-        #
-        #     if exchange.i.actor in self.updates[exchange.j.demand]:
-        #         exchangeActor = exchange.i
-        #         demand = exchange.j.demand
-        #         x_updated = self.updates[exchange.j.demand][exchangeActor.actor]
-        #
-        #         if exchangeActor.start_position <= x_updated:
-        #             if x_updated < exchangeActor.y:
-        #                 self.updates[demand][exchangeActor.actor] = x_updated
-        #             else:
-        #                 self.updates[demand][exchangeActor.actor] = exchangeActor.y
-        #         else:
-        #             if x_updated > exchangeActor.y:
-        #                 self.updates[demand][exchangeActor.actor] = x_updated
-        #             else:
-        #                 self.updates[demand][exchangeActor.actor] = exchangeActor.y
-        #     else:
-        #         self.updates[exchange.j.demand][exchange.i.actor] = exchange.i.y
-        #
-        #     if not self.re_calc:
-        #         self.i.moves.pop()
-        #         self.j.moves.pop()
-        #         self.re_calc = True
-
         if self.re_calc:
             self.calculate()
 
@@ -396,9 +371,6 @@ class ExchangeActor:
 
         if moves_min < 0 and moves_max < 0 or moves_min > 0 and moves_max > 0:
             return True
-            # newMoves < - c(self$moves, move) < 0
-            #
-            # return (isTRUE(all.equal(min(newMoves), max(newMoves))))
 
     def __str__(self):
         return "{0} {1} {2} {3} ({4})".format(self.actor_name, self.supply, self.x, self.y,
@@ -414,10 +386,6 @@ class ExchangeActor:
         x_t1 = swv + fwv + pv
 
         return x_t1
-        # i.swv = (1 - s) * sw * y
-        # ii.fwv = fw * y
-        # iii.pv = (1 – (1 – s)*sw –fw)*x(t)
-        # iv.x(t + 1) = swv + fwv + pv
 
     def equals_with_supply_obj(self, exchange_actor):
 

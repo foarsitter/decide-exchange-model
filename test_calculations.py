@@ -6,7 +6,7 @@ from calculations import by_exchange_ratio, by_absolute_move, calc_adjusted_nbs,
     sum_salience_power, calc_nbs_denominator, calc_actor_externalities as externalities
 
 from objects.ActorIssue import ActorIssue
-from objects.Exchange import Exchange
+from objects.EqualExchange import Exchange
 
 
 class TestNBSCalculations(TestCase):

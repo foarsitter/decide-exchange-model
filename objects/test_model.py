@@ -3,7 +3,7 @@ from decimal import *
 from unittest import TestCase
 
 import csvParser
-from objects.Model import Model
+from objects.EqualGainModel import Model
 
 
 class TestModel(TestCase):

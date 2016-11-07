@@ -1,7 +1,7 @@
 import csv
 from typing import List
 
-from objects.Exchange import Exchange
+from objects.EqualExchange import Exchange
 
 
 class csvWriter:

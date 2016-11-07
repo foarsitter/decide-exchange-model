@@ -5,7 +5,7 @@ from operator import attrgetter
 from calculations import calc_nbs, calc_nbs_denominator
 
 from objects.ActorIssue import ActorIssue
-from objects.Exchange import Exchange
+from objects.RandomExchange import Exchange
 
 
 class Model:
@@ -28,8 +28,6 @@ class Model:
             return False
 
     def get_value(self, actor_name: str, issue: str, field: str):
-
-        a = None
 
         a = self.ActorIssues[issue][actor_name]
 
@@ -54,12 +52,9 @@ class Model:
     def add_actor_issue(self, actor_name: str, issue_name: str, position: Decimal, salience: Decimal,
                         power: Decimal) -> ActorIssue:
 
+        self.ActorIssues[issue_name][actor_name] = ActorIssue(actor_name, issue_name, position, salience, power)
 
-        actor_issue = ActorIssue(actor_name, issue_name, position, salience, power)
-
-        self.ActorIssues[issue_name][actor_name] = actor_issue
-
-        return ActorIssue
+        return self.ActorIssues[issue_name][actor_name]
 
     def add_exchange(self, i: str, j: str, p: str, q: str, groups) -> None:
         e = Exchange(i, j, p, q, self, groups)
@@ -68,15 +63,15 @@ class Model:
         return e
 
     def calc_nbs(self):
-        for k, v in self.ActorIssues.items():
-            self.nbs_denominators[k] = calc_nbs_denominator(v)
+        for issue, actor_issues in self.ActorIssues.items():
+            self.nbs_denominators[issue] = calc_nbs_denominator(actor_issues)
 
-            self.nbs[k] = calc_nbs(v, self.nbs_denominators[k])
+            self.nbs[issue] = calc_nbs(actor_issues, self.nbs_denominators[issue])
 
     def determine_positions(self):
-        for k, v in self.nbs.items():
-            for actorIssue in self.ActorIssues[k].values():
-                actorIssue.is_left_to_nbs(v)
+        for issue, issue_nbs in self.nbs.items():
+            for actorIssue in self.ActorIssues[issue].values():
+                actorIssue.is_left_to_nbs(issue_nbs)
 
     def calc_combinations(self):
         self.issue_combinations = combinations(self.Issues, 2)

@@ -2,7 +2,7 @@
 import csv
 import os
 
-from objects.Model import Model
+from objects.EqualGainModel import Model
 
 # csv row identifiers
 cA = "#A"  # A = actor
