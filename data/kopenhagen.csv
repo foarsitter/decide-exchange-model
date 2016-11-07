@@ -1,0 +1,123 @@
+#O;Copenhagen negotiations;;;;
+#/;Data collected on 27 and 28 Oct 2009. Clarisse Siebert and Richard Klein (SEI);;;;
+#/;ID;Full name;;;
+#A;USA;USA;;;
+#A;EU;EU (incl Norway);;;
+#A;Australia;Australia;;;
+#A;Canada;Canada;;;
+#A;Japan;Japan;;;
+#A;Russia;Russia;;;
+#A;China India;China India;;;
+#A;Brazil;Brazil;;;
+#A;LDC;Least Developed Countries;;;
+#A;DevingC;Developing Countries;;;
+#A;AOSIS;Alliance of Small Island States;;;
+#/;issue input;;;;
+#/;ID;full name;;;
+#/;Migration issues;;;;
+#P;Newtreaty;Copenhagen new treaty vs extension of Kyoto;;;
+#P;DevlopC2020;Reduction of CO2 emission in 2020 by developed Countries relative to 1990;;;
+#P;Domestred;Percentage of reductions to be realized domestically;;;
+#P;MRVdecrease;Decrease intensity of carbon economy in MRV's in emerging economies;;;
+#/;Adaptation issues;;;;
+#P;Commitments;Binding funding commitments for adaptation in developing countries;;;
+#P;Control;level of control of adaptation funding;;;
+#P;Extra;Is it counted as aid or new and additional;;;
+#P;technology;Technology Fund;;;
+#P;Forestry;REDD Reducting Emissions from Deforestation and Degradation;;;
+#/;issue details;;;;
+#/;Issue ID;position;meaning;;
+#M;Newtreaty;0;new set of decisions;;
+#M;Newtreaty;100;second commitment period of Kyoto;;
+#M;DevlopC2020;0;low;;
+#M;DevlopC2020;100;high;;
+#M;Domestred;0;low;;
+#M;Domestred;100;very high percentage;;
+#M;MRVdecrease;0;low;;
+#M;MRVdecrease;100;high;based on power generation. heavy industry and transport;
+#M;Commitments;0;no;;
+#M;Commitments;100;yes;;
+#M;Control;0;Developed countries;;
+#M;Control;50;intergovernment bodies;;
+#M;Control;100;complete control by receiving countries;;
+#M;Extra;0;Aid;;
+#M;Extra;100;new and additional;;
+#/;data input;;;;
+#/;actor;issue;position;salience;power
+#D;USA;Newtreaty;10;0.9;1
+#D;EU;Newtreaty;50;0.4;0.6
+#D;Australia;Newtreaty;20;0.4;0.1
+#D;Canada;Newtreaty;10;0.8;0.15
+#D;Japan;Newtreaty;50;0.6;0.2
+#D;Russia;Newtreaty;90;0.7;0.05
+#D;China India;Newtreaty;100;0.9;0.95
+#D;Brazil;Newtreaty;100;0.5;0.1
+#D;LDC;Newtreaty;100;0.9;0.3
+#D;DevingC;Newtreaty;100;0.5;0.1
+#D;AOSIS;Newtreaty;100;0.9;0.3
+#D;USA;DevlopC2020;10;0.8;1
+#D;EU;DevlopC2020;70;0.9;0.6
+#D;Australia;DevlopC2020;50;0.5;0.1
+#D;Canada;DevlopC2020;30;0.8;0.15
+#D;Japan;DevlopC2020;50;0.6;0.2
+#D;Russia;DevlopC2020;60;0.6;0.05
+#D;China India;DevlopC2020;70;0.8;0.95
+#D;Brazil;DevlopC2020;70;0.8;0.1
+#D;LDC;DevlopC2020;100;1;0.3
+#D;DevingC;DevlopC2020;80;0.8;0.1
+#D;AOSIS;DevlopC2020;100;1;0.3
+#D;USA;Domestred;10;0.75;1
+#D;EU;Domestred;50;0.8;0.6
+#D;Australia;Domestred;30;0.6;0.1
+#D;Canada;Domestred;30;0.6;0.15
+#D;Japan;Domestred;20;0.6;0.2
+#D;Russia;Domestred;0;0.9;0.05
+#D;China India;Domestred;10;0.9;0.95
+#D;Brazil;Domestred;20;0.75;0.1
+#D;LDC;Domestred;75;0.9;0.3
+#D;DevingC;Domestred;50;0.8;0.1
+#D;AOSIS;Domestred;80;0.95;0.3
+#D;USA;MRVdecrease;90;1;1
+#D;EU;MRVdecrease;70;0.5;0.6
+#D;Australia;MRVdecrease;80;0.6;0.1
+#D;Canada;MRVdecrease;70;0.5;0.15
+#D;Japan;MRVdecrease;70;0.5;0.2
+#D;Russia;MRVdecrease;30;0.1;0.05
+#D;China India;MRVdecrease;10;1;0.95
+#D;Brazil;MRVdecrease;15;0.9;0.1
+#D;LDC;MRVdecrease;40;0.3;0.3
+#D;DevingC;MRVdecrease;15;0.8;0.1
+#D;AOSIS;MRVdecrease;50;0.3;0.3
+#D;USA;Commitments;10;0.8;1
+#D;EU;Commitments;20;0.2;0.6
+#D;Australia;Commitments;20;0.4;0.1
+#D;Canada;Commitments;10;0.4;0.15
+#D;Japan;Commitments;20;0.2;0.2
+#D;Russia;Commitments;50;0.000001;0.05
+#D;China India;Commitments;85;0.7;0.95
+#D;Brazil;Commitments;70;0.3;0.1
+#D;LDC;Commitments;90;0.85;0.3
+#D;DevingC;Commitments;70;0.3;0.1
+#D;AOSIS;Commitments;90;0.85;0.3
+#D;USA;Control;10;0.6;1
+#D;EU;Control;50;0.75;0.6
+#D;Australia;Control;40;0.5;0.1
+#D;Canada;Control;60;0.5;0.15
+#D;Japan;Control;20;0.4;0.2
+#D;Russia;Control;60;0.1;0.05
+#D;China India;Control;75;0.75;0.95
+#D;Brazil;Control;75;0.75;0.1
+#D;LDC;Control;90;1;0.3
+#D;DevingC;Control;90;0.8;0.1
+#D;AOSIS;Control;90;1;0.3
+#D;USA;Extra;10;0.6;1
+#D;EU;Extra;50;0.4;0.6
+#D;Australia;Extra;25;0.4;0.1
+#D;Canada;Extra;25;0.4;0.15
+#D;Japan;Extra;40;0.4;0.2
+#D;Russia;Extra;50;0.000001;0.05
+#D;China India;Extra;90;0.85;0.95
+#D;Brazil;Extra;70;0.6;0.1
+#D;LDC;Extra;100;0.95;0.3
+#D;DevingC;Extra;80;0.8;0.1
+#D;AOSIS;Extra;100;0.95;0.3
