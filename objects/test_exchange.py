@@ -62,4 +62,6 @@ class TestExchangeActor(TestCase):
 
         e = Exchange(a1, a2, "p", "q", model, groups=['a', 'b'])
 
-        self.assertTrue(e.equals(i="a1", j="a2", p="p", q="q"))
+        eq = e.equal_str("a1", "a2", "p", "q")
+
+        self.assertTrue(eq)

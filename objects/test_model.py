@@ -96,7 +96,7 @@ class TestModel(TestCase):
         in_iteration = 0
 
         for exchange in model.Exchanges:
-            if exchange.equals_with_supply(i="EU28", q="financevol", j="AOSIS", p="amb2050"):
+            if exchange.equal_str(i="EU28", q="financevol", j="AOSIS", p="amb2050"):
                 exchange_99 = exchange
 
         while len(model.Exchanges) > 0:
@@ -105,7 +105,7 @@ class TestModel(TestCase):
 
             founded_99 = False
             for exchange in model.Exchanges:
-                if exchange.equals_with_supply(i="EU28", q="financevol", j="AOSIS", p="amb2050"):
+                if exchange.equal_str(i="EU28", q="financevol", j="AOSIS", p="amb2050"):
                     founded_99 = True
 
             if not founded_99:

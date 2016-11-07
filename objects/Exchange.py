@@ -235,14 +235,15 @@ class Exchange:
 
             self.is_valid = b1 and b2
 
-    def equals(self, i, j, p, q):
-        return self.i.equals_with_supply(i, q) and self.j.equals_with_supply(j, p) or self.i.equals_with_supply(j, p) and self.j.equals_with_supply(i, q)
+    def equal_str(self, i, j, p, q):
+        return self.i.equals_with_supply_str(i, q) and self.j.equals_with_supply_str(j, p) or \
+               self.i.equals_with_supply_str(j, p) and self.j.equals_with_supply_str(i, q)
 
-    def equals(self, exchange):
-        return self.equals(i=exchange.i, j=exchange.j, p=exchange.p, q=exchange.q)
+    def equal_obj(self, exchange):
+        return self.equal_obj(i=exchange.i, j=exchange.j, p=exchange.p, q=exchange.q)
 
     def contains_actor_with_supply(self, actor, issue):
-        return self.i.equals_with_supply(actor.Name, issue) or self.j.equals_with_supply(actor.Name, issue)
+        return self.i.equals_with_supply_str(actor.Name, issue) or self.j.equals_with_supply_str(actor.Name, issue)
 
     def recalculate(self, exchange: 'Exchange'):
         # update supply positions
@@ -251,26 +252,26 @@ class Exchange:
 
         # TODO create a method inside ExchangeActor for comparison, gets ugly.
 
-        if self.i.equals_with_supply(exchange.i):
+        if self.i.equals_with_supply_obj(exchange.i):
             self.i.x = exchange.i.y
             self.i.moves.pop()
             self.j.moves.pop()
             self.i.moves.append(exchange.i.moves[-1])
             self.re_calc = True
-        elif self.i.equals_with_supply(exchange.j):
+        elif self.i.equals_with_supply_obj(exchange.j):
             self.i.x = exchange.j.y
             self.i.moves.pop()
             self.j.moves.pop()
             self.i.moves.append(exchange.j.moves[-1])
             self.re_calc = True
 
-        if self.j.equals_with_supply(exchange.i):
+        if self.j.equals_with_supply_obj(exchange.i):
             self.j.x = exchange.i.y
             self.i.moves.pop()
             self.j.moves.pop()
             self.j.moves.append(exchange.i.moves[-1])
             self.re_calc = True
-        elif self.j.equals_with_supply(exchange.j):
+        elif self.j.equals_with_supply_obj(exchange.j):
             self.j.x = exchange.j.y
             self.i.moves.pop()
             self.j.moves.pop()
@@ -435,12 +436,15 @@ class ExchangeActor:
         # iii.pv = (1 – (1 – s)*sw –fw)*x(t)
         # iv.x(t + 1) = swv + fwv + pv
 
-    def equals_with_supply(self, exchange_actor):
+    def equals_with_supply_obj(self, exchange_actor):
 
         if self.actor.Name == exchange_actor.actor.Name and self.supply == exchange_actor.supply:
             return True
-
         return False
 
-    def equals(self, exchange_actor):
-        return self.equals_with_supply(name=exchange_actor.name, supply=exchange_actor.supply)
+    def equals_with_supply_str(self, actor_name, supply):
+
+        if self.actor.Name == actor_name and self.supply == supply:
+            return True
+        return False
+

@@ -1,8 +1,9 @@
-from objects.update_listeners.observer import Observable, Observer
-import calculations
-import itertools
-import csv
 import collections
+import csv
+import itertools
+
+import calculations
+from objects.update_listeners.observer import Observable, Observer
 
 
 class Externalities(Observer):
@@ -14,10 +15,19 @@ class Externalities(Observer):
     def __init__(self, observable, model, current_file):
         super(Externalities, self).__init__(observable=observable)
 
+        self.current_file = current_file
+
         self.issue_set = {}
         self.actors = {}
         self.exchanges = []
-        self.current_file = current_file
+
+        for actor in model.Actors:
+            self.actors[actor] = {'ip': 0, 'in': 0, 'op': 0, 'on': 0, "own": 0}
+
+    def setup(self, model):
+        self.issue_set = {}
+        self.actors = {}
+        self.exchanges = []
 
         for actor in model.Actors:
             self.actors[actor] = {'ip': 0, 'in': 0, 'op': 0, 'on': 0, "own": 0}
@@ -152,3 +162,5 @@ class Externalities(Observer):
 
             # end for
         # end with
+
+        self.setup(model)

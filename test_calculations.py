@@ -53,8 +53,8 @@ class TestBy_absolute_move(TestCase):
         # D	China	eaa	0	0.65	1
         # D	USA	eaa	100	0.4	1
 
-        i = model.Actors["USA"]
-        j = model.Actors["China"]
+        i = model.Actors["usa"]
+        j = model.Actors["china"]
         p = "financevol"
         q = "eaa"
         e = Exchange(i, j, p, q, model, groups=['a', 'd'])
@@ -89,19 +89,13 @@ class TestBy_absolute_move(TestCase):
 
         model = csv.read("data\\CoP21.csv")
 
-        # /	actor	issue	position	salience	power
-        # D	China	financevol	100	0.5	1
-        # D	USA	financevol	0	0.7	1
-        # D	China	eaa	0	0.65	1
-        # D	USA	eaa	100	0.4	1
-
         model.calc_nbs()
         model.determine_positions()
         model.calc_combinations()
         model.determine_groups()
 
-        i = model.Actors["USA"]
-        j = model.Actors["China"]
+        i = model.Actors["usa"]
+        j = model.Actors["china"]
         p = "financevol"
         q = "eaa"
         e = Exchange(i, j, p, q, model, groups=['a', 'd'])
@@ -118,21 +112,21 @@ class TestBy_absolute_move(TestCase):
 
         # todo add type checks for op,ip,in,on and own
 
-        ext_russia =  externalities(Russia, nbs_0, nbs_1, e)
-        self.assertEqual(ext_russia["value"], ((nbs_0 - Russia.position) - (nbs_1 - Russia.position)) * Russia.salience)
+        ext_russia = externalities(Russia, model, e)
+        self.assertEqual(ext_russia, ((nbs_0 - Russia.position) - (nbs_1 - Russia.position)) * Russia.salience)
 
-        ext_umbrella = externalities(Umbrellamin, nbs_0, nbs_1, e)
-        self.assertEqual(ext_umbrella["value"],
+        ext_umbrella = externalities(Umbrellamin, model, e)
+        self.assertEqual(ext_umbrella,
                          (abs(nbs_0 - Umbrellamin.position) - abs(nbs_1 - Umbrellamin.position)) * Umbrellamin.salience)
 
-        ext_Arabstates = externalities(Arabstates, nbs_0, nbs_1, e)
-        self.assertEqual(ext_Arabstates["value"],
+        ext_Arabstates = externalities(Arabstates, model, e)
+        self.assertEqual(ext_Arabstates,
                          (abs(nbs_0 - Arabstates.position) - abs(nbs_1 - Arabstates.position)) * Arabstates.salience)
 
         # only one actor of the exchange has an positive own externality on this.
 
-        ai_i = model.ActorIssues[p]["USA"]
-        ai_j = model.ActorIssues[p]["China"]
+        ai_i = model.ActorIssues[p]["usa"]
+        ai_j = model.ActorIssues[p]["china"]
 
         ext_i = externalities(ai_i, nbs_0, nbs_1, e)
         self.assertEqual(ext_i["value"], (abs(nbs_0 - ai_i.position) - abs(nbs_1 - ai_i.position)) * ai_i.salience)
