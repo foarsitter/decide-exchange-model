@@ -8,7 +8,7 @@ class TestParser(TestCase):
         self.parser = csvParser.Parser()
 
     def test_read(self):
-        model = self.parser.read("data\\data_short.csv")
+        model = self.parser.read("data/data_short.csv")
 
         self.assertEqual(len(model.Actors), 15)
         self.assertEqual(len(model.Issues), 3)

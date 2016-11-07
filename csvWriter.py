@@ -19,9 +19,9 @@ class csvWriter:
     def create_row(self, exchange: Exchange):
         return [
             # the actors
-            exchange.i.actor.Name,
+            exchange.i.actor_name,
             exchange.i.supply,
-            exchange.j.actor.Name,
+            exchange.j.actor_name,
             exchange.j.supply,
             exchange.gain,
             # the move of i

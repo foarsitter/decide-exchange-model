@@ -34,7 +34,7 @@ class Parser:
     def read(self, filename: str):
 
         if not filename.startswith("/"):
-            filename = "{0}\\{1}".format(os.path.dirname(os.path.abspath(__file__)), filename)
+            filename = "{0}/{1}".format(os.path.dirname(os.path.abspath(__file__)), filename)
 
         with open(filename, 'rt') as csv_file:
             reader = csv.reader(csv_file, delimiter=';')
@@ -59,7 +59,7 @@ class Parser:
         self.data.add_issue(row[1], row[2])
 
     def parseRowD(self, row):
-        self.data.add_actor_issue(actor=row[rActor], issue=row[rIssue], power=row[rPower], salience=row[rSalience],
+        self.data.add_actor_issue(actor_name=row[rActor], issue_name=row[rIssue], power=row[rPower], salience=row[rSalience],
                                   position=row[rPosition])
 
     def info(self):

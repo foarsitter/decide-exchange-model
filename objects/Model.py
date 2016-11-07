@@ -3,7 +3,7 @@ from itertools import combinations
 from operator import attrgetter
 
 from calculations import calc_nbs, calc_nbs_denominator
-from objects.Actor import Actor
+
 from objects.ActorIssue import ActorIssue
 from objects.Exchange import Exchange
 
@@ -20,18 +20,18 @@ class Model:
         self.moves = {}  # dict with issue,actor[move_1,move_2,move_3]
         self.nbs_denominators = {}
 
-    def get_actor_issue(self, actor: Actor, issue: str):
+    def get_actor_issue(self, actor_name: str, issue: str):
 
-        if actor.Name in self.ActorIssues[issue.lower()]:
-            return self.ActorIssues[issue.lower()][actor.Name]
+        if actor_name in self.ActorIssues[issue]:
+            return self.ActorIssues[issue][actor_name]
         else:
             return False
 
-    def get_value(self, actor: Actor, issue: str, field: str):
+    def get_value(self, actor_name: str, issue: str, field: str):
 
         a = None
 
-        a = self.ActorIssues[issue.lower()][actor.Name]
+        a = self.ActorIssues[issue][actor_name]
 
         if a is not False:
 
@@ -42,27 +42,26 @@ class Model:
             if field is "x":
                 return a.position
 
-    def add_actor(self, actor: str) -> Actor:
-        a = Actor(actor)
-        self.Actors[a.Name] = a
-        return a
+    def add_actor(self, actor_name: str) -> str:
 
-    def add_issue(self, name: str, human: str):
-        self.Issues.append(name.lower())
-        self.ActorIssues[name.lower()] = {}
+        self.Actors[actor_name] = actor_name
+        return self.Actors[actor_name]
 
-    def add_actor_issue(self, actor: str, issue: str, position: Decimal, salience: Decimal,
+    def add_issue(self, issue_name: str, human: str):
+        self.Issues.append(issue_name)
+        self.ActorIssues[issue_name] = {}
+
+    def add_actor_issue(self, actor_name: str, issue_name: str, position: Decimal, salience: Decimal,
                         power: Decimal) -> ActorIssue:
-        a = self.Actors[actor.lower()]
 
-        ai = ActorIssue(a, position, salience, power)
-        ai.Issue = issue.lower()
 
-        self.ActorIssues[issue.lower()][a.Name] = ai
+        actor_issue = ActorIssue(actor_name, issue_name, position, salience, power)
+
+        self.ActorIssues[issue_name][actor_name] = actor_issue
 
         return ActorIssue
 
-    def add_exchange(self, i: Actor, j: Actor, p: str, q: str, groups) -> None:
+    def add_exchange(self, i: str, j: str, p: str, q: str, groups) -> None:
         e = Exchange(i, j, p, q, self, groups)
         e.calculate()
         self.Exchanges.append(e)
@@ -89,8 +88,8 @@ class Model:
 
             for k, actor in self.Actors.items():
 
-                a0 = self.get_actor_issue(actor=actor, issue=combination[0])
-                a1 = self.get_actor_issue(actor=actor, issue=combination[1])
+                a0 = self.get_actor_issue(actor_name=actor, issue=combination[0])
+                a1 = self.get_actor_issue(actor_name=actor, issue=combination[1])
 
                 if a0 is not False and a1 is not False:
                     position = a0.left | a1.left * 2
@@ -105,14 +104,14 @@ class Model:
                 for j in pos[3]:
                     self.add_exchange(i, j, combination[0], combination[1], groups=['a', 'd'])
 
-                    self.ActorIssues[str(combination[0])][i.Name].group = "a"
-                    self.ActorIssues[str(combination[1])][j.Name].group = "d"
+                    self.ActorIssues[str(combination[0])][i].group = "a"
+                    self.ActorIssues[str(combination[1])][j].group = "d"
 
             for i in pos[1]:
                 for j in pos[2]:
                     self.add_exchange(i, j, combination[0], combination[1], groups=['b', 'c'])
-                    self.ActorIssues[combination[0]][i.Name].group = "b"
-                    self.ActorIssues[combination[1]][j.Name].group = "c"
+                    self.ActorIssues[combination[0]][i].group = "b"
+                    self.ActorIssues[combination[1]][j].group = "c"
 
     def sort_exchanges(self):
         self.Exchanges.sort(key=attrgetter("gain"), reverse=True)  # .sort(key=lambda x: x.count, reverse=True)

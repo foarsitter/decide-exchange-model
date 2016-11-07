@@ -4,6 +4,7 @@ import itertools
 from csvWriter import csvWriter
 import os
 
+
 class ExchangesWriter(Observer):
     """
     There are three stages of externalities
@@ -28,7 +29,7 @@ class ExchangesWriter(Observer):
         elif args[0] == Observable.REMOVED:
             self.add_removed(args[2])
         elif args[0] == Observable.CLOSE:
-            #self.write()
+            # self.write()
             pass
         elif args[0] == Observable.FINISHED_ROUND:
             self.write(args[3])

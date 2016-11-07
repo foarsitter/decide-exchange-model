@@ -69,7 +69,7 @@ class Externalities(Observer):
         self.add_or_update_issue_set(issue_set_key, realized, exchange_set)
 
         self.exchanges.append(
-            [realized.i.actor.Name, realized.i.supply, realized.j.actor.Name, realized.j.supply, exchange_set["ip"],
+            [realized.i.actor_name, realized.i.supply, realized.j.actor_name, realized.j.supply, exchange_set["ip"],
              exchange_set["in"], exchange_set["op"], exchange_set["on"], exchange_set["own"]])
 
     def add_exchange_set(self, externalities, realized, model, inner, issue_set_key):
@@ -77,7 +77,7 @@ class Externalities(Observer):
 
         for actor_name, value in externalities.items():
 
-            if actor_name == realized.i.actor.Name or actor_name == realized.j.actor.Name:  # own, always positive
+            if actor_name == realized.i.actor_name or actor_name == realized.j.actor_name:  # own, always positive
                 key = "own"
             else:
                 is_inner = actor_name in model.groups[issue_set_key][inner[0]] or actor_name in \

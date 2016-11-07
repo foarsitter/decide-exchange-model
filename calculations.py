@@ -1,15 +1,13 @@
-from decimal import *
+import decimal
 
 from objects.ActorIssue import ActorIssue
 
 
 def calc_nbs(actor_issues, denominator):
     numerator = 0
-    # denominator = 0
 
     for k, v in actor_issues.items():
         numerator += (v.position * v.salience * v.power)
-        # denominator += (v.Salience * v.Power)
 
     if denominator == 0:
         return 0
@@ -25,29 +23,31 @@ def calc_nbs_denominator(actor_issues):
     return denominator
 
 
-def calc_adjusted_nbs(actor_issues, updates, actor: 'Actor', new_position: Decimal, denominator: Decimal):
+def calc_adjusted_nbs(actor_issues, updates, actor: str, new_position: decimal.Decimal,
+                      denominator: decimal.Decimal):
     copy_ai = {}
 
     for k, v in actor_issues.items():
-        copy_ai[v.actor.Name] = ActorIssue(v.actor, position=v.position, power=v.power, salience=v.salience)
+        copy_ai[v.actor_name] = ActorIssue(v.actor_name, v.issue_name, position=v.position, power=v.power, salience=v.salience)
 
     for key, value in updates.items():
-        if key in copy_ai:  # todo not posible
+        if key in copy_ai:  # TODO: this should not be possible
             copy_ai[key].position = value
 
-    copy_ai[actor.Name].position = new_position
+    copy_ai[actor].position = new_position
 
     return calc_nbs(copy_ai, denominator)
 
 
-def calc_adjusted_nbs_by_position(actor_issues, updates, actor: 'Actor', x_pos, new_nbs: Decimal, denominator: Decimal):
+def calc_adjusted_nbs_by_position(actor_issues, updates, actor: str, x_pos, new_nbs: decimal.Decimal,
+                                  denominator: decimal.Decimal):
     copy_ai = {}
 
     for k, v in actor_issues.items():
-        copy_ai[v.actor.Name] = ActorIssue(v.actor, position=v.position, power=v.power, salience=v.salience)
+        copy_ai[v.actor_name] = ActorIssue(v.actor_name, v.issue_name, position=v.position, power=v.power, salience=v.salience)
 
     # to be calculate:
-    copy_ai[actor.Name].position = x_pos
+    copy_ai[actor].position = x_pos
 
     for key, value in updates.items():
         # if key not in copy_ai: #todo should always be the case
@@ -57,12 +57,12 @@ def calc_adjusted_nbs_by_position(actor_issues, updates, actor: 'Actor', x_pos, 
     nominator = 0
 
     for key, value in copy_ai.items():
-        if key is not actor.Name:
+        if key is not actor:
             nominator += value.position * value.salience * value.power
 
     left = (new_nbs * denominator) - nominator
 
-    right = left / (copy_ai[actor.Name].salience * copy_ai[actor.Name].power)
+    right = left / (copy_ai[actor].salience * copy_ai[actor].power)
 
     return right
 
@@ -74,7 +74,7 @@ def reverse_move(actor_issues, actor: 'ExchangeActor', exchange_ratio):
     return (exchange_ratio * sum_salience_power(actor_issues)) / (ci * si)
 
 
-def by_exchange_ratio(s_actor: 'ExchangeActor', exchange_ratio: Decimal):
+def by_exchange_ratio(s_actor: 'ExchangeActor', exchange_ratio: decimal.Decimal):
     """
 
     :param s_actor: ExchangeActor
@@ -117,39 +117,14 @@ def gain(actor: 'ExchangeActor', demand_exchange_ratio, supply_exchange_ratio):
     return demand_exchange_ratio * actor.s - supply_exchange_ratio * actor.s_demand
 
 
-# def externalities(actor_issue, nbs_0, nbs_1, exchange):
-#     shift = (nbs_0 - actor_issue.position) - (nbs_1 - actor_issue.position)
-#     eu_k = shift * actor_issue.salience
-#
-#     e_type = ""
-#
-#     if exchange.i.actor.Name == actor_issue.actor.Name or exchange.j.actor.Name == actor_issue.actor.Name:
-#         e_type = "own"
-#     else:
-#         if exchange.i.group == actor_issue.group or exchange.j.group == actor_issue.group:
-#             if eu_k > 0:
-#                 e_type = 'ip'
-#             else:
-#                 e_type = 'in'
-#         else:
-#             if eu_k > 0:
-#                 e_type = 'op'
-#             else:
-#                 e_type = 'on'
-#
-#     return {"type": e_type, "value": eu_k}
+def calc_actor_externalities(actor_name, model, realized):
 
+    if actor_name in model.ActorIssues[realized.j.supply] and actor_name in model.ActorIssues[realized.i.supply]:
+        xp = model.ActorIssues[realized.j.supply][actor_name].position
+        sp = model.ActorIssues[realized.j.supply][actor_name].salience
 
-def calc_actor_externalities(actor, model, realized):
-
-
-    if actor in model.ActorIssues[realized.j.supply] and  actor in model.ActorIssues[realized.i.supply]:
-
-        xp = model.ActorIssues[realized.j.supply][actor].position
-        sp = model.ActorIssues[realized.j.supply][actor].salience
-
-        xq = model.ActorIssues[realized.i.supply][actor].position
-        sq = model.ActorIssues[realized.i.supply][actor].salience
+        xq = model.ActorIssues[realized.i.supply][actor_name].position
+        sq = model.ActorIssues[realized.i.supply][actor_name].salience
 
         l0 = abs(realized.j.nbs_0 - xp)
         l1 = abs(realized.j.nbs_1 - xp)

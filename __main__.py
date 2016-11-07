@@ -40,21 +40,22 @@ externalities = []
 ext_realizations = []
 ext_connections = []
 
+# TODO: this should be calculated in an event
 for issue in model.ActorIssues:
 
     issue_list = {}
 
     for key, actor_issue in model.ActorIssues[issue].items():
-        issue_list[actor_issue.actor.Name] = []
-        issue_list[actor_issue.actor.Name].append(actor_issue.position)
+        issue_list[actor_issue.actor_name] = []
+        issue_list[actor_issue.actor_name].append(actor_issue.position)
 
     issue_list["nbs"] = []
     history[issue] = issue_list
 
-start = 0
+#start = 0
 stop = 10
 
-for iteration_number in range(start, stop):
+for iteration_number in range(stop):
 
     model.calc_nbs()
     model.determine_positions()
@@ -73,19 +74,19 @@ for iteration_number in range(start, stop):
         #
         #     # TODO: this should be done in an unit-test
         #     if abs(realize.gain - model.Exchanges[0].gain) == 0:
-        #         if realize.i.actor.Name == "ALBA" and realize.i.supply == "financewho" and realize.j.actor.Name == "Umbrellamin":
+        #         if realize.i.actor_name == "ALBA" and realize.i.supply == "financewho" and realize.j.actor_name == "Umbrellamin":
         #             model.Exchanges.append(realize)
         #             realize = model.highest_gain()
-        #         elif realize.i.actor.Name == "EU28" and realize.i.supply == "eaa" and realize.j.actor.Name == "China" and realize.j.supply == "mrv":
+        #         elif realize.i.actor_name == "EU28" and realize.i.supply == "eaa" and realize.j.actor_name == "China" and realize.j.supply == "mrv":
         #             model.Exchanges.append(realize)
         #             realize = model.highest_gain()
-        #         elif realize.i.actor.Name == "LDC" and realize.i.supply == "progress" and realize.j.actor.Name == "Brazil" and realize.j.supply == "adaptfinance":
+        #         elif realize.i.actor_name == "LDC" and realize.i.supply == "progress" and realize.j.actor_name == "Brazil" and realize.j.supply == "adaptfinance":
         #             model.Exchanges.append(realize)
         #             realize = model.highest_gain()
-        #         elif realize.i.actor.Name == "Arabstates" and realize.i.supply == "progress" and realize.j.actor.Name == "LDC" and realize.j.supply == "financewho":
+        #         elif realize.i.actor_name == "Arabstates" and realize.i.supply == "progress" and realize.j.actor_name == "LDC" and realize.j.supply == "financewho":
         #             model.Exchanges.append(realize)
         #             realize = model.highest_gain()
-        #         elif realize.i.actor.Name == "EU28" and realize.i.supply == "financewho" and realize.j.actor.Name == "Brazil" and realize.j.supply == "legal":
+        #         elif realize.i.actor_name == "EU28" and realize.i.supply == "financewho" and realize.j.actor_name == "Brazil" and realize.j.supply == "legal":
         #             model.Exchanges.append(realize)
         #             realize = model.highest_gain()
         #             # else:
@@ -108,8 +109,8 @@ for iteration_number in range(start, stop):
         # end for
 
     for exchange in realized:
-        model.ActorIssues[exchange.i.supply][exchange.i.actor.Name].position = exchange.i.new_start_position()
-        model.ActorIssues[exchange.j.supply][exchange.j.actor.Name].position = exchange.j.new_start_position()
+        model.ActorIssues[exchange.i.supply][exchange.i.actor_name].position = exchange.i.new_start_position()
+        model.ActorIssues[exchange.j.supply][exchange.j.actor_name].position = exchange.j.new_start_position()
         # end for
 # end for
 

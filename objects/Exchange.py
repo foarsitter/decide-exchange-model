@@ -1,11 +1,11 @@
 from decimal import *
 
 import calculations
-from objects.Actor import Actor
+
 
 
 class Exchange:
-    def __init__(self, i: Actor, j: Actor, p: str, q: str, m, groups):
+    def __init__(self, i: str, j: str, p: str, q: str, m, groups):
         self.model = m
         self.gain = 0
         self.is_valid = True
@@ -91,17 +91,16 @@ class Exchange:
             self.check_nbs_j()
             self.check_nbs_i()
 
-    def check_nbs_i(self):
-        # TODO garbage code, korsakov code or something like that
-        # Need sto be methodical approached
+    def check_nbs_i(self):  # TODO: create universal method because of code duplication in self.check_nbs_j
+
         self.i.nbs_0 = calculations.calc_adjusted_nbs(self.model.ActorIssues[self.i.supply],
                                                       self.updates[self.i.supply],
-                                                      self.i.actor, self.i.x,
+                                                      self.i.actor_name, self.i.x,
                                                       self.model.nbs_denominators[self.i.supply])
 
         self.i.nbs_1 = calculations.calc_adjusted_nbs(self.model.ActorIssues[self.i.supply],
                                                       self.updates[self.i.supply],
-                                                      self.i.actor, self.i.y,
+                                                      self.i.actor_name, self.i.y,
                                                       self.model.nbs_denominators[self.i.supply])
 
         # TODO this should be a method
@@ -112,7 +111,7 @@ class Exchange:
         else:
             new_pos = calculations.calc_adjusted_nbs_by_position(self.model.ActorIssues[self.i.supply],
                                                                  self.updates[self.i.supply],
-                                                                 self.i.actor, self.i.x, self.j.x_demand,
+                                                                 self.i.actor_name, self.i.x, self.j.x_demand,
                                                                  self.model.nbs_denominators[self.i.supply])
 
             self.dq = (abs(new_pos - self.i.x) * self.i.s * self.i.c) / self.model.nbs_denominators[self.i.supply]
@@ -135,22 +134,6 @@ class Exchange:
             self.i.y = self.i.x + self.i.move
             self.j.y = self.j.x + self.j.move
 
-            # # TODO less arguments for this function, too long.
-            # nbs_1 = calculations.calc_adjusted_nbs(self.model.ActorIssues[self.i.supply],
-            #                                        self.updates[self.i.supply],
-            #                                        self.i.actor, self.i.y,
-            #                                        self.model.nbs_denominators[self.i.supply])
-            #
-            # # TODO what is this?
-            # if abs(nbs_1 - self.j.x_demand) > 0.000001:
-            #     new_pos = calculations.calc_adjusted_nbs_by_position(self.model.ActorIssues[self.i.supply],
-            #                                                          self.updates[self.i.supply],
-            #                                                          self.i.actor, self.i.x, self.j.x_demand,
-            #                                                          self.model.nbs_denominators[self.i.supply])
-            #     # self.is_valid = False
-            #     # raise Exception("Not Posible!")
-            #     return
-
             eui = calculations.gain(self.i, self.dq, self.dp)
             euj = calculations.gain(self.j, self.dp, self.dq)
 
@@ -164,15 +147,15 @@ class Exchange:
 
             self.is_valid = b1 and b2
 
-    def check_nbs_j(self):
+    def check_nbs_j(self):  # TODO: create universal method because of code duplication in self.check_nbs_i
         self.j.nbs_0 = calculations.calc_adjusted_nbs(self.model.ActorIssues[self.j.supply],
                                                       self.updates[self.j.supply],
-                                                      self.j.actor, self.j.x,
+                                                      self.j.actor_name, self.j.x,
                                                       self.model.nbs_denominators[self.j.supply])
 
         self.j.nbs_1 = calculations.calc_adjusted_nbs(self.model.ActorIssues[self.j.supply],
                                                       self.updates[self.j.supply],
-                                                      self.j.actor, self.j.y,
+                                                      self.j.actor_name, self.j.y,
                                                       self.model.nbs_denominators[self.j.supply])
 
         if self.i.x_demand >= self.j.nbs_0 and self.i.x_demand >= self.j.nbs_1:
@@ -183,7 +166,7 @@ class Exchange:
 
             new_pos = calculations.calc_adjusted_nbs_by_position(self.model.ActorIssues[self.j.supply],
                                                                  self.updates[self.j.supply],
-                                                                 self.j.actor, self.j.x, self.i.x_demand,
+                                                                 self.j.actor_name, self.j.x, self.i.x_demand,
                                                                  self.model.nbs_denominators[self.j.supply])
 
             self.dp = (abs(new_pos - self.j.x) * self.j.s * self.j.c) / self.model.nbs_denominators[
@@ -209,13 +192,13 @@ class Exchange:
 
             nbs_1 = calculations.calc_adjusted_nbs(self.model.ActorIssues[self.j.supply],
                                                    self.updates[self.j.supply],
-                                                   self.j.actor, self.j.y,
+                                                   self.j.actor_name, self.j.y,
                                                    self.model.nbs_denominators[self.j.supply])
 
             if abs(nbs_1 - self.i.x_demand) > 0.000001:
                 new_pos = calculations.calc_adjusted_nbs_by_position(self.model.ActorIssues[self.j.supply],
                                                                      self.updates[self.j.supply],
-                                                                     self.j.actor, self.j.x, self.i.x_demand,
+                                                                     self.j.actor_name, self.j.x, self.i.x_demand,
                                                                      self.model.nbs_denominators[self.j.supply])
 
                 # self.is_valid = False
@@ -243,7 +226,7 @@ class Exchange:
         return self.equal_obj(i=exchange.i, j=exchange.j, p=exchange.p, q=exchange.q)
 
     def contains_actor_with_supply(self, actor, issue):
-        return self.i.equals_with_supply_str(actor.Name, issue) or self.j.equals_with_supply_str(actor.Name, issue)
+        return self.i.equals_with_supply_str(actor, issue) or self.j.equals_with_supply_str(actor, issue)
 
     def recalculate(self, exchange: 'Exchange'):
         # update supply positions
@@ -279,80 +262,80 @@ class Exchange:
             self.re_calc = True
 
         # update the positions for the demand actors...
-        if (self.j.actor.Name == exchange.j.actor.Name and self.j.demand == exchange.j.demand) or (
-                        self.i.actor.Name == exchange.j.actor.Name and self.i.demand == exchange.j.demand):
+        if (self.j.actor_name == exchange.j.actor_name and self.j.demand == exchange.j.demand) or (
+                        self.i.actor_name == exchange.j.actor_name and self.i.demand == exchange.j.demand):
 
-            if exchange.i.actor.Name in self.updates[exchange.j.demand]:
+            if exchange.i.actor_name in self.updates[exchange.j.demand]:
 
                 exchangeActor = exchange.i
                 demand = exchange.j.demand
-                x_updated = self.updates[exchange.j.demand][exchangeActor.actor.Name]
+                x_updated = self.updates[exchange.j.demand][exchangeActor.actor_name]
 
                 if exchangeActor.start_position <= x_updated:
                     if x_updated < exchangeActor.y:
-                        self.updates[demand][exchangeActor.actor.Name] = x_updated
+                        self.updates[demand][exchangeActor.actor_name] = x_updated
                     else:
-                        self.updates[demand][exchangeActor.actor.Name] = exchangeActor.y
+                        self.updates[demand][exchangeActor.actor_name] = exchangeActor.y
                 else:
                     if x_updated > exchangeActor.y:
-                        self.updates[demand][exchangeActor.actor.Name] = x_updated
+                        self.updates[demand][exchangeActor.actor_name] = x_updated
                     else:
-                        self.updates[demand][exchangeActor.actor.Name] = exchangeActor.y
+                        self.updates[demand][exchangeActor.actor_name] = exchangeActor.y
             else:
-                self.updates[exchange.j.demand][exchange.i.actor.Name] = exchange.i.y
+                self.updates[exchange.j.demand][exchange.i.actor_name] = exchange.i.y
 
             if not self.re_calc:
                 self.i.moves.pop()
                 self.j.moves.pop()
                 self.re_calc = True
 
-        if (self.i.actor.Name == exchange.i.actor.Name and self.i.demand == exchange.i.demand) or (
-                        self.j.actor.Name == exchange.i.actor.Name and self.j.demand == exchange.i.demand):
+        if (self.i.actor_name == exchange.i.actor_name and self.i.demand == exchange.i.demand) or (
+                        self.j.actor_name == exchange.i.actor_name and self.j.demand == exchange.i.demand):
 
-            if exchange.j.actor.Name in self.updates[exchange.i.demand]:
+            if exchange.j.actor_name in self.updates[exchange.i.demand]:
 
                 exchangeActor = exchange.j
                 demand = exchange.i.demand
-                x_updated = self.updates[exchange.i.demand][exchangeActor.actor.Name]
+                x_updated = self.updates[exchange.i.demand][exchangeActor.actor_name]
 
                 if exchangeActor.start_position <= x_updated:
                     if x_updated < exchangeActor.y:
-                        self.updates[demand][exchangeActor.actor.Name] = x_updated
+                        self.updates[demand][exchangeActor.actor_name] = x_updated
                     else:
-                        self.updates[demand][exchangeActor.actor.Name] = exchangeActor.y
+                        self.updates[demand][exchangeActor.actor_name] = exchangeActor.y
                 else:
                     if x_updated > exchangeActor.y:
-                        self.updates[demand][exchangeActor.actor.Name] = x_updated
+                        self.updates[demand][exchangeActor.actor_name] = x_updated
                     else:
-                        self.updates[demand][exchangeActor.actor.Name] = exchangeActor.y
+                        self.updates[demand][exchangeActor.actor_name] = exchangeActor.y
 
             else:
-                self.updates[exchange.i.demand][exchange.j.actor.Name] = exchange.j.y
+                self.updates[exchange.i.demand][exchange.j.actor_name] = exchange.j.y
 
             if not self.re_calc:
                 self.i.moves.pop()
                 self.j.moves.pop()
                 self.re_calc = True
 
-        # if self.i.actor.Name == exchange.j.actor.Name and self.i.demand == exchange.j.demand:
+        # if self.i.actor == exchange.j.actor and self.i.demand == exchange.j.demand:
         #
-        #     if exchange.i.actor.Name in self.updates[exchange.j.demand]:
+        #     if exchange.i.actor in self.updates[exchange.j.demand]:
         #         exchangeActor = exchange.i
         #         demand = exchange.j.demand
-        #         x_updated = self.updates[exchange.j.demand][exchangeActor.actor.Name]
+        #         x_updated = self.updates[exchange.j.demand][exchangeActor.actor]
         #
         #         if exchangeActor.start_position <= x_updated:
         #             if x_updated < exchangeActor.y:
-        #                 self.updates[demand][exchangeActor.actor.Name] = x_updated
+        #                 self.updates[demand][exchangeActor.actor] = x_updated
         #             else:
-        #                 self.updates[demand][exchangeActor.actor.Name] = exchangeActor.y
+        #                 self.updates[demand][exchangeActor.actor] = exchangeActor.y
         #         else:
         #             if x_updated > exchangeActor.y:
-        #                 self.updates[demand][exchangeActor.actor.Name] = x_updated
+        #                 self.updates[demand][exchangeActor.actor] = x_updated
         #             else:
-        #                 self.updates[demand][exchangeActor.actor.Name] = exchangeActor.y
+        #                 self.updates[demand][exchangeActor.actor] = exchangeActor.y
         #     else:
-        #         self.updates[exchange.j.demand][exchange.i.actor.Name] = exchange.i.y
+        #         self.updates[exchange.j.demand][exchange.i.actor] = exchange.i.y
         #
         #     if not self.re_calc:
         #         self.i.moves.pop()
@@ -367,15 +350,15 @@ class Exchange:
 
 
 class ExchangeActor:
-    def __init__(self, model, actor: Actor, demand: str, supply: str, group: str):
-        self.c = model.get_value(actor, supply, "c")
-        self.s = model.get_value(actor, supply, "s")
-        self.x = model.get_value(actor, supply, "x")
+    def __init__(self, model, actor_name: str, demand: str, supply: str, group: str):
+        self.c = model.get_value(actor_name, supply, "c")
+        self.s = model.get_value(actor_name, supply, "s")
+        self.x = model.get_value(actor_name, supply, "x")
         self.y = 0
 
-        self.c_demand = model.get_value(actor, demand, "c")
-        self.s_demand = model.get_value(actor, demand, "s")
-        self.x_demand = model.get_value(actor, demand, "x")
+        self.c_demand = model.get_value(actor_name, demand, "c")
+        self.s_demand = model.get_value(actor_name, demand, "s")
+        self.x_demand = model.get_value(actor_name, demand, "x")
 
         self.start_position = self.x
 
@@ -384,7 +367,7 @@ class ExchangeActor:
 
         self.group = group
 
-        self.actor = actor
+        self.actor_name = actor_name
 
         self.opposite_actor = None
         self.move = 0
@@ -418,7 +401,7 @@ class ExchangeActor:
             # return (isTRUE(all.equal(min(newMoves), max(newMoves))))
 
     def __str__(self):
-        return "{0} {1} {2} {3} ({4})".format(self.actor.Name, self.supply, self.x, self.y,
+        return "{0} {1} {2} {3} ({4})".format(self.actor_name, self.supply, self.x, self.y,
                                               self.opposite_actor.x_demand)
 
     def new_start_position(self):
@@ -438,13 +421,12 @@ class ExchangeActor:
 
     def equals_with_supply_obj(self, exchange_actor):
 
-        if self.actor.Name == exchange_actor.actor.Name and self.supply == exchange_actor.supply:
+        if self.actor_name == exchange_actor.actor_name and self.supply == exchange_actor.supply:
             return True
         return False
 
     def equals_with_supply_str(self, actor_name, supply):
 
-        if self.actor.Name == actor_name and self.supply == supply:
+        if self.actor_name == actor_name and self.supply == supply:
             return True
         return False
-
