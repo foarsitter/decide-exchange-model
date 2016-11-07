@@ -4,7 +4,7 @@ import itertools
 
 import calculations
 from objects.update_listeners.observer import Observable, Observer
-
+import os
 
 class Externalities(Observer):
     """
@@ -123,6 +123,9 @@ class Externalities(Observer):
     def write_round(self, model, realized, iteration_number):
 
         # TODO: we should write all the documents after executing all the rounds as we do with the externalities
+
+        if not os.path.exists("output/{0}/externalities".format(self.current_file)):
+            os.makedirs("output/{0}/externalities".format(self.current_file))
 
         with open("output/{3}/externalities/{0}.{1}.{2}".format("externalities", iteration_number, "csv",
                                                                 self.current_file), 'w',

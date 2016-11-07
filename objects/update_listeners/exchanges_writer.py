@@ -2,7 +2,7 @@ from objects.update_listeners.observer import Observable, Observer
 import calculations
 import itertools
 from csvWriter import csvWriter
-
+import os
 
 class ExchangesWriter(Observer):
     """
@@ -40,6 +40,9 @@ class ExchangesWriter(Observer):
         self.deleted.append(removed)
 
     def write(self, iteration_number):
+
+        if not os.path.exists("output/{0}/exchanges".format(self.current_file)):
+            os.makedirs("output/{0}/exchanges".format(self.current_file))
 
         writer = csvWriter()
         writer.write("output/{2}/exchanges/{0}.{1}".format(iteration_number, "output.csv", self.current_file),
