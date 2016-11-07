@@ -8,7 +8,7 @@ from objects.ActorIssue import ActorIssue
 from objects.RandomExchange import Exchange
 
 
-class Model:
+class RandomRateModel:
     def __init__(self):
         self.Issues = []
         self.ActorIssues = {}

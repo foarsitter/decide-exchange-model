@@ -2,7 +2,7 @@
 import csv
 import os
 
-from objects.EqualGainModel import Model
+from objects.EqualGainModel import EqualGainModel
 
 # csv row identifiers
 cA = "#A"  # A = actor
@@ -26,8 +26,8 @@ rPower = 5
 class Parser:
     data = None
 
-    def __init__(self):
-        self.data = Model()
+    def __init__(self, model):
+        self.data = model
 
         print(self.info())
 

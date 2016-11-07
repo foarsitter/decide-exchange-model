@@ -5,10 +5,10 @@ from operator import attrgetter
 from calculations import calc_nbs, calc_nbs_denominator
 
 from objects.ActorIssue import ActorIssue
-from objects.RandomExchange import Exchange
+from objects.EqualExchange import Exchange
 
 
-class Model:
+class EqualGainModel:
     def __init__(self):
         self.Issues = []
         self.ActorIssues = {}

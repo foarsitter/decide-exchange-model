@@ -1,12 +1,12 @@
 from unittest import TestCase
 
 from objects.EqualExchange import Exchange
-from objects.EqualGainModel import Model
+from objects.EqualGainModel import EqualGainModel
 
 
 class TestExchange(TestCase):
     def test_init(self):
-        model = Model()
+        model = EqualGainModel()
 
         a1 = model.add_actor("a1")
         a2 = model.add_actor("a2")
@@ -38,7 +38,7 @@ class TestExchange(TestCase):
 
 class TestExchangeActor(TestCase):
     def test_equals(self):
-        model = Model()
+        model = EqualGainModel()
 
         a1 = model.add_actor("a1")
         a2 = model.add_actor("a2")

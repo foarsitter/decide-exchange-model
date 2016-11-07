@@ -78,8 +78,8 @@ class Exchange:
         self.i.y = self.i.x + self.i.move
         self.j.y = self.j.x + self.j.move
 
-        eui = calculations.gain(self.i, self.dq, self.dp)
-        euj = calculations.gain(self.j, self.dp, self.dq)
+        self.i.eu = calculations.gain(self.i, self.dq, self.dp)
+        self.j.eu = calculations.gain(self.j, self.dp, self.dq)
 
         b1 = self.i.is_move_valid(self.i.move)
         b2 = self.j.is_move_valid(self.j.move)
@@ -333,7 +333,7 @@ class ExchangeActor:
         self.s = model.get_value(actor_name, supply, "s")
         self.x = model.get_value(actor_name, supply, "x")
         self.y = 0
-
+        self.eu = 0
         self.c_demand = model.get_value(actor_name, demand, "c")
         self.s_demand = model.get_value(actor_name, demand, "s")
         self.x_demand = model.get_value(actor_name, demand, "x")

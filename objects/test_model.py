@@ -3,7 +3,7 @@ from decimal import *
 from unittest import TestCase
 
 import csvParser
-from objects.EqualGainModel import Model
+from objects.EqualGainModel import EqualGainModel
 
 
 class TestModel(TestCase):
@@ -13,7 +13,7 @@ class TestModel(TestCase):
         # self.model = csv.read("data\\CoP21.csv")
 
     def test_addActor(self):
-        model = Model()
+        model = EqualGainModel()
 
         a1 = model.add_actor("TestActor1")
         a2 = model.add_actor("TestActor2")

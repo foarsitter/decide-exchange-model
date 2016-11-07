@@ -1,16 +1,13 @@
 import csv
-from csv import excel
-from random import random
-import csvWriter
 from datetime import datetime
-import collections
-import calculations
-import itertools
+from random import random
+
 from csvParser import Parser
-from objects.update_listeners.observer import Observable, Observer
-from objects.update_listeners.update_listener import Updater, Logger
-from objects.update_listeners.externalities import Externalities
+from objects.RandomRateModel import RandomRateModel
 from objects.update_listeners.exchanges_writer import ExchangesWriter
+from objects.update_listeners.externalities import Externalities
+from objects.update_listeners.observer import Observable
+from objects.update_listeners.update_listener import Updater, Logger
 
 # The event handlers for logging and writing the results to the disk.
 eventHandler = Observable()
@@ -18,13 +15,14 @@ eventHandler = Observable()
 Updater(eventHandler)
 Logger(eventHandler)
 
-
-
 startTime = datetime.now()
 
 eventHandler.notify(Observable.LOG, "Start calculation at {0}".format(startTime))
 
-csvParser = Parser()
+# model = EqualGainModel()
+model = RandomRateModel()
+
+csvParser = Parser(model)
 
 current_file = "verkiezing 2012"
 model = csvParser.read("data/{0}.csv".format(current_file))
@@ -52,8 +50,8 @@ for issue in model.ActorIssues:
     issue_list["nbs"] = []
     history[issue] = issue_list
 
-#start = 0
-stop = 10
+# start = 0
+stop = 1
 
 for iteration_number in range(stop):
 
@@ -69,14 +67,13 @@ for iteration_number in range(stop):
 
         # TODO: write a method to check is there are more exchanges with an equal gain.
 
-
         if len(model.Exchanges) > 0:
-            next = model.highest_gain()
+            next_exhcange = model.highest_gain()
 
-            if abs(realize.gain - next.gain) < 1e-10:
+            if abs(realize.gain - next_exhcange.gain) < 1e-10:
                 if random() >= 0.5:
                     model.Exchanges.append(realize)
-                    realize = next
+                    realize = next_exhcange
 
         removed_exchanges = model.remove_invalid_exchanges(realize)
         eventHandler.notify(Observable.REMOVED, model, removed_exchanges)
@@ -98,8 +95,6 @@ for iteration_number in range(stop):
         model.ActorIssues[exchange.j.supply][exchange.j.actor_name].position = exchange.j.new_start_position()
         # end for
 # end for
-
-
 
 
 for issue in history:
