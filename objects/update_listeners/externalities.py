@@ -1,169 +1,173 @@
 import collections
 import csv
-import itertools
+import os
 
 import calculations
 from objects.update_listeners.observer import Observable, Observer
-import os
+
 
 class Externalities(Observer):
-    """
-    There are three stages of externalities
-    By exchange, by issue set and by actor 
-    """
+	"""
+	There are three stages of externalities
+	By exchange, by issue set and by actor
+	"""
 
-    def __init__(self, observable, model, current_file):
-        super(Externalities, self).__init__(observable=observable)
+	def __init__(self, observable, model, current_file):
+		super(Externalities, self).__init__(observable=observable)
 
-        self.current_file = current_file
+		self.current_file = current_file
 
-        self.issue_set = {}
-        self.actors = {}
-        self.exchanges = []
+		self.issue_set = {}
+		self.actors = {}
+		self.exchanges = []
 
-        for actor in model.Actors:
-            self.actors[actor] = {'ip': 0, 'in': 0, 'op': 0, 'on': 0, "own": 0}
+		for actor in model.Actors:
+			self.actors[actor] = {'ip': 0, 'in': 0, 'op': 0, 'on': 0, "own": 0}
 
-    def setup(self, model):
-        self.issue_set = {}
-        self.actors = {}
-        self.exchanges = []
+	def setup(self, model):
+		self.issue_set = {}
+		self.actors = {}
+		self.exchanges = []
 
-        for actor in model.Actors:
-            self.actors[actor] = {'ip': 0, 'in': 0, 'op': 0, 'on': 0, "own": 0}
+		for actor in model.Actors:
+			self.actors[actor] = {'ip': 0, 'in': 0, 'op': 0, 'on': 0, "own": 0}
 
-    def init_issue_set(self, issue_sets):
-        pass
+	def init_issue_set(self, issue_sets):
+		pass
 
-    def init_actors(self, actors):
-        pass
+	def init_actors(self, actors):
+		pass
 
-    def update(self, observable, *args, **kwargs):
+	def update(self, observable, notification_type, **kwargs):
 
-        if args[0] == Observable.EXECUTED:
-            self.calculate_externalities(args[1], args[2])
-        elif args[0] == Observable.FINISHED_ROUND:
-            self.write_round(args[1], args[2], args[3])
+		if notification_type == Observable.EXECUTED:
+			self.calculate_externalities(**kwargs)
+		elif notification_type == Observable.FINISHED_ROUND:
+			self.write_round(**kwargs)
 
-    def calculate_externalities(self, model, realized):
+	def calculate_externalities(self, **kwargs):
 
-        issue_set_key = "{0}-{1}".format(realized.p, realized.q)
+		realized = kwargs["realized"]
+		model = kwargs["model"]
 
-        # an combination only exists once, so it can happen that we have to change the sequence of the keys
-        if issue_set_key not in model.groups:
-            issue_set_key = "{0}-{1}".format(realized.q, realized.p)
-        # end if
+		issue_set_key = "{0}-{1}".format(realized.p, realized.q)
 
-        inner = ['a', 'd']
-        outer = ['b', 'c']
+		# an combination only exists once, so it can happen that we have to change the sequence of the keys
+		if issue_set_key not in model.groups:
+			issue_set_key = "{0}-{1}".format(realized.q, realized.p)
+		# end if
 
-        # switch the inner and outer if this is not the case
-        if realized.i.group != "a" and realized.i.group != "d":
-            inner, outer = outer, inner
-        # end if
+		inner = ['a', 'd']
+		outer = ['b', 'c']
 
-        externalities = self.calculate_exteranlities(model, realized)
+		# switch the inner and outer if this is not the case
+		if realized.i.group != "a" and realized.i.group != "d":
+			inner, outer = outer, inner
+		# end if
 
-        exchange_set = self.add_exchange_set(externalities, realized, model, inner, issue_set_key)
+		externalities = self.calculate_exteranlities(model, realized)
 
-        self.add_or_update_issue_set(issue_set_key, realized, exchange_set)
+		exchange_set = self.add_exchange_set(externalities, realized, model, inner, issue_set_key)
 
-        self.exchanges.append(
-            [realized.i.actor_name, realized.i.supply, realized.j.actor_name, realized.j.supply, exchange_set["ip"],
-             exchange_set["in"], exchange_set["op"], exchange_set["on"], exchange_set["own"]])
+		self.add_or_update_issue_set(issue_set_key, realized, exchange_set)
 
-    def add_exchange_set(self, externalities, realized, model, inner, issue_set_key):
-        exchange_set = {'ip': 0, 'in': 0, 'op': 0, 'on': 0, "own": 0}
+		self.exchanges.append(
+			[realized.i.actor_name, realized.i.supply, realized.j.actor_name, realized.j.supply, exchange_set["ip"],
+			 exchange_set["in"], exchange_set["op"], exchange_set["on"], exchange_set["own"]])
 
-        for actor_name, value in externalities.items():
+	def add_exchange_set(self, externalities, realized, model, inner, issue_set_key):
+		exchange_set = {'ip': 0, 'in': 0, 'op': 0, 'on': 0, "own": 0}
 
-            if actor_name == realized.i.actor_name or actor_name == realized.j.actor_name:  # own, always positive
-                key = "own"
-            else:
-                is_inner = actor_name in model.groups[issue_set_key][inner[0]] or actor_name in \
-                                                                                  model.groups[issue_set_key][inner[1]]
+		for actor_name, value in externalities.items():
 
-                if value > 0:  # positive
-                    if is_inner:  # inner
-                        key = "ip"
-                    else:  # outer
-                        key = "op"
-                else:  # negative
-                    if is_inner:  # inner
-                        key = "in"
-                    else:  # outer
-                        key = "on"
+			if actor_name == realized.i.actor_name or actor_name == realized.j.actor_name:  # own, always positive
+				key = "own"
+			else:
+				is_inner = actor_name in model.groups[issue_set_key][inner[0]] or actor_name in \
+																				  model.groups[issue_set_key][inner[1]]
 
-            self.actors[actor_name][key] += value
-            exchange_set[key] += value
+				if value > 0:  # positive
+					if is_inner:  # inner
+						key = "ip"
+					else:  # outer
+						key = "op"
+				else:  # negative
+					if is_inner:  # inner
+						key = "in"
+					else:  # outer
+						key = "on"
 
-        return exchange_set
+			self.actors[actor_name][key] += value
+			exchange_set[key] += value
 
-    def add_or_update_issue_set(self, issue_set_key, realized, exchange_set):
+		return exchange_set
 
-        if issue_set_key in self.issue_set:
-            for key, value in exchange_set.items():
-                self.issue_set[issue_set_key][key] += value
-        else:
-            self.issue_set[issue_set_key] = exchange_set
-            self.issue_set[issue_set_key]["first"] = realized.p
-            self.issue_set[issue_set_key]["second"] = realized.q
-            # end if
+	def add_or_update_issue_set(self, issue_set_key, realized, exchange_set):
 
-    def calculate_exteranlities(self, model, realized):
+		if issue_set_key in self.issue_set:
+			for key, value in exchange_set.items():
+				self.issue_set[issue_set_key][key] += value
+		else:
+			self.issue_set[issue_set_key] = exchange_set
+			self.issue_set[issue_set_key]["first"] = realized.p
+			self.issue_set[issue_set_key]["second"] = realized.q
+		# end if
 
-        results = {}
+	def calculate_exteranlities(self, model, realized):
 
-        for actor in model.Actors:
-            results[actor] = calculations.calc_actor_externalities(actor, model, realized)
-        # end for
+		results = {}
 
-        return results
+		for actor in model.Actors:
+			results[actor] = calculations.calc_actor_externalities(actor, model, realized)
+		# end for
 
-    def write_round(self, model, realized, iteration_number):
+		return results
 
-        # TODO: we should write all the documents after executing all the rounds as we do with the externalities
+	def write_round(self, **kwargs):
 
-        if not os.path.exists("output/{0}/externalities".format(self.current_file)):
-            os.makedirs("output/{0}/externalities".format(self.current_file))
+		iteration_number = kwargs["iteration"]
+		model = kwargs["model"]
 
-        with open("output/{3}/externalities/{0}.{1}.{2}".format("externalities", iteration_number, "csv",
-                                                                self.current_file), 'w',
-                  newline='') as csvfile:
-            writer = csv.writer(csvfile, delimiter=';')
+		# TODO: we should write all the documents after executing all the rounds as we do with the externalities
 
-            # headings
-            writer.writerow(
-                ["Actor", "Inner Positive", "Inner Negative", "Outer Positive", "Outer Negative", "Own"])
+		if not os.path.exists("output/{0}/externalities".format(self.current_file)):
+			os.makedirs("output/{0}/externalities".format(self.current_file))
 
-            od_e = collections.OrderedDict(sorted(self.actors.items()))
-            for key, value in od_e.items():
-                writer.writerow([key, value["ip"], value["in"], value["op"], value["on"], value["own"]])
+		with open("output/{3}/externalities/{0}.{1}.{2}".format("externalities", iteration_number, "csv",
+																self.current_file), 'w',
+				  newline='') as csvfile:
+			writer = csv.writer(csvfile, delimiter=';')
 
-            writer.writerow([])
-            writer.writerow(["Connections"])
-            writer.writerow(
-                ["first", "second", "inner pos", "inner neg", "outer pos", "outer neg", "own", "ally pos",
-                 "ally neg"])
+			# headings
+			writer.writerow(
+				["Actor", "Inner Positive", "Inner Negative", "Outer Positive", "Outer Negative", "Own"])
 
-            for key, value in self.issue_set.items():
-                writer.writerow(
-                    [value["first"], value["second"], value["ip"], value["in"], value["op"], value["on"],
-                     value["own"]])
-            # end for
+			od_e = collections.OrderedDict(sorted(self.actors.items()))
+			for key, value in od_e.items():
+				writer.writerow([key, value["ip"], value["in"], value["op"], value["on"], value["own"]])
 
+			writer.writerow([])
+			writer.writerow(["Connections"])
+			writer.writerow(
+				["first", "second", "inner pos", "inner neg", "outer pos", "outer neg", "own", "ally pos",
+				 "ally neg"])
 
+			for key, value in self.issue_set.items():
+				writer.writerow(
+					[value["first"], value["second"], value["ip"], value["in"], value["op"], value["on"],
+					 value["own"]])
+			# end for
 
-            writer.writerow([])
-            writer.writerow(["Realizations"])
-            writer.writerow(
-                ["first", "supply", "second", "supply ", "inner pos", "inner neg", "outer pos", "outer neg", "own",
-                 "ally pos", "ally neg"])
+			writer.writerow([])
+			writer.writerow(["Realizations"])
+			writer.writerow(
+				["first", "supply", "second", "supply ", "inner pos", "inner neg", "outer pos", "outer neg", "own",
+				 "ally pos", "ally neg"])
 
-            for realizations_row in self.exchanges:
-                writer.writerow(realizations_row)
+			for realizations_row in self.exchanges:
+				writer.writerow(realizations_row)
 
-            # end for
-        # end with
+			# end for
+		# end with
 
-        self.setup(model)
+		self.setup(model)

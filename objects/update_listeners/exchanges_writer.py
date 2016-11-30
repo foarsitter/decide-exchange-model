@@ -11,9 +11,9 @@ class ExchangesWriter(Observer):
     By exchange, by issue set and by actor
     """
 
-    def __init__(self, observable, model, current_file):
+    def __init__(self, observable, model, dataset_name):
         super(ExchangesWriter, self).__init__(observable=observable)
-        self.current_file = current_file
+        self.dataset_name = dataset_name
 
         self.realized = []
         self.deleted = []
@@ -22,31 +22,32 @@ class ExchangesWriter(Observer):
         self.realized = []
         self.deleted = []
 
-    def update(self, observable, *args, **kwargs):
+    def update(self, observable, notification_type, **kwargs):
 
-        if args[0] == Observable.EXECUTED:
-            self.add_exchange(args[2])
-        elif args[0] == Observable.REMOVED:
-            self.add_removed(args[2])
-        elif args[0] == Observable.CLOSE:
+        if notification_type == Observable.EXECUTED:
+            self.add_exchange(**kwargs)
+        elif notification_type == Observable.REMOVED:
+            self.add_removed(**kwargs)
+        elif notification_type == Observable.CLOSE:
             # self.write()
             pass
-        elif args[0] == Observable.FINISHED_ROUND:
-            self.write(args[3])
+        elif notification_type == Observable.FINISHED_ROUND:
+            self.write(**kwargs)
 
-    def add_exchange(self, realized):
-        self.realized.append(realized)
+    def add_exchange(self, **kwargs):
+        self.realized.append(kwargs["realized"])
 
-    def add_removed(self, removed):
+    def add_removed(self, **kwargs):
+        removed = kwargs["removed"]
         self.deleted.append(removed)
 
-    def write(self, iteration_number):
+    def write(self, **kwargs):
 
-        if not os.path.exists("output/{0}/exchanges".format(self.current_file)):
-            os.makedirs("output/{0}/exchanges".format(self.current_file))
+        if not os.path.exists("output/{0}/exchanges".format(self.dataset_name)):
+            os.makedirs("output/{0}/exchanges".format(self.dataset_name))
 
         writer = csvWriter()
-        writer.write("output/{2}/exchanges/{0}.{1}".format(iteration_number, "output.csv", self.current_file),
+        writer.write("output/{2}/exchanges/{0}.{1}".format(kwargs["iteration"], "output.csv", self.dataset_name),
                      self.realized)
 
         self.setup()
