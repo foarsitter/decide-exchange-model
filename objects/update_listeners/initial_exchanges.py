@@ -3,6 +3,8 @@ from objects.update_listeners.observer import Observer, Observable
 
 
 class InitialExchanges(Observer):
+	POINTER = 0
+
 	def __init__(self, observable):
 		super(InitialExchanges, self).__init__(observable)
 		self.has_written = False
@@ -19,5 +21,8 @@ class InitialExchanges(Observer):
 		if not self.has_written:
 			csvwriter = csvWriter()
 
-			csvwriter.write("random.csv", model.Exchanges)
+			csvwriter.write("output/random.{0}.csv".format(InitialExchanges.POINTER), model.Exchanges)
+
+			InitialExchanges.POINTER += 1
+
 			self.has_written = True

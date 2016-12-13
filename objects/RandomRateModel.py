@@ -2,7 +2,7 @@ from decimal import *
 from itertools import combinations
 from operator import attrgetter
 
-from calculations import calc_nbs, calc_nbs_denominator
+from calculations import calc_nbs, calc_nbs_denominator, reverse_move
 from objects.ActorIssue import ActorIssue
 from objects.RandomExchange import Exchange
 
@@ -128,14 +128,100 @@ class Model:
 		for exchange in highest_gain_exchange.values():
 			exchange.is_highest_gain = True
 
-		self.Exchanges.sort(key=attrgetter("i.is_highest_gain", "j.is_highest_gain"), reverse=True)
+		for exchange in self.Exchanges:
 
+			if exchange.i.is_highest_gain:
+				if exchange.highest_gain == exchange.i.eu:
+					exchange.is_highest_highest = True
+				else:
+					exchange.is_lowest_highest = True
+
+			if exchange.j.is_highest_gain:
+				if exchange.highest_gain == exchange.j.eu:
+					exchange.is_highest_highest = True
+				else:
+					exchange.is_lowest_highest = True
+
+		self.Exchanges.sort(
+			key=attrgetter("is_highest_highest", "is_lowest_highest", "highest_gain", "lowest_gain"),
+			reverse=True)
 
 	def highest_gain(self) -> Exchange:
 		# To sort the list in place...
 		self.sort_exchanges()
 
-		return self.Exchanges.pop(0)
+		highest = self.Exchanges.pop(0)
+
+		# proceed or recalc
+		if highest.i.is_highest_gain and highest.j.is_highest_gain:
+			return highest
+		else:
+			self.recalc_highest()
+
+	def recalc_highest(self):
+
+		self.sort_exchanges()
+
+		highest = []
+		left_over = []
+
+		for exchange in self.Exchanges:
+			if exchange.i.is_highest_gain or exchange.j.is_highest_gain:
+				highest.append(exchange)
+			else:
+				left_over.append(exchange)
+
+		second_highest_gains = dict()
+		seconde_highest_gain_exchange = dict()
+
+		for actor in self.Actors:
+			second_highest_gains[actor] = 0
+
+		for exchange in left_over:
+
+			if exchange.i.eu > second_highest_gains[exchange.i.actor_name]:
+				second_highest_gains[exchange.i.actor_name] = exchange.i.eu
+				seconde_highest_gain_exchange[exchange.i.actor_name] = exchange.i
+
+			if exchange.j.eu > second_highest_gains[exchange.j.actor_name]:
+				second_highest_gains[exchange.j.actor_name] = exchange.j.eu
+				seconde_highest_gain_exchange[exchange.j.actor_name] = exchange.j
+
+		# for exchange in seconde_highest_gain_exchange.values():
+		# 	exchange.is_highest_gain = True
+		#
+		# for exchange in left_over:
+		#
+		# 	if exchange.i.is_highest_gain:
+		# 		if exchange.highest_gain == exchange.i.eu:
+		# 			exchange.is_highest_highest = True
+		# 		else:
+		# 			exchange.is_lowest_highest = True
+		#
+		# 	if exchange.j.is_highest_gain:
+		# 		if exchange.highest_gain == exchange.j.eu:
+		# 			exchange.is_highest_highest = True
+		# 		else:
+		# 			exchange.is_lowest_highest = True
+
+		for exchange_pair in highest:
+			if exchange_pair.i.is_highest_gain:
+				eu = seconde_highest_gain_exchange[exchange_pair.i.actor_name].eu
+
+				exchange_ratio = (eu - (exchange_pair.dp * exchange_pair.j.s)) / exchange_pair.i.s
+
+				# q is supply issue of i, so the move increases on q to the max interval
+				# or the move of j on p reduces
+
+				move = reverse_move(self.ActorIssues[exchange_pair.i.supply], exchange_pair.i, exchange_ratio)
+
+				if move < exchange.i.move:
+					print(move)  # reduce the move of j on p.
+				else:
+					exchange_pair.i.eu = eu
+					exchange_pair.dq = exchange_ratio
+					exchange_pair.i.move = move
+					exchange_pair.i.y = move
 
 	def remove_invalid_exchanges(self, res: Exchange):
 		length = len(self.Exchanges)
