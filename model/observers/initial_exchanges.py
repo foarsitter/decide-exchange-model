@@ -1,5 +1,5 @@
-from csvWriter import csvWriter
-from objects.update_listeners.observer import Observer, Observable
+from model.helpers.CsvWriter import CsvWriter
+from model.observers.observer import Observer, Observable
 
 
 class InitialExchanges(Observer):
@@ -19,9 +19,9 @@ class InitialExchanges(Observer):
 		model.sort_exchanges()
 
 		if not self.has_written:
-			csvwriter = csvWriter()
+			csvwriter = CsvWriter()
 
-			csvwriter.write("output/random.{0}.csv".format(InitialExchanges.POINTER), model.Exchanges)
+			csvwriter.write("data/output/random.{0}.csv".format(InitialExchanges.POINTER), model.Exchanges)
 
 			InitialExchanges.POINTER += 1
 

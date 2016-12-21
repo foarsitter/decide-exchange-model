@@ -1,0 +1,12 @@
+.idea/
+*.pyc
+__pycache__/
+bg/
+model/__pycache__/
+model/equal/__pycache__/
+model/equal/test/
+model/helpers/__pycache__/
+model/observers/test/
+model/random/__pycache__/
+output/
+data/output

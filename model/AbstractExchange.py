@@ -1,6 +1,6 @@
 from decimal import Decimal
 
-import calculations
+from model import calculations
 
 
 class AbstractExchangeActor(object):

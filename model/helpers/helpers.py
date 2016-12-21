@@ -1,6 +1,6 @@
 import argparse
 
-from csvParser import Parser
+from model.helpers.csvParser import Parser
 
 
 def parse_arguments():
@@ -18,6 +18,6 @@ def parse_arguments():
 
 	parser.add_argument('--rounds', help='The number of round the model needs to be executed', default=10, type=int)
 	parser.add_argument('--input', help='The location of the csv input file. ', default="data/data_short.csv", type=str)
-	parser.add_argument('--output', help='Output directory ', default="output/data_short/", type=str)
+	parser.add_argument('--output', help='Output directory ', default="data/output/data_short/", type=str)
 
 	return parser.parse_args()

@@ -1,8 +1,7 @@
 import random
 from decimal import *
-
-import calculations
-from objects.AbstractExchange import AbstractExchange, AbstractExchangeActor
+from model import calculations
+from model.AbstractExchange import AbstractExchangeActor, AbstractExchange
 
 
 class ExchangeActor(AbstractExchangeActor):

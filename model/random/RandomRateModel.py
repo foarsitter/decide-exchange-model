@@ -2,9 +2,9 @@ from decimal import *
 from itertools import combinations
 from operator import attrgetter
 
-from calculations import calc_nbs, calc_nbs_denominator, reverse_move
-from objects.ActorIssue import ActorIssue
-from objects.RandomExchange import Exchange
+from model import calculations
+from model.ActorIssue import ActorIssue
+from model.random.RandomExchange import Exchange
 
 
 class Model:
@@ -63,9 +63,9 @@ class Model:
 
 	def calc_nbs(self):
 		for issue, actor_issues in self.ActorIssues.items():
-			self.nbs_denominators[issue] = calc_nbs_denominator(actor_issues)
+			self.nbs_denominators[issue] = calculations.calc_nbs_denominator(actor_issues)
 
-			self.nbs[issue] = calc_nbs(actor_issues, self.nbs_denominators[issue])
+			self.nbs[issue] = calculations.calc_nbs(actor_issues, self.nbs_denominators[issue])
 
 	def determine_positions(self):
 		for issue, issue_nbs in self.nbs.items():
@@ -208,20 +208,15 @@ class Model:
 			if exchange_pair.i.is_highest_gain:
 				eu = seconde_highest_gain_exchange[exchange_pair.i.actor_name].eu
 
-				exchange_ratio = (eu - (exchange_pair.dp * exchange_pair.j.s)) / exchange_pair.i.s
+				# should be absolute?
+				delta_eu = exchange_pair.i.eu - eu
 
-				# q is supply issue of i, so the move increases on q to the max interval
-				# or the move of j on p reduces
+				delta_nbs = delta_eu * exchange_pair.i.s
 
-				move = reverse_move(self.ActorIssues[exchange_pair.i.supply], exchange_pair.i, exchange_ratio)
+				gain_j = (delta_nbs * exchange_pair.j.s)
 
-				if move < exchange.i.move:
-					print(move)  # reduce the move of j on p.
-				else:
-					exchange_pair.i.eu = eu
-					exchange_pair.dq = exchange_ratio
-					exchange_pair.i.move = move
-					exchange_pair.i.y = move
+				exchange_pair.i.eu = exchange_pair.i.eu - delta_eu
+				exchange_pair.j.eu = exchange_pair.j.eu + gain_j
 
 	def remove_invalid_exchanges(self, res: Exchange):
 		length = len(self.Exchanges)

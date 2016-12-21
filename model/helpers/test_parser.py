@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-import csvParser
+from model.helpers import csvParser
 
 
 class TestParser(TestCase):

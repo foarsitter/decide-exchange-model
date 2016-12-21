@@ -1,13 +1,12 @@
 from datetime import datetime
 
-import helpers
-from csvParser import Parser
-from objects.update_listeners.exchanges_writer import ExchangesWriter
-from objects.update_listeners.externalities import Externalities
-from objects.update_listeners.history_writer import HistoryWriter
-from objects.update_listeners.initial_exchanges import InitialExchanges
-from objects.update_listeners.logger import Logger
-from objects.update_listeners.observer import Observable
+from model.helpers import helpers, csvParser
+from model.observers.exchanges_writer import ExchangesWriter
+from model.observers.externalities import Externalities
+from model.observers.history_writer import HistoryWriter
+from model.observers.initial_exchanges import InitialExchanges
+from model.observers.observer import Observable
+from model.observers.logger import Logger
 
 args = helpers.parse_arguments()
 input_file = args.input
@@ -16,9 +15,9 @@ output_dir = args.output
 data_set_name = input_file.split("/")[-1].split(".")[0]
 
 if args.model == "equal":
-	from objects.EqualGainModel import Model
+	from model.equal.EqualGainModel import Model
 else:
-	from objects.RandomRateModel import Model
+	from model.random.RandomRateModel import Model
 
 # The event handlers for logging and writing the results to the disk.
 eventHandler = Observable()
@@ -30,7 +29,7 @@ eventHandler.notify(Observable.LOG, message="Start calculation at {0}".format(st
 
 model = Model()
 
-csvParser = Parser(model)
+csvParser = csvParser.Parser(model)
 
 model = csvParser.read(input_file)
 

@@ -1,6 +1,6 @@
 import csv
 
-from objects.update_listeners.observer import Observable, Observer
+from model.observers.observer import Observer, Observable
 
 
 class HistoryWriter(Observer):

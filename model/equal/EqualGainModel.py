@@ -3,9 +3,9 @@ from itertools import combinations
 from operator import attrgetter
 from random import random
 
-from calculations import calc_nbs, calc_nbs_denominator
-from objects.ActorIssue import ActorIssue
-from objects.EqualExchange import Exchange
+from model import calculations
+from model.ActorIssue import ActorIssue
+from model.equal.EqualExchange import Exchange
 
 
 class Model:
@@ -68,9 +68,9 @@ class Model:
 
 	def calc_nbs(self):
 		for issue, actor_issues in self.ActorIssues.items():
-			self.nbs_denominators[issue] = calc_nbs_denominator(actor_issues)
+			self.nbs_denominators[issue] = calculations.calc_nbs_denominator(actor_issues)
 
-			self.nbs[issue] = calc_nbs(actor_issues, self.nbs_denominators[issue])
+			self.nbs[issue] = calculations.calc_nbs(actor_issues, self.nbs_denominators[issue])
 
 	def determine_positions(self):
 		for issue, issue_nbs in self.nbs.items():

@@ -1,5 +1,5 @@
-import calculations
-from objects.AbstractExchange import AbstractExchange, AbstractExchangeActor
+from model import calculations
+from model.AbstractExchange import AbstractExchange, AbstractExchangeActor
 
 
 class Exchange(AbstractExchange):

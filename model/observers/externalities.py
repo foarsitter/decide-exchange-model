@@ -2,8 +2,8 @@ import collections
 import csv
 import os
 
-import calculations
-from objects.update_listeners.observer import Observable, Observer
+from model import calculations
+from model.observers.observer import Observer, Observable
 
 
 class Externalities(Observer):
@@ -113,7 +113,8 @@ class Externalities(Observer):
 			self.issue_set[issue_set_key]["second"] = realized.q
 		# end if
 
-	def calculate_exteranlities(self, model, realized):
+	@staticmethod
+	def calculate_exteranlities(model, realized):
 
 		results = {}
 

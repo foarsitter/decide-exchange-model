@@ -1,7 +1,6 @@
 import decimal
 
-from objects.ActorIssue import ActorIssue
-
+from model.ActorIssue import ActorIssue
 
 def calc_nbs(actor_issues, denominator):
     numerator = 0
@@ -67,14 +66,14 @@ def calc_adjusted_nbs_by_position(actor_issues, updates, actor: str, x_pos, new_
     return right
 
 
-def reverse_move(actor_issues, actor: 'ExchangeActor', exchange_ratio):
+def reverse_move(actor_issues, actor: 'model.AbstractExchange.AbstractExchangeActor', exchange_ratio):
     si = actor.s
     ci = actor.c
 
     return (exchange_ratio * sum_salience_power(actor_issues)) / (ci * si)
 
 
-def by_exchange_ratio(s_actor: 'ExchangeActor', exchange_ratio: decimal.Decimal):
+def by_exchange_ratio(s_actor: 'model.AbstractExchange.AbstractExchangeActor', exchange_ratio: decimal.Decimal):
     """
 
     :param s_actor: ExchangeActor
@@ -93,7 +92,7 @@ def by_exchange_ratio(s_actor: 'ExchangeActor', exchange_ratio: decimal.Decimal)
     return ((si_supply + sj_supply) / (sip + sjp)) * exchange_ratio
 
 
-def by_absolute_move(actor_issues, s_actor: 'ExchangeActor'):
+def by_absolute_move(actor_issues, s_actor: 'model.AbstractExchange.AbstractExchangeActor'):
     d_actor = s_actor.opposite_actor
 
     xip = d_actor.x_demand

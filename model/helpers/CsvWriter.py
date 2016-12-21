@@ -1,13 +1,13 @@
 import csv
 from typing import List
 
-from objects.EqualExchange import Exchange
+from model.equal.EqualExchange import Exchange
 
 
-class csvWriter:
+class CsvWriter:
 	def __init__(self):
 		self.var = "x"
-		self.file = "output"
+		self.file = "data/output"
 
 	def write(self, filename, realized: List[Exchange]):
 		with open(filename, 'w', newline='') as csvfile:
@@ -18,7 +18,8 @@ class csvWriter:
 			for exchange in realized:
 				writer.writerow(self.create_row(exchange))
 
-	def create_row(self, exchange: Exchange):
+	@staticmethod
+	def create_row(exchange: Exchange):
 
 		if isinstance(exchange, Exchange):
 			return [
