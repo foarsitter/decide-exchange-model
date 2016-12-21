@@ -215,24 +215,64 @@ class Model:
 
 				gain_j = (delta_nbs * exchange_pair.j.s)
 
-				exchange_pair.i.eu = exchange_pair.i.eu - delta_eu
-				exchange_pair.j.eu = exchange_pair.j.eu + gain_j
+				# exchange_pair.i.eu = exchange_pair.i.eu - delta_eu
+				# exchange_pair.j.eu = exchange_pair.j.eu + gain_j
 
-	def remove_invalid_exchanges(self, res: Exchange):
-		length = len(self.Exchanges)
+				dominator = self.nbs_denominators[exchange_pair.i.supply]
+				increase = exchange_pair.i.x < exchange_pair.i.y
+				nbs_adjusted = 0
 
-		valid_exchanges = []
-		invalid_exchanges = []
-		for i in range(length):
+				if increase:
+					nbs_adjusted = exchange_pair.i.nbs_1 + delta_nbs
+				else:
+					nbs_adjusted = exchange_pair.i.nbs_1 - delta_nbs
+
+				sum_c_s_x = 0
+
+				x = 0
+
+				for actor_name, actor_issue in self.ActorIssues[exchange_pair.i.supply].items():
+
+					if actor_name == exchange_pair.i.actor_name:
+						x = actor_issue.position
+					else:
+						sum_c_s_x += actor_issue.salience * actor_issue.power * actor_issue.position
+
+				yiq = (nbs_adjusted * dominator - sum_c_s_x) / (exchange_pair.i.c * exchange_pair.i.s)
+
+				dq = calculations.exchange_ratio(abs(x - yiq), exchange_pair.i.s, exchange_pair.i.c, dominator)
+				dp = calculations.by_exchange_ratio(exchange_pair.i, dq)
+
+				dq_old = exchange_pair.dq
+				dp_old = exchange_pair.dp
+
+				eui_old = exchange_pair.i.eu
+				euj_old = exchange_pair.j.eu
+
+				eui_new = eu
+				euj_new = exchange_pair.j.eu + gain_j
+
+				if eui_old > eui_new and euj_old < euj_new:
+					print(True)
+
+				print(dp)
+
+
+def remove_invalid_exchanges(self, res: Exchange):
+	length = len(self.Exchanges)
+
+	valid_exchanges = []
+	invalid_exchanges = []
+	for i in range(length):
+
+		if self.Exchanges[i].is_valid:
+			self.Exchanges[i].recalculate(res)
 
 			if self.Exchanges[i].is_valid:
-				self.Exchanges[i].recalculate(res)
+				valid_exchanges.append(self.Exchanges[i])
+			else:
+				invalid_exchanges.append(self.Exchanges[i])
 
-				if self.Exchanges[i].is_valid:
-					valid_exchanges.append(self.Exchanges[i])
-				else:
-					invalid_exchanges.append(self.Exchanges[i])
+	self.Exchanges = valid_exchanges
 
-		self.Exchanges = valid_exchanges
-
-		return invalid_exchanges
+	return invalid_exchanges
