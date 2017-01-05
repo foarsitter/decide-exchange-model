@@ -1,0 +1,30 @@
+model.random package
+====================
+
+Submodules
+----------
+
+model.random.RandomExchange module
+----------------------------------
+
+.. automodule:: model.random.RandomExchange
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+model.random.RandomRateModel module
+-----------------------------------
+
+.. automodule:: model.random.RandomRateModel
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: model.random
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,0 +1,8 @@
+
+model.calculations module
+-------------------------
+
+.. automodule:: model.calculations
+    :members:
+    :undoc-members:
+    :show-inheritance:

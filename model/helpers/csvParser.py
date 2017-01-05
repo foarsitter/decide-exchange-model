@@ -54,7 +54,7 @@ class Parser:
 		self.data.add_actor(row[1])
 
 	def parseRowIssue(self, row):
-		self.data.add_issue(row[1], row[2])
+		self.data.add_issue(row[1])
 
 	def parseRowD(self, row):
 		self.data.add_actor_issue(actor_name=row[self.rActor], issue_name=row[self.rIssue], power=row[self.rPower],

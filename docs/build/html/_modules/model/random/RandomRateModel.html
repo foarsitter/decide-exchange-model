@@ -1,0 +1,253 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>model.random.RandomRateModel &#8212; Stokman 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Stokman 0.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for model.random.RandomRateModel</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">operator</span> <span class="k">import</span> <span class="n">attrgetter</span>
+
+<span class="kn">from</span> <span class="nn">model</span> <span class="k">import</span> <span class="n">calculations</span>
+<span class="kn">from</span> <span class="nn">model.AbstractModel</span> <span class="k">import</span> <span class="n">AbstractModel</span>
+<span class="kn">from</span> <span class="nn">.RandomExchange</span> <span class="k">import</span> <span class="n">Exchange</span>
+
+
+<div class="viewcode-block" id="RandomRateModel"><a class="viewcode-back" href="../../../model.random.html#model.random.RandomRateModel.RandomRateModel">[docs]</a><span class="k">class</span> <span class="nc">RandomRateModel</span><span class="p">(</span><span class="n">AbstractModel</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	The Random Rate implementation</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="RandomRateModel.sort_exchanges"><a class="viewcode-back" href="../../../model.random.html#model.random.RandomRateModel.RandomRateModel.sort_exchanges">[docs]</a>	<span class="k">def</span> <span class="nf">sort_exchanges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="n">highest_gains</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+		<span class="n">highest_gain_exchange</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+		<span class="k">for</span> <span class="n">actor</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Actors</span><span class="p">:</span>
+			<span class="n">highest_gains</span><span class="p">[</span><span class="n">actor</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+		<span class="k">for</span> <span class="n">exchange</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Exchanges</span><span class="p">:</span>
+
+			<span class="k">if</span> <span class="n">exchange</span><span class="o">.</span><span class="n">i</span><span class="o">.</span><span class="n">eu</span> <span class="o">&gt;</span> <span class="n">highest_gains</span><span class="p">[</span><span class="n">exchange</span><span class="o">.</span><span class="n">i</span><span class="o">.</span><span class="n">actor_name</span><span class="p">]:</span>
+				<span class="n">highest_gains</span><span class="p">[</span><span class="n">exchange</span><span class="o">.</span><span class="n">i</span><span class="o">.</span><span class="n">actor_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">exchange</span><span class="o">.</span><span class="n">i</span><span class="o">.</span><span class="n">eu</span>
+				<span class="n">highest_gain_exchange</span><span class="p">[</span><span class="n">exchange</span><span class="o">.</span><span class="n">i</span><span class="o">.</span><span class="n">actor_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">exchange</span><span class="o">.</span><span class="n">i</span>
+
+			<span class="k">if</span> <span class="n">exchange</span><span class="o">.</span><span class="n">j</span><span class="o">.</span><span class="n">eu</span> <span class="o">&gt;</span> <span class="n">highest_gains</span><span class="p">[</span><span class="n">exchange</span><span class="o">.</span><span class="n">j</span><span class="o">.</span><span class="n">actor_name</span><span class="p">]:</span>
+				<span class="n">highest_gains</span><span class="p">[</span><span class="n">exchange</span><span class="o">.</span><span class="n">j</span><span class="o">.</span><span class="n">actor_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">exchange</span><span class="o">.</span><span class="n">j</span><span class="o">.</span><span class="n">eu</span>
+				<span class="n">highest_gain_exchange</span><span class="p">[</span><span class="n">exchange</span><span class="o">.</span><span class="n">j</span><span class="o">.</span><span class="n">actor_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">exchange</span><span class="o">.</span><span class="n">j</span>
+
+		<span class="k">for</span> <span class="n">exchange</span> <span class="ow">in</span> <span class="n">highest_gain_exchange</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+			<span class="n">exchange</span><span class="o">.</span><span class="n">is_highest_gain</span> <span class="o">=</span> <span class="kc">True</span>
+
+		<span class="k">for</span> <span class="n">exchange</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Exchanges</span><span class="p">:</span>
+
+			<span class="k">if</span> <span class="n">exchange</span><span class="o">.</span><span class="n">i</span><span class="o">.</span><span class="n">is_highest_gain</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">exchange</span><span class="o">.</span><span class="n">highest_gain</span> <span class="o">==</span> <span class="n">exchange</span><span class="o">.</span><span class="n">i</span><span class="o">.</span><span class="n">eu</span><span class="p">:</span>
+					<span class="n">exchange</span><span class="o">.</span><span class="n">is_highest_highest</span> <span class="o">=</span> <span class="kc">True</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="n">exchange</span><span class="o">.</span><span class="n">is_lowest_highest</span> <span class="o">=</span> <span class="kc">True</span>
+
+			<span class="k">if</span> <span class="n">exchange</span><span class="o">.</span><span class="n">j</span><span class="o">.</span><span class="n">is_highest_gain</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">exchange</span><span class="o">.</span><span class="n">highest_gain</span> <span class="o">==</span> <span class="n">exchange</span><span class="o">.</span><span class="n">j</span><span class="o">.</span><span class="n">eu</span><span class="p">:</span>
+					<span class="n">exchange</span><span class="o">.</span><span class="n">is_highest_highest</span> <span class="o">=</span> <span class="kc">True</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="n">exchange</span><span class="o">.</span><span class="n">is_lowest_highest</span> <span class="o">=</span> <span class="kc">True</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">Exchanges</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span>
+			<span class="n">key</span><span class="o">=</span><span class="n">attrgetter</span><span class="p">(</span><span class="s2">&quot;is_highest_highest&quot;</span><span class="p">,</span> <span class="s2">&quot;is_lowest_highest&quot;</span><span class="p">,</span> <span class="s2">&quot;highest_gain&quot;</span><span class="p">,</span> <span class="s2">&quot;lowest_gain&quot;</span><span class="p">),</span>
+			<span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RandomRateModel.highest_gain"><a class="viewcode-back" href="../../../model.random.html#model.random.RandomRateModel.RandomRateModel.highest_gain">[docs]</a>	<span class="k">def</span> <span class="nf">highest_gain</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Exchange</span><span class="p">:</span>
+		<span class="c1"># To sort the list in place...</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">sort_exchanges</span><span class="p">()</span>
+
+		<span class="n">highest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Exchanges</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+		<span class="c1"># proceed or recalc</span>
+		<span class="k">if</span> <span class="n">highest</span><span class="o">.</span><span class="n">i</span><span class="o">.</span><span class="n">is_highest_gain</span> <span class="ow">and</span> <span class="n">highest</span><span class="o">.</span><span class="n">j</span><span class="o">.</span><span class="n">is_highest_gain</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">highest</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">recalc_highest</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="RandomRateModel.recalc_highest"><a class="viewcode-back" href="../../../model.random.html#model.random.RandomRateModel.RandomRateModel.recalc_highest">[docs]</a>	<span class="k">def</span> <span class="nf">recalc_highest</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">sort_exchanges</span><span class="p">()</span>
+
+		<span class="n">highest</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="n">left_over</span> <span class="o">=</span> <span class="p">[]</span>
+
+		<span class="k">for</span> <span class="n">exchange</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Exchanges</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">exchange</span><span class="o">.</span><span class="n">i</span><span class="o">.</span><span class="n">is_highest_gain</span> <span class="ow">or</span> <span class="n">exchange</span><span class="o">.</span><span class="n">j</span><span class="o">.</span><span class="n">is_highest_gain</span><span class="p">:</span>
+				<span class="n">highest</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">exchange</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">left_over</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">exchange</span><span class="p">)</span>
+
+		<span class="n">second_highest_gains</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+		<span class="n">seconde_highest_gain_exchange</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+		<span class="k">for</span> <span class="n">actor</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Actors</span><span class="p">:</span>
+			<span class="n">second_highest_gains</span><span class="p">[</span><span class="n">actor</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+		<span class="k">for</span> <span class="n">exchange</span> <span class="ow">in</span> <span class="n">left_over</span><span class="p">:</span>
+
+			<span class="k">if</span> <span class="n">exchange</span><span class="o">.</span><span class="n">i</span><span class="o">.</span><span class="n">eu</span> <span class="o">&gt;</span> <span class="n">second_highest_gains</span><span class="p">[</span><span class="n">exchange</span><span class="o">.</span><span class="n">i</span><span class="o">.</span><span class="n">actor_name</span><span class="p">]:</span>
+				<span class="n">second_highest_gains</span><span class="p">[</span><span class="n">exchange</span><span class="o">.</span><span class="n">i</span><span class="o">.</span><span class="n">actor_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">exchange</span><span class="o">.</span><span class="n">i</span><span class="o">.</span><span class="n">eu</span>
+				<span class="n">seconde_highest_gain_exchange</span><span class="p">[</span><span class="n">exchange</span><span class="o">.</span><span class="n">i</span><span class="o">.</span><span class="n">actor_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">exchange</span><span class="o">.</span><span class="n">i</span>
+
+			<span class="k">if</span> <span class="n">exchange</span><span class="o">.</span><span class="n">j</span><span class="o">.</span><span class="n">eu</span> <span class="o">&gt;</span> <span class="n">second_highest_gains</span><span class="p">[</span><span class="n">exchange</span><span class="o">.</span><span class="n">j</span><span class="o">.</span><span class="n">actor_name</span><span class="p">]:</span>
+				<span class="n">second_highest_gains</span><span class="p">[</span><span class="n">exchange</span><span class="o">.</span><span class="n">j</span><span class="o">.</span><span class="n">actor_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">exchange</span><span class="o">.</span><span class="n">j</span><span class="o">.</span><span class="n">eu</span>
+				<span class="n">seconde_highest_gain_exchange</span><span class="p">[</span><span class="n">exchange</span><span class="o">.</span><span class="n">j</span><span class="o">.</span><span class="n">actor_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">exchange</span><span class="o">.</span><span class="n">j</span>
+
+		<span class="c1"># for exchange in seconde_highest_gain_exchange.values():</span>
+		<span class="c1"># 	exchange.is_highest_gain = True</span>
+		<span class="c1">#</span>
+		<span class="c1"># for exchange in left_over:</span>
+		<span class="c1">#</span>
+		<span class="c1"># 	if exchange.i.is_highest_gain:</span>
+		<span class="c1"># 		if exchange.highest_gain == exchange.i.eu:</span>
+		<span class="c1"># 			exchange.is_highest_highest = True</span>
+		<span class="c1"># 		else:</span>
+		<span class="c1"># 			exchange.is_lowest_highest = True</span>
+		<span class="c1">#</span>
+		<span class="c1"># 	if exchange.j.is_highest_gain:</span>
+		<span class="c1"># 		if exchange.highest_gain == exchange.j.eu:</span>
+		<span class="c1"># 			exchange.is_highest_highest = True</span>
+		<span class="c1"># 		else:</span>
+		<span class="c1"># 			exchange.is_lowest_highest = True</span>
+
+		<span class="k">for</span> <span class="n">exchange_pair</span> <span class="ow">in</span> <span class="n">highest</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">exchange_pair</span><span class="o">.</span><span class="n">i</span><span class="o">.</span><span class="n">is_highest_gain</span><span class="p">:</span>
+				<span class="n">eu</span> <span class="o">=</span> <span class="n">seconde_highest_gain_exchange</span><span class="p">[</span><span class="n">exchange_pair</span><span class="o">.</span><span class="n">i</span><span class="o">.</span><span class="n">actor_name</span><span class="p">]</span><span class="o">.</span><span class="n">eu</span>
+
+				<span class="c1"># should be absolute?</span>
+				<span class="n">delta_eu</span> <span class="o">=</span> <span class="n">exchange_pair</span><span class="o">.</span><span class="n">i</span><span class="o">.</span><span class="n">eu</span> <span class="o">-</span> <span class="n">eu</span>
+
+				<span class="n">delta_nbs</span> <span class="o">=</span> <span class="n">delta_eu</span> <span class="o">*</span> <span class="n">exchange_pair</span><span class="o">.</span><span class="n">i</span><span class="o">.</span><span class="n">s</span>
+
+				<span class="n">gain_j</span> <span class="o">=</span> <span class="p">(</span><span class="n">delta_nbs</span> <span class="o">*</span> <span class="n">exchange_pair</span><span class="o">.</span><span class="n">j</span><span class="o">.</span><span class="n">s</span><span class="p">)</span>
+
+				<span class="c1"># exchange_pair.i.eu = exchange_pair.i.eu - delta_eu</span>
+				<span class="c1"># exchange_pair.j.eu = exchange_pair.j.eu + gain_j</span>
+
+				<span class="n">dominator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nbs_denominators</span><span class="p">[</span><span class="n">exchange_pair</span><span class="o">.</span><span class="n">i</span><span class="o">.</span><span class="n">supply</span><span class="p">]</span>
+				<span class="n">increase</span> <span class="o">=</span> <span class="n">exchange_pair</span><span class="o">.</span><span class="n">i</span><span class="o">.</span><span class="n">x</span> <span class="o">&lt;</span> <span class="n">exchange_pair</span><span class="o">.</span><span class="n">i</span><span class="o">.</span><span class="n">y</span>
+				<span class="n">nbs_adjusted</span> <span class="o">=</span> <span class="mi">0</span>
+
+				<span class="k">if</span> <span class="n">increase</span><span class="p">:</span>
+					<span class="n">nbs_adjusted</span> <span class="o">=</span> <span class="n">exchange_pair</span><span class="o">.</span><span class="n">i</span><span class="o">.</span><span class="n">nbs_1</span> <span class="o">+</span> <span class="n">delta_nbs</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="n">nbs_adjusted</span> <span class="o">=</span> <span class="n">exchange_pair</span><span class="o">.</span><span class="n">i</span><span class="o">.</span><span class="n">nbs_1</span> <span class="o">-</span> <span class="n">delta_nbs</span>
+
+				<span class="n">sum_c_s_x</span> <span class="o">=</span> <span class="mi">0</span>
+
+				<span class="n">x</span> <span class="o">=</span> <span class="mi">0</span>
+
+				<span class="k">for</span> <span class="n">actor_name</span><span class="p">,</span> <span class="n">actor_issue</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ActorIssues</span><span class="p">[</span><span class="n">exchange_pair</span><span class="o">.</span><span class="n">i</span><span class="o">.</span><span class="n">supply</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+					<span class="k">if</span> <span class="n">actor_name</span> <span class="o">==</span> <span class="n">exchange_pair</span><span class="o">.</span><span class="n">i</span><span class="o">.</span><span class="n">actor_name</span><span class="p">:</span>
+						<span class="n">x</span> <span class="o">=</span> <span class="n">actor_issue</span><span class="o">.</span><span class="n">position</span>
+					<span class="k">else</span><span class="p">:</span>
+						<span class="n">sum_c_s_x</span> <span class="o">+=</span> <span class="n">actor_issue</span><span class="o">.</span><span class="n">salience</span> <span class="o">*</span> <span class="n">actor_issue</span><span class="o">.</span><span class="n">power</span> <span class="o">*</span> <span class="n">actor_issue</span><span class="o">.</span><span class="n">position</span>
+
+				<span class="n">yiq</span> <span class="o">=</span> <span class="p">(</span><span class="n">nbs_adjusted</span> <span class="o">*</span> <span class="n">dominator</span> <span class="o">-</span> <span class="n">sum_c_s_x</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">exchange_pair</span><span class="o">.</span><span class="n">i</span><span class="o">.</span><span class="n">c</span> <span class="o">*</span> <span class="n">exchange_pair</span><span class="o">.</span><span class="n">i</span><span class="o">.</span><span class="n">s</span><span class="p">)</span>
+
+				<span class="n">dq</span> <span class="o">=</span> <span class="n">calculations</span><span class="o">.</span><span class="n">exchange_ratio</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">yiq</span><span class="p">),</span> <span class="n">exchange_pair</span><span class="o">.</span><span class="n">i</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="n">exchange_pair</span><span class="o">.</span><span class="n">i</span><span class="o">.</span><span class="n">c</span><span class="p">,</span> <span class="n">dominator</span><span class="p">)</span>
+				<span class="n">dp</span> <span class="o">=</span> <span class="n">calculations</span><span class="o">.</span><span class="n">by_exchange_ratio</span><span class="p">(</span><span class="n">exchange_pair</span><span class="o">.</span><span class="n">i</span><span class="p">,</span> <span class="n">dq</span><span class="p">)</span>
+
+				<span class="n">dq_old</span> <span class="o">=</span> <span class="n">exchange_pair</span><span class="o">.</span><span class="n">dq</span>
+				<span class="n">dp_old</span> <span class="o">=</span> <span class="n">exchange_pair</span><span class="o">.</span><span class="n">dp</span>
+
+				<span class="n">eui_old</span> <span class="o">=</span> <span class="n">exchange_pair</span><span class="o">.</span><span class="n">i</span><span class="o">.</span><span class="n">eu</span>
+				<span class="n">euj_old</span> <span class="o">=</span> <span class="n">exchange_pair</span><span class="o">.</span><span class="n">j</span><span class="o">.</span><span class="n">eu</span>
+
+				<span class="n">eui_new</span> <span class="o">=</span> <span class="n">eu</span>
+				<span class="n">euj_new</span> <span class="o">=</span> <span class="n">exchange_pair</span><span class="o">.</span><span class="n">j</span><span class="o">.</span><span class="n">eu</span> <span class="o">+</span> <span class="n">gain_j</span>
+
+				<span class="k">if</span> <span class="n">eui_old</span> <span class="o">&gt;</span> <span class="n">eui_new</span> <span class="ow">and</span> <span class="n">euj_old</span> <span class="o">&lt;</span> <span class="n">euj_new</span><span class="p">:</span>
+					<span class="nb">print</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+				<span class="nb">print</span><span class="p">(</span><span class="n">dp</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RandomRateModel.new_exchange_factory"><a class="viewcode-back" href="../../../model.random.html#model.random.RandomRateModel.RandomRateModel.new_exchange_factory">[docs]</a>	<span class="k">def</span> <span class="nf">new_exchange_factory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">groups</span><span class="p">):</span>
+		<span class="k">return</span> <span class="n">Exchange</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">groups</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Stokman 0.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Jelmer Draaijer.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>

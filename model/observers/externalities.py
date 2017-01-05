@@ -119,7 +119,7 @@ class Externalities(Observer):
 		results = {}
 
 		for actor in model.Actors:
-			results[actor] = calculations.calc_actor_externalities(actor, model, realized)
+			results[actor] = calculations.actor_externalities(actor, model, realized)
 		# end for
 
 		return results

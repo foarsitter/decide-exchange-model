@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>model.helpers.csvParser &#8212; Stokman 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Stokman 0.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for model.helpers.csvParser</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+
+<div class="viewcode-block" id="Parser"><a class="viewcode-back" href="../../../model.helpers.html#model.helpers.csvParser.Parser">[docs]</a><span class="k">class</span> <span class="nc">Parser</span><span class="p">:</span>
+	<span class="c1"># csv row identifiers</span>
+	<span class="n">cA</span> <span class="o">=</span> <span class="s2">&quot;#A&quot;</span>  <span class="c1"># A = actor</span>
+	<span class="c1"># P = issues</span>
+	<span class="n">cP</span> <span class="o">=</span> <span class="s2">&quot;#P&quot;</span>
+	<span class="c1"># D = the position, salience &amp; power of an actor of an issue</span>
+	<span class="n">cD</span> <span class="o">=</span> <span class="s2">&quot;#D&quot;</span>
+	<span class="c1"># M = issue dimensions (not used in the program)</span>
+	<span class="n">cM</span> <span class="o">=</span> <span class="s2">&quot;#M&quot;</span>
+
+	<span class="n">cI</span> <span class="o">=</span> <span class="s2">&quot;#/&quot;</span>
+
+	<span class="c1"># /	actor	issue	position	salience	power</span>
+	<span class="n">rActor</span> <span class="o">=</span> <span class="mi">1</span>
+	<span class="n">rIssue</span> <span class="o">=</span> <span class="mi">2</span>
+	<span class="n">rPosition</span> <span class="o">=</span> <span class="mi">3</span>
+	<span class="n">rSalience</span> <span class="o">=</span> <span class="mi">4</span>
+	<span class="n">rPower</span> <span class="o">=</span> <span class="mi">5</span>
+
+	<span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">model</span>
+
+		<span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">())</span>
+
+<div class="viewcode-block" id="Parser.read"><a class="viewcode-back" href="../../../model.helpers.html#model.helpers.csvParser.Parser.read">[docs]</a>	<span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">):</span>
+			<span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">__file__</span><span class="p">)),</span> <span class="n">filename</span><span class="p">)</span>
+
+		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;rt&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">csv_file</span><span class="p">:</span>
+			<span class="n">reader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">csv_file</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;;&#39;</span><span class="p">)</span>
+
+			<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
+
+				<span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">cA</span><span class="p">:</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">parseRowActor</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+				<span class="k">elif</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">cP</span><span class="p">:</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">parseRowIssue</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+				<span class="k">elif</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">cD</span><span class="p">:</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">parseRowD</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+				<span class="k">elif</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">cM</span><span class="p">:</span>
+					<span class="k">pass</span>
+
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span></div>
+
+<div class="viewcode-block" id="Parser.parseRowActor"><a class="viewcode-back" href="../../../model.helpers.html#model.helpers.csvParser.Parser.parseRowActor">[docs]</a>	<span class="k">def</span> <span class="nf">parseRowActor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">add_actor</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Parser.parseRowIssue"><a class="viewcode-back" href="../../../model.helpers.html#model.helpers.csvParser.Parser.parseRowIssue">[docs]</a>	<span class="k">def</span> <span class="nf">parseRowIssue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">add_issue</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Parser.parseRowD"><a class="viewcode-back" href="../../../model.helpers.html#model.helpers.csvParser.Parser.parseRowD">[docs]</a>	<span class="k">def</span> <span class="nf">parseRowD</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">add_actor_issue</span><span class="p">(</span><span class="n">actor_name</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">rActor</span><span class="p">],</span> <span class="n">issue_name</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">rIssue</span><span class="p">],</span> <span class="n">power</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">rPower</span><span class="p">],</span>
+								  <span class="n">salience</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">rSalience</span><span class="p">],</span>
+								  <span class="n">position</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">rPosition</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Parser.info"><a class="viewcode-back" href="../../../model.helpers.html#model.helpers.csvParser.Parser.info">[docs]</a>	<span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+		<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;This program accepts input with a dot (.) as decimal separator. </span><span class="se">\n</span><span class="s2">&quot;</span>
+			  <span class="s2">&quot;Parameters:</span><span class="se">\n</span><span class="si">{0}</span><span class="s2"> is for defining an actor,</span><span class="se">\n</span><span class="s2">&quot;</span>
+			  <span class="s2">&quot;</span><span class="si">{1}</span><span class="s2"> for an issue,</span><span class="se">\n</span><span class="s2">&quot;</span>
+			  <span class="s2">&quot;</span><span class="si">{2}</span><span class="s2"> for actor values for each issue.</span><span class="se">\n</span><span class="s2">&quot;</span>
+			  <span class="s2">&quot;We expect for </span><span class="si">{2}</span><span class="s2"> the following order in values: &quot;</span>
+			  <span class="s2">&quot;actor, issue, position, salience, power&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cA</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cP</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cD</span><span class="p">))</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Stokman 0.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Jelmer Draaijer.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>

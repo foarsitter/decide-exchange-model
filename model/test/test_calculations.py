@@ -2,8 +2,8 @@ from decimal import *
 from unittest import TestCase
 
 import csvParser
-from calculations import by_exchange_ratio, by_absolute_move, calc_adjusted_nbs, calc_nbs, reverse_move, \
-    sum_salience_power, calc_nbs_denominator, calc_actor_externalities as externalities
+from calculations import by_exchange_ratio, by_absolute_move, adjusted_nbs, calc_nbs, reverse_move, \
+    sum_salience_power, calc_nbs_denominator, actor_externalities as externalities
 
 from objects.ActorIssue import ActorIssue
 from objects.EqualExchange import Exchange
@@ -29,13 +29,13 @@ class TestNBSCalculations(TestCase):
         a2 = "b"
         a3 = "c"
 
-        self.assertEqual(calc_adjusted_nbs(self.actor_issues, {}, a1, 100, self.denominator), 100)
+        self.assertEqual(adjusted_nbs(self.actor_issues, {}, a1, 100, self.denominator), 100)
 
-        self.assertEqual(calc_adjusted_nbs(self.actor_issues, {}, a2, 0, self.denominator), Decimal(100) / Decimal(3))
+        self.assertEqual(adjusted_nbs(self.actor_issues, {}, a2, 0, self.denominator), Decimal(100) / Decimal(3))
 
-        self.assertEqual(calc_adjusted_nbs(self.actor_issues, {}, a1, 0, self.denominator), Decimal(200) / Decimal(3))
+        self.assertEqual(adjusted_nbs(self.actor_issues, {}, a1, 0, self.denominator), Decimal(200) / Decimal(3))
 
-        self.assertEqual(calc_adjusted_nbs(self.actor_issues, {"a": 100}, a3, 0, self.denominator),
+        self.assertEqual(adjusted_nbs(self.actor_issues, {"a": 100}, a3, 0, self.denominator),
                          Decimal(200) / Decimal(3))
 
 
@@ -101,8 +101,8 @@ class TestBy_absolute_move(TestCase):
         e.calculate()
 
         nbs_0 = model.nbs[p]
-        nbs_1 = calc_adjusted_nbs(model.ActorIssues[p], e.updates, e.j.actor_name, e.j.y,
-                                  model.nbs_denominators[p])
+        nbs_1 = adjusted_nbs(model.ActorIssues[p], e.updates, e.j.actor_name, e.j.y,
+                             model.nbs_denominators[p])
 
         Russia = model.ActorIssues[p]["Russia"]  # russia is an D group actor, so he is inner
         Umbrellamin = model.ActorIssues[p]["Umbrellamin"]  # Umbrellamin is and B group actor, so he is outer

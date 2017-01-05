@@ -1,7 +1,7 @@
 import csv
 from typing import List
 
-from model.equal.EqualExchange import Exchange
+from model.equalgain import EqualGainExchange
 
 
 class CsvWriter:
@@ -9,7 +9,7 @@ class CsvWriter:
 		self.var = "x"
 		self.file = "data/output"
 
-	def write(self, filename, realized: List[Exchange]):
+	def write(self, filename, realized: List[EqualGainExchange]):
 		with open(filename, 'w', newline='') as csvfile:
 			writer = csv.writer(csvfile, delimiter=';')
 
@@ -19,9 +19,9 @@ class CsvWriter:
 				writer.writerow(self.create_row(exchange))
 
 	@staticmethod
-	def create_row(exchange: Exchange):
+	def create_row(exchange: EqualGainExchange):
 
-		if isinstance(exchange, Exchange):
+		if isinstance(exchange, EqualGainExchange):
 			return [
 				# the actors
 				exchange.i.actor_name,
@@ -76,9 +76,9 @@ class CsvWriter:
 				exchange.j.nbs_1]
 
 	@staticmethod
-	def create_heading(exchange: Exchange):
+	def create_heading(exchange: EqualGainExchange):
 
-		if isinstance(exchange, Exchange):
+		if isinstance(exchange, EqualGainExchange):
 			return [
 				# the actors
 				"actor_name",  # exchange.i.actor_name,

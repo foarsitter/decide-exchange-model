@@ -1,0 +1,754 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>model package &#8212; Stokman 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="model.helpers package" href="model.helpers.html" />
+    <link rel="prev" title="equal-gain-python" href="modules.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="model.helpers.html" title="model.helpers package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="equal-gain-python"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Stokman 0.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" accesskey="U">equal-gain-python</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="model-package">
+<h1>model package<a class="headerlink" href="#model-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="model.helpers.html">model.helpers package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="model.helpers.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.helpers.html#module-model.helpers.CsvWriter">model.helpers.CsvWriter module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.helpers.html#module-model.helpers.csvParser">model.helpers.csvParser module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.helpers.html#module-model.helpers.helpers">model.helpers.helpers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.helpers.html#module-model.helpers.test_parser">model.helpers.test_parser module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.helpers.html#module-model.helpers.xdfparse">model.helpers.xdfparse module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.helpers.html#module-model.helpers">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="model.observers.html">model.observers package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="model.observers.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.observers.html#module-model.observers.exchanges_writer">model.observers.exchanges_writer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.observers.html#module-model.observers.externalities">model.observers.externalities module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.observers.html#module-model.observers.history_writer">model.observers.history_writer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.observers.html#module-model.observers.initial_exchanges">model.observers.initial_exchanges module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.observers.html#module-model.observers.logger">model.observers.logger module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.observers.html#module-model.observers.observer">model.observers.observer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.observers.html#module-model.observers">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Calculations</li>
+<li>Equal Gain implementation</li>
+<li>Random Rate implementation</li>
+<li>base classes</li>
+</ul>
+</div>
+<div class="section" id="module-model.base">
+<span id="model-base-module"></span><h2>model.base module<a class="headerlink" href="#module-model.base" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="model.base.AbstractExchange">
+<em class="property">class </em><code class="descclassname">model.base.</code><code class="descname">AbstractExchange</code><span class="sig-paren">(</span><em>i: str</em>, <em>j: str</em>, <em>p: str</em>, <em>q: str</em>, <em>m: model.base.AbstractModel</em>, <em>groups: list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/base.html#AbstractExchange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.base.AbstractExchange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>An exchange between two actors and two issues. Each actor has a demand and supply issue</p>
+<dl class="attribute">
+<dt id="model.base.AbstractExchange.actor_class">
+<code class="descname">actor_class</code><a class="headerlink" href="#model.base.AbstractExchange.actor_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#model.base.AbstractExchangeActor" title="model.base.AbstractExchangeActor"><code class="xref py py-class docutils literal"><span class="pre">AbstractExchangeActor</span></code></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="model.base.AbstractExchange.calculate">
+<code class="descname">calculate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/base.html#AbstractExchange.calculate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.base.AbstractExchange.calculate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method stub to be overriden</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="model.base.AbstractExchange.check_nbs_i">
+<code class="descname">check_nbs_i</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/base.html#AbstractExchange.check_nbs_i"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.base.AbstractExchange.check_nbs_i" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate if the NBS/outcome doesn&#8217;t shifts over the original position of actor i
+TODO: create universal method because of code duplication in self.check_nbs_j
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="model.base.AbstractExchange.check_nbs_j">
+<code class="descname">check_nbs_j</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/base.html#AbstractExchange.check_nbs_j"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.base.AbstractExchange.check_nbs_j" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate if the NBS/outcome doesn&#8217;t shifts over the original position of actor i
+TODO: create universal method because of code duplication in self.check_nbs_i
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="model.base.AbstractExchange.contains_actor_with_supply">
+<code class="descname">contains_actor_with_supply</code><span class="sig-paren">(</span><em>actor: model.base.AbstractExchangeActor</em>, <em>issue: str</em><span class="sig-paren">)</span> &rarr; bool<a class="reference internal" href="_modules/model/base.html#AbstractExchange.contains_actor_with_supply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.base.AbstractExchange.contains_actor_with_supply" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the actors has the given issue as supply issue</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="model.base.AbstractExchange.equal_obj">
+<code class="descname">equal_obj</code><span class="sig-paren">(</span><em>exchange: model.base.AbstractExchange</em><span class="sig-paren">)</span> &rarr; bool<a class="reference internal" href="_modules/model/base.html#AbstractExchange.equal_obj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.base.AbstractExchange.equal_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compare the both objects</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="model.base.AbstractExchange.equal_str">
+<code class="descname">equal_str</code><span class="sig-paren">(</span><em>i: str</em>, <em>j: str</em>, <em>p: str</em>, <em>q: str</em><span class="sig-paren">)</span> &rarr; bool<a class="reference internal" href="_modules/model/base.html#AbstractExchange.equal_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.base.AbstractExchange.equal_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compare the given values</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="model.base.AbstractExchange.recalculate">
+<code class="descname">recalculate</code><span class="sig-paren">(</span><em>exchange: model.base.AbstractExchange</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/base.html#AbstractExchange.recalculate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.base.AbstractExchange.recalculate" title="Permalink to this definition">¶</a></dt>
+<dd><p>This exchange needs to be recalculated because the given exchange is performed
+and has an influence on this (self) exchange
+:param exchange:</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="model.base.AbstractExchangeActor">
+<em class="property">class </em><code class="descclassname">model.base.</code><code class="descname">AbstractExchangeActor</code><span class="sig-paren">(</span><em>model</em>, <em>actor_name: str</em>, <em>demand: str</em>, <em>supply: str</em>, <em>group: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/base.html#AbstractExchangeActor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.base.AbstractExchangeActor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Represents and actor of an exchange</p>
+<dl class="method">
+<dt id="model.base.AbstractExchangeActor.equals_with_supply_obj">
+<code class="descname">equals_with_supply_obj</code><span class="sig-paren">(</span><em>exchange_actor: model.base.AbstractExchangeActor</em><span class="sig-paren">)</span> &rarr; bool<a class="reference internal" href="_modules/model/base.html#AbstractExchangeActor.equals_with_supply_obj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.base.AbstractExchangeActor.equals_with_supply_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compares the actor with the given
+:param exchange_actor:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="model.base.AbstractExchangeActor.equals_with_supply_str">
+<code class="descname">equals_with_supply_str</code><span class="sig-paren">(</span><em>actor_name</em>, <em>supply</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/base.html#AbstractExchangeActor.equals_with_supply_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.base.AbstractExchangeActor.equals_with_supply_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="model.base.AbstractExchangeActor.is_move_valid">
+<code class="descname">is_move_valid</code><span class="sig-paren">(</span><em>move: int</em><span class="sig-paren">)</span> &rarr; bool<a class="reference internal" href="_modules/model/base.html#AbstractExchangeActor.is_move_valid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.base.AbstractExchangeActor.is_move_valid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if a move not exceeds the interval [0,100]
+:param move:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="model.base.AbstractExchangeActor.new_start_position">
+<code class="descname">new_start_position</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/base.html#AbstractExchangeActor.new_start_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.base.AbstractExchangeActor.new_start_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the new starting postion for the next round
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="model.base.AbstractModel">
+<em class="property">class </em><code class="descclassname">model.base.</code><code class="descname">AbstractModel</code><a class="reference internal" href="_modules/model/base.html#AbstractModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.base.AbstractModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="model.base.AbstractModel.add_actor">
+<code class="descname">add_actor</code><span class="sig-paren">(</span><em>actor_name: str</em><span class="sig-paren">)</span> &rarr; str<a class="reference internal" href="_modules/model/base.html#AbstractModel.add_actor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.base.AbstractModel.add_actor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an actor to the model
+:param actor_name:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="model.base.AbstractModel.add_actor_issue">
+<code class="descname">add_actor_issue</code><span class="sig-paren">(</span><em>actor_name: str</em>, <em>issue_name: str</em>, <em>position: decimal.Decimal</em>, <em>salience: decimal.Decimal</em>, <em>power: decimal.Decimal</em><span class="sig-paren">)</span> &rarr; model.base.ActorIssue<a class="reference internal" href="_modules/model/base.html#AbstractModel.add_actor_issue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.base.AbstractModel.add_actor_issue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an actor issue to the model
+:param actor_name:
+:param issue_name:
+:param position:
+:param salience:
+:param power:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="model.base.AbstractModel.add_exchange">
+<code class="descname">add_exchange</code><span class="sig-paren">(</span><em>i: str</em>, <em>j: str</em>, <em>p: str</em>, <em>q: str</em>, <em>groups</em><span class="sig-paren">)</span> &rarr; None<a class="reference internal" href="_modules/model/base.html#AbstractModel.add_exchange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.base.AbstractModel.add_exchange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an exchange pair to the model
+:param i:
+:param j:
+:param p:
+:param q:
+:param groups:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="model.base.AbstractModel.add_issue">
+<code class="descname">add_issue</code><span class="sig-paren">(</span><em>issue_name: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/base.html#AbstractModel.add_issue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.base.AbstractModel.add_issue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an issue to the model
+:param issue_name:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="model.base.AbstractModel.calc_combinations">
+<code class="descname">calc_combinations</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/base.html#AbstractModel.calc_combinations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.base.AbstractModel.calc_combinations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a list of all possible combinations for the issues</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="model.base.AbstractModel.calc_nbs">
+<code class="descname">calc_nbs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/base.html#AbstractModel.calc_nbs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.base.AbstractModel.calc_nbs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the nash bargaining solution for all the issue</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="model.base.AbstractModel.determine_groups">
+<code class="descname">determine_groups</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/base.html#AbstractModel.determine_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.base.AbstractModel.determine_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>There are 4 groups: A, B, C, and D.
+An actor is member of group A if his position on both issues is left of the NBS.
+Each actor of group A can exchange with the actors of Group D, the actors of B with C.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="model.base.AbstractModel.determine_positions">
+<code class="descname">determine_positions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/base.html#AbstractModel.determine_positions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.base.AbstractModel.determine_positions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine if the position of an actor is left or right of the Nash Bargaining Solution on an issue</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="model.base.AbstractModel.get_actor_issue">
+<code class="descname">get_actor_issue</code><span class="sig-paren">(</span><em>actor_name: str</em>, <em>issue: str</em><span class="sig-paren">)</span> &rarr; model.base.ActorIssue<a class="reference internal" href="_modules/model/base.html#AbstractModel.get_actor_issue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.base.AbstractModel.get_actor_issue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getter function for an ActorIssue
+:param actor_name: the name of the actor
+:param issue: the issue to select
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="model.base.AbstractModel.get_value">
+<code class="descname">get_value</code><span class="sig-paren">(</span><em>actor_name: str</em>, <em>issue: str</em>, <em>field: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/base.html#AbstractModel.get_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.base.AbstractModel.get_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the value of an value for an actor/issue set
+:param actor_name:
+:param issue:
+:param field:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="model.base.AbstractModel.highest_gain">
+<code class="descname">highest_gain</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/base.html#AbstractModel.highest_gain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.base.AbstractModel.highest_gain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract method
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="model.base.AbstractModel.remove_invalid_exchanges">
+<code class="descname">remove_invalid_exchanges</code><span class="sig-paren">(</span><em>res: []</em><span class="sig-paren">)</span> &rarr; []<a class="reference internal" href="_modules/model/base.html#AbstractModel.remove_invalid_exchanges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.base.AbstractModel.remove_invalid_exchanges" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes all the invalid exchanges from a list
+:param res: a list of exchanges
+:return: a list with online valid exchanges</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="model.base.AbstractModel.sort_exchanges">
+<code class="descname">sort_exchanges</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/base.html#AbstractModel.sort_exchanges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.base.AbstractModel.sort_exchanges" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract method
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="model.base.ActorIssue">
+<em class="property">class </em><code class="descclassname">model.base.</code><code class="descname">ActorIssue</code><span class="sig-paren">(</span><em>actor_name: str</em>, <em>issue_name: str</em>, <em>position: decimal.Decimal</em>, <em>salience: decimal.Decimal</em>, <em>power: decimal.Decimal</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/base.html#ActorIssue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.base.ActorIssue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="model.base.ActorIssue.is_left_to_nbs">
+<code class="descname">is_left_to_nbs</code><span class="sig-paren">(</span><em>nbs: decimal.Decimal</em><span class="sig-paren">)</span> &rarr; bool<a class="reference internal" href="_modules/model/base.html#ActorIssue.is_left_to_nbs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.base.ActorIssue.is_left_to_nbs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="model-calculations-module">
+<h2>model.calculations module<a class="headerlink" href="#model-calculations-module" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-model.calculations"></span><dl class="function">
+<dt id="model.calculations.by_absolute_move">
+<code class="descclassname">model.calculations.</code><code class="descname">by_absolute_move</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/calculations.html#by_absolute_move"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.calculations.by_absolute_move" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>actor_issues</strong> &#8211; </li>
+<li><strong>s_actor</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="model.calculations.by_exchange_ratio">
+<code class="descclassname">model.calculations.</code><code class="descname">by_exchange_ratio</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/calculations.html#by_exchange_ratio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.calculations.by_exchange_ratio" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>supply_actor</strong> &#8211; ExchangeActor</li>
+<li><strong>exchange_ratio</strong> &#8211; Decimal</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Decimal</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="model.calculations.calc_actor_externalities">
+<code class="descclassname">model.calculations.</code><code class="descname">calc_actor_externalities</code><span class="sig-paren">(</span><em>actor_name: str, model: model.base.AbstractModel, realized: typing.List[model.base.AbstractExchange]</em><span class="sig-paren">)</span> &rarr; decimal.Decimal<a class="reference internal" href="_modules/model/calculations.html#calc_actor_externalities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.calculations.calc_actor_externalities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the externalities from an exchange</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>actor_name</strong> &#8211; current actor</li>
+<li><strong>model</strong> &#8211; model</li>
+<li><strong>realized</strong> &#8211; realized exchanges</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the Decimal value of the externality</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="model.calculations.calc_adjusted_nbs">
+<code class="descclassname">model.calculations.</code><code class="descname">calc_adjusted_nbs</code><span class="sig-paren">(</span><em>actor_issues: typing.List[model.base.ActorIssue], updates: {}, actor: str, new_position: decimal.Decimal, denominator: decimal.Decimal</em><span class="sig-paren">)</span> &rarr; decimal.Decimal<a class="reference internal" href="_modules/model/calculations.html#calc_adjusted_nbs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.calculations.calc_adjusted_nbs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adjust the list over ActorIssues and calculates the new nash bargaining solution</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>actor_issues</strong> &#8211; List[ActorIssue]</li>
+<li><strong>updates</strong> &#8211; dictionary with key (actor) and value (position)</li>
+<li><strong>actor</strong> &#8211; string, current actor</li>
+<li><strong>new_position</strong> &#8211; int, the new position</li>
+<li><strong>denominator</strong> &#8211; Decimal, the cached denominator</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Decimal, the new nash bargaining solution</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="model.calculations.calc_adjusted_nbs_by_position">
+<code class="descclassname">model.calculations.</code><code class="descname">calc_adjusted_nbs_by_position</code><span class="sig-paren">(</span><em>actor_issues</em>, <em>updates</em>, <em>actor: str</em>, <em>x_pos</em>, <em>new_nbs: decimal.Decimal</em>, <em>denominator: decimal.Decimal</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/calculations.html#calc_adjusted_nbs_by_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.calculations.calc_adjusted_nbs_by_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the new position of the given actor when the NBS is adjusted</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>actor_issues</strong> &#8211; </li>
+<li><strong>updates</strong> &#8211; </li>
+<li><strong>actor</strong> &#8211; </li>
+<li><strong>x_pos</strong> &#8211; </li>
+<li><strong>new_nbs</strong> &#8211; </li>
+<li><strong>denominator</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="model.calculations.calc_nbs">
+<code class="descclassname">model.calculations.</code><code class="descname">calc_nbs</code><span class="sig-paren">(</span><em>actor_issues: typing.List[typing.ActorIssue], denominator: decimal.Decimal</em><span class="sig-paren">)</span> &rarr; decimal.Decimal<a class="reference internal" href="_modules/model/calculations.html#calc_nbs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.calculations.calc_nbs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the Nash bargaining solution.</p>
+<p>This is calculate in the following way:</p>
+<p><img class="math" src="_images/math/fd482fdfffbf62dc3c26e0f2ae0f18ef08241478.png" alt="O_d = \frac{\sum_{i=1}^n C_{id} S_{id} X_{id} }{\sum_{i=1}^n C_{id} S_{id} }"/></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>actor_issues</strong> &#8211; all the other actors on this issue</li>
+<li><strong>denominator</strong> &#8211; the pre-calculated (and cached) denominator: <img class="math" src="_images/math/34ae7cdf7e75537d3bc311ef8eb00de561b494a2.png" alt="\sum_{i=1}^n C_{id} S_{id}"/></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Decimal</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="model.calculations.calc_nbs_denominator">
+<code class="descclassname">model.calculations.</code><code class="descname">calc_nbs_denominator</code><span class="sig-paren">(</span><em>actor_issues: typing.List[model.base.ActorIssue]</em><span class="sig-paren">)</span> &rarr; decimal.Decimal<a class="reference internal" href="_modules/model/calculations.html#calc_nbs_denominator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.calculations.calc_nbs_denominator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the denominator for this issue</p>
+<p><img class="math" src="_images/math/34ae7cdf7e75537d3bc311ef8eb00de561b494a2.png" alt="\sum_{i=1}^n C_{id} S_{id}"/></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>actor_issues</strong> &#8211; all the other actors on this issue</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Decimal</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="model.calculations.exchange_ratio">
+<code class="descclassname">model.calculations.</code><code class="descname">exchange_ratio</code><span class="sig-paren">(</span><em>delta_x</em>, <em>salience</em>, <em>power</em>, <em>dominator</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/calculations.html#exchange_ratio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.calculations.exchange_ratio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the exchange ratio</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>delta_x</strong> &#8211; the absolute distance between the old position and the new position</li>
+<li><strong>salience</strong> &#8211; the actor salicen</li>
+<li><strong>power</strong> &#8211; the actor power</li>
+<li><strong>dominator</strong> &#8211; sum(c*s) for all actors on this issue</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the exchange ratio</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="model.calculations.expected_utility">
+<code class="descclassname">model.calculations.</code><code class="descname">expected_utility</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/calculations.html#expected_utility"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.calculations.expected_utility" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>actor</strong> &#8211; </li>
+<li><strong>demand_exchange_ratio</strong> &#8211; </li>
+<li><strong>supply_exchange_ratio</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="model.calculations.reverse_move">
+<code class="descclassname">model.calculations.</code><code class="descname">reverse_move</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/calculations.html#reverse_move"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.calculations.reverse_move" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>actor_issues</strong> &#8211; </li>
+<li><strong>actor</strong> &#8211; </li>
+<li><strong>exchange_ratio</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="model.calculations.sum_salience_power">
+<code class="descclassname">model.calculations.</code><code class="descname">sum_salience_power</code><span class="sig-paren">(</span><em>actor_issues</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/calculations.html#sum_salience_power"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.calculations.sum_salience_power" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>actor_issues</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-model.equalgain">
+<span id="model-equalgain-module"></span><h2>model.equalgain module<a class="headerlink" href="#module-model.equalgain" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="model.equalgain.EqualGainModel">
+<em class="property">class </em><code class="descclassname">model.equalgain.</code><code class="descname">EqualGainModel</code><a class="reference internal" href="_modules/model/equalgain.html#EqualGainModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.equalgain.EqualGainModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#model.base.AbstractModel" title="model.base.AbstractModel"><code class="xref py py-class docutils literal"><span class="pre">model.base.AbstractModel</span></code></a></p>
+<p>Equal Gain implementation</p>
+<dl class="method">
+<dt id="model.equalgain.EqualGainModel.highest_gain">
+<code class="descname">highest_gain</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; model.equalgain.Exchange<a class="reference internal" href="_modules/model/equalgain.html#EqualGainModel.highest_gain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.equalgain.EqualGainModel.highest_gain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overrides Abstract # To sort the list in place...
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="model.equalgain.EqualGainModel.new_exchange_factory">
+<code class="descname">new_exchange_factory</code><span class="sig-paren">(</span><em>i</em>, <em>j</em>, <em>p</em>, <em>q</em>, <em>model</em>, <em>groups</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/equalgain.html#EqualGainModel.new_exchange_factory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.equalgain.EqualGainModel.new_exchange_factory" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="model.equalgain.EqualGainModel.sort_exchanges">
+<code class="descname">sort_exchanges</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/equalgain.html#EqualGainModel.sort_exchanges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.equalgain.EqualGainModel.sort_exchanges" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overrides Abstract</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="model.equalgain.Exchange">
+<em class="property">class </em><code class="descclassname">model.equalgain.</code><code class="descname">Exchange</code><span class="sig-paren">(</span><em>i: str</em>, <em>j: str</em>, <em>p: str</em>, <em>q: str</em>, <em>m: model.base.AbstractModel</em>, <em>groups: list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/equalgain.html#Exchange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.equalgain.Exchange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#model.base.AbstractExchange" title="model.base.AbstractExchange"><code class="xref py py-class docutils literal"><span class="pre">model.base.AbstractExchange</span></code></a></p>
+<dl class="method">
+<dt id="model.equalgain.Exchange.calculate">
+<code class="descname">calculate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/equalgain.html#Exchange.calculate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.equalgain.Exchange.calculate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="model.equalgain.ExchangeActor">
+<em class="property">class </em><code class="descclassname">model.equalgain.</code><code class="descname">ExchangeActor</code><span class="sig-paren">(</span><em>model</em>, <em>actor_name: str</em>, <em>demand: str</em>, <em>supply: str</em>, <em>group: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/equalgain.html#ExchangeActor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.equalgain.ExchangeActor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#model.base.AbstractExchangeActor" title="model.base.AbstractExchangeActor"><code class="xref py py-class docutils literal"><span class="pre">model.base.AbstractExchangeActor</span></code></a></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="model.equalgain.random">
+<code class="descclassname">model.equalgain.</code><code class="descname">random</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; x in the interval [0, 1).<a class="headerlink" href="#model.equalgain.random" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-model.randomrate">
+<span id="model-randomrate-module"></span><h2>model.randomrate module<a class="headerlink" href="#module-model.randomrate" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="model.randomrate.Exchange">
+<em class="property">class </em><code class="descclassname">model.randomrate.</code><code class="descname">Exchange</code><span class="sig-paren">(</span><em>i: str</em>, <em>j: str</em>, <em>p: str</em>, <em>q: str</em>, <em>m</em>, <em>groups</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/randomrate.html#Exchange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.randomrate.Exchange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#model.base.AbstractExchange" title="model.base.AbstractExchange"><code class="xref py py-class docutils literal"><span class="pre">model.base.AbstractExchange</span></code></a></p>
+<dl class="attribute">
+<dt id="model.randomrate.Exchange.actor_class">
+<code class="descname">actor_class</code><a class="headerlink" href="#model.randomrate.Exchange.actor_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#model.randomrate.ExchangeActor" title="model.randomrate.ExchangeActor"><code class="xref py py-class docutils literal"><span class="pre">ExchangeActor</span></code></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="model.randomrate.Exchange.calculate">
+<code class="descname">calculate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/randomrate.html#Exchange.calculate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.randomrate.Exchange.calculate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="model.randomrate.ExchangeActor">
+<em class="property">class </em><code class="descclassname">model.randomrate.</code><code class="descname">ExchangeActor</code><span class="sig-paren">(</span><em>model</em>, <em>actor_name: str</em>, <em>demand: str</em>, <em>supply: str</em>, <em>group: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/randomrate.html#ExchangeActor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.randomrate.ExchangeActor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#model.base.AbstractExchangeActor" title="model.base.AbstractExchangeActor"><code class="xref py py-class docutils literal"><span class="pre">model.base.AbstractExchangeActor</span></code></a></p>
+<p>Class</p>
+<dl class="method">
+<dt id="model.randomrate.ExchangeActor.equals_with_supply_obj">
+<code class="descname">equals_with_supply_obj</code><span class="sig-paren">(</span><em>exchange_actor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/randomrate.html#ExchangeActor.equals_with_supply_obj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.randomrate.ExchangeActor.equals_with_supply_obj" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="model.randomrate.ExchangeActor.equals_with_supply_str">
+<code class="descname">equals_with_supply_str</code><span class="sig-paren">(</span><em>actor_name</em>, <em>supply</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/randomrate.html#ExchangeActor.equals_with_supply_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.randomrate.ExchangeActor.equals_with_supply_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="model.randomrate.ExchangeActor.is_move_valid">
+<code class="descname">is_move_valid</code><span class="sig-paren">(</span><em>move</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/randomrate.html#ExchangeActor.is_move_valid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.randomrate.ExchangeActor.is_move_valid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="model.randomrate.ExchangeActor.new_start_position">
+<code class="descname">new_start_position</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/randomrate.html#ExchangeActor.new_start_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.randomrate.ExchangeActor.new_start_position" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="model.randomrate.RandomRateModel">
+<em class="property">class </em><code class="descclassname">model.randomrate.</code><code class="descname">RandomRateModel</code><a class="reference internal" href="_modules/model/randomrate.html#RandomRateModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.randomrate.RandomRateModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#model.base.AbstractModel" title="model.base.AbstractModel"><code class="xref py py-class docutils literal"><span class="pre">model.base.AbstractModel</span></code></a></p>
+<p>The Random Rate implementation</p>
+<dl class="method">
+<dt id="model.randomrate.RandomRateModel.highest_gain">
+<code class="descname">highest_gain</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; model.randomrate.Exchange<a class="reference internal" href="_modules/model/randomrate.html#RandomRateModel.highest_gain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.randomrate.RandomRateModel.highest_gain" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="model.randomrate.RandomRateModel.new_exchange_factory">
+<code class="descname">new_exchange_factory</code><span class="sig-paren">(</span><em>i</em>, <em>j</em>, <em>p</em>, <em>q</em>, <em>model</em>, <em>groups</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/randomrate.html#RandomRateModel.new_exchange_factory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.randomrate.RandomRateModel.new_exchange_factory" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="model.randomrate.RandomRateModel.recalc_highest">
+<code class="descname">recalc_highest</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/randomrate.html#RandomRateModel.recalc_highest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.randomrate.RandomRateModel.recalc_highest" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="model.randomrate.RandomRateModel.sort_exchanges">
+<code class="descname">sort_exchanges</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/randomrate.html#RandomRateModel.sort_exchanges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.randomrate.RandomRateModel.sort_exchanges" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-model">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-model" title="Permalink to this headline">¶</a></h2>
+<p>Contains the sub packages, abstract classes, calculation module and helper module.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">model package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-model.base">model.base module</a></li>
+<li><a class="reference internal" href="#model-calculations-module">model.calculations module</a></li>
+<li><a class="reference internal" href="#module-model.equalgain">model.equalgain module</a></li>
+<li><a class="reference internal" href="#module-model.randomrate">model.randomrate module</a></li>
+<li><a class="reference internal" href="#module-model">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="modules.html"
+                        title="previous chapter">equal-gain-python</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="model.helpers.html"
+                        title="next chapter">model.helpers package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/model.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="model.helpers.html" title="model.helpers package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="equal-gain-python"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Stokman 0.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >equal-gain-python</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Jelmer Draaijer.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>

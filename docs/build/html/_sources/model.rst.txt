@@ -1,0 +1,58 @@
+model package
+=============
+
+Subpackages
+-----------
+
+.. toctree::
+
+    model.helpers
+    model.observers
+
+Submodules
+----------
+- Calculations
+- Equal Gain implementation
+- Random Rate implementation
+- base classes
+
+model.base module
+-----------------
+
+.. automodule:: model.base
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+model.calculations module
+-------------------------
+
+.. automodule:: model.calculations
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+model.equalgain module
+----------------------
+
+.. automodule:: model.equalgain
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+model.randomrate module
+-----------------------
+
+.. automodule:: model.randomrate
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: model
+    :members:
+    :undoc-members:
+    :show-inheritance:

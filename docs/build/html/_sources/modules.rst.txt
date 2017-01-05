@@ -1,0 +1,8 @@
+equal-gain-python
+=================
+
+.. toctree::
+   :maxdepth: 4
+
+   model
+   calculations
