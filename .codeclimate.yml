@@ -1,8 +1,9 @@
-JavaScript: false
-Ruby: false
-Python: true
-PHP: false
+engines:
+ radon: 
+  enabled: true
+  config:
+      python_version: 3
 
-exclude_paths:
-- docs/**/*
-- data/**/*
+ratings:
+  paths:
+    - "**.py"
