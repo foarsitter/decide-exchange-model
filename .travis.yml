@@ -8,8 +8,5 @@ script: nosetests --with-coverage --cover-erase
 after_success:
   - coverage
   - bash <(curl -s https://codecov.io/bash)
-  - CODECLIMATE_REPO_TOKEN=<a579ac57e49d8392727c84b216289c4754fc55e5a125743810db4333c5b47b42> codeclimate-test-reporter
-addons:
-  code_climate:
-    repo_token: a579ac57e49d8392727c84b216289c4754fc55e5a125743810db4333c5b47b42
+  - CODECLIMATE_REPO_TOKEN=<a31fdc6d118fc38068ae49f3bd34ef64b76323064955180ac8a5be01599075b5> codeclimate-test-reporter
 
