@@ -5,3 +5,12 @@
 
 # equal-gain-python
 Equal Gain Model implementation in Python
+
+There are no external packages needed. 
+
+This program is build with the latest python version: 3.6.0 and uses
+type hinting: https://docs.python.org/3/library/typing.html, 
+therefore, it wil require python 3.5 or higher. 
+
+Run 'python model.py --help' for instructions 
+  

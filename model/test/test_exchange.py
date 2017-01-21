@@ -1,19 +1,18 @@
 from unittest import TestCase
 
-from objects.EqualExchange import Exchange
-from objects.EqualGainModel import Model
+from model.equalgain import EqualGainModel, EqualGainExchange
 
 
 class TestExchange(TestCase):
     def test_init(self):
-        model = Model()
+        model = EqualGainModel()
 
         a1 = model.add_actor("a1")
         a2 = model.add_actor("a2")
         a3 = model.add_actor("a3")
 
-        model.add_issue("p", "P")
-        model.add_issue("q", "Q")
+        model.add_issue("p")
+        model.add_issue("q")
 
         model.add_actor_issue(a1, "p", 70, 0.75, 0.5)
         model.add_actor_issue(a2, "p", 30, 0.25, 0.5)
@@ -25,10 +24,10 @@ class TestExchange(TestCase):
 
         model.calc_nbs()
 
-        e = Exchange(a1, a2, "p", "q", model, groups=['a', 'b'])
+        e = EqualGainExchange(a1, a2, "p", "q", model, groups=['a', 'b'])
         e.calculate()
 
-        e2 = Exchange(a1, a2, "p", "q", model, groups=['a', 'd'])
+        e2 = EqualGainExchange(a1, a2, "p", "q", model, groups=['a', 'd'])
 
         e2.updates["p"]["a3"] = 100
         e2.calculate()
@@ -38,14 +37,14 @@ class TestExchange(TestCase):
 
 class TestExchangeActor(TestCase):
     def test_equals(self):
-        model = Model()
+        model = EqualGainModel()
 
         a1 = model.add_actor("a1")
         a2 = model.add_actor("a2")
         a3 = model.add_actor("a3")
 
-        model.add_issue("p", "P")
-        model.add_issue("q", "Q")
+        model.add_issue("p")
+        model.add_issue("q")
 
         model.add_actor_issue(a1, "p", 70, 0.75, 0.5)
         model.add_actor_issue(a2, "p", 30, 0.25, 0.5)
@@ -57,7 +56,7 @@ class TestExchangeActor(TestCase):
 
         model.calc_nbs()
 
-        e = Exchange(a1, a2, "p", "q", model, groups=['a', 'b'])
+        e = EqualGainExchange(a1, a2, "p", "q", model, groups=['a', 'b'])
 
         eq = e.equal_str("a1", "a2", "p", "q")
 

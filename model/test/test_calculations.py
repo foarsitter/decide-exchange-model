@@ -1,12 +1,11 @@
 from decimal import *
 from unittest import TestCase
 
-import csvParser
-from calculations import by_exchange_ratio, by_absolute_move, adjusted_nbs, calc_nbs, reverse_move, \
-    sum_salience_power, calc_nbs_denominator, actor_externalities as externalities
-
-from objects.ActorIssue import ActorIssue
-from objects.EqualExchange import Exchange
+from model.base import ActorIssue
+from model.calculations import calc_nbs_denominator, calc_nbs, adjusted_nbs, by_absolute_move, by_exchange_ratio, \
+    reverse_move, sum_salience_power
+from model.equalgain import EqualGainExchange, EqualGainModel
+from model.helpers import csvParser
 
 
 class TestNBSCalculations(TestCase):
@@ -17,6 +16,7 @@ class TestNBSCalculations(TestCase):
 
         self.actor_issues = {"a": self.a, "b": self.b, "c": self.c}
         self.denominator = calc_nbs_denominator(self.actor_issues)
+        self.model = EqualGainModel()
 
     def test_calc_nbs(self):
         denominator = calc_nbs_denominator({"a": self.a, "b": self.b})
@@ -38,12 +38,10 @@ class TestNBSCalculations(TestCase):
         self.assertEqual(adjusted_nbs(self.actor_issues, {"a": 100}, a3, 0, self.denominator),
                          Decimal(200) / Decimal(3))
 
-
-class TestBy_absolute_move(TestCase):
     def test_by_absolute_move(self):
-        csv = csvParser.Parser()
+        csv = csvParser.Parser(self.model)
 
-        model = csv.read("data/CoP21.csv")
+        model = csv.read("data/input/CoP21.csv")
 
         # /	actor	issue	position	salience	power
         # D	China	financevol	100	0.5	1
@@ -55,7 +53,7 @@ class TestBy_absolute_move(TestCase):
         j = model.Actors["China"]
         p = "financevol"
         q = "eaa"
-        e = Exchange(i, j, p, q, model, groups=['a', 'd'])
+        e = EqualGainExchange(i, j, p, q, model, groups=['a', 'd'])
 
         dp = by_absolute_move(model.ActorIssues[e.i.supply], e.i)
         dq = by_exchange_ratio(e.i, dp)
@@ -83,9 +81,9 @@ class TestBy_absolute_move(TestCase):
         self.assertEqual(sum_salience_power({"a": a1, "b": a2, "c": a3}), (0.75 * 0.75 + 0.25 * 0.25 + 1 * 1))
 
     def test_externalities(self):
-        csv = csvParser.Parser()
+        csv = csvParser.Parser(self.model)
 
-        model = csv.read("data/CoP21.csv")
+        model = csv.read("data/input/CoP21.csv")
 
         model.calc_nbs()
         model.determine_positions()
@@ -96,7 +94,7 @@ class TestBy_absolute_move(TestCase):
         j = model.Actors["China"]
         p = "financevol"
         q = "eaa"
-        e = Exchange(i, j, p, q, model, groups=['a', 'd'])
+        e = EqualGainExchange(i, j, p, q, model, groups=['a', 'd'])
 
         e.calculate()
 

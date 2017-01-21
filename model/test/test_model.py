@@ -2,18 +2,18 @@ import math
 from decimal import *
 from unittest import TestCase
 
-import csvParser
-from objects.EqualGainModel import Model
+from model.equalgain import EqualGainModel
+from model.helpers import csvParser
 
 
 class TestModel(TestCase):
     def setUp(self):
-        csv = csvParser.Parser()
-        self.model = csv.read("data/data_short.csv")
+        csv = csvParser.Parser(EqualGainModel())
+        self.model = csv.read("data/input/data_short.csv")
         # self.model = csv.read("data\\CoP21.csv")
 
     def test_addActor(self):
-        model = Model()
+        model = EqualGainModel()
 
         a1 = model.add_actor("TestActor1")
         a2 = model.add_actor("TestActor2")
@@ -47,7 +47,11 @@ class TestModel(TestCase):
         e = model.highest_gain()
 
         self.assertAlmostEqual(e.gain, Decimal(1.128903122498), delta=1e-8)
-        self.assertEqual(len(model.Exchanges), 102)
+
+        # the delta is necessary for the random component by exchanges which have an equal gain.
+        # in some cases the gain of the exchanges (two exchanges with each two (unique) actors) are the same.
+        # we pick random the next exchange. Theoretically it is even possible to get more exchanges with the same gain
+        self.assertAlmostEqual(len(model.Exchanges), 102, delta=2)
         realized = list()
         realized.append(e)
 
@@ -64,7 +68,7 @@ class TestModel(TestCase):
             model.remove_invalid_exchanges(realize)
             realized.append(realize)
 
-        self.assertEqual(len(realized), 20)
+        self.assertEqual(len(realized), 16)
 
     def test_calc_combinations(self):
         self.model.calc_combinations()
@@ -76,8 +80,8 @@ class TestModel(TestCase):
         self.assertEqual(combinations, math.factorial(n) / (math.factorial(k) * math.factorial(n - k)))
 
     def test_exchange_99(self):
-        csv = csvParser.Parser()
-        model = csv.read("data/CoP21.csv")
+        csv = csvParser.Parser(EqualGainModel())
+        model = csv.read("data/input/CoP21.csv")
 
         model.calc_nbs()  # tested in test_calculations.py#test_calc_nbs
 

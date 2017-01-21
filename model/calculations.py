@@ -1,7 +1,7 @@
 from decimal import Decimal
 from typing import List
 
-from .base import ActorIssue, AbstractModel, AbstractExchange, AbstractExchangeActor
+import model.base
 
 
 def calc_nbs(actor_issues: List['ActorIssue'], denominator: Decimal) -> Decimal:
@@ -27,7 +27,7 @@ def calc_nbs(actor_issues: List['ActorIssue'], denominator: Decimal) -> Decimal:
 	return numerator / denominator
 
 
-def calc_nbs_denominator(actor_issues: List[ActorIssue]) -> Decimal:
+def calc_nbs_denominator(actor_issues: List['ActorIssue']) -> Decimal:
 	"""
 	Calculate the denominator for this issue
 
@@ -43,7 +43,7 @@ def calc_nbs_denominator(actor_issues: List[ActorIssue]) -> Decimal:
 	return denominator
 
 
-def adjusted_nbs(actor_issues: List[ActorIssue], updates: dict(), actor: str, new_position: Decimal,
+def adjusted_nbs(actor_issues: List['ActorIssue'], updates: dict(), actor: str, new_position: Decimal,
 				 denominator: Decimal) -> Decimal:
 	"""
 	Adjust the list over ActorIssues and calculates the new nash bargaining solution
@@ -58,8 +58,8 @@ def adjusted_nbs(actor_issues: List[ActorIssue], updates: dict(), actor: str, ne
 	copy_ai = {}
 
 	for k, v in actor_issues.items():
-		copy_ai[v.actor_name] = ActorIssue(v.actor_name, v.issue_name, position=v.position, power=v.power,
-										   salience=v.salience)
+		copy_ai[v.actor_name] = model.base.ActorIssue(v.actor_name, v.issue_name, position=v.position, power=v.power,
+													  salience=v.salience)
 
 	for key, value in updates.items():
 		if key in copy_ai:  # TODO: this should not be possible
@@ -88,8 +88,8 @@ def adjusted_nbs_by_position(actor_issues, updates, actor: str, x_pos, new_nbs: 
 	copy_ai = {}
 
 	for k, v in actor_issues.items():
-		copy_ai[v.actor_name] = ActorIssue(v.actor_name, v.issue_name, position=v.position, power=v.power,
-										   salience=v.salience)
+		copy_ai[v.actor_name] = model.base.ActorIssue(v.actor_name, v.issue_name, position=v.position, power=v.power,
+													  salience=v.salience)
 
 	# to be calculate:
 	copy_ai[actor].position = x_pos
@@ -200,7 +200,7 @@ def expected_utility(actor: 'ExchangeActor', demand_exchange_ratio, supply_excha
 	return demand_exchange_ratio * actor.s - supply_exchange_ratio * actor.s_demand
 
 
-def actor_externalities(actor_name: str, model: AbstractModel, realized: AbstractExchange) -> Decimal:
+def actor_externalities(actor_name: str, model: 'AbstractModel', realized: 'AbstractExchange') -> Decimal:
 	"""
 	Calculate the externalities from an exchange
 
@@ -231,7 +231,7 @@ def actor_externalities(actor_name: str, model: AbstractModel, realized: Abstrac
 	return -9999  # TODO why is this?
 
 
-def position_by_nbs(actor_issues: List[ActorIssue], exchange_actor: AbstractExchangeActor, nbs: Decimal,
+def position_by_nbs(actor_issues: List['ActorIssue'], exchange_actor: 'AbstractExchangeActor', nbs: Decimal,
 					denominator: Decimal):
 	"""
 	For the Random Rate implementation the position is need to be calculated where a NBS is given.
