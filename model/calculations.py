@@ -19,7 +19,7 @@ def calc_nbs(actor_issues: List['ActorIssue'], denominator: Decimal) -> Decimal:
 	numerator = 0
 
 	for k, v in actor_issues.items():
-		numerator += (v.position * v.salience * v.power)
+		numerator += v.position * v.salience * v.power
 
 	if denominator == 0:
 		return 0

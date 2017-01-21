@@ -15,9 +15,9 @@ output_dir = args.output
 data_set_name = input_file.split("/")[-1].split(".")[0]
 
 if args.model == "equal":
-	from equalgain import EqualGainModel as Model
+	from model.equalgain import EqualGainModel as Model
 else:
-	from randomrate import RandomRateModel as Model
+	from model.randomrate import RandomRateModel as Model
 
 # The event handlers for logging and writing the results to the disk.
 eventHandler = Observable()
@@ -76,8 +76,8 @@ for iteration_number in range(args.rounds):
 
 	# calculate for each realized exchange there new start positions
 	for exchange in realized:
-		model.ActorIssues[exchange.i.supply][exchange.i.actor_name].position = exchange.i.new_start_position
-		model.ActorIssues[exchange.j.supply][exchange.j.actor_name].position = exchange.j.new_start_position
+		model.ActorIssues[exchange.i.supply][exchange.i.actor_name].position = exchange.i.new_start_position()
+		model.ActorIssues[exchange.j.supply][exchange.j.actor_name].position = exchange.j.new_start_position()
 	# end for
 # end for
 

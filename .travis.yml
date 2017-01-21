@@ -3,8 +3,11 @@ python:
   - "3.5"
 # command to run tests
 install:
-  - pip install codecov coverage
-script: nosetests --with-coverage --cover-erase
+  - pip install codecov coverage codeclimate-test-reporter
+script: nosetests --with-coverage --cover-erase --cover-package=codeclimate-test-reporter
 after_success:
   - coverage
   - bash <(curl -s https://codecov.io/bash)
+addons:
+  code_climate:
+    repo_token: a579ac57e49d8392727c84b216289c4754fc55e5a125743810db4333c5b47b42
