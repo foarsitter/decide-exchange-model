@@ -9,7 +9,7 @@ class InitialExchanges(Observer):
 		super(InitialExchanges, self).__init__(observable)
 		self.has_written = False
 
-	def update(self, observable, notification_type: int, **kwargs):
+	def update(self, observable, notification_type, **kwargs):
 
 		if notification_type == Observable.START_ROUND:
 			self.write_round(kwargs["model"])

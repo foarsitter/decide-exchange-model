@@ -29,7 +29,7 @@ class Parser:
 
 		print(self.info())
 
-	def read(self, filename: str):
+	def read(self, filename):
 
 		if not filename.startswith("/"):
 			filename = "{1}".format(os.path.dirname(os.path.abspath(__file__)), filename)

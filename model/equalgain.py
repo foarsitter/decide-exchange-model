@@ -6,7 +6,7 @@ from model.base import AbstractModel, AbstractExchange, AbstractExchangeActor
 
 
 class EqualGainExchangeActor(AbstractExchangeActor):
-	def __init__(self, model, actor_name: str, demand: str, supply: str, group: str):
+	def __init__(self, model, actor_name, demand, supply, group):
 		super.__init__(model, actor_name, demand, supply, group)
 
 
@@ -80,7 +80,7 @@ class EqualGainModel(AbstractModel):
 		"""
 		self.Exchanges.sort(key=attrgetter("gain"), reverse=True)  # .sort(key=lambda x: x.count, reverse=True)
 
-	def highest_gain(self) -> EqualGainExchange:
+	def highest_gain(self):
 		"""
 		Overrides Abstract # To sort the list in place...
 		:return:

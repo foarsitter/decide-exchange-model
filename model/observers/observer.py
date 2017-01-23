@@ -1,4 +1,4 @@
-class Observable:
+class Observable(object):
     REMOVED = "REMOVED"
     EXECUTED = "EXECUTED"
     LOG = "LOG"
@@ -17,9 +17,9 @@ class Observable:
             observer.update(self, args[0], **kwargs)
 
 
-class Observer:
+class Observer(object):
     def __init__(self, observable):
         observable.register(self)
 
-    def update(self, observable, notification_type: int, **kwargs):
+    def update(self, observable, notification_type, **kwargs):
         pass
