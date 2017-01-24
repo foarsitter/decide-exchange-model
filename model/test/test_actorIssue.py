@@ -9,7 +9,7 @@ class TestActorIssue(TestCase):
         salience = 0.25
         power = 0.10
 
-        actorIssue = ActorIssue(actor_name="Test",issue_name="", position=position, power=power, salience=salience)
+        actorIssue = ActorIssue(actor_name="Test", issue_name="", position=position, power=power, salience=salience)
 
         self.assertEqual(actorIssue.power, power)
         self.assertEqual(actorIssue.salience, salience)

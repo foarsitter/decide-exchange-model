@@ -68,7 +68,7 @@ class TestModel(TestCase):
             model.remove_invalid_exchanges(realize)
             realized.append(realize)
 
-        # self.assertEqual(len(realized), 16)
+            # self.assertEqual(len(realized), 16)
 
     def test_calc_combinations(self):
         self.model.calc_combinations()

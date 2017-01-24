@@ -3,26 +3,26 @@ from model.observers.observer import Observer, Observable
 
 
 class InitialExchanges(Observer):
-	POINTER = 0
+    POINTER = 0
 
-	def __init__(self, observable):
-		super(InitialExchanges, self).__init__(observable)
-		self.has_written = False
+    def __init__(self, observable):
+        super(InitialExchanges, self).__init__(observable)
+        self.has_written = False
 
-	def update(self, observable, notification_type, **kwargs):
+    def update(self, observable, notification_type, **kwargs):
 
-		if notification_type == Observable.START_ROUND:
-			self.write_round(kwargs["model"])
+        if notification_type == Observable.START_ROUND:
+            self.write_round(kwargs["model"])
 
-	def write_round(self, model):
+    def write_round(self, model):
 
-		model.sort_exchanges()
+        model.sort_exchanges()
 
-		if not self.has_written:
-			csvwriter = CsvWriter()
+        if not self.has_written:
+            csvwriter = CsvWriter()
 
-			csvwriter.write("data/output/random.{0}.csv".format(InitialExchanges.POINTER), model.Exchanges)
+            csvwriter.write("data/output/random.{0}.csv".format(InitialExchanges.POINTER), model.Exchanges)
 
-			InitialExchanges.POINTER += 1
+            InitialExchanges.POINTER += 1
 
-			self.has_written = True
+            self.has_written = True

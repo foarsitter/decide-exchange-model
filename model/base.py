@@ -519,7 +519,6 @@ class AbstractModel(object):
         self.Exchanges.append(e)
         return e
 
-
     def calc_nbs(self):
         """
         Calculate the nash bargaining solution for all the issue
@@ -529,7 +528,6 @@ class AbstractModel(object):
 
             self.nbs[issue] = model.calculations.calc_nbs(actor_issues, self.nbs_denominators[issue])
 
-
     def determine_positions(self):
         """
         Determine if the position of an actor is left or right of the Nash Bargaining Solution on an issue
@@ -538,13 +536,11 @@ class AbstractModel(object):
             for actorIssue in self.ActorIssues[issue].values():
                 actorIssue.is_left_to_nbs(issue_nbs)
 
-
     def calc_combinations(self):
         """
         Create a list of all possible combinations for the issues
         """
         self.issue_combinations = combinations(self.Issues, 2)
-
 
     def determine_groups(self):
         """
@@ -590,7 +586,6 @@ class AbstractModel(object):
                     self.ActorIssues[combination[0]][i].group = "b"
                     self.ActorIssues[combination[1]][j].group = "c"
 
-
     def remove_invalid_exchanges(self, res):
         """
         Removes all the invalid exchanges from a list
@@ -615,14 +610,12 @@ class AbstractModel(object):
 
         return invalid_exchanges
 
-
     def sort_exchanges(self):
         """
         Abstract method
         :return:
         """
         pass
-
 
     def highest_gain(self):
         """

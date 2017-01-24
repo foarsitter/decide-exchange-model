@@ -15,9 +15,9 @@ output_dir = args.output
 data_set_name = input_file.split("/")[-1].split(".")[0]
 
 if args.model == "equal":
-	from model.equalgain import EqualGainModel as Model
+    from model.equalgain import EqualGainModel as Model
 else:
-	from model.randomrate import RandomRateModel as Model
+    from model.randomrate import RandomRateModel as Model
 
 # The event handlers for logging and writing the results to the disk.
 eventHandler = Observable()
@@ -50,35 +50,35 @@ ext_connections = []
 
 for iteration_number in range(args.rounds):
 
-	model.calc_nbs()
-	model.determine_positions()
-	model.calc_combinations()
-	model.determine_groups()
+    model.calc_nbs()
+    model.determine_positions()
+    model.calc_combinations()
+    model.determine_groups()
 
-	realized = []
+    realized = []
 
-	eventHandler.notify(Observable.START_ROUND, model=model, iteration=iteration_number)
+    eventHandler.notify(Observable.START_ROUND, model=model, iteration=iteration_number)
 
-	while len(model.Exchanges) > 0:
+    while len(model.Exchanges) > 0:
 
-		realize = model.highest_gain()
+        realize = model.highest_gain()
 
-		if realize.is_valid:
-			removed_exchanges = model.remove_invalid_exchanges(realize)
+        if realize.is_valid:
+            removed_exchanges = model.remove_invalid_exchanges(realize)
 
-			realized.append(realize)
+            realized.append(realize)
 
-			eventHandler.notify(Observable.REMOVED, model=model, removed=removed_exchanges)
-			eventHandler.notify(Observable.EXECUTED, model=model, realized=realize)
-	# end while
+            eventHandler.notify(Observable.REMOVED, model=model, removed=removed_exchanges)
+            eventHandler.notify(Observable.EXECUTED, model=model, realized=realize)
+    # end while
 
-	eventHandler.notify(Observable.FINISHED_ROUND, model=model, realized=realized, iteration=iteration_number)
+    eventHandler.notify(Observable.FINISHED_ROUND, model=model, realized=realized, iteration=iteration_number)
 
-	# calculate for each realized exchange there new start positions
-	for exchange in realized:
-		model.ActorIssues[exchange.i.supply][exchange.i.actor_name].position = exchange.i.new_start_position()
-		model.ActorIssues[exchange.j.supply][exchange.j.actor_name].position = exchange.j.new_start_position()
-	# end for
+    # calculate for each realized exchange there new start positions
+    for exchange in realized:
+        model.ActorIssues[exchange.i.supply][exchange.i.actor_name].position = exchange.i.new_start_position()
+        model.ActorIssues[exchange.j.supply][exchange.j.actor_name].position = exchange.j.new_start_position()
+        # end for
 # end for
 
 eventHandler.notify(Observable.CLOSE, model=model)
