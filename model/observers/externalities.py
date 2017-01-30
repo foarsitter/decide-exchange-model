@@ -131,10 +131,10 @@ class Externalities(Observer):
 
         # TODO: we should write all the documents after executing all the rounds as we do with the externalities
 
-        if not os.path.exists("output/{0}/externalities".format(self.current_file)):
-            os.makedirs("output/{0}/externalities".format(self.current_file))
+        if not os.path.exists("{0}/externalities".format(self.current_file)):
+            os.makedirs("{0}/externalities".format(self.current_file))
 
-        with open("output/{0}/externalities/externalities.{1}.csv".format(self.current_file, iteration_number),
+        with open("{0}/externalities/externalities.{1}.csv".format(self.current_file, iteration_number),
                   'w') as csvfile:
             writer = csv.writer(csvfile, delimiter=';')
 

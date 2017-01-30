@@ -9,9 +9,9 @@ class HistoryWriter(Observer):
     By exchange, by issue set and by actor
     """
 
-    def __init__(self, observable, model, current_file):
+    def __init__(self, observable, model, output_dir):
         super(HistoryWriter, self).__init__(observable=observable)
-        self.current_file = current_file
+        self.output_dir = output_dir
 
         self.realized = []
         self.deleted = []
@@ -65,15 +65,10 @@ class HistoryWriter(Observer):
 
     def close(self, **kwargs):
         for issue in self.history:
-            with open("output/{3}/{0}.{1}.{2}".format("output", issue, "csv", self.current_file), 'w') as csv_file:
+            with open("{0}/output.{1}.csv".format(self.output_dir, issue), 'w') as csv_file:
                 writer = csv.writer(csv_file, delimiter=';')
 
                 writer.writerow(["Actor I", "Supply I", "Actor J", "Supply J"])
 
                 for key, value in self.history[issue].items():
                     writer.writerow([key] + value)
-                    # end for
-
-                    # end with
-
-                    # end for

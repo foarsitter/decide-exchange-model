@@ -1,6 +1,7 @@
 import argparse
 
 from model.helpers.csvParser import Parser
+from model.observers.observer import Observable
 
 
 def parse_arguments():
@@ -21,3 +22,42 @@ def parse_arguments():
     parser.add_argument('--output', help='Output directory ', default="data/output/data_short/", type=str)
 
     return parser.parse_args()
+
+
+class ModelLoop(object):
+    def __init__(self, model, event_handler):
+        self.model = model
+        self.event_handler = event_handler
+        self.iteration_number = 0
+
+    def loop(self):
+        self.model.calc_nbs()
+        self.model.determine_positions()
+        self.model.calc_combinations()
+        self.model.determine_groups()
+
+        realized = []
+
+        self.event_handler.notify(Observable.START_ROUND, model=self.model, iteration=self.iteration_number)
+
+        while len(self.model.Exchanges) > 0:
+
+            realize = self.model.highest_gain()
+
+            if realize.is_valid:
+                removed_exchanges = self.model.remove_invalid_exchanges(realize)
+
+                realized.append(realize)
+
+                self.event_handler.notify(Observable.REMOVED, model=self.model, removed=removed_exchanges)
+                self.event_handler.notify(Observable.EXECUTED, model=self.model, realized=realize)
+        # end while
+
+        self.event_handler.notify(Observable.FINISHED_ROUND, model=self.model, realized=realized, iteration=self.iteration_number)
+
+        # calculate for each realized exchange there new start positions
+        for exchange in realized:
+            self.model.ActorIssues[exchange.i.supply][exchange.i.actor_name].position = exchange.i.new_start_position()
+            self.model.ActorIssues[exchange.j.supply][exchange.j.actor_name].position = exchange.j.new_start_position()
+
+        self.iteration_number += 1

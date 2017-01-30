@@ -42,11 +42,10 @@ class ExchangesWriter(Observer):
 
     def write(self, **kwargs):
 
-        if not os.path.exists("output/{0}/exchanges".format(self.dataset_name)):
-            os.makedirs("output/{0}/exchanges".format(self.dataset_name))
+        if not os.path.exists("{0}/exchanges".format(self.dataset_name)):
+            os.makedirs("{0}/exchanges".format(self.dataset_name))
 
         writer = CsvWriter()
-        writer.write("output/{2}/exchanges/{0}.{1}".format(kwargs["iteration"], "output.csv", self.dataset_name),
-                     self.realized)
+        writer.write("{0}/exchanges/{1}.output.csv".format(self.dataset_name, kwargs["iteration"]), self.realized)
 
         self.setup()
