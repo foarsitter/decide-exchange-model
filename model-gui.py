@@ -66,24 +66,24 @@ class MainApplication(tk.Frame):
 
         row = self.row()
         self.label("Output directory", row=row)
-        self.output_btn = tk.Button(parent, text="Output directory", command=self.output)
+        self.output_btn = ttk.Button(parent, text="Output directory", command=self.output)
         self.output_btn.grid(row=row, column=1, sticky=tk.W)
         tk.Label(parent, textvariable=self.output_dir).grid(row=self.row(), column=1, sticky=tk.W)
 
         row = self.row()
         self.label("Iterations", row=row)
-        self.E1 = tk.Entry(parent, textvariable=self.iterations)
+        self.E1 = ttk.Entry(parent, textvariable=self.iterations)
         self.E1.grid(row=row, column=1, sticky=tk.W)
 
         row = self.row()
         self.label("Model Type", row=row)
-        r1 = tk.Radiobutton(parent, text="Equal Gain", variable=self.model, value="equal")
+        r1 = ttk.Radiobutton(parent, text="Equal Gain", variable=self.model, value="equal")
         r1.grid(row=row, column=1, sticky=tk.W)
 
-        r2 = tk.Radiobutton(parent, text="Random Rate", variable=self.model, value="random")
+        r2 = ttk.Radiobutton(parent, text="Random Rate", variable=self.model, value="random")
         r2.grid(row=self.row(), column=1, sticky=tk.W)
 
-        self.run_btn = tk.Button(parent, text="Run", command=self.run_model)
+        self.run_btn = ttk.Button(parent, text="Run", command=self.run_model)
         self.run_btn.grid(row=self.row(), column=1, sticky=tk.E)
 
         self.progress_dialog = None
