@@ -1,4 +1,5 @@
 .idea/
+*.csv
 *.pyc
 __pycache__/
 output/
@@ -6,3 +7,11 @@ data/output
 docs/Makefile
 docs/make.bat
 docs/source/
+build/
+data/input/.~lock.data_short.csv#
+data/input/Gem_Groningen ICT_outsourcing.csv
+data/input/outsourcing_gemeente_groningen.csv
+dist/
+model-gui.spec
+model-settings.xml
+outsourcing_gemeente_groningen.zip

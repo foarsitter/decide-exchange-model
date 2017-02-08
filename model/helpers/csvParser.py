@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 import csv
 import os
+from decimal import Decimal
+
+import model.base
 
 
 class Parser:
@@ -10,7 +13,7 @@ class Parser:
     cP = "#P"
     # D = the position, salience & power of an actor of an issue
     cD = "#D"
-    # M = issue dimensions (not used in the program)
+    # M = issue dimensions
     cM = "#M"
 
     cI = "#/"
@@ -26,7 +29,8 @@ class Parser:
 
     def __init__(self, model):
         self.data = model
-
+        self.issues = {}
+        self.actors = {}
         print(self.info())
 
     def read(self, filename):
@@ -46,18 +50,65 @@ class Parser:
                 elif row[0] == self.cD:
                     self.parseRowD(row)
                 elif row[0] == self.cM:
+                    self.parseRowM(row)
                     pass
+
+        self.createIssues()
+
+        for issue_id, v in self.data.ActorIssues.items():
+
+            issue = self.issues.get(issue_id, model.base.Issue(name=issue_id))
+
+            for actor_name, value in self.data.ActorIssues[issue_id].items():
+
+                norm = issue.normalize(self.data.ActorIssues[issue_id][actor_name].position)
+
+                self.data.ActorIssues[issue_id][actor_name].position = norm
 
         return self.data
 
     def parseRowActor(self, row):
-        self.data.add_actor(row[1])
+        from model.helpers.helpers import create_key
+        self.data.add_actor(create_key(row[1]))
 
     def parseRowIssue(self, row):
-        self.data.add_issue(row[1])
+
+        from model.helpers.helpers import create_key
+        self.data.add_issue(create_key(row[1]))
+
+    def parseRowM(self, row):
+
+        from model.helpers.helpers import create_key
+        issue_id = create_key(row[1])
+
+        stub = {"lower": None, "upper": None}
+
+        s = self.issues.get(issue_id, stub)
+
+        value = Decimal(row[2])
+
+        if s["lower"] is None or value < s["lower"]:
+            s["lower"] = value
+
+        if s["upper"] is None or value > s["upper"]:
+            s["upper"] = value
+
+        self.issues[issue_id] = s
+
+    def createIssues(self):
+
+        for key, v in self.issues.items():
+            i = model.base.Issue(name=key, lower=v["lower"], upper=v["upper"])
+            i.calculate_delta()
+            i.calculate_step_size()
+            self.issues[i.id] = i
 
     def parseRowD(self, row):
-        self.data.add_actor_issue(actor_name=row[self.rActor], issue_name=row[self.rIssue], power=row[self.rPower],
+        from model.helpers.helpers import create_key
+        actor_name = create_key(row[self.rActor])
+        issue_key = create_key(row[self.rIssue])
+
+        self.data.add_actor_issue(actor_name=actor_name, issue_name=issue_key, power=row[self.rPower],
                                   salience=row[self.rSalience],
                                   position=row[self.rPosition])
 

@@ -1,5 +1,7 @@
 import csv
 
+import copy
+
 from model.observers.observer import Observer, Observable
 
 
@@ -13,9 +15,8 @@ class HistoryWriter(Observer):
         super(HistoryWriter, self).__init__(observable=observable)
         self.output_dir = output_dir
 
-        self.realized = []
-        self.deleted = []
-        self.history = {}
+        self.preference_history = {}
+        self.voting_history = {}
 
         for issue in model.ActorIssues:
 
@@ -23,52 +24,83 @@ class HistoryWriter(Observer):
 
             for key, actor_issue in model.ActorIssues[issue].items():
                 issue_list[actor_issue.actor_name] = []
-                issue_list[actor_issue.actor_name].append(actor_issue.position)
 
             issue_list["nbs"] = []
-            self.history[issue] = issue_list
+            issue_list["nbs-var"] = []
 
-    def setup(self):
-        self.realized = []
-        self.deleted = []
+            self.preference_history[issue] = copy.deepcopy(issue_list)
+            self.voting_history[issue] = copy.deepcopy(issue_list)
 
     def update(self, observable, notification_type, **kwargs):
-
-        if notification_type == Observable.EXECUTED:
-            self.add_exchange(**kwargs)
-        elif notification_type == Observable.REMOVED:
-            self.add_removed(**kwargs)
-        elif notification_type == Observable.CLOSE:
+        if notification_type == Observable.CLOSE:
             self.close(**kwargs)
-            pass
         elif notification_type == Observable.FINISHED_ROUND:
-            self.write(**kwargs)
+            self.finish_round(**kwargs)
+        elif notification_type == Observable.PREPARE_NEXT_ROUND:
+            self.prepare_next(**kwargs)
 
-    def add_exchange(self, **kwargs):
-        # self.realized.append(realized)
-        pass
-
-    def add_removed(self, **kwargs):
-        # self.deleted.append(removed)
-        pass
-
-    def write(self, **kwargs):
+    def finish_round(self, **kwargs):
 
         model = kwargs["model"]
 
         for issue in model.ActorIssues:
-            for key, actor_issue in model.ActorIssues[issue].items():
-                self.history[issue][key].append(actor_issue.position)
 
-            self.history[issue]["nbs"].append(model.nbs[issue])
-            # end for
+            nbs = model.nbs[issue]
+            sum_var = 0
+
+            for key, actor_issue in model.ActorIssues[issue].items():
+
+                position = actor_issue.position
+                sum_var += (position - nbs) ** 2
+
+                self.preference_history[issue][key].append(actor_issue.position)
+
+            nbs_var = sum_var / len(model.ActorIssues[issue])
+
+            self.preference_history[issue]["nbs"].append(nbs)
+            self.preference_history[issue]["nbs-var"].append(nbs_var)
+
+    def prepare_next(self, **kwargs):
+
+        model = kwargs["model"]
+
+        for issue in model.ActorIssues:
+
+            nbs = model.nbs[issue]
+            sum_var = 0
+
+            for key, actor_issue in model.ActorIssues[issue].items():
+
+                position = actor_issue.position
+                sum_var += (position - nbs)**2
+
+                self.voting_history[issue][key].append(position)
+
+            nbs_var = sum_var / len(model.ActorIssues[issue])
+
+            self.voting_history[issue]["nbs"].append(nbs)
+            self.voting_history[issue]["nbs-var"].append(nbs_var)
+
 
     def close(self, **kwargs):
-        for issue in self.history:
+        for issue in self.preference_history:
             with open("{0}/output.{1}.csv".format(self.output_dir, issue), 'w') as csv_file:
                 writer = csv.writer(csv_file, delimiter=';')
 
-                writer.writerow(["Actor I", "Supply I", "Actor J", "Supply J"])
+                writer.writerow(["Preference"])
 
-                for key, value in self.history[issue].items():
+                heading = ["rnd-" + str(x) for x in range(len(self.preference_history[issue]["nbs"]))]
+
+                writer.writerow(["actor"] + heading)
+
+                for key, value in self.preference_history[issue].items():
+                    writer.writerow([key] + value)
+
+                heading = ["rnd-" + str(x) for x in range(len(self.voting_history[issue]["nbs"]))]
+
+                writer.writerow([])
+                writer.writerow(["Voting"])
+                writer.writerow(["actor"] + heading)
+
+                for key, value in self.voting_history[issue].items():
                     writer.writerow([key] + value)

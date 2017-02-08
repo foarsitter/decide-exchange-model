@@ -55,22 +55,22 @@ class TestNBSCalculations(TestCase):
         q = "eaa"
         e = EqualGainExchange(i, j, p, q, model, groups=['a', 'd'])
 
-        dp = by_absolute_move(model.ActorIssues[e.i.supply], e.i)
+        dp = by_absolute_move(model.ActorIssues[e.i.supply_issue], e.i)
         dq = by_exchange_ratio(e.i, dp)
 
         self.assertAlmostEqual(dp, Decimal(10.309), delta=0.001)
         self.assertAlmostEqual(dq, Decimal(9.021), delta=0.001)
 
-        move = reverse_move(model.ActorIssues[e.j.supply], exchange_ratio=dq, actor=e.j)
+        move = reverse_move(model.ActorIssues[e.j.supply_issue], exchange_ratio=dq, actor=e.j)
 
         self.assertAlmostEqual(move, Decimal(89.214), delta=0.001)
 
         self.assertLess(move, e.i.x - e.j.x_demand)
 
-        dp_1 = by_absolute_move(model.ActorIssues[e.j.supply], e.j)
+        dp_1 = by_absolute_move(model.ActorIssues[e.j.supply_issue], e.j)
         dq_1 = by_exchange_ratio(e.j, dp)
 
-        move_1 = reverse_move(model.ActorIssues[e.i.supply], e.i, dq_1)
+        move_1 = reverse_move(model.ActorIssues[e.i.supply_issue], e.i, dq_1)
         self.assertGreater(move_1, 100)
 
     def test_sumSaliencePower(self):

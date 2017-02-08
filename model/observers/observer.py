@@ -5,6 +5,7 @@ class Observable(object):
     FINISHED_ROUND = "FR"
     CLOSE = "CLOSE"
     START_ROUND = "SR"
+    PREPARE_NEXT_ROUND = "PNR"
 
     def __init__(self):
         self.__observers = []

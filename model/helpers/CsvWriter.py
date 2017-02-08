@@ -24,9 +24,9 @@ class CsvWriter:
             return [
                 # the actors
                 exchange.i.actor_name,
-                exchange.i.supply,
+                exchange.i.supply_issue,
                 exchange.j.actor_name,
-                exchange.j.supply,
+                exchange.j.supply_issue,
                 exchange.gain,
                 # the move of i
                 exchange.i.x,
@@ -49,11 +49,11 @@ class CsvWriter:
             return [
                 # the actors
                 exchange.i.actor_name,
-                exchange.i.supply,
+                exchange.i.supply_issue,
                 exchange.i.eu,
                 exchange.i.is_highest_gain,
                 exchange.j.actor_name,
-                exchange.j.supply,
+                exchange.j.supply_issue,
                 exchange.j.eu,
                 exchange.j.is_highest_gain,
                 # the move of i

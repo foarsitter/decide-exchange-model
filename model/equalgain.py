@@ -18,18 +18,18 @@ class EqualGainExchange(AbstractExchange):
 
         # first we try to move j to the position of i on issue p
         # we start with the calculation for j
-        self.dp = calculations.by_absolute_move(self.model.ActorIssues[self.j.supply], self.j)
+        self.dp = calculations.by_absolute_move(self.model.ActorIssues[self.j.supply_issue], self.j)
         self.dq = calculations.by_exchange_ratio(self.j, self.dp)
 
-        self.i.move = calculations.reverse_move(self.model.ActorIssues[self.i.supply], self.i, self.dq)
+        self.i.move = calculations.reverse_move(self.model.ActorIssues[self.i.supply_issue], self.i, self.dq)
         self.j.move = abs(self.i.x_demand - self.j.x)
 
         if abs(self.i.move) > abs(self.j.x_demand - self.i.x):
-            self.dq = calculations.by_absolute_move(self.model.ActorIssues[self.i.supply], self.i)
+            self.dq = calculations.by_absolute_move(self.model.ActorIssues[self.i.supply_issue], self.i)
             self.dp = calculations.by_exchange_ratio(self.i, self.dq)
 
             self.i.move = abs(self.j.x_demand - self.i.x)
-            self.j.move = calculations.reverse_move(self.model.ActorIssues[self.j.supply], self.j, self.dp)
+            self.j.move = calculations.reverse_move(self.model.ActorIssues[self.j.supply_issue], self.j, self.dp)
 
         # TODO add check of NBS.
         # this check is only necessary for the smallest exchange,
