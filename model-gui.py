@@ -76,11 +76,11 @@ class MainApplication(tk.Frame):
         self.E1.grid(row=row, column=1, sticky=tk.W)
 
         row = self.row()
-        self.label("Model Type", row=row)
-        r1 = ttk.Radiobutton(parent, text="Equal Gain", variable=self.model, value="equal")
+        self.label("Exchange type", row=row)
+        r1 = ttk.Radiobutton(parent, text="Equal Exchange Rate", variable=self.model, value="equal")
         r1.grid(row=row, column=1, sticky=tk.W)
 
-        r2 = ttk.Radiobutton(parent, text="Random Rate", variable=self.model, value="random")
+        r2 = ttk.Radiobutton(parent, text="Random Exchange Rate", variable=self.model, value="random")
         r2.grid(row=self.row(), column=1, sticky=tk.W)
 
         self.run_btn = ttk.Button(parent, text="Run", command=self.run_model)
@@ -196,7 +196,7 @@ class MainApplication(tk.Frame):
         Externalities(event_handler, model, data_set_name)
         ExchangesWriter(event_handler, model, data_set_name)
         HistoryWriter(event_handler, model, data_set_name)
-        InitialExchanges(event_handler)
+        InitialExchanges(event_handler, data_set_name)
         event_handler.notify(Observable.LOG, message="Parsed file {0}".format(self.input_file.get()))
 
         model_loop = ModelLoop(model, event_handler)
@@ -241,6 +241,6 @@ if __name__ == "__main__":
 
     center(root)
 
-    root.title("Model")
+    root.title("Decide Exchange Model")
 
     root.mainloop()
