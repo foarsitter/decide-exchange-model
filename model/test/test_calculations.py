@@ -49,8 +49,8 @@ class TestNBSCalculations(TestCase):
         # D	China	eaa	0	0.65	1
         # D	USA	eaa	100	0.4	1
 
-        i = model.Actors["USA"]
-        j = model.Actors["China"]
+        i = model.Actors["usa"]
+        j = model.Actors["china"]
         p = "financevol"
         q = "eaa"
         e = EqualGainExchange(i, j, p, q, model, groups=['a', 'd'])
@@ -90,8 +90,8 @@ class TestNBSCalculations(TestCase):
         model.calc_combinations()
         model.determine_groups()
 
-        i = model.Actors["USA"]
-        j = model.Actors["China"]
+        i = model.Actors["usa"]
+        j = model.Actors["china"]
         p = "financevol"
         q = "eaa"
         e = EqualGainExchange(i, j, p, q, model, groups=['a', 'd'])
@@ -102,13 +102,13 @@ class TestNBSCalculations(TestCase):
         nbs_1 = adjusted_nbs(model.ActorIssues[p], e.updates, e.j.actor_name, e.j.y,
                              model.nbs_denominators[p])
 
-        Russia = model.ActorIssues[p]["Russia"]  # russia is an D group actor, so he is inner
-        Umbrellamin = model.ActorIssues[p]["Umbrellamin"]  # Umbrellamin is and B group actor, so he is outer
-        Arabstates = model.ActorIssues[p]["Arabstates"]  # Arabstates is and C group actor, so he is outer
-
-        # todo add type checks for op,ip,in,on and own
-        # todo fix this test with the proper calculations
-
+        # Russia = model.ActorIssues[p]["rusia"]  # russia is an D group actor, so he is inner
+        # Umbrellamin = model.ActorIssues[p]["umbrellamin"]  # Umbrellamin is and B group actor, so he is outer
+        # Arabstates = model.ActorIssues[p]["arabstates"]  # Arabstates is and C group actor, so he is outer
+        #
+        # # todo add type checks for op,ip,in,on and own
+        # # todo fix this test with the proper calculations
+        #
         # ext_russia = externalities(Russia.actor_name, model, e)
         # self.assertEqual(ext_russia, (
         # abs(nbs_0 - Russia.position) * Russia.salience - abs(nbs_1 - Russia.position)) * Russia.salience)
