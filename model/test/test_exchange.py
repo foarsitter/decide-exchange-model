@@ -24,7 +24,7 @@ class TestExchange(TestCase):
 
         model.calc_nbs()
 
-        e = EqualGainExchange(a1, a2, "p", "q", model, groups=['a', 'b'])
+        e = EqualGainExchange(a1, a2, "p", "q", model, groups=['a', 'd'])
         e.calculate()
 
         e2 = EqualGainExchange(a1, a2, "p", "q", model, groups=['a', 'd'])
@@ -56,7 +56,7 @@ class TestExchangeActor(TestCase):
 
         model.calc_nbs()
 
-        e = EqualGainExchange(a1, a2, "p", "q", model, groups=['a', 'b'])
+        e = EqualGainExchange(a1, a2, "p", "q", model, groups=['a', 'd'])
 
         eq = e.equal_str("a1", "a2", "p", "q")
 

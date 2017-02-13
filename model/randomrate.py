@@ -335,8 +335,3 @@ class RandomRateModel(AbstractModel):
         exchange_pair.is_lowest_highest = False
 
         return self.highest_gain()
-
-
-
-
-
