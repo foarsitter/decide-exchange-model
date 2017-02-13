@@ -35,13 +35,13 @@ class Issue:
         self.delta = self.upper - self.lower
 
     def calculate_step_size(self):
-        if self.delta > 0:
+        if self.delta is not 0:
             self.step_size = Decimal(100 / self.delta)
         else:
             self.step_size = 0
 
     def de_normalize(self, value):
-        return Decimal(value / self.step_size + self.lower)
+        return round(value / self.step_size + self.lower)
 
     def normalize(self, value):
         return Decimal(value - self.lower) * self.step_size
@@ -51,6 +51,9 @@ class Issue:
 
     def __bool__(self):
         return False
+
+    def __eq__(self, other) -> bool:
+        return self.name == other.name
 
 
 class Actor:
@@ -62,6 +65,9 @@ class Actor:
     def __init__(self, name, actor_id=None):
         self.name = name
         self.id = actor_id if actor_id else helpers.create_key(name)
+
+    def __eq__(self, other):
+        return self.name == other.name
 
 
 class ActorIssue:
@@ -82,6 +88,9 @@ class ActorIssue:
         return "Actor {0} with position={1}, salience={2}, power={3}".format(self.actor_name,
                                                                              self.position, self.salience,
                                                                              self.power)
+
+    def __eq__(self, other):
+        return self.actor_name == other.actor_name and self.issue_name == other.issue_name and self.left == other.left
 
 
 class AbstractExchangeActor(object):
@@ -148,14 +157,6 @@ class AbstractExchangeActor(object):
         if (moves_min < 0 and moves_max < 0) or (moves_min > 0 and moves_max > 0):
             return True
 
-    def __str__(self):
-        """
-        The String representation of the object
-        :return: String representation of the object
-        """
-        return "{0} {1} {2} {3} ({4})".format(self.actor_name, self.supply_issue, self.x, self.y,
-                                              self.opposite_actor.x_demand)
-
     def new_start_position(self):
         """
         Calculate the new starting postion for the next round
@@ -170,24 +171,39 @@ class AbstractExchangeActor(object):
 
         return x_t1
 
-    def equals_with_supply_obj(self, exchange_actor):
+    # comparison functions
+
+    def equals_demand_issue_str(self, actor_name, demand_issue):
+        return self.actor_name == actor_name and self.demand_issue == demand_issue
+
+    def equals_supply_issue_str(self, actor_name, supply_issue):
+        return self.actor_name == actor_name and self.supply_issue == supply_issue
+
+    def equals_actor_demand_issue(self, other):
+        return self.equals_actor(other) and self.equals_demand_issue(other)
+
+    def equals_actor_supply_issue(self, other):
+        return self.equals_actor(other) and self.equals_supply_issue(other)
+
+    def equals_actor(self, other):
+        return self.actor_name == other.actor_name
+
+    def equals_supply_issue(self, other):
+        return self.supply_issue == other.supply_issue
+
+    def equals_demand_issue(self, other):
+        return self.demand_issue == other.demand_issue
+
+    def __str__(self):
         """
-        Compares the actor with the given
-        :param exchange_actor:
-        :return:
+        The String representation of the object
+        :return: String representation of the object
         """
-        if self.actor_name == exchange_actor.actor_name and self.supply_issue == exchange_actor.supply_issue:
-            return True
-        return False
+        return "{0} {1} {2} {3} ({4})".format(self.actor_name, self.supply_issue, self.x, self.y,
+                                              self.opposite_actor.x_demand)
 
-    def equals_with_supply_str(self, actor_name, supply):
-
-        if self.actor_name == actor_name and self.supply_issue == supply:
-            return True
-        return False
-
-    def equals_name_demand_str(self, exchange_actor):
-        return self.actor_name == exchange_actor.actor_name and self.demand_issue == exchange_actor.demand_issue
+    def __eq__(self, other):
+        return self.equals_actor(other) and self.equals_demand_issue(other) and self.equals_supply_issue(other)
 
 
 class AbstractExchange(object):
@@ -208,6 +224,10 @@ class AbstractExchange(object):
         :param groups: list of the two groups each actor is in
         """
         self.model = m
+        self.groups = groups
+
+        self.group_test()
+
         self.gain = 0
         self.is_valid = True
         self.re_calc = False
@@ -375,109 +395,143 @@ class AbstractExchange(object):
 
             self.is_valid = b1 and b2
 
+    def invalidate_move(self):
+        self.i.moves.pop()
+        self.j.moves.pop()
+
+    def invalidate_exchange_by_supply(self, exchange):
+
+        """
+        If the actors and supply issues match one or both the actors from the exchange that is executed,
+        this exchange invalidates and needs to be recalculated.
+
+        When the move invalidates, erase the current values for the move so the new values can be calculated.
+
+        If both the cases happen (i equals j and j equals i) the exchange is identical, this is not posible.
+
+        :param exchange:
+        :return:
+        """
+        invalid_i = False
+        invalid_j = False
+
+        if self.i.equals_actor_supply_issue(exchange.i):
+            self.i.x = exchange.i.y
+            self.i.moves.append(exchange.i.moves[-1])
+            invalid_i = True
+        elif self.i.equals_actor_supply_issue(exchange.j):
+            self.i.x = exchange.j.y
+            self.i.moves.append(exchange.j.moves[-1])
+            invalid_i = True
+
+        if self.j.equals_actor_supply_issue(exchange.i):
+            self.j.x = exchange.i.y
+            self.j.moves.append(exchange.i.moves[-1])
+            invalid_j = True
+        elif self.j.equals_actor_supply_issue(exchange.j):
+            self.j.x = exchange.j.y
+            self.j.moves.append(exchange.j.moves[-1])
+            invalid_j = True
+
+        if invalid_i or invalid_j:
+            self.invalidate_move()
+        elif invalid_i and invalid_j:
+            raise Exception("Exchanges are equal: {0} and {1}".format(str(self), str(exchange)))
+
+        return invalid_i or invalid_j
+
+    def check_demand(self, exchange):
+
+        if exchange.i.actor_name in self.updates[exchange.j.demand_issue]:
+
+            exchangeActor = exchange.i
+            demand = exchange.j.demand_issue
+            x_updated = self.updates[exchange.j.demand_issue][exchangeActor.actor_name]
+
+            if exchangeActor.start_position <= x_updated:
+                if x_updated < exchangeActor.y:
+                    self.updates[demand][exchangeActor.actor_name] = x_updated
+                else:
+                    self.updates[demand][exchangeActor.actor_name] = exchangeActor.y
+            else:
+                if x_updated > exchangeActor.y:
+                    self.updates[demand][exchangeActor.actor_name] = x_updated
+                else:
+                    self.updates[demand][exchangeActor.actor_name] = exchangeActor.y
+        else:
+            self.updates[exchange.j.demand_issue][exchange.i.actor_name] = exchange.i.y
+
+    def update_updates(self, exchange_actor, demand_issue, updated_position):
+
+        if exchange_actor.start_position <= updated_position:
+            if updated_position < exchange_actor.y:
+                self.updates[demand_issue][exchange_actor.actor_name] = updated_position
+            else:
+                self.updates[demand_issue][exchange_actor.actor_name] = exchange_actor.y
+        else:
+            if updated_position > exchange_actor.y:
+                self.updates[demand_issue][exchange_actor.actor_name] = updated_position
+            else:
+                self.updates[demand_issue][exchange_actor.actor_name] = exchange_actor.y
+
     def recalculate(self, exchange):
         """
         This exchange needs to be recalculated because the given exchange is performed
         and has an influence on this (self) exchange
         :param exchange:
         """
-        self.re_calc = False
+        self.re_calc = self.invalidate_exchange_by_supply(exchange)
 
-        if self.i.equals_with_supply_obj(exchange.i):
-            self.i.x = exchange.i.y
-            self.i.moves.pop()
-            self.j.moves.pop()
-            self.i.moves.append(exchange.i.moves[-1])
-            self.re_calc = True
-        elif self.i.equals_with_supply_obj(exchange.j):
-            self.i.x = exchange.j.y
-            self.i.moves.pop()
-            self.j.moves.pop()
-            self.i.moves.append(exchange.j.moves[-1])
-            self.re_calc = True
-        if self.j.equals_with_supply_obj(exchange.i):
-            self.j.x = exchange.i.y
-            self.i.moves.pop()
-            self.j.moves.pop()
-            self.j.moves.append(exchange.i.moves[-1])
-            self.re_calc = True
-        elif self.j.equals_with_supply_obj(exchange.j):
-            self.j.x = exchange.j.y
-            self.i.moves.pop()
-            self.j.moves.pop()
-            self.j.moves.append(exchange.j.moves[-1])
-            self.re_calc = True
-
+        # TODO: can the next statement be True when re_calc is already True?
         # update the positions for the demand actors...
-        if exchange.j.equals_name_demand_str(self.j) or exchange.j.equals_name_demand_str(self.i):
+        if exchange.j.equals_actor_demand_issue(self.j) or exchange.j.equals_actor_demand_issue(self.i):
 
             if exchange.i.actor_name in self.updates[exchange.j.demand_issue]:
-
-                exchangeActor = exchange.i
-                demand = exchange.j.demand_issue
-                x_updated = self.updates[exchange.j.demand_issue][exchangeActor.actor_name]
-
-                if exchangeActor.start_position <= x_updated:
-                    if x_updated < exchangeActor.y:
-                        self.updates[demand][exchangeActor.actor_name] = x_updated
-                    else:
-                        self.updates[demand][exchangeActor.actor_name] = exchangeActor.y
-                else:
-                    if x_updated > exchangeActor.y:
-                        self.updates[demand][exchangeActor.actor_name] = x_updated
-                    else:
-                        self.updates[demand][exchangeActor.actor_name] = exchangeActor.y
+                self.update_updates(exchange.i, exchange.j.demand_issue, self.updates[exchange.j.demand_issue][exchange.i.actor_name])
             else:
                 self.updates[exchange.j.demand_issue][exchange.i.actor_name] = exchange.i.y
 
             if not self.re_calc:
-                self.i.moves.pop()
-                self.j.moves.pop()
+                self.invalidate_move()
                 self.re_calc = True
 
         if (self.i.actor_name == exchange.i.actor_name and self.i.demand_issue == exchange.i.demand_issue) or (
                         self.j.actor_name == exchange.i.actor_name and self.j.demand_issue == exchange.i.demand_issue):
 
             if exchange.j.actor_name in self.updates[exchange.i.demand_issue]:
-
-                exchangeActor = exchange.j
-                demand = exchange.i.demand_issue
-                x_updated = self.updates[exchange.i.demand_issue][exchangeActor.actor_name]
-
-                if exchangeActor.start_position <= x_updated:
-                    if x_updated < exchangeActor.y:
-                        self.updates[demand][exchangeActor.actor_name] = x_updated
-                    else:
-                        self.updates[demand][exchangeActor.actor_name] = exchangeActor.y
-                else:
-                    if x_updated > exchangeActor.y:
-                        self.updates[demand][exchangeActor.actor_name] = x_updated
-                    else:
-                        self.updates[demand][exchangeActor.actor_name] = exchangeActor.y
-
+                self.update_updates(exchange.j, exchange.i.demand_issue, self.updates[exchange.i.demand_issue][exchange.j.actor_name])
             else:
                 self.updates[exchange.i.demand_issue][exchange.j.actor_name] = exchange.j.y
 
             if not self.re_calc:
-                self.i.moves.pop()
-                self.j.moves.pop()
+                self.invalidate_move()
                 self.re_calc = True
 
         if self.re_calc:
             self.calculate()
 
+    def group_test(self):
+        if 'a' in self.groups and 'd' in self.groups:
+            return True
+        elif 'b' in self.groups and 'c' in self.groups:
+            return True
+        else:
+            raise Exception("invalid group combination [%,%]".format(self.groups[0], self.groups[1]))
+
+    # comparision functions
+
     def equal_str(self, i, j, p, q):
         """
         Compare the given values
         """
-        return self.i.equals_with_supply_str(i, q) and self.j.equals_with_supply_str(j, p) or \
-               self.i.equals_with_supply_str(j, p) and self.j.equals_with_supply_str(i, q)
+        return self.i.equals_supply_issue_str(i, q) and self.j.equals_supply_issue_str(j, p) or \
+               self.i.equals_supply_issue_str(j, p) and self.j.equals_supply_issue_str(i, q)
 
     def contains_actor_with_supply(self, actor, issue):
         """
         Check if the actors has the given issue as supply issue
         """
-        return self.i.equals_with_supply_str(actor, issue) or self.j.equals_with_supply_str(actor, issue)
+        return self.i.equals_supply_issue_str(actor, issue) or self.j.equals_supply_issue_str(actor, issue)
 
     def contains_actor_and_demand_issue(self, actor_name, demand_issue):
         return self.contains_actor(actor_name) and self.contains_demand_issue(demand_issue)
@@ -496,6 +550,9 @@ class AbstractExchange(object):
 
     def __bool__(self):
         return self.is_valid
+
+    def __eq__(self, other):
+        return self.i == other.i and self.j == other.j
 
 
 class AbstractModel(object):

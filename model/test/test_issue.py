@@ -16,7 +16,7 @@ class TestIssue(TestCase):
         y = Issue(name="test", lower=0, upper=60)
 
         self.assertEqual(y.step_size, 100 / 60)
-        self.assertEqual(y.de_normalize(50), 30)
+        self.assertAlmostEqual(y.de_normalize(50), 30, delta=0.00001)
 
         # case with a negative delta
         z = Issue(name="test", lower=0, upper=-60)
@@ -53,4 +53,14 @@ class TestIssue(TestCase):
         self.assertEqual(c.de_normalize(50), -40)
         self.assertEqual(c.de_normalize(0), 10)
 
-    pass
+    def test___eq__(self):
+
+        issue = Issue(name="test")
+        issue2 = Issue(name="test")
+        issue3 = Issue(name="test3")
+
+        self.assertTrue(issue == issue)
+        self.assertTrue(issue == issue2)
+        self.assertTrue(issue != issue3)
+
+
