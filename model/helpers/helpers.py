@@ -1,8 +1,7 @@
 import argparse
-
+import re
 from model.helpers.csvParser import Parser
 from model.observers.observer import Observable
-
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="This program accepts input with a dot (.) as decimal separator. \n"
@@ -22,6 +21,15 @@ def parse_arguments():
     parser.add_argument('--output', help='Output directory ', default="data/output/data_short/", type=str)
 
     return parser.parse_args()
+
+
+def create_key(value: str) -> str:
+    """
+    Create a safe for for index usage
+    :type value: str
+    """
+    pattern = re.compile('[\W_]+')
+    return pattern.sub('', value).lower()
 
 
 class ModelLoop(object):
@@ -57,7 +65,16 @@ class ModelLoop(object):
 
         # calculate for each realized exchange there new start positions
         for exchange in realized:
-            self.model.ActorIssues[exchange.i.supply][exchange.i.actor_name].position = exchange.i.new_start_position()
-            self.model.ActorIssues[exchange.j.supply][exchange.j.actor_name].position = exchange.j.new_start_position()
+            pi = exchange.i.new_start_position()
+            self.model.ActorIssues[exchange.i.supply_issue][exchange.i.actor_name].position = pi
+
+            pj = exchange.j.new_start_position()
+            self.model.ActorIssues[exchange.j.supply_issue][exchange.j.actor_name].position = pj
+
+
+        # calculate the voting nbs here
+        self.model.calc_nbs()
+
+        self.event_handler.notify(Observable.PREPARE_NEXT_ROUND, model=self.model, realized=realized, iteration=self.iteration_number)
 
         self.iteration_number += 1

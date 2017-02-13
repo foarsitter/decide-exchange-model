@@ -46,6 +46,6 @@ class ExchangesWriter(Observer):
             os.makedirs("{0}/exchanges".format(self.dataset_name))
 
         writer = CsvWriter()
-        writer.write("{0}/exchanges/{1}.output.csv".format(self.dataset_name, kwargs["iteration"]), self.realized)
+        writer.write("{0}/exchanges/round.{1}.csv".format(self.dataset_name, kwargs["iteration"]+1), self.realized)
 
         self.setup()

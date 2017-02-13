@@ -5,10 +5,10 @@ from model.observers.observer import Observer, Observable
 class InitialExchanges(Observer):
     POINTER = 0
 
-    def __init__(self, observable, output_dir):
+    def __init__(self, observable, model, data_set_name):
         super(InitialExchanges, self).__init__(observable)
         self.has_written = False
-        self.output_dir = output_dir
+        self.output_dir = data_set_name
 
     def update(self, observable, notification_type, **kwargs):
 

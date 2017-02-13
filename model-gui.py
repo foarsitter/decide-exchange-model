@@ -105,12 +105,12 @@ class MainApplication(tk.Frame):
             self.input_file.set(dialog.name)
 
     def output(self):
-        dir = filedialog.askdirectory(initialdir=self.output_dir)
+        selected_dir = filedialog.askdirectory(initialdir=self.output_dir)
 
-        if not os.path.isdir(dir):
-            os.makedirs(dir)
+        if not os.path.isdir(selected_dir):
+            os.makedirs(selected_dir)
 
-        self.output_dir.set(dir)
+        self.output_dir.set(selected_dir)
 
     def model_type(self):
         print(self.model.get())

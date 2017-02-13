@@ -13,15 +13,21 @@ def calc_nbs(actor_issues, denominator):
     :param denominator: the pre-calculated (and cached) denominator: :math:`\\sum_{i=1}^n C_{id} S_{id}`
     :return: Decimal
     """
+
+    if denominator == 0:
+        return 0
+
     numerator = 0
 
     for k, v in actor_issues.items():
         numerator += v.position * v.salience * v.power
 
-    if denominator == 0:
-        return 0
-
     return numerator / denominator
+
+
+def nbs_variance(actor_issues, nbs):
+
+    return sum([(ai.position - nbs)**2 for ai in actor_issues])
 
 
 def calc_nbs_denominator(actor_issues):
@@ -205,12 +211,12 @@ def actor_externalities(actor_name, model, realized):
     :return: the Decimal value of the externality
     """
 
-    if actor_name in model.ActorIssues[realized.j.supply] and actor_name in model.ActorIssues[realized.i.supply]:
-        xp = model.ActorIssues[realized.j.supply][actor_name].position
-        sp = model.ActorIssues[realized.j.supply][actor_name].salience
+    if actor_name in model.ActorIssues[realized.j.supply_issue] and actor_name in model.ActorIssues[realized.i.supply_issue]:
+        xp = model.ActorIssues[realized.j.supply_issue][actor_name].position
+        sp = model.ActorIssues[realized.j.supply_issue][actor_name].salience
 
-        xq = model.ActorIssues[realized.i.supply][actor_name].position
-        sq = model.ActorIssues[realized.i.supply][actor_name].salience
+        xq = model.ActorIssues[realized.i.supply_issue][actor_name].position
+        sq = model.ActorIssues[realized.i.supply_issue][actor_name].salience
 
         l0 = abs(realized.j.nbs_0 - xp)
         l1 = abs(realized.j.nbs_1 - xp)

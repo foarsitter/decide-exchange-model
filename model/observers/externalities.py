@@ -72,7 +72,7 @@ class Externalities(Observer):
         self.add_or_update_issue_set(issue_set_key, realized, exchange_set)
 
         self.exchanges.append(
-            [realized.i.actor_name, realized.i.supply, realized.j.actor_name, realized.j.supply, exchange_set["ip"],
+            [realized.i.actor_name, realized.i.supply_issue, realized.j.actor_name, realized.j.supply_issue, exchange_set["ip"],
              exchange_set["in"], exchange_set["op"], exchange_set["on"], exchange_set["own"]])
 
     def add_exchange_set(self, externalities, realized, model, inner, issue_set_key):
@@ -134,7 +134,7 @@ class Externalities(Observer):
         if not os.path.exists("{0}/externalities".format(self.current_file)):
             os.makedirs("{0}/externalities".format(self.current_file))
 
-        with open("{0}/externalities/externalities.{1}.csv".format(self.current_file, iteration_number),
+        with open("{0}/externalities/externalities.{1}.csv".format(self.current_file, iteration_number+1),
                   'w') as csvfile:
             writer = csv.writer(csvfile, delimiter=';')
 

@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 
 from model.helpers import helpers, csvParser
@@ -9,14 +10,16 @@ from model.observers.initial_exchanges import InitialExchanges
 from model.observers.logger import Logger
 from model.observers.observer import Observable
 
-
 if __name__ == "__main__":
 
     args = helpers.parse_arguments()
     input_file = args.input
     output_dir = args.output
 
-    data_set_name = input_file.split("/")[-1].split(".")[0]
+    data_set_name = output_dir + "/" + input_file.split("/")[-1].split(".")[0]
+
+    if not os.path.isdir(data_set_name):
+        os.makedirs(data_set_name)
 
     if args.model == "equal":
         from model.equalgain import EqualGainModel as Model
@@ -40,7 +43,7 @@ if __name__ == "__main__":
     Externalities(eventHandler, model, data_set_name)
     ExchangesWriter(eventHandler, model, data_set_name)
     HistoryWriter(eventHandler, model, data_set_name)
-    InitialExchanges(eventHandler)
+    InitialExchanges(eventHandler, model, data_set_name)
     eventHandler.notify(Observable.LOG, message="Parsed file".format(input_file))
 
     model_loop = ModelLoop(model, eventHandler)
@@ -48,6 +51,5 @@ if __name__ == "__main__":
     for iteration_number in range(args.rounds):
         model_loop.loop()
 
-
-
-
+    eventHandler.notify(Observable.CLOSE, model=model)
+    eventHandler.notify(Observable.LOG, message="Finished in {0}".format(datetime.now() - startTime))
