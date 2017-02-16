@@ -1,6 +1,7 @@
 from decimal import *
 from unittest import TestCase
 
+from model import calculations
 from model.base import ActorIssue
 from model.calculations import calc_nbs_denominator, calc_nbs, adjusted_nbs, by_absolute_move, by_exchange_ratio, \
     reverse_move, sum_salience_power
@@ -101,23 +102,23 @@ class TestNBSCalculations(TestCase):
         nbs_0 = model.nbs[p]
         nbs_1 = adjusted_nbs(model.ActorIssues[p], e.updates, e.j.actor_name, e.j.y,
                              model.nbs_denominators[p])
-
+        #
         # Russia = model.ActorIssues[p]["rusia"]  # russia is an D group actor, so he is inner
         # Umbrellamin = model.ActorIssues[p]["umbrellamin"]  # Umbrellamin is and B group actor, so he is outer
         # Arabstates = model.ActorIssues[p]["arabstates"]  # Arabstates is and C group actor, so he is outer
-        #
+
         # # todo add type checks for op,ip,in,on and own
         # # todo fix this test with the proper calculations
         #
-        # ext_russia = externalities(Russia.actor_name, model, e)
+        # ext_russia = calculations.externalities(Russia.actor_name, model, e)
         # self.assertEqual(ext_russia, (
         # abs(nbs_0 - Russia.position) * Russia.salience - abs(nbs_1 - Russia.position)) * Russia.salience)
         #
-        # ext_umbrella = externalities(Umbrellamin.actor_name, model, e)
+        # ext_umbrella = calculations.externalities(Umbrellamin.actor_name, model, e)
         # self.assertEqual(ext_umbrella,
         #                  (abs(nbs_0 - Umbrellamin.position) - abs(nbs_1 - Umbrellamin.position)) * Umbrellamin.salience)
         #
-        # ext_Arabstates = externalities(Arabstates.actor_name, model, e)
+        # ext_Arabstates = calculations.externalities(Arabstates.actor_name, model, e)
         # self.assertEqual(ext_Arabstates,
         #                  (abs(nbs_0 - Arabstates.position) - abs(nbs_1 - Arabstates.position)) * Arabstates.salience)
         #
@@ -126,8 +127,8 @@ class TestNBSCalculations(TestCase):
         # ai_i = model.ActorIssues[p]["usa"]
         # ai_j = model.ActorIssues[p]["china"]
         #
-        # ext_i = externalities(ai_i.actor_name, model, e)
+        # ext_i = calculations.xternalities(ai_i.actor_name, model, e)
         # self.assertEqual(ext_i["value"], (abs(nbs_0 - ai_i.position) - abs(nbs_1 - ai_i.position)) * ai_i.salience)
         #
-        # ext_j = externalities(ai_j.actor_name, model, e)
+        # ext_j = calculations.externalities(ai_j.actor_name, model, e)
         # self.assertEqual(ext_j["value"], (abs(nbs_0 - ai_j.position) - abs(nbs_1 - ai_j.position)) * ai_j.salience)

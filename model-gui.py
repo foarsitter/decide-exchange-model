@@ -7,6 +7,7 @@ from queue import Queue
 from tkinter import filedialog
 from tkinter import ttk
 
+from model.base import AbstractModel
 from model.helpers.helpers import ModelLoop
 from model.observers.exchanges_writer import ExchangesWriter
 from model.observers.externalities import Externalities
@@ -33,6 +34,54 @@ class ProgressObserver(Observer):
     def update(self, observable, notification_type, **kwargs):
         if notification_type == Observable.FINISHED_ROUND:
             self.progressbar["value"] += self.step_size
+
+
+class CSVFrame(tk.Frame):
+    def __init__(self, parent, *args, **kwargs):
+        tk.Frame.__init__(self, parent, *args, **kwargs)
+        self.parent = parent
+        self.row_pointer = 0
+
+    def create_grid_table(self, model: AbstractModel, issues):
+
+        # an actor has only a name
+
+        self.create_heading(["Actors"])
+        self.create_row(model.Actors.values())
+
+        self.create_row([""])
+
+        self.create_heading(["Issues"])
+        self.create_heading(["Name", "Lower", "Upper"])
+        for issue in issues.values():
+            self.create_row([issue.name, issue.lower, issue.upper])
+
+        # an issue has a name, lower and upper
+
+        self.row_pointer += 1
+        self.create_row([""])
+        self.create_heading(["Actor issues"])
+        # an actor issues has an actor, issue, position, and power
+        self.create_heading(["Actor", "issue", "position", "salience", "power"])
+
+        for key, actor_issues in model.ActorIssues.items():
+            for actor_issue in actor_issues.values():
+                self.create_row([actor_issue.actor_name, actor_issue.issue_name, int(actor_issue.position), actor_issue.salience, actor_issue.power])
+
+    def create_row(self, values):
+
+        for __, value in enumerate(values):
+            tk.Label(self.parent, text=value, relief=tk.GROOVE).grid(row=self.row_pointer, column=__, sticky=tk.W + tk.E)
+
+        self.row_pointer += 1
+
+    def create_heading(self, values):
+
+        for __, value in enumerate(values):
+            tk.Label(self.parent, text=value, relief=tk.GROOVE, font="Verdana 10 bold").grid(row=self.row_pointer, column=__, sticky=tk.W + tk.E)
+
+        self.row_pointer += 1
+
 
 
 class MainApplication(tk.Frame):
@@ -103,6 +152,20 @@ class MainApplication(tk.Frame):
 
         if dialog:
             self.input_file.set(dialog.name)
+
+            model = AbstractModel()
+
+            from model.helpers import csvParser
+            csv_parser = csvParser.Parser(model)
+
+            data_set_name = os.path.join(self.output_dir.get(), self.input_file.get().split("/")[-1].split(".")[0])
+
+            model = csv_parser.read(self.input_file.get())
+
+            table = CSVFrame(tk.Toplevel())
+            table.create_grid_table(model, csv_parser.issues)
+
+            print(data_set_name)
 
     def output(self):
         selected_dir = filedialog.askdirectory(initialdir=self.output_dir)
