@@ -136,7 +136,7 @@ class Externalities(Observer):
 
         with open("{0}/externalities/externalities.{1}.csv".format(self.current_file, iteration_number+1),
                   'w') as csvfile:
-            writer = csv.writer(csvfile, delimiter=';')
+            writer = csv.writer(csvfile, delimiter=';',lineterminator='\n')
 
             # headings
             writer.writerow(

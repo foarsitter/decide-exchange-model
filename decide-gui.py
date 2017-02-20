@@ -6,7 +6,7 @@ from datetime import datetime
 from queue import Queue
 from tkinter import filedialog
 from tkinter import ttk
-
+from tkinter import messagebox
 from model.base import AbstractModel
 from model.helpers.helpers import ModelLoop
 from model.observers.exchanges_writer import ExchangesWriter
@@ -273,6 +273,9 @@ class MainApplication(tk.Frame):
 
         data_set_name = os.path.join(self.output_dir.get(), self.input_file.get().split("/")[-1].split(".")[0])
 
+        if not os.path.isdir(data_set_name):
+            os.mkdir(data_set_name)
+
         model = csv_parser.read(self.input_file.get())
 
         Externalities(event_handler, model, data_set_name)
@@ -296,6 +299,8 @@ class MainApplication(tk.Frame):
         event_handler.notify(Observable.LOG, message="Finished in {0}".format(datetime.now() - start_time))
 
         self.stop_periodic_call()
+
+        messagebox.showinfo("Finished", "The model is finished.")
 
     def prog_bar_update(self, value):
         self.counter.set(value + 1)
@@ -326,3 +331,5 @@ if __name__ == "__main__":
     root.title("Decide Exchange Model")
 
     root.mainloop()
+
+

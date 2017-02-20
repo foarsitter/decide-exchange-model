@@ -10,7 +10,7 @@ class CsvWriter:
 
     def write(self, filename, realized):
         with open(filename, 'w') as csvfile:
-            writer = csv.writer(csvfile, delimiter=';')
+            writer = csv.writer(csvfile, delimiter=';',lineterminator='\n')
 
             writer.writerow(self.create_heading(realized[0]))
 
