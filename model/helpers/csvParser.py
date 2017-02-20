@@ -31,8 +31,6 @@ class Parser:
         self.data = model
         self.issues = {}
         self.actors = {}
-        print(self.info())
-
     def read(self, filename):
         """
         The file to read
@@ -137,13 +135,3 @@ class Parser:
                                   salience=row[self.rSalience],
                                   position=row[self.rPosition])
 
-    def info(self):
-        """
-        Print the information
-        """
-        print("This program accepts input with a dot (.) as decimal separator. \n"
-              "Parameters:\n{0} is for defining an actor,\n"
-              "{1} for an issue,\n"
-              "{2} for actor values for each issue.\n"
-              "We expect for {2} the following order in values: "
-              "actor, issue, position, salience, power".format(self.cA, self.cP, self.cD))

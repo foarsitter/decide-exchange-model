@@ -42,6 +42,20 @@ class CSVFrame(tk.Frame):
         self.parent = parent
         self.row_pointer = 0
 
+        sizex = 800
+        sizey = 600
+        posx = 100
+        posy = 100
+        self.parent.geometry("%dx%d+%d+%d" % (sizex, sizey, posx, posy))
+
+        self.canvas = tk.Canvas(self.parent)
+
+        myscrollbar = tk.Scrollbar(self.parent, orient="vertical", command=self.canvas.yview)
+        myscrollbar.pack(side="right", fill="y")
+        self.canvas.configure(yscrollcommand=myscrollbar.set)
+
+        self.canvas.pack(side="left")
+
     def create_grid_table(self, model: AbstractModel, issues):
 
         # an actor has only a name
@@ -71,17 +85,16 @@ class CSVFrame(tk.Frame):
     def create_row(self, values):
 
         for __, value in enumerate(values):
-            tk.Label(self.parent, text=value, relief=tk.GROOVE).grid(row=self.row_pointer, column=__, sticky=tk.W + tk.E)
+            tk.Label(self.canvas, text=value, relief=tk.GROOVE).grid(row=self.row_pointer, column=__, sticky=tk.W + tk.E)
 
         self.row_pointer += 1
 
     def create_heading(self, values):
 
         for __, value in enumerate(values):
-            tk.Label(self.parent, text=value, relief=tk.GROOVE, font="Verdana 10 bold").grid(row=self.row_pointer, column=__, sticky=tk.W + tk.E)
+            tk.Label(self.canvas, text=value, relief=tk.GROOVE, font="Verdana 10 bold").grid(row=self.row_pointer, column=__, sticky=tk.W + tk.E)
 
         self.row_pointer += 1
-
 
 
 class MainApplication(tk.Frame):
@@ -100,7 +113,9 @@ class MainApplication(tk.Frame):
         self.input_file = tk.StringVar()
         self.output_dir = tk.StringVar()
         self.model = tk.StringVar()
+        self.model.set("equal")
         self.iterations = tk.StringVar()
+        self.iterations.set(10)
         self.counter = tk.IntVar()
 
         # load settings from xml file
@@ -132,8 +147,10 @@ class MainApplication(tk.Frame):
         r2 = ttk.Radiobutton(parent, text="Random Exchange Rate", variable=self.model, value="random")
         r2.grid(row=self.row(), column=1, sticky=tk.W)
 
+        row = self.row()
+        self.label("", row=row)
         self.run_btn = ttk.Button(parent, text="Run", command=self.run_model)
-        self.run_btn.grid(row=self.row(), column=1, sticky=tk.E)
+        self.run_btn.grid(row=row, column=1, sticky=tk.W)
 
         self.progress_dialog = None
 
@@ -165,12 +182,10 @@ class MainApplication(tk.Frame):
             table = CSVFrame(tk.Toplevel())
             table.create_grid_table(model, csv_parser.issues)
 
-            print(data_set_name)
-
     def output(self):
         selected_dir = filedialog.askdirectory(initialdir=self.output_dir)
 
-        if not os.path.isdir(selected_dir):
+        if selected_dir and not os.path.isdir(selected_dir):
             os.makedirs(selected_dir)
 
         self.output_dir.set(selected_dir)
@@ -224,6 +239,10 @@ class MainApplication(tk.Frame):
         return element
 
     def run_model(self):
+
+        if not self.input_file.get():
+            tk.me
+
         self.save_settings()
 
         t = threading.Thread(target=self.run)
@@ -300,7 +319,7 @@ class MainApplication(tk.Frame):
 
 if __name__ == "__main__":
     root = tk.Tk()
-    app = MainApplication(root, width=500, height=500)
+    app = MainApplication(root)
 
     center(root)
 
