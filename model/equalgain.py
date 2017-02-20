@@ -11,6 +11,7 @@ class EqualGainExchangeActor(AbstractExchangeActor):
 
 
 class EqualGainExchange(AbstractExchange):
+
     def calculate(self):
         # TODO REWRITE
         # smaller functions
@@ -74,6 +75,8 @@ class EqualGainModel(AbstractModel):
     Equal Gain implementation
     """
 
+    ALLOW_RANDOM = True  # there can be a random component added tot the model but this gives not equal outcomes for testing purpose
+
     def sort_exchanges(self):
         """
         Overrides Abstract
@@ -90,14 +93,17 @@ class EqualGainModel(AbstractModel):
         realize = self.Exchanges.pop(0)
 
         if len(self.Exchanges) > 0:
-            next_exchange = self.Exchanges.pop(0)
 
-            if abs(realize.gain - next_exchange.gain) < 1e-10:
-                if random() >= 0.5:
-                    self.Exchanges.append(realize)
-                    realize = next_exchange
-                else:
-                    self.Exchanges.append(next_exchange)
+            if EqualGainModel.ALLOW_RANDOM:
+
+                next_exchange = self.Exchanges[0]
+
+                if abs(realize.gain - next_exchange.gain) < 1e-10:
+                    if random() >= 0.5:
+                        self.Exchanges.append(realize)
+                        realize = self.Exchanges.pop(0)
+                    else:
+                        self.Exchanges.append(next_exchange)
 
         return realize
 

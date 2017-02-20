@@ -34,26 +34,35 @@ class Parser:
         print(self.info())
 
     def read(self, filename):
-
+        """
+        The file to read
+        :param filename:
+        :return:
+        """
         if not filename.startswith("/"):
             filename = "{1}".format(os.path.dirname(os.path.abspath(__file__)), filename)
 
         with open(filename, 'rt') as csv_file:
-            reader = csv.reader(csv_file, delimiter=';')
+
+            # guess the document format
+            dialect = csv.Sniffer().sniff(csv_file.read(1024))
+            csv_file.seek(0)
+
+            reader = csv.reader(csv_file, dialect=dialect)
 
             for row in reader:
 
                 if row[0] == self.cA:
-                    self.parseRowActor(row)
+                    self.parse_row_actor(row)
                 elif row[0] == self.cP:
-                    self.parseRowIssue(row)
+                    self.parse_row_issue(row)
                 elif row[0] == self.cD:
-                    self.parseRowD(row)
+                    self.parse_row_d(row)
                 elif row[0] == self.cM:
-                    self.parseRowM(row)
+                    self.parse_row_m(row)
                     pass
 
-        self.createIssues()
+        self.create_issues()
 
         for issue_id, v in self.data.ActorIssues.items():
 
@@ -67,17 +76,27 @@ class Parser:
 
         return self.data
 
-    def parseRowActor(self, row):
+    def parse_row_actor(self, row):
+        """
+        Parse the actor row
+        :param row:
+        """
         from model.helpers.helpers import create_key
         self.data.add_actor(create_key(row[1]))
 
-    def parseRowIssue(self, row):
-
+    def parse_row_issue(self, row):
+        """
+        The csv row
+        :param row:
+        """
         from model.helpers.helpers import create_key
         self.data.add_issue(create_key(row[1]))
 
-    def parseRowM(self, row):
-
+    def parse_row_m(self, row):
+        """
+        Parse the #M row
+        :param row:
+        """
         from model.helpers.helpers import create_key
         issue_id = create_key(row[1])
 
@@ -95,15 +114,21 @@ class Parser:
 
         self.issues[issue_id] = s
 
-    def createIssues(self):
-
+    def create_issues(self):
+        """
+        Create the issues
+        """
         for key, v in self.issues.items():
             i = model.base.Issue(name=key, lower=v["lower"], upper=v["upper"])
             i.calculate_delta()
             i.calculate_step_size()
             self.issues[i.id] = i
 
-    def parseRowD(self, row):
+    def parse_row_d(self, row):
+        """
+        The #D row contains the ... TODO
+        :param row:
+        """
         from model.helpers.helpers import create_key
         actor_name = create_key(row[self.rActor])
         issue_key = create_key(row[self.rIssue])
@@ -113,7 +138,9 @@ class Parser:
                                   position=row[self.rPosition])
 
     def info(self):
-
+        """
+        Print the information
+        """
         print("This program accepts input with a dot (.) as decimal separator. \n"
               "Parameters:\n{0} is for defining an actor,\n"
               "{1} for an issue,\n"
