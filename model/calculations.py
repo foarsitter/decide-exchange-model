@@ -27,7 +27,10 @@ def calc_nbs(actor_issues, denominator):
 
 def nbs_variance(actor_issues, nbs):
 
-    return sum([(ai.position - nbs)**2 for ai in actor_issues])
+    t = (1 / len(actor_issues))
+    t2 = sum([(ai.position - nbs) ** 2 for ai in actor_issues])
+
+    return t * t2
 
 
 def calc_nbs_denominator(actor_issues):

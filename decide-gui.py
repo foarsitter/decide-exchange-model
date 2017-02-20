@@ -259,7 +259,7 @@ class MainApplication(tk.Frame):
         Externalities(event_handler, model, data_set_name)
         ExchangesWriter(event_handler, model, data_set_name)
         HistoryWriter(event_handler, model, data_set_name)
-        InitialExchanges(event_handler)
+        InitialExchanges(event_handler, model, data_set_name)
         event_handler.notify(Observable.LOG, message="Parsed file {0}".format(self.input_file.get()))
 
         model_loop = ModelLoop(model, event_handler)
