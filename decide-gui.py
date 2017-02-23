@@ -94,8 +94,9 @@ class ScrolledWindow(tk.Frame):
         self.yscrlbr.lift(self.scrollwindow)
         self.xscrlbr.lift(self.scrollwindow)
         self.scrollwindow.bind('<Configure>', self._configure_window)
-        self.scrollwindow.bind('<Enter>', self._bound_to_mousewheel)
-        self.scrollwindow.bind('<Leave>', self._unbound_to_mousewheel)
+        # TODO: fix scrolling window
+        # self.scrollwindow.bind('<Enter>', self._bound_to_mousewheel)
+        # self.scrollwindow.bind('<Leave>', self._unbound_to_mousewheel)
 
         return
 
@@ -126,7 +127,7 @@ class CSVFrame(tk.Frame):
         self.parent = parent
         self.row_pointer = 0
 
-        self.scrolled_window = ScrolledWindow(parent, 400, 400, *args, **kwargs)
+        self.scrolled_window = ScrolledWindow(parent, 400, 400)
 
     def create_grid_table(self, model: AbstractModel, issues):
 

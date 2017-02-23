@@ -63,6 +63,8 @@ class ModelLoop(object):
 
         self.event_handler.notify(Observable.FINISHED_ROUND, model=self.model, realized=realized, iteration=self.iteration_number)
 
+        self.event_handler.notify(Observable.PREPARE_NEXT_ROUND, model=self.model, realized=realized, iteration=self.iteration_number)
+
         # calculate for each realized exchange there new start positions
         for exchange in realized:
             pi = exchange.i.new_start_position()
@@ -70,11 +72,5 @@ class ModelLoop(object):
 
             pj = exchange.j.new_start_position()
             self.model.ActorIssues[exchange.j.supply_issue][exchange.j.actor_name].position = pj
-
-
-        # calculate the voting nbs here
-        self.model.calc_nbs()
-
-        self.event_handler.notify(Observable.PREPARE_NEXT_ROUND, model=self.model, realized=realized, iteration=self.iteration_number)
 
         self.iteration_number += 1
