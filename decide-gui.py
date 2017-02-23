@@ -215,9 +215,9 @@ class MainApplication(tk.Frame):
         self.label("Exchange type", row=row)
         r1 = ttk.Radiobutton(parent, text="Equal Exchange Rate", variable=self.model, value="equal")
         r1.grid(row=row, column=1, sticky=tk.W)
-
-        r2 = ttk.Radiobutton(parent, text="Random Exchange Rate", variable=self.model, value="random")
-        r2.grid(row=self.row(), column=1, sticky=tk.W)
+        #
+        # r2 = ttk.Radiobutton(parent, text="Random Exchange Rate", variable=self.model, value="random")
+        # r2.grid(row=self.row(), column=1, sticky=tk.W)
 
         row = self.row()
         self.label("", row=row)
@@ -230,7 +230,7 @@ class MainApplication(tk.Frame):
 
         self.counter.set(0)
         self.progress_dialog = tk.Toplevel(self.parent)
-        tk.Label(self.progress_dialog, text="Download Bar").pack(side=tk.TOP)
+        tk.Label(self.progress_dialog, text="Progress").pack(side=tk.TOP)
 
         ttk.Progressbar(self.progress_dialog, orient="horizontal", length=400, mode="determinate", variable=self.counter, maximum=maximum).pack(side=tk.TOP)
 
