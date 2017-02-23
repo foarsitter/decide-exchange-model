@@ -13,7 +13,6 @@ from model.helpers.helpers import ModelLoop
 from model.observers.exchanges_writer import ExchangesWriter
 from model.observers.externalities import Externalities
 from model.observers.history_writer import HistoryWriter
-from model.observers.initial_exchanges import InitialExchanges
 from model.observers.logger import Logger
 from model.observers.observer import Observable, Observer
 
@@ -357,7 +356,7 @@ class MainApplication(tk.Frame):
         Externalities(event_handler, model, data_set_name)
         ExchangesWriter(event_handler, model, data_set_name)
         HistoryWriter(event_handler, model, data_set_name)
-        InitialExchanges(event_handler, model, data_set_name)
+
         event_handler.notify(Observable.LOG, message="Parsed file {0}".format(self.input_file.get()))
 
         model_loop = ModelLoop(model, event_handler)
