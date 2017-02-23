@@ -102,7 +102,7 @@ class Parser:
 
         s = self.issues.get(issue_id, stub)
 
-        value = Decimal(row[2])
+        value = Decimal(row[2].replace(",",""))
 
         if s["lower"] is None or value < s["lower"]:
             s["lower"] = value

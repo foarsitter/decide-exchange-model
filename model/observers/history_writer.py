@@ -54,7 +54,7 @@ class HistoryWriter(Observer):
 
             for key, actor_issue in model.ActorIssues[issue].items():
                 position = actor_issue.position
-                sum_var += ((position - nbs) * actor_issue.salience) ** 2
+                sum_var += ((position - nbs) ** 2)
 
                 self.preference_history[issue][key].append(actor_issue.position)
                 self.preference_loss[issue][key].append((actor_issue.position - nbs) * actor_issue.salience)
@@ -75,7 +75,7 @@ class HistoryWriter(Observer):
 
             for key, actor_issue in model.ActorIssues[issue].items():
                 position = actor_issue.position
-                sum_var += ((position - nbs) * actor_issue.salience) ** 2
+                sum_var += ((position - nbs) ** 2)
 
                 self.voting_history[issue][key].append(position)
                 self.voting_loss[issue][key].append((actor_issue.position - nbs) * actor_issue.salience)
@@ -94,7 +94,7 @@ class HistoryWriter(Observer):
 
     def close(self, **kwargs):
         for issue in self.preference_history:
-            with open("{0}/output.{1}.csv".format(self.output_dir, issue), 'w') as csv_file:
+            with open("{0}/issue.{1}.csv".format(self.output_dir, issue), 'w') as csv_file:
                 writer = csv.writer(csv_file, delimiter=';', lineterminator='\n')
 
                 heading = ["rnd-" + str(x) for x in range(len(self.voting_history[issue]["nbs"]))]
