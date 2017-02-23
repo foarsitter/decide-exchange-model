@@ -245,13 +245,17 @@ class MainApplication(tk.Frame):
 
             model = AbstractModel()
 
-            from model.helpers import csvParser
-            csv_parser = csvParser.Parser(model)
+            try:
 
-            model = csv_parser.read(self.input_file.get())
+                from model.helpers import csvParser
+                csv_parser = csvParser.Parser(model)
 
-            table = CSVFrame(tk.Toplevel())
-            table.create_grid_table(model, csv_parser.issues)
+                model = csv_parser.read(self.input_file.get())
+
+                table = CSVFrame(tk.Toplevel())
+                table.create_grid_table(model, csv_parser.issues)
+            except:
+                messagebox.showinfo("Error reading document", "The selected file is not in the right format.")
 
     def output(self):
         selected_dir = filedialog.askdirectory(initialdir=self.output_dir)
@@ -372,7 +376,7 @@ class MainApplication(tk.Frame):
 
         self.stop_periodic_call()
 
-        messagebox.showinfo("Finished", "The model is finished.")
+        messagebox.showinfo("Finished", "The model has finished executing {0} rounds.".format(self.iterations.get()))
 
     def prog_bar_update(self, value):
         self.counter.set(value + 1)

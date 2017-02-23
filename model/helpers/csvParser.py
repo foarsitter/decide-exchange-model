@@ -31,6 +31,7 @@ class Parser:
         self.data = model
         self.issues = {}
         self.actors = {}
+
     def read(self, filename):
         """
         The file to read
@@ -67,7 +68,6 @@ class Parser:
             issue = self.issues.get(issue_id, model.base.Issue(name=issue_id))
 
             for actor_name, value in self.data.ActorIssues[issue_id].items():
-
                 norm = issue.normalize(self.data.ActorIssues[issue_id][actor_name].position)
 
                 self.data.ActorIssues[issue_id][actor_name].position = norm
@@ -102,7 +102,7 @@ class Parser:
 
         s = self.issues.get(issue_id, stub)
 
-        value = Decimal(row[2].replace(",",""))
+        value = Decimal(row[2].replace(",", "."))
 
         if s["lower"] is None or value < s["lower"]:
             s["lower"] = value
@@ -131,7 +131,6 @@ class Parser:
         actor_name = create_key(row[self.rActor])
         issue_key = create_key(row[self.rIssue])
 
-        self.data.add_actor_issue(actor_name=actor_name, issue_name=issue_key, power=row[self.rPower],
-                                  salience=row[self.rSalience],
-                                  position=row[self.rPosition])
-
+        self.data.add_actor_issue(actor_name=actor_name, issue_name=issue_key, power=row[self.rPower].replace(",", "."),
+                                  salience=row[self.rSalience].replace(",", "."),
+                                  position=row[self.rPosition].replace(",", "."))
