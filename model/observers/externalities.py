@@ -134,9 +134,9 @@ class Externalities(Observer):
         if not os.path.exists("{0}/externalities".format(self.current_file)):
             os.makedirs("{0}/externalities".format(self.current_file))
 
-        with open("{0}/externalities/externalities.{1}.csv".format(self.current_file, iteration_number+1),
+        with open("{0}/externalities/externalities.{1}.csv".format(self.current_file, iteration_number + 1),
                   'w') as csvfile:
-            writer = csv.writer(csvfile, delimiter=';',lineterminator='\n')
+            writer = csv.writer(csvfile, delimiter=';', lineterminator='\n')
 
             # headings
             writer.writerow(

@@ -215,9 +215,9 @@ class MainApplication(tk.Frame):
         self.label("Exchange type", row=row)
         r1 = ttk.Radiobutton(parent, text="Equal Exchange Rate", variable=self.model, value="equal")
         r1.grid(row=row, column=1, sticky=tk.W)
-        #
-        # r2 = ttk.Radiobutton(parent, text="Random Exchange Rate", variable=self.model, value="random")
-        # r2.grid(row=self.row(), column=1, sticky=tk.W)
+
+        r2 = ttk.Radiobutton(parent, text="Random Exchange Rate", variable=self.model, value="random")
+        r2.grid(row=self.row(), column=1, sticky=tk.W)
 
         row = self.row()
         self.label("", row=row)
@@ -244,17 +244,14 @@ class MainApplication(tk.Frame):
 
             model = AbstractModel()
 
-            try:
 
-                from model.helpers import csvParser
-                csv_parser = csvParser.Parser(model)
+            from model.helpers import csvParser
+            csv_parser = csvParser.Parser(model)
 
-                model = csv_parser.read(self.input_file.get())
+            model = csv_parser.read(self.input_file.get())
 
-                table = CSVFrame(tk.Toplevel())
-                table.create_grid_table(model, csv_parser.issues)
-            except:
-                messagebox.showinfo("Error reading document", "The selected file is not in the right format.")
+            table = CSVFrame(tk.Toplevel())
+            table.create_grid_table(model, csv_parser.issues)
 
     def output(self):
         selected_dir = filedialog.askdirectory(initialdir=self.output_dir)

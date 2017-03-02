@@ -1,4 +1,5 @@
 import random
+from collections import defaultdict
 from decimal import *
 from operator import attrgetter
 
@@ -61,15 +62,15 @@ class RandomRateExchange(AbstractExchange):
         self.dp = Decimal(random.uniform(a, b))
         self.dq = Decimal(random.uniform(a, b))
 
-        self.i.move = calculations.reverse_move(self.model.ActorIssues[self.i.supply], self.i, self.dq)
+        self.i.move = calculations.reverse_move(self.model.ActorIssues[self.i.supply_issue], self.i, self.dq)
         self.j.move = abs(self.i.x_demand - self.j.x)
 
         if abs(self.i.move) > abs(self.j.x_demand - self.i.x):
-            self.dq = calculations.by_absolute_move(self.model.ActorIssues[self.i.supply], self.i)
+            self.dq = calculations.by_absolute_move(self.model.ActorIssues[self.i.supply_issue], self.i)
             self.dp = calculations.by_exchange_ratio(self.i, self.dq)
 
             self.i.move = abs(self.j.x_demand - self.i.x)
-            self.j.move = calculations.reverse_move(self.model.ActorIssues[self.j.supply], self.j, self.dp)
+            self.j.move = calculations.reverse_move(self.model.ActorIssues[self.j.supply_issue], self.j, self.dp)
 
         # TODO add check of NBS.
         # this check is only necessary for the smallest exchange,
@@ -130,11 +131,8 @@ class RandomRateModel(AbstractModel):
         Each exchange can have a bool true for both highest gains are highest.
         We are especially interested in those exchanges where both actors expect to get there highest gain.
         """
-        highest_gains = dict()
+        highest_gains = defaultdict(int)
         highest_gain_exchange = dict()
-
-        for actor in self.Actors:
-            highest_gains[actor] = 0
 
         for exchange in self.Exchanges:
 
@@ -193,6 +191,8 @@ class RandomRateModel(AbstractModel):
 
         :return:
         """
+
+        # pdc: opbreken in kleine stukjes
         self.sort_exchanges()
 
         highest = []
@@ -206,11 +206,11 @@ class RandomRateModel(AbstractModel):
                 left_over.append(exchange)  # if there is no highest_gain flag, we need them later
 
         # init the buckets
-        second_highest_gains = dict()
+        second_highest_gains = defaultdict(int)  # dict()
         second_highest_gain_exchange = dict()
 
-        for actor in self.Actors:
-            second_highest_gains[actor] = 0
+        # for actor in self.Actors:
+        #     second_highest_gains[actor] = 0
 
         # select the exchange where i or j has his highest gain
         for exchange in left_over:
@@ -240,10 +240,10 @@ class RandomRateModel(AbstractModel):
                     nbs_adjusted = exchange_pair.j.nbs_1 + (delta_nbs * exchange_pair.j.s_demand) * factor
                     actor = exchange_pair.j
 
-                    position = calculations.position_by_nbs(self.ActorIssues[actor.supply],
+                    position = calculations.position_by_nbs(self.ActorIssues[actor.supply_issue],
                                                             exchange_actor=actor,
                                                             nbs=nbs_adjusted,
-                                                            denominator=self.nbs_denominators[actor.supply])
+                                                            denominator=self.nbs_denominators[actor.supply_issue])
 
                     exchange_pair.j.moves.append(exchange_pair.j.x - position)
 
@@ -259,10 +259,10 @@ class RandomRateModel(AbstractModel):
 
                     actor = exchange_pair.i
 
-                    position = calculations.position_by_nbs(self.ActorIssues[actor.supply],
+                    position = calculations.position_by_nbs(self.ActorIssues[actor.supply_issue],
                                                             exchange_actor=actor,
                                                             nbs=nbs_adjusted,
-                                                            denominator=self.nbs_denominators[actor.supply])
+                                                            denominator=self.nbs_denominators[actor.supply_issue])
 
                     exchange_pair.i.moves.append(exchange_pair.i.x - position)
 
@@ -272,11 +272,11 @@ class RandomRateModel(AbstractModel):
                     # TODO is there a third option that both exchanges are possible?
                     pass
 
-                exchange_pair.i.eu -= delta_eu
-                exchange_pair.j.eu += delta_eu
+                exchange_pair.i.eu = eu
+                exchange_pair.j.eu += delta_eu * exchange_pair.j.s_demand
 
-                if abs(exchange_pair.i.eu - eu) > 1e-10:
-                    raise Exception("Should be equal")
+                # if abs(exchange_pair.i.eu - eu) > 1e-10:
+                #     raise Exception("Should be equal")
             elif exchange_pair.j.is_highest_gain:
                 eu = second_highest_gain_exchange[exchange_pair.j.actor_name].eu
 
@@ -309,10 +309,10 @@ class RandomRateModel(AbstractModel):
                     nbs_adjusted = exchange_pair.i.nbs_1 + (delta_nbs * factor)
                     actor = exchange_pair.i
 
-                    position = calculations.position_by_nbs(self.ActorIssues[actor.supply],
+                    position = calculations.position_by_nbs(self.ActorIssues[actor.supply_issue],
                                                             exchange_actor=actor,
                                                             nbs=nbs_adjusted,
-                                                            denominator=self.nbs_denominators[actor.supply])
+                                                            denominator=self.nbs_denominators[actor.supply_issue])
 
                     exchange_pair.i.moves.append(exchange_pair.i.x - position)
 
@@ -322,9 +322,8 @@ class RandomRateModel(AbstractModel):
                     # TODO is there a third option that both exchanges are possible?
                     pass
 
-                exchange_pair.i.eu -= delta_eu
-                exchange_pair.j.eu += delta_eu
-
+                exchange_pair.j.eu = eu
+                exchange_pair.i.eu += delta_eu * exchange_pair.i.s_demand
 
                 # if abs(exchange_pair.i.eu - eu) > 1e-10:
                 #     raise Exception("Should be equal")
