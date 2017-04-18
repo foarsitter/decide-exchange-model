@@ -48,7 +48,7 @@ class ModelLoop(object):
 
         self.event_handler.notify(Observable.START_ROUND, model=self.model, iteration=self.iteration_number)
 
-        while len(self.model.Exchanges) > 0:
+        while len(self.model.exchanges) > 0:
 
             realize = self.model.highest_gain()
 
@@ -66,8 +66,8 @@ class ModelLoop(object):
         self.event_handler.notify(Observable.FINISHED_ROUND, model=self.model, realized=realized, iteration=self.iteration_number)
 
         for exchange in realized:
-            self.model.ActorIssues[exchange.i.supply_issue][exchange.i.actor_name].position = exchange.i.y
-            self.model.ActorIssues[exchange.j.supply_issue][exchange.j.actor_name].position = exchange.j.y
+            self.model.actor_issues[exchange.i.supply_issue][exchange.i.actor_name].position = exchange.i.y
+            self.model.actor_issues[exchange.j.supply_issue][exchange.j.actor_name].position = exchange.j.y
 
         # calc the new NBS on the voting positions
         self.model.calc_nbs()
@@ -76,9 +76,9 @@ class ModelLoop(object):
         # calculate for each realized exchange there new start positions
         for exchange in realized:
             pi = exchange.i.new_start_position()
-            self.model.ActorIssues[exchange.i.supply_issue][exchange.i.actor_name].position = pi
+            self.model.actor_issues[exchange.i.supply_issue][exchange.i.actor_name].position = pi
 
             pj = exchange.j.new_start_position()
-            self.model.ActorIssues[exchange.j.supply_issue][exchange.j.actor_name].position = pj
+            self.model.actor_issues[exchange.j.supply_issue][exchange.j.actor_name].position = pj
 
         self.iteration_number += 1

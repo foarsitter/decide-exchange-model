@@ -19,18 +19,18 @@ class EqualGainExchange(AbstractExchange):
 
         # first we try to move j to the position of i on issue p
         # we start with the calculation for j
-        self.dp = calculations.by_absolute_move(self.model.ActorIssues[self.j.supply_issue], self.j)
+        self.dp = calculations.by_absolute_move(self.model.actor_issues[self.j.supply_issue], self.j)
         self.dq = calculations.by_exchange_ratio(self.j, self.dp)
 
-        self.i.move = calculations.reverse_move(self.model.ActorIssues[self.i.supply_issue], self.i, self.dq)
+        self.i.move = calculations.reverse_move(self.model.actor_issues[self.i.supply_issue], self.i, self.dq)
         self.j.move = abs(self.i.x_demand - self.j.x)
 
         if abs(self.i.move) > abs(self.j.x_demand - self.i.x):
-            self.dq = calculations.by_absolute_move(self.model.ActorIssues[self.i.supply_issue], self.i)
+            self.dq = calculations.by_absolute_move(self.model.actor_issues[self.i.supply_issue], self.i)
             self.dp = calculations.by_exchange_ratio(self.i, self.dq)
 
             self.i.move = abs(self.j.x_demand - self.i.x)
-            self.j.move = calculations.reverse_move(self.model.ActorIssues[self.j.supply_issue], self.j, self.dp)
+            self.j.move = calculations.reverse_move(self.model.actor_issues[self.j.supply_issue], self.j, self.dp)
 
         # TODO add check of NBS.
         # this check is only necessary for the smallest exchange,
@@ -81,7 +81,7 @@ class EqualGainModel(AbstractModel):
         """
         Overrides Abstract
         """
-        self.Exchanges.sort(key=attrgetter("gain"), reverse=True)  # .sort(key=lambda x: x.count, reverse=True)
+        self.exchanges.sort(key=attrgetter("gain"), reverse=True)  # .sort(key=lambda x: x.count, reverse=True)
 
     def highest_gain(self):
         """
@@ -90,20 +90,20 @@ class EqualGainModel(AbstractModel):
         """
         self.sort_exchanges()
 
-        realize = self.Exchanges.pop(0)
+        realize = self.exchanges.pop(0)
 
-        if len(self.Exchanges) > 0:
+        if len(self.exchanges) > 0:
 
             if EqualGainModel.ALLOW_RANDOM:
 
-                next_exchange = self.Exchanges[0]
+                next_exchange = self.exchanges[0]
 
                 if abs(realize.gain - next_exchange.gain) < 1e-10:
                     if random() >= 0.5:
-                        self.Exchanges.append(realize)
-                        realize = self.Exchanges.pop(0)
+                        self.exchanges.append(realize)
+                        realize = self.exchanges.pop(0)
                     else:
-                        self.Exchanges.append(next_exchange)
+                        self.exchanges.append(next_exchange)
 
         return realize
 

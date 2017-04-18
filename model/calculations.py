@@ -51,7 +51,7 @@ def calc_nbs_denominator(actor_issues):
 
 def adjusted_nbs(actor_issues, updates, actor, new_position, denominator):
     """
-    Adjust the list over ActorIssues and calculates the new nash bargaining solution
+    Adjust the list over actor_issues and calculates the new nash bargaining solution
 
     :param actor_issues: List[ActorIssue]
     :param updates: dictionary with key (actor) and value (position)
@@ -63,7 +63,7 @@ def adjusted_nbs(actor_issues, updates, actor, new_position, denominator):
     copy_ai = {}
 
     for k, v in actor_issues.items():
-        copy_ai[v.actor_name] = model.base.ActorIssue(v.actor_name, v.issue_name, position=v.position, power=v.power,
+        copy_ai[v.actor_name] = model.base.ActorIssue(v.actor, v.issue, position=v.position, power=v.power,
                                                       salience=v.salience)
 
     for key, value in updates.items():
@@ -92,7 +92,7 @@ def adjusted_nbs_by_position(actor_issues, updates, actor, x_pos, new_nbs, denom
     copy_ai = {}
 
     for k, v in actor_issues.items():
-        copy_ai[v.actor_name] = model.base.ActorIssue(v.actor_name, v.issue_name, position=v.position, power=v.power,
+        copy_ai[v.actor_name] = model.base.ActorIssue(v.actor, v.issue, position=v.position, power=v.power,
                                                       salience=v.salience)
 
     # to be calculate:
@@ -214,12 +214,12 @@ def actor_externalities(actor_name, model, realized):
     :return: the Decimal value of the externality
     """
 
-    if actor_name in model.ActorIssues[realized.j.supply_issue] and actor_name in model.ActorIssues[realized.i.supply_issue]:
-        xp = model.ActorIssues[realized.j.supply_issue][actor_name].position
-        sp = model.ActorIssues[realized.j.supply_issue][actor_name].salience
+    if actor_name in model.actor_issues[realized.j.supply_issue] and actor_name in model.actor_issues[realized.i.supply_issue]:
+        xp = model.actor_issues[realized.j.supply_issue][actor_name].position
+        sp = model.actor_issues[realized.j.supply_issue][actor_name].salience
 
-        xq = model.ActorIssues[realized.i.supply_issue][actor_name].position
-        sq = model.ActorIssues[realized.i.supply_issue][actor_name].salience
+        xq = model.actor_issues[realized.i.supply_issue][actor_name].position
+        sq = model.actor_issues[realized.i.supply_issue][actor_name].salience
 
         l0 = abs(realized.j.nbs_0 - xp)
         l1 = abs(realized.j.nbs_1 - xp)

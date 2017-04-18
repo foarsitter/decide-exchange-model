@@ -2,7 +2,7 @@ from decimal import *
 from unittest import TestCase
 
 from model import calculations
-from model.base import ActorIssue
+from model.base import ActorIssue, Actor, Issue
 from model.calculations import calc_nbs_denominator, calc_nbs, adjusted_nbs, by_absolute_move, by_exchange_ratio, \
     reverse_move, sum_salience_power
 from model.equalgain import EqualGainExchange, EqualGainModel
@@ -11,9 +11,16 @@ from model.helpers import csvParser
 
 class TestNBSCalculations(TestCase):
     def setUp(self):
-        self.a = ActorIssue("a", "p", position=0, salience=1, power=1)
-        self.b = ActorIssue("b", "p", position=100, salience=1, power=1)
-        self.c = ActorIssue("c", "p", position=100, salience=1, power=1)
+
+        a = Actor("a")
+        b = Actor("b")
+        c = Actor("c")
+
+        p = Issue('p')
+
+        self.a = ActorIssue(a, p, position=0, salience=1, power=1)
+        self.b = ActorIssue(b, p, position=100, salience=1, power=1)
+        self.c = ActorIssue(c, p, position=100, salience=1, power=1)
 
         self.actor_issues = {"a": self.a, "b": self.b, "c": self.c}
         self.denominator = calc_nbs_denominator(self.actor_issues)
@@ -50,36 +57,36 @@ class TestNBSCalculations(TestCase):
         # D	China	eaa	0	0.65	1
         # D	USA	eaa	100	0.4	1
 
-        i = model.Actors["usa"]
-        j = model.Actors["china"]
+        i = model.actors["usa"]
+        j = model.actors["china"]
         p = "financevol"
         q = "eaa"
         e = EqualGainExchange(i, j, p, q, model, groups=['a', 'd'])
 
-        dp = by_absolute_move(model.ActorIssues[e.i.supply_issue], e.i)
+        dp = by_absolute_move(model.actor_issues[e.i.supply_issue], e.i)
         dq = by_exchange_ratio(e.i, dp)
 
         self.assertAlmostEqual(dp, Decimal(10.309), delta=0.001)
         self.assertAlmostEqual(dq, Decimal(9.021), delta=0.001)
 
-        move = reverse_move(model.ActorIssues[e.j.supply_issue], exchange_ratio=dq, actor=e.j)
+        move = reverse_move(model.actor_issues[e.j.supply_issue], exchange_ratio=dq, actor=e.j)
 
         self.assertAlmostEqual(move, Decimal(89.214), delta=0.001)
 
         self.assertLess(move, e.i.x - e.j.x_demand)
 
-        dp_1 = by_absolute_move(model.ActorIssues[e.j.supply_issue], e.j)
+        dp_1 = by_absolute_move(model.actor_issues[e.j.supply_issue], e.j)
         dq_1 = by_exchange_ratio(e.j, dp)
 
-        move_1 = reverse_move(model.ActorIssues[e.i.supply_issue], e.i, dq_1)
+        move_1 = reverse_move(model.actor_issues[e.i.supply_issue], e.i, dq_1)
         self.assertGreater(move_1, 100)
 
     def test_sumSaliencePower(self):
-        a1 = ActorIssue("a", "p", 50, 0.75, 0.75)
-        a2 = ActorIssue("b", "p", 50, 0.25, 0.25)
-        a3 = ActorIssue("c", "p", 10, 1, 1)
+        # a1 = ActorIssue("a", "p", 50, 0.75, 0.75)
+        # a2 = ActorIssue("b", "p", 50, 0.25, 0.25)
+        # a3 = ActorIssue("c", "p", 10, 1, 1)
 
-        self.assertEqual(sum_salience_power({"a": a1, "b": a2, "c": a3}), (0.75 * 0.75 + 0.25 * 0.25 + 1 * 1))
+        self.assertEqual(sum_salience_power({"a": self.a, "b": self.b, "c": self.c}), (3))
 
     def test_externalities(self):
         csv = csvParser.Parser(self.model)
@@ -91,8 +98,8 @@ class TestNBSCalculations(TestCase):
         model.calc_combinations()
         model.determine_groups()
 
-        i = model.Actors["usa"]
-        j = model.Actors["china"]
+        i = model.actors["usa"]
+        j = model.actors["china"]
         p = "financevol"
         q = "eaa"
         e = EqualGainExchange(i, j, p, q, model, groups=['a', 'd'])
@@ -100,12 +107,12 @@ class TestNBSCalculations(TestCase):
         e.calculate()
 
         nbs_0 = model.nbs[p]
-        nbs_1 = adjusted_nbs(model.ActorIssues[p], e.updates, e.j.actor_name, e.j.y,
+        nbs_1 = adjusted_nbs(model.actor_issues[p], e.updates, e.j.actor_name, e.j.y,
                              model.nbs_denominators[p])
         #
-        # Russia = model.ActorIssues[p]["rusia"]  # russia is an D group actor, so he is inner
-        # Umbrellamin = model.ActorIssues[p]["umbrellamin"]  # Umbrellamin is and B group actor, so he is outer
-        # Arabstates = model.ActorIssues[p]["arabstates"]  # Arabstates is and C group actor, so he is outer
+        # Russia = model.actor_issues[p]["rusia"]  # russia is an D group actor, so he is inner
+        # Umbrellamin = model.actor_issues[p]["umbrellamin"]  # Umbrellamin is and B group actor, so he is outer
+        # Arabstates = model.actor_issues[p]["arabstates"]  # Arabstates is and C group actor, so he is outer
 
         # # todo add type checks for op,ip,in,on and own
         # # todo fix this test with the proper calculations
@@ -124,8 +131,8 @@ class TestNBSCalculations(TestCase):
         #
         # # only one actor of the exchange has an positive own externality on this.
         #
-        # ai_i = model.ActorIssues[p]["usa"]
-        # ai_j = model.ActorIssues[p]["china"]
+        # ai_i = model.actor_issues[p]["usa"]
+        # ai_j = model.actor_issues[p]["china"]
         #
         # ext_i = calculations.xternalities(ai_i.actor_name, model, e)
         # self.assertEqual(ext_i["value"], (abs(nbs_0 - ai_i.position) - abs(nbs_1 - ai_i.position)) * ai_i.salience)

@@ -21,7 +21,7 @@ class Externalities(Observer):
         self.actors = {}
         self.exchanges = []
 
-        for actor in model.Actors:
+        for actor in model.actors:
             self.actors[actor] = {'ip': 0, 'in': 0, 'op': 0, 'on': 0, "own": 0}
 
     def setup(self, model):
@@ -29,7 +29,7 @@ class Externalities(Observer):
         self.actors = {}
         self.exchanges = []
 
-        for actor in model.Actors:
+        for actor in model.actors:
             self.actors[actor] = {'ip': 0, 'in': 0, 'op': 0, 'on': 0, "own": 0}
 
     def init_issue_set(self, issue_sets):
@@ -118,7 +118,7 @@ class Externalities(Observer):
 
         results = {}
 
-        for actor in model.Actors:
+        for actor in model.actors:
             results[actor] = calculations.actor_externalities(actor, model, realized)
         # end for
 

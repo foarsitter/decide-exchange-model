@@ -18,7 +18,7 @@ class TestModel(TestCase):
         a1 = model.add_actor("TestActor1")
         a2 = model.add_actor("TestActor2")
 
-        self.assertEqual(len(model.Actors), 2)
+        self.assertEqual(len(model.actors), 2)
 
     def test_first_phase(self):
         model = self.model
@@ -29,7 +29,7 @@ class TestModel(TestCase):
         model.determine_positions()
         model.determine_groups()
 
-        totalActorIssues = 0
+        totalactor_issues = 0
 
         for k, v in model.groups.items():
             a = len(model.groups[k]["a"])
@@ -39,10 +39,10 @@ class TestModel(TestCase):
 
             self.assertEqual(sum([a, b, c, d]), 15)
 
-            totalActorIssues += a * d
-            totalActorIssues += b * c
+            totalactor_issues += a * d
+            totalactor_issues += b * c
 
-        self.assertEqual(totalActorIssues, 103)
+        self.assertEqual(totalactor_issues, 103)
 
         e = model.highest_gain()
 
@@ -51,7 +51,7 @@ class TestModel(TestCase):
         # the delta is necessary for the random component by exchanges which have an equal gain.
         # in some cases the gain of the exchanges (two exchanges with each two (unique) actors) are the same.
         # we pick random the next exchange. Theoretically it is even possible to get more exchanges with the same gain
-        self.assertAlmostEqual(len(model.Exchanges), 102, delta=2)
+        self.assertAlmostEqual(len(model.exchanges), 102, delta=2)
         realized = list()
         realized.append(e)
 
@@ -63,7 +63,7 @@ class TestModel(TestCase):
 
         self.assertAlmostEqual(e1.gain, Decimal(0.756186984), delta=1e-8)
 
-        while len(model.Exchanges) > 0:
+        while len(model.exchanges) > 0:
             realize = model.highest_gain()
             model.remove_invalid_exchanges(realize)
             realized.append(realize)
@@ -74,7 +74,7 @@ class TestModel(TestCase):
         self.model.calc_combinations()
         combinations = len(list(self.model.issue_combinations))
 
-        n = len(self.model.Issues)
+        n = len(self.model.issues)
         k = 2
 
         self.assertEqual(combinations, math.factorial(n) / (math.factorial(k) * math.factorial(n - k)))
@@ -93,16 +93,16 @@ class TestModel(TestCase):
 
         in_iteration = 0
 
-        for exchange in model.Exchanges:
+        for exchange in model.exchanges:
             if exchange.equal_str(i="EU28", q="financevol", j="AOSIS", p="amb2050"):
                 exchange_99 = exchange
 
-        while len(model.Exchanges) > 0:
+        while len(model.exchanges) > 0:
             realize = model.highest_gain()
             model.remove_invalid_exchanges(realize)
 
             founded_99 = False
-            for exchange in model.Exchanges:
+            for exchange in model.exchanges:
                 if exchange.equal_str(i="EU28", q="financevol", j="AOSIS", p="amb2050"):
                     founded_99 = True
 

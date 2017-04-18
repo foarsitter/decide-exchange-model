@@ -22,7 +22,7 @@ class InitialExchanges(Observer):
         if not self.has_written:
             csvwriter = CsvWriter()
 
-            csvwriter.write("{0}/random.{1}.csv".format(self.output_dir, InitialExchanges.POINTER), model.Exchanges)
+            csvwriter.write("{0}/random.{1}.csv".format(self.output_dir, InitialExchanges.POINTER), model.exchanges)
 
             InitialExchanges.POINTER += 1
 

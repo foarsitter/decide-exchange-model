@@ -133,7 +133,7 @@ class CSVFrame(tk.Frame):
         # an actor has only a name
 
         self.create_heading(["Actors"])
-        self.create_row(model.Actors.values())
+        self.create_row(model.actors.values())
 
         self.create_row([""])
 
@@ -150,7 +150,7 @@ class CSVFrame(tk.Frame):
         # an actor issues has an actor, issue, position, and power
         self.create_heading(["Actor", "issue", "position", "salience", "power"])
 
-        for key, actor_issues in model.ActorIssues.items():
+        for key, actor_issues in model.actor_issues.items():
             for actor_issue in actor_issues.values():
                 self.create_row([actor_issue.actor_name, actor_issue.issue_name, int(actor_issue.position), actor_issue.salience, actor_issue.power])
 

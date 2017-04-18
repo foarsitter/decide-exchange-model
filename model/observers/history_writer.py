@@ -20,11 +20,11 @@ class HistoryWriter(Observer):
         self.voting_loss = {}
         self.preference_loss = {}
 
-        for issue in model.ActorIssues:
+        for issue in model.actor_issues:
 
             issue_list = {}
 
-            for key, actor_issue in model.ActorIssues[issue].items():
+            for key, actor_issue in model.actor_issues[issue].items():
                 issue_list[actor_issue.actor_name] = []
 
             issue_list["nbs"] = []
@@ -46,19 +46,19 @@ class HistoryWriter(Observer):
 
         model = kwargs["model"]
 
-        for issue in model.ActorIssues:
+        for issue in model.actor_issues:
 
             nbs = model.nbs[issue]
             sum_var = 0
 
-            for key, actor_issue in model.ActorIssues[issue].items():
+            for key, actor_issue in model.actor_issues[issue].items():
                 position = actor_issue.position
                 sum_var += ((position - nbs) ** 2)
 
                 self.preference_history[issue][key].append(actor_issue.position)
                 self.preference_loss[issue][key].append(abs(actor_issue.position - nbs) * actor_issue.salience)
 
-            nbs_var = sum_var / len(model.ActorIssues[issue])
+            nbs_var = sum_var / len(model.actor_issues[issue])
 
             self.preference_history[issue]["nbs"].append(nbs)
             self.preference_loss[issue]["nbs"].append(nbs_var)
@@ -67,19 +67,19 @@ class HistoryWriter(Observer):
 
         model = kwargs["model"]
 
-        for issue in model.ActorIssues:
+        for issue in model.actor_issues:
 
             nbs = model.nbs[issue]
             sum_var = 0
 
-            for key, actor_issue in model.ActorIssues[issue].items():
+            for key, actor_issue in model.actor_issues[issue].items():
                 position = actor_issue.position
                 sum_var += ((position - nbs) ** 2)
 
                 self.voting_history[issue][key].append(position)
                 self.voting_loss[issue][key].append(abs(actor_issue.position - nbs) * actor_issue.salience)
 
-            nbs_var = sum_var / len(model.ActorIssues[issue])
+            nbs_var = sum_var / len(model.actor_issues[issue])
 
             self.voting_history[issue]["nbs"].append(nbs)
             self.voting_loss[issue]["nbs"].append(nbs_var)

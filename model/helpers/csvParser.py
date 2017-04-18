@@ -27,8 +27,8 @@ class Parser:
 
     data = None
 
-    def __init__(self, model):
-        self.data = model
+    def __init__(self, model_ref):
+        self.data = model_ref
         self.issues = {}
         self.actors = {}
 
@@ -63,14 +63,14 @@ class Parser:
 
         self.create_issues()
 
-        for issue_id, v in self.data.ActorIssues.items():
+        for issue_id, v in self.data.actor_issues.items():
 
             issue = self.issues.get(issue_id, model.base.Issue(name=issue_id))
 
-            for actor_name, value in self.data.ActorIssues[issue_id].items():
-                norm = issue.normalize(self.data.ActorIssues[issue_id][actor_name].position)
+            for actor_name, value in self.data.actor_issues[issue_id].items():
+                norm = issue.normalize(self.data.actor_issues[issue_id][actor_name].position)
 
-                self.data.ActorIssues[issue_id][actor_name].position = norm
+                self.data.actor_issues[issue_id][actor_name].position = norm
 
         return self.data
 
@@ -98,29 +98,24 @@ class Parser:
         from model.helpers.helpers import create_key
         issue_id = create_key(row[1])
 
-        stub = {"lower": None, "upper": None}
-
-        s = self.issues.get(issue_id, stub)
+        issue = self.issues.get(issue_id, model.base.Issue(name=issue_id, lower=None, upper=None))
 
         value = Decimal(row[2].replace(",", "."))
 
-        if s["lower"] is None or value < s["lower"]:
-            s["lower"] = value
+        issue.expand_lower(value)
+        issue.expand_upper(value)
 
-        if s["upper"] is None or value > s["upper"]:
-            s["upper"] = value
-
-        self.issues[issue_id] = s
+        self.issues[issue_id] = issue
 
     def create_issues(self):
         """
         Create the issues
         """
         for key, v in self.issues.items():
-            i = model.base.Issue(name=key, lower=v["lower"], upper=v["upper"])
-            i.calculate_delta()
-            i.calculate_step_size()
-            self.issues[i.id] = i
+            # i = model.base.Issue(name=key, lower=v["lower"], upper=v["upper"])
+            v.calculate_delta()
+            v.calculate_step_size()
+            self.issues[v.id] = v
 
     def parse_row_d(self, row):
         """
@@ -128,9 +123,9 @@ class Parser:
         :param row:
         """
         from model.helpers.helpers import create_key
-        actor_name = create_key(row[self.rActor])
-        issue_key = create_key(row[self.rIssue])
+        actor_id = create_key(row[self.rActor])
+        issue_id = create_key(row[self.rIssue])
 
-        self.data.add_actor_issue(actor_name=actor_name, issue_name=issue_key, power=row[self.rPower].replace(",", "."),
+        self.data.add_actor_issue(actor_id=actor_id, issue_id=issue_id, power=row[self.rPower].replace(",", "."),
                                   salience=row[self.rSalience].replace(",", "."),
                                   position=row[self.rPosition].replace(",", "."))

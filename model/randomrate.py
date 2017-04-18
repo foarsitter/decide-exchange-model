@@ -50,7 +50,7 @@ class RandomRateExchangeActor(AbstractExchangeActor):
     def adjust_position_by_outcome(self, delta_O, recursive=True):
         new_outcome = self.nbs_1 + delta_O  # we have to use nbs_1 here, because it is an incremental shift.
 
-        position = calculations.position_by_nbs(actor_issues=self.exchange.model.ActorIssues[self.supply_issue],
+        position = calculations.position_by_nbs(actor_issues=self.exchange.model.actor_issues[self.supply_issue],
                                                 exchange_actor=self,
                                                 nbs=new_outcome,
                                                 denominator=self.exchange.model.nbs_denominators[self.supply_issue])
@@ -61,7 +61,7 @@ class RandomRateExchangeActor(AbstractExchangeActor):
             print('remove')  # TODO REMOVE
             # position = self.opposite_actor.x_demand
             #
-            # adjusted_nbs = calculations.adjusted_nbs(actor_issues=self.exchange.model.ActorIssues[self.supply_issue],
+            # adjusted_nbs = calculations.adjusted_nbs(actor_issues=self.exchange.model.actor_issues[self.supply_issue],
             #                                          updates=self.exchange.updates,
             #                                          actor=self.actor_name,
             #                                          new_position=position,
@@ -113,15 +113,15 @@ class RandomRateExchange(AbstractExchange):
         self.dp = Decimal(random.uniform(a, b))
         self.dq = Decimal(random.uniform(a, b))
 
-        self.i.move = calculations.reverse_move(self.model.ActorIssues[self.i.supply_issue], self.i, self.dq)
+        self.i.move = calculations.reverse_move(self.model.actor_issues[self.i.supply_issue], self.i, self.dq)
         self.j.move = abs(self.i.x_demand - self.j.x)
 
         if abs(self.i.move) > abs(self.j.x_demand - self.i.x):
-            self.dq = calculations.by_absolute_move(self.model.ActorIssues[self.i.supply_issue], self.i)
+            self.dq = calculations.by_absolute_move(self.model.actor_issues[self.i.supply_issue], self.i)
             self.dp = calculations.by_exchange_ratio(self.i, self.dq)
 
             self.i.move = abs(self.j.x_demand - self.i.x)
-            self.j.move = calculations.reverse_move(self.model.ActorIssues[self.j.supply_issue], self.j, self.dp)
+            self.j.move = calculations.reverse_move(self.model.actor_issues[self.j.supply_issue], self.j, self.dp)
 
         # this check is only necessary for the smallest exchange,
         # because if the smallest exchange exceeds the limit the larger one will definitely do so
@@ -170,7 +170,7 @@ class RandomRateModel(AbstractModel):
 
     def get_exchange_actor_list(self):
         all_exchange_actors = []
-        for exchange in self.Exchanges:  # type: RandomRateExchange
+        for exchange in self.exchanges:  # type: RandomRateExchange
             all_exchange_actors.append(exchange.i)
             all_exchange_actors.append(exchange.j)
 
@@ -181,7 +181,7 @@ class RandomRateModel(AbstractModel):
 
     def highest_gain(self):
 
-        print(len(self.Exchanges))
+        print(len(self.exchanges))
 
         exchange_actors = self.get_exchange_actor_list()
         exchange_actors.sort(key=attrgetter("eu"), reverse=True)
@@ -283,10 +283,10 @@ class RandomRateModel(AbstractModel):
 
     def remove_exchange_by_key(self, key):
 
-        for __, exchange in enumerate(self.Exchanges):
+        for __, exchange in enumerate(self.exchanges):
 
             if key == exchange.key:
-                del self.Exchanges[__]
+                del self.exchanges[__]
                 return
 
         raise Exception('item not in list')

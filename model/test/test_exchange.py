@@ -43,16 +43,16 @@ class TestExchangeActor(TestCase):
         a2 = model.add_actor("a2")
         a3 = model.add_actor("a3")
 
-        model.add_issue("p")
-        model.add_issue("q")
+        p = model.add_issue("p")
+        q = model.add_issue("q")
 
-        model.add_actor_issue(a1, "p", 70, 0.75, 0.5)
-        model.add_actor_issue(a2, "p", 30, 0.25, 0.5)
-        model.add_actor_issue(a3, "p", 30, 0.25, 0.5)
+        model.add_actor_issue(a1, p, 70, 0.75, 0.5)
+        model.add_actor_issue(a2, p, 30, 0.25, 0.5)
+        model.add_actor_issue(a3, p, 30, 0.25, 0.5)
 
-        model.add_actor_issue(a1, "q", 70, 0.25, 0.5)
-        model.add_actor_issue(a2, "q", 30, 0.75, 0.5)
-        model.add_actor_issue(a3, "q", 30, 0.75, 0.5)
+        model.add_actor_issue(a1, q, 70, 0.25, 0.5)
+        model.add_actor_issue(a2, q, 30, 0.75, 0.5)
+        model.add_actor_issue(a3, q, 30, 0.75, 0.5)
 
         model.calc_nbs()
 
