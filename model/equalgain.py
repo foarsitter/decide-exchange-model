@@ -107,5 +107,6 @@ class EqualGainModel(AbstractModel):
 
         return realize
 
-    def new_exchange_factory(self, i, j, p, q, model, groups):
+    @staticmethod
+    def new_exchange_factory(i, j, p, q, model, groups):
         return EqualGainExchange(i, j, p, q, model, groups)

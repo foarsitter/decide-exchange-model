@@ -46,14 +46,23 @@ class Issue:
     def normalize(self, value):
         return Decimal(value - self.lower) * self.step_size
 
+    def expand_lower(self, value):
+        if value < self.lower:
+            self.lower = value
+
+    def expand_upper(self, value):
+        if value > self.upper:
+            self.upper = value
+
     def __repr__(self):
         return "{0} {1}-{2}".format(self.name, self.lower, self.upper)
 
     def __bool__(self):
         return False
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other):
         return self.name == other.name
+
 
 
 class Actor:
@@ -79,6 +88,7 @@ class ActorIssue:
         self.actor_name = actor_name
         self.group = ""
         self.issue_name = issue_name
+        self.isse_ref = None
 
     def is_left_to_nbs(self, nbs):
         self.left = self.position < nbs
@@ -186,7 +196,11 @@ class AbstractExchangeActor(object):
         return self.equals_actor(other) and self.equals_supply_issue(other)
 
     def equals_actor(self, other):
-        return self.actor_name == other.actor_name
+
+        if isinstance(other, AbstractExchangeActor):
+            return self.actor_name == other.actor_name
+
+        return False
 
     def equals_supply_issue(self, other):
         return self.supply_issue == other.supply_issue
@@ -199,7 +213,12 @@ class AbstractExchangeActor(object):
         The String representation of the object
         :return: String representation of the object
         """
-        return "{0} {1} {2} {3} ({4})".format(self.actor_name, self.supply_issue, self.x, self.y,
+
+        if hasattr(self, 'eu'):
+            return "{0} {1} eu={2}, x={3} y={4}, d={5}".format(self.actor_name, self.supply_issue, round(self.eu, 2), self.x, self.y,
+                                                  self.opposite_actor.x_demand)
+        else:
+            return "{0} {1} {2} {3} ({4})".format(self.actor_name, self.supply_issue, self.x, self.y,
                                               self.opposite_actor.x_demand)
 
     def __eq__(self, other):
@@ -246,11 +265,11 @@ class AbstractExchange(object):
         # issue q is the supply issue of i and issue p is the supply issue of j.
         # if ( (model$s_matrix[p, i] / model$s_matrix[q, i]) < (model$s_matrix[p, j] / model$s_matrix[q, j]))
         if (m.get_value(i, p, "s") / m.get_value(i, q, "s")) < (m.get_value(j, p, "s") / m.get_value(j, q, "s")):
-            self.i = AbstractExchange.actor_class(m, j, supply=q, demand=p, group=groups[0])
-            self.j = AbstractExchange.actor_class(m, i, supply=p, demand=q, group=groups[1])
+            self.i = self.actor_class(m, j, supply=q, demand=p, group=groups[0])
+            self.j = self.actor_class(m, i, supply=p, demand=q, group=groups[1])
         else:
-            self.i = AbstractExchange.actor_class(m, i, supply=q, demand=p, group=groups[0])
-            self.j = AbstractExchange.actor_class(m, j, supply=p, demand=q, group=groups[1])
+            self.i = self.actor_class(m, i, supply=q, demand=p, group=groups[0])
+            self.j = self.actor_class(m, j, supply=p, demand=q, group=groups[1])
 
         self.j.opposite_actor = self.i
         self.i.opposite_actor = self.j

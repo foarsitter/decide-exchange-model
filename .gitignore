@@ -3,6 +3,7 @@
 *.pyc
 __pycache__/
 output/
+data/input
 data/output
 docs/Makefile
 docs/make.bat

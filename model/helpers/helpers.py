@@ -17,13 +17,13 @@ def parse_arguments():
                         default='equal', type=str)
 
     parser.add_argument('--rounds', help='The number of round the model needs to be executed', default=10, type=int)
-    parser.add_argument('--input', help='The location of the csv input file. ', default="data/data_short.csv", type=str)
-    parser.add_argument('--output', help='Output directory ', default="data/output/data_short/", type=str)
+    parser.add_argument('--input', help='The location of the csv input file. ', default="data/input/sample_data.txt", type=str)
+    parser.add_argument('--output', help='Output directory ', default="data/output/", type=str)
 
     return parser.parse_args()
 
 
-def create_key(value: str) -> str:
+def create_key(value):
     """
     Create a safe for for index usage
     :type value: str
@@ -52,13 +52,15 @@ class ModelLoop(object):
 
             realize = self.model.highest_gain()
 
-            if realize.is_valid:
+            if realize and realize.is_valid:
                 removed_exchanges = self.model.remove_invalid_exchanges(realize)
 
                 realized.append(realize)
 
                 self.event_handler.notify(Observable.REMOVED, model=self.model, removed=removed_exchanges)
                 self.event_handler.notify(Observable.EXECUTED, model=self.model, realized=realize)
+            else:
+                print(realize)
         # end while
 
         self.event_handler.notify(Observable.FINISHED_ROUND, model=self.model, realized=realized, iteration=self.iteration_number)
