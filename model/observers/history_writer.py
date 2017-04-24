@@ -93,7 +93,7 @@ class HistoryWriter(Observer):
             self.voting_history[issue]["nbs"].append(nbs)
             self.voting_loss[issue]["nbs"].append(nbs_var)
 
-    def after_execution(self):
+    def after_execution(self, repetition):
         """
         Write all the data to the filesystem
         """

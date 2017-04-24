@@ -1,4 +1,4 @@
-import os
+
 import threading
 import tkinter as tk
 import xml.etree.cElementTree as ET
@@ -128,7 +128,7 @@ class CSVFrame(tk.Frame):
 
         self.scrolled_window = ScrolledWindow(parent, 400, 400)
 
-    def create_grid_table(self, model: AbstractModel, issues):
+    def create_grid_table(self, model: 'AbstractModel', issues):
 
         # an actor has only a name
 
@@ -242,7 +242,7 @@ class MainApplication(tk.Frame):
         if dialog:
             self.input_file.set(dialog.name)
 
-            model = AbstractModel()
+            model = model.base.AbstractModel()
 
 
             from model.helpers import csvParser
@@ -395,6 +395,10 @@ class MainApplication(tk.Frame):
 
 
 if __name__ == "__main__":
+
+    import sys,os
+    sys.path.append(os.getcwd())
+    
     root = tk.Tk()
     app = MainApplication(root)
 

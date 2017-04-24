@@ -3,7 +3,6 @@ import csv
 import os
 from decimal import Decimal
 
-import model.base
 
 
 class Parser:

@@ -1,7 +1,6 @@
 import argparse
 import re
 from model.helpers.csvParser import Parser
-from model.observers.observer import Observable, Observer
 
 
 def parse_arguments():
@@ -18,6 +17,7 @@ def parse_arguments():
                         default='equal', type=str)
 
     parser.add_argument('--rounds', help='The number of round the model needs to be executed', default=10, type=int)
+    parser.add_argument('--repetitions', help='How many times it has te be repeated?', default=1, type=int)
     parser.add_argument('--input', help='The location of the csv input file. ', default="data/input/sample_data.txt", type=str)
     parser.add_argument('--output', help='Output directory ', default="data/output/", type=str)
 
@@ -34,7 +34,7 @@ def create_key(value):
 
 
 class ModelLoop(object):
-    def __init__(self, model, event_handler: Observable):
+    def __init__(self, model, event_handler: 'Observable'):
         self.model = model
         self.event_handler = event_handler
         self.iteration_number = 0

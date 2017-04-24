@@ -1,9 +1,10 @@
 from collections import defaultdict
 from decimal import Decimal
 from itertools import combinations
+from typing import List
 
-import model
-from model.helpers import helpers
+
+from model.helpers.helpers import create_key
 from model import calculations
 
 
@@ -27,7 +28,7 @@ class Issue:
 
         self.name = name
 
-        self.id = issue_id if issue_id else helpers.create_key(name)
+        self.id = issue_id if issue_id else create_key(name)
 
         self.lower = lower
         self.upper = upper
@@ -90,7 +91,7 @@ class Actor:
     """
     def __init__(self, name, actor_id=None):
         self.name = name
-        self.id = actor_id if actor_id else helpers.create_key(name)
+        self.id = actor_id if actor_id else create_key(name)
 
     def __eq__(self, other):
 
@@ -157,7 +158,7 @@ class AbstractExchangeActor(object):
     Represents an exchange actor. Contains his demand and supply issues and voting-position
     """
 
-    def __init__(self, model_ref, actor, demand_issue, supply_issue, group):
+    def __init__(self, model_ref: 'AbstractExchange', actor: Actor, demand_issue: Issue, supply_issue: Issue, group: List[str]):
         """
         Constructor, must be invoked
 
@@ -275,6 +276,10 @@ class AbstractExchangeActor(object):
     def __eq__(self, other):
         return self.equals_actor(other) and self.equals_demand_issue(other) and self.equals_supply_issue(other)
 
+    def __hash__(self):
+        print(self.actor_name)
+        return hash(self.actor_name)
+
 
 class AbstractExchange(object):
     """
@@ -335,12 +340,12 @@ class AbstractExchange(object):
         TODO: create universal method because of code duplication in self.check_nbs_j
         :return:
         """
-        self.i.nbs_0 = model.calculations.adjusted_nbs(self.model.actor_issues[self.i.supply_issue],
+        self.i.nbs_0 = calculations.adjusted_nbs(self.model.actor_issues[self.i.supply_issue],
                                                        self.updates[self.i.supply_issue],
                                                        self.i.actor_name, self.i.x,
                                                        self.model.nbs_denominators[self.i.supply_issue])
 
-        self.i.nbs_1 = model.calculations.adjusted_nbs(self.model.actor_issues[self.i.supply_issue],
+        self.i.nbs_1 = calculations.adjusted_nbs(self.model.actor_issues[self.i.supply_issue],
                                                        self.updates[self.i.supply_issue],
                                                        self.i.actor_name, self.i.y,
                                                        self.model.nbs_denominators[self.i.supply_issue])
@@ -351,16 +356,16 @@ class AbstractExchange(object):
         elif self.j.x_demand <= self.i.nbs_0 and self.j.x_demand <= self.i.nbs_1:
             pass
         else:
-            new_pos = model.calculations.adjusted_nbs_by_position(self.model.actor_issues[self.i.supply_issue],
+            new_pos = calculations.adjusted_nbs_by_position(self.model.actor_issues[self.i.supply_issue],
                                                                   self.updates[self.i.supply_issue],
                                                                   self.i.actor_name, self.i.x, self.j.x_demand,
                                                                   self.model.nbs_denominators[self.i.supply_issue])
 
             self.dq = (abs(new_pos - self.i.x) * self.i.s * self.i.c) / self.model.nbs_denominators[self.i.supply_issue]
-            self.dp = model.calculations.by_exchange_ratio(self.i, self.dq)
+            self.dp = calculations.by_exchange_ratio(self.i, self.dq)
 
             self.i.move = abs(new_pos - self.i.x)
-            self.j.move = model.calculations.reverse_move(self.model.actor_issues[self.j.supply_issue], self.j, self.dp)
+            self.j.move = calculations.reverse_move(self.model.actor_issues[self.j.supply_issue], self.j, self.dp)
 
             if self.i.x > self.j.x_demand:
                 self.i.move *= -1
@@ -376,8 +381,8 @@ class AbstractExchange(object):
             self.i.y = self.i.x + self.i.move
             self.j.y = self.j.x + self.j.move
 
-            eui = model.calculations.expected_utility(self.i, self.dq, self.dp)
-            euj = model.calculations.expected_utility(self.j, self.dp, self.dq)
+            eui = calculations.expected_utility(self.i, self.dq, self.dp)
+            euj = calculations.expected_utility(self.j, self.dp, self.dq)
 
             if abs(eui - euj) > 0.0001:
                 raise Exception("Expected equal gain")
@@ -395,12 +400,12 @@ class AbstractExchange(object):
         TODO: create universal method because of code duplication in self.check_nbs_i
         :return:
         """
-        self.j.nbs_0 = model.calculations.adjusted_nbs(self.model.actor_issues[self.j.supply_issue],
+        self.j.nbs_0 = calculations.adjusted_nbs(self.model.actor_issues[self.j.supply_issue],
                                                        self.updates[self.j.supply_issue],
                                                        self.j.actor_name, self.j.x,
                                                        self.model.nbs_denominators[self.j.supply_issue])
 
-        self.j.nbs_1 = model.calculations.adjusted_nbs(self.model.actor_issues[self.j.supply_issue],
+        self.j.nbs_1 = calculations.adjusted_nbs(self.model.actor_issues[self.j.supply_issue],
                                                        self.updates[self.j.supply_issue],
                                                        self.j.actor_name, self.j.y,
                                                        self.model.nbs_denominators[self.j.supply_issue])
@@ -411,16 +416,16 @@ class AbstractExchange(object):
             pass
         else:
 
-            new_pos = model.calculations.adjusted_nbs_by_position(self.model.actor_issues[self.j.supply_issue],
+            new_pos = calculations.adjusted_nbs_by_position(self.model.actor_issues[self.j.supply_issue],
                                                                   self.updates[self.j.supply_issue],
                                                                   self.j.actor_name, self.j.x, self.i.x_demand,
                                                                   self.model.nbs_denominators[self.j.supply_issue])
 
             self.dp = (abs(new_pos - self.j.x) * self.j.s * self.j.c) / self.model.nbs_denominators[
                 self.j.supply_issue]
-            self.dq = model.calculations.by_exchange_ratio(self.j, self.dp)
+            self.dq = calculations.by_exchange_ratio(self.j, self.dp)
 
-            self.i.move = model.calculations.reverse_move(self.model.actor_issues[self.i.supply_issue], self.i, self.dq)
+            self.i.move = calculations.reverse_move(self.model.actor_issues[self.i.supply_issue], self.i, self.dq)
             self.j.move = abs(new_pos - self.j.x)
 
             if self.i.x > self.j.x_demand:
@@ -437,7 +442,7 @@ class AbstractExchange(object):
             self.i.y = self.i.x + self.i.move
             self.j.y = self.j.x + self.j.move
 
-            nbs_1 = model.calculations.adjusted_nbs(self.model.actor_issues[self.j.supply_issue],
+            nbs_1 = calculations.adjusted_nbs(self.model.actor_issues[self.j.supply_issue],
                                                     self.updates[self.j.supply_issue],
                                                     self.j.actor_name, self.j.y,
                                                     self.model.nbs_denominators[self.j.supply_issue])
@@ -452,8 +457,8 @@ class AbstractExchange(object):
                 # raise Exception("Not Posible!")
                 return
 
-            eui = model.calculations.expected_utility(self.i, self.dq, self.dp)
-            euj = model.calculations.expected_utility(self.j, self.dp, self.dq)
+            eui = calculations.expected_utility(self.i, self.dq, self.dp)
+            euj = calculations.expected_utility(self.j, self.dp, self.dq)
 
             if abs(eui - euj) > 0.0001:
                 raise Exception("Expected equal gain")

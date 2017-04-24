@@ -2,12 +2,12 @@ from operator import attrgetter
 from random import random
 
 from model import calculations
-from model.base import AbstractModel, AbstractExchange, AbstractExchangeActor
+from model.base import AbstractModel, AbstractExchange, AbstractExchangeActor, Actor
 
 
 class EqualGainExchangeActor(AbstractExchangeActor):
-    def __init__(self, model, actor_name, demand, supply, group):
-        super.__init__(model, actor_name, demand, supply, group)
+    def __init__(self, model_ref: AbstractModel, actor: Actor, demand_issue, supply_issue, group):
+        super().__init__(model_ref, actor, demand_issue, supply_issue, group)
 
 
 class EqualGainExchange(AbstractExchange):

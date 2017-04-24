@@ -37,10 +37,10 @@ class Observer(object):
     def end_loop(self, iteration: int):
         pass
 
-    def before_execution(self):
+    def before_execution(self, repetition):
         pass
 
-    def after_execution(self):
+    def after_execution(self, repetition):
         pass
 
     @staticmethod
@@ -95,10 +95,10 @@ class Observable(Observer):
         for observer in self.__observers:
             observer.end_loop(iteration)
 
-    def before_execution(self):
+    def before_execution(self, repetition):
         for observer in self.__observers:
-            observer.before_execution()
+            observer.before_execution(repetition)
 
-    def after_execution(self):
+    def after_execution(self, repetition):
         for observer in self.__observers:
-            observer.after_execution()
+            observer.after_execution(repetition)

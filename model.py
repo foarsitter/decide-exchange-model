@@ -44,11 +44,15 @@ if __name__ == "__main__":
 
     model_loop = ModelLoop(model, eventHandler)
 
-    eventHandler.before_execution()
+    for repetition in range(args.repetitions):
 
-    for iteration_number in range(args.rounds):
-        model_loop.loop()
+        eventHandler.before_execution(repetition)
 
-    eventHandler.after_execution()
+        for iteration_number in range(args.rounds):
+            model_loop.loop()
+
+        eventHandler.after_execution(repetition)
+
+
 
     eventHandler.log(message="Finished in {0}".format(datetime.now() - startTime))
