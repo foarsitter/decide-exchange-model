@@ -26,7 +26,6 @@ def calc_nbs(actor_issues, denominator):
 
 
 def nbs_variance(actor_issues, nbs):
-
     t = (1 / len(actor_issues))
     t2 = sum([(ai.position - nbs) ** 2 for ai in actor_issues])
 
@@ -99,8 +98,6 @@ def adjusted_nbs_by_position(actor_issues, updates, actor, x_pos, new_nbs, denom
     copy_ai[actor].position = x_pos
 
     for key, value in updates.items():
-        # if key not in copy_ai: #todo should always be the case
-        #     raise Exception("Fail!")
         copy_ai[key].position = value
 
     nominator = 0
@@ -204,22 +201,23 @@ def expected_utility(actor, demand_exchange_ratio, supply_exchange_ratio):
     return demand_exchange_ratio * actor.s - supply_exchange_ratio * actor.s_demand
 
 
-def actor_externalities(actor_name, model, realized):
+def actor_externalities(actor_name, model_ref, realized):
     """
     Calculate the externalities from an exchange
 
     :param actor_name: current actor
-    :param model: model
+    :param model_ref: model
     :param realized: realized exchanges
     :return: the Decimal value of the externality
     """
 
-    if actor_name in model.actor_issues[realized.j.supply_issue] and actor_name in model.actor_issues[realized.i.supply_issue]:
-        xp = model.actor_issues[realized.j.supply_issue][actor_name].position
-        sp = model.actor_issues[realized.j.supply_issue][actor_name].salience
+    if actor_name in model_ref.actor_issues[realized.j.supply_issue] \
+            and actor_name in model_ref.actor_issues[realized.i.supply_issue]:
+        xp = model_ref.actor_issues[realized.j.supply_issue][actor_name].position
+        sp = model_ref.actor_issues[realized.j.supply_issue][actor_name].salience
 
-        xq = model.actor_issues[realized.i.supply_issue][actor_name].position
-        sq = model.actor_issues[realized.i.supply_issue][actor_name].salience
+        xq = model_ref.actor_issues[realized.i.supply_issue][actor_name].position
+        sq = model_ref.actor_issues[realized.i.supply_issue][actor_name].salience
 
         l0 = abs(realized.j.nbs_0 - xp)
         l1 = abs(realized.j.nbs_1 - xp)
@@ -231,8 +229,9 @@ def actor_externalities(actor_name, model, realized):
         ext = l * sp + r * sq
 
         return ext
-    # if an actor has not a position on an issue
-    return -9999  # TODO why is this?
+
+    raise Exception(
+        'Actor is not in collection. Calculation of the externalities is therefore not possible. Is your data correct?')
 
 
 def position_by_nbs(actor_issues, exchange_actor, nbs, denominator):

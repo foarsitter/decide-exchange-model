@@ -1,82 +1,70 @@
 import collections
 import csv
 import os
+from collections import defaultdict
 
 from model import calculations
+from model.base import AbstractExchange
 from model.observers.observer import Observer, Observable
 
 
 class Externalities(Observer):
     """
-    There are three stages of externalities
-    By exchange, by issue set and by actor
+    There are three stages of externalities: by exchange, by issue combination and by actor. This class writes at the 
+    end of each loop the externalities to the filesystem. 
     """
 
-    def __init__(self, observable, model, current_file):
-        super(Externalities, self).__init__(observable=observable)
+    def __init__(self, observable: Observable):
+        super().__init__(observable)
+        self._setup()
 
-        self.current_file = current_file
-
-        self.issue_set = {}
-        self.actors = {}
+    def _setup(self):
+        """
+        Initializes the class attributes for reusable purpose        
+        """
+        self.connections = {}
+        self.actors = defaultdict(lambda: defaultdict(int))
         self.exchanges = []
 
-        for actor in model.actors:
-            self.actors[actor] = {'ip': 0, 'in': 0, 'op': 0, 'on': 0, "own": 0}
+    def execute_exchange(self, exchange: AbstractExchange):
+        """
+        Calculations of the externalities performed each round after an exchange is exectued
+        :param exchange: AbstractExchange        
+        """
 
-    def setup(self, model):
-        self.issue_set = {}
-        self.actors = {}
-        self.exchanges = []
-
-        for actor in model.actors:
-            self.actors[actor] = {'ip': 0, 'in': 0, 'op': 0, 'on': 0, "own": 0}
-
-    def init_issue_set(self, issue_sets):
-        pass
-
-    def init_actors(self, actors):
-        pass
-
-    def update(self, observable, notification_type, **kwargs):
-
-        if notification_type == Observable.EXECUTED:
-            self.calculate_externalities(**kwargs)
-        elif notification_type == Observable.FINISHED_ROUND:
-            self.write_round(**kwargs)
-
-    def calculate_externalities(self, **kwargs):
-
-        realized = kwargs["realized"]
-        model = kwargs["model"]
-
-        issue_set_key = "{0}-{1}".format(realized.p, realized.q)
+        issue_set_key = "{0}-{1}".format(exchange.p, exchange.q)
 
         # an combination only exists once, so it can happen that we have to change the sequence of the keys
-        if issue_set_key not in model.groups:
-            issue_set_key = "{0}-{1}".format(realized.q, realized.p)
+        if issue_set_key not in self.model_ref.groups:
+            issue_set_key = "{0}-{1}".format(exchange.q, exchange.p)
         # end if
 
         inner = ['a', 'd']
         outer = ['b', 'c']
 
         # switch the inner and outer if this is not the case
-        if realized.i.group != "a" and realized.i.group != "d":
+        if exchange.i.group != "a" and exchange.i.group != "d":
             inner, outer = outer, inner
         # end if
 
-        externalities = self.calculate_exteranlities(model, realized)
+        externalities = self._calculate_externalities(self.model_ref, exchange)
 
-        exchange_set = self.add_exchange_set(externalities, realized, model, inner, issue_set_key)
+        exchange_set = self._add_exchange_set(externalities, exchange, self.model_ref, inner, issue_set_key)
 
-        self.add_or_update_issue_set(issue_set_key, realized, exchange_set)
+        self._add_or_update_issue_set(issue_set_key, exchange, exchange_set)
 
         self.exchanges.append(
-            [realized.i.actor_name, realized.i.supply_issue, realized.j.actor_name, realized.j.supply_issue, exchange_set["ip"],
+            [exchange.i.actor_name, exchange.i.supply_issue, exchange.j.actor_name, exchange.j.supply_issue,
+             exchange_set["ip"],
              exchange_set["in"], exchange_set["op"], exchange_set["on"], exchange_set["own"]])
 
-    def add_exchange_set(self, externalities, realized, model, inner, issue_set_key):
-        exchange_set = {'ip': 0, 'in': 0, 'op': 0, 'on': 0, "own": 0}
+    def _add_exchange_set(self, externalities, realized, model, inner, issue_set_key):
+        """
+        Checks if an externalitie is own, inner or outer and positive or negative. This method alse updates the actor  
+        externalities but returns the exchange as an set.         
+        """
+
+        exchange_set = defaultdict(int)
 
         for actor_name, value in externalities.items():
 
@@ -102,72 +90,87 @@ class Externalities(Observer):
 
         return exchange_set
 
-    def add_or_update_issue_set(self, issue_set_key, realized, exchange_set):
+    def _add_or_update_issue_set(self, issue_set_key, realized, exchange_set):
+        """
+        Create a new entry or adds the value to the existing connection
+        :param issue_set_key: 
+        :param realized: 
+        :param exchange_set: 
+        :return: 
+        """
 
-        if issue_set_key in self.issue_set:
+        if issue_set_key in self.connections:
             for key, value in exchange_set.items():
-                self.issue_set[issue_set_key][key] += value
+                self.connections[issue_set_key][key] += value
         else:
-            self.issue_set[issue_set_key] = exchange_set
-            self.issue_set[issue_set_key]["first"] = realized.p
-            self.issue_set[issue_set_key]["second"] = realized.q
+            self.connections[issue_set_key] = exchange_set
+            self.connections[issue_set_key]["first"] = realized.p
+            self.connections[issue_set_key]["second"] = realized.q
             # end if
 
     @staticmethod
-    def calculate_exteranlities(model, realized):
+    def _calculate_externalities(model, realized):
+        """
+        Loops over all the actors and calculates each actor his externalities
+        :param model: 
+        :param realized: 
+        :return: 
+        """
 
         results = {}
 
         for actor in model.actors:
             results[actor] = calculations.actor_externalities(actor, model, realized)
-        # end for
 
         return results
 
-    def write_round(self, **kwargs):
+    def _create_directories(self):
+        """
+        Helper for creating the output directory        
+        """
+        if not os.path.exists("{0}/externalities".format(self.output_directory)):
+            os.makedirs("{0}/externalities".format(self.output_directory))
 
-        iteration_number = kwargs["iteration"]
-        model = kwargs["model"]
+    def _ordered_actors(self):
+        """
+        Helper for outputting the actors in a consisting order        
+        """
+        return collections.OrderedDict(sorted(self.actors.items())).items()
 
-        # TODO: we should write all the documents after executing all the rounds as we do with the externalities
+    def end_loop(self, iteration: int):
+        """
+        Write the data to the filesystem        
+        :param iteration: int the current iteration round 
+        :return: 
+        """
+        self._create_directories()
 
-        if not os.path.exists("{0}/externalities".format(self.current_file)):
-            os.makedirs("{0}/externalities".format(self.current_file))
-
-        with open("{0}/externalities/externalities.{1}.csv".format(self.current_file, iteration_number + 1),
-                  'w') as csvfile:
-            writer = csv.writer(csvfile, delimiter=';', lineterminator='\n')
+        with open("{0}/externalities/externalities.{1}.csv".format(self.output_directory, iteration + 1), 'w') as csv_file:
+            writer = csv.writer(csv_file, delimiter=';', lineterminator='\n')
 
             # headings
             writer.writerow(
                 ["Actor", "Inner Positive", "Inner Negative", "Outer Positive", "Outer Negative", "Own"])
 
-            od_e = collections.OrderedDict(sorted(self.actors.items()))
-            for key, value in od_e.items():
+            for key, value in self._ordered_actors():
                 writer.writerow([key, value["ip"], value["in"], value["op"], value["on"], value["own"]])
 
             writer.writerow([])
             writer.writerow(["Connections"])
-            writer.writerow(
-                ["first", "second", "inner pos", "inner neg", "outer pos", "outer neg", "own", "ally pos",
-                 "ally neg"])
+            writer.writerow(["first", "second", "inner pos", "inner neg", "outer pos", "outer neg", "own"])
 
-            for key, value in self.issue_set.items():
+            for key, value in self.connections.items():
                 writer.writerow(
                     [value["first"], value["second"], value["ip"], value["in"], value["op"], value["on"],
                      value["own"]])
-            # end for
 
             writer.writerow([])
             writer.writerow(["Realizations"])
             writer.writerow(
-                ["first", "supply", "second", "supply ", "inner pos", "inner neg", "outer pos", "outer neg", "own",
-                 "ally pos", "ally neg"])
+                ["first", "supply", "second", "supply ", "inner pos", "inner neg", "outer pos", "outer neg", "own"])
 
-            for realizations_row in self.exchanges:
-                writer.writerow(realizations_row)
+            for realizations in self.exchanges:
+                writer.writerow(realizations)
 
-                # end for
-        # end with
-
-        self.setup(model)
+        # after each round reset the state of the object.
+        self._setup()

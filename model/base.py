@@ -6,6 +6,7 @@ import model
 from model.helpers import helpers
 from model import calculations
 
+
 class Issue:
     """
     :type id: str
@@ -46,7 +47,7 @@ class Issue:
             self.step_size = 0
 
     def de_normalize(self, value):
-        return round(value / self.step_size + self.lower)
+        return value / self.step_size + self.lower
 
     def normalize(self, value):
         return Decimal(value - self.lower) * self.step_size
@@ -65,12 +66,16 @@ class Issue:
             self.upper = value
 
     def __repr__(self):
-        return "{0} {1}-{2}".format(self.name, self.lower, self.upper)
+        return "{0} [{1} - {2}]".format(self.name, self.lower, self.upper)
 
     def __bool__(self):
         return False
 
     def __eq__(self, other):
+
+        if isinstance(other, str):
+            return self.name == other
+
         return self.name == other.name
 
     def __hash__(self):
@@ -698,8 +703,8 @@ class AbstractModel(object):
     def add_actor_issue(self, actor_id, issue_id, position, salience, power):
         """
         Add an actor issue to the model
-        :param actor: Actor
-        :param issue: Issue
+        :param actor_id: Actor
+        :param issue_id: Issue
         :param position: Double
         :param salience: Double
         :param power: Double
@@ -843,10 +848,14 @@ class AbstractModel(object):
         pass
 
     @staticmethod
-    def new_exchange_factory(i, j, p, q, model, groups):
+    def new_exchange_factory(i, j, p, q, model_ref, groups):
         """
         Creates a new Exchange set 
-        :param self: 
-        :return: 
+        :param groups: 
+        :param model_ref: 
+        :param q: 
+        :param p: 
+        :param j: 
+        :param i:
         """
         pass

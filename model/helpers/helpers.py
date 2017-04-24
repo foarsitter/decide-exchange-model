@@ -1,7 +1,8 @@
 import argparse
 import re
 from model.helpers.csvParser import Parser
-from model.observers.observer import Observable
+from model.observers.observer import Observable, Observer
+
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="This program accepts input with a dot (.) as decimal separator. \n"
@@ -33,7 +34,7 @@ def create_key(value):
 
 
 class ModelLoop(object):
-    def __init__(self, model, event_handler):
+    def __init__(self, model, event_handler: Observable):
         self.model = model
         self.event_handler = event_handler
         self.iteration_number = 0
@@ -46,32 +47,33 @@ class ModelLoop(object):
 
         realized = []
 
-        self.event_handler.notify(Observable.START_ROUND, model=self.model, iteration=self.iteration_number)
+        # call the event for beginning the loop
+        self.event_handler.before_loop(self.iteration_number)
 
         while len(self.model.exchanges) > 0:
 
-            realize = self.model.highest_gain()
+            realize_exchange = self.model.highest_gain()
 
-            if realize and realize.is_valid:
-                removed_exchanges = self.model.remove_invalid_exchanges(realize)
+            if realize_exchange and realize_exchange.is_valid:
+                removed_exchanges = self.model.remove_invalid_exchanges(realize_exchange)
 
-                realized.append(realize)
+                realized.append(realize_exchange)
 
-                self.event_handler.notify(Observable.REMOVED, model=self.model, removed=removed_exchanges)
-                self.event_handler.notify(Observable.EXECUTED, model=self.model, realized=realize)
+                self.event_handler.removed_exchanges(removed_exchanges)
+                self.event_handler.execute_exchange(realize_exchange)
             else:
-                print(realize)
-        # end while
+                print(realize_exchange)
 
-        self.event_handler.notify(Observable.FINISHED_ROUND, model=self.model, realized=realized, iteration=self.iteration_number)
+        # call the event for ending the loop
+        self.event_handler.after_loop(realized=realized, iteration=self.iteration_number)
 
         for exchange in realized:
             self.model.actor_issues[exchange.i.supply_issue][exchange.i.actor_name].position = exchange.i.y
             self.model.actor_issues[exchange.j.supply_issue][exchange.j.actor_name].position = exchange.j.y
 
-        # calc the new NBS on the voting positions
+        # calc the new NBS on the voting positions and fire the event for ending this loop
         self.model.calc_nbs()
-        self.event_handler.notify(Observable.PREPARE_NEXT_ROUND, model=self.model, realized=realized, iteration=self.iteration_number)
+        self.event_handler.end_loop(iteration=self.iteration_number)
 
         # calculate for each realized exchange there new start positions
         for exchange in realized:

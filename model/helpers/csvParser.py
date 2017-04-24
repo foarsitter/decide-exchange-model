@@ -29,8 +29,6 @@ class Parser:
 
     def __init__(self, model_ref):
         self.data = model_ref
-        self.issues = {}
-        self.actors = {}
 
     def read(self, filename):
         """
@@ -65,12 +63,12 @@ class Parser:
 
         for issue_id, v in self.data.actor_issues.items():
 
-            issue = self.issues.get(issue_id, model.base.Issue(name=issue_id))
+            issue = self.data.issues[issue_id]
 
             for actor_name, value in self.data.actor_issues[issue_id].items():
-                norm = issue.normalize(self.data.actor_issues[issue_id][actor_name].position)
+                normalized_position = issue.normalize(self.data.actor_issues[issue_id][actor_name].position)
 
-                self.data.actor_issues[issue_id][actor_name].position = norm
+                self.data.actor_issues[issue_id][actor_name].position = normalized_position
 
         return self.data
 
@@ -87,8 +85,7 @@ class Parser:
         The csv row
         :param row:
         """
-        from model.helpers.helpers import create_key
-        self.data.add_issue(create_key(row[1]))
+        self.data.add_issue(row[1])
 
     def parse_row_m(self, row):
         """
@@ -98,24 +95,32 @@ class Parser:
         from model.helpers.helpers import create_key
         issue_id = create_key(row[1])
 
-        issue = self.issues.get(issue_id, model.base.Issue(name=issue_id, lower=None, upper=None))
+        issue = self.data.issues[issue_id]
 
         value = Decimal(row[2].replace(",", "."))
 
         issue.expand_lower(value)
         issue.expand_upper(value)
 
-        self.issues[issue_id] = issue
-
     def create_issues(self):
         """
         Create the issues
         """
-        for key, v in self.issues.items():
-            # i = model.base.Issue(name=key, lower=v["lower"], upper=v["upper"])
-            v.calculate_delta()
-            v.calculate_step_size()
-            self.issues[v.id] = v
+        for issue_id, actor_issues in self.data.actor_issues.items():
+
+            if issue_id in self.data.issues:
+
+                if self.data.issues[issue_id].upper is None or self.data.issues[issue_id].lower is None:
+
+                    for actor_name, actor_issue in actor_issues.items():
+                        self.data.issues[issue_id].expand_lower(actor_issue.position)
+                        self.data.issues[issue_id].expand_upper(actor_issue.position)
+
+                self.data.issues[issue_id].calculate_delta()
+                self.data.issues[issue_id].calculate_step_size()
+            else:
+                raise Exception('fix this!')
+
 
     def parse_row_d(self, row):
         """

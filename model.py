@@ -6,8 +6,6 @@ from model.helpers.helpers import ModelLoop
 from model.observers.exchanges_writer import ExchangesWriter
 from model.observers.externalities import Externalities
 from model.observers.history_writer import HistoryWriter
-from model.observers.initial_exchanges import InitialExchanges
-from model.observers.logger import Logger
 from model.observers.observer import Observable
 
 if __name__ == "__main__":
@@ -16,40 +14,41 @@ if __name__ == "__main__":
     input_file = args.input
     output_dir = args.output
 
-    data_set_name = output_dir + "/" + input_file.split("/")[-1].split(".")[0]
+    output_directory = output_dir + "/" + input_file.split("/")[-1].split(".")[0]
 
-    if not os.path.isdir(data_set_name):
-        os.makedirs(data_set_name)
+    if not os.path.isdir(output_directory):
+        os.makedirs(output_directory)
 
     if args.model == "equal":
         from model.equalgain import EqualGainModel as Model
     else:
         from model.randomrate import RandomRateModel as Model
 
-    # The event handlers for logging and writing the results to the disk.
-    eventHandler = Observable()
-    Logger(eventHandler)
-
     startTime = datetime.now()
 
-    eventHandler.notify(Observable.LOG, message="Start calculation at {0}".format(startTime))
-
     model = Model()
+
+    # The event handlers for logging and writing the results to the disk.
+    eventHandler = Observable(model_ref=model, output_directory=output_directory)
+    eventHandler.log(message="Start calculation at {0}".format(startTime))
 
     csvParser = csvParser.Parser(model)
 
     model = csvParser.read(input_file)
 
-    Externalities(eventHandler, model, data_set_name)
-    ExchangesWriter(eventHandler, model, data_set_name)
-    HistoryWriter(eventHandler, model, data_set_name)
-    InitialExchanges(eventHandler, model, data_set_name)
-    eventHandler.notify(Observable.LOG, message="Parsed file".format(input_file))
+    Externalities(eventHandler)
+    ExchangesWriter(eventHandler)
+    HistoryWriter(eventHandler)
+
+    eventHandler.log(message="Parsed file".format(input_file))
 
     model_loop = ModelLoop(model, eventHandler)
+
+    eventHandler.before_execution()
 
     for iteration_number in range(args.rounds):
         model_loop.loop()
 
-    eventHandler.notify(Observable.CLOSE, model=model)
-    eventHandler.notify(Observable.LOG, message="Finished in {0}".format(datetime.now() - startTime))
+    eventHandler.after_execution()
+
+    eventHandler.log(message="Finished in {0}".format(datetime.now() - startTime))

@@ -1,5 +1,7 @@
 import os
+from typing import List
 
+from model.base import AbstractExchange
 from model.helpers.CsvWriter import CsvWriter
 from model.observers.observer import Observer, Observable
 
@@ -10,42 +12,37 @@ class ExchangesWriter(Observer):
     By exchange, by issue set and by actor
     """
 
-    def __init__(self, observable, model, dataset_name):
-        super(ExchangesWriter, self).__init__(observable=observable)
-        self.dataset_name = dataset_name
+    def __init__(self, observable: Observable):
+        super().__init__(observable)
 
-        self.realized = []
-        self.deleted = []
+    def _create_directory(self):
+        if not os.path.exists("{0}/exchanges".format(self.output_directory)):
+            os.makedirs("{0}/exchanges".format(self.output_directory))
 
-    def setup(self):
-        self.realized = []
-        self.deleted = []
+        if not os.path.exists("{0}/exchanges/initial".format(self.output_directory)):
+            os.makedirs("{0}/exchanges/initial".format(self.output_directory))
 
-    def update(self, observable, notification_type, **kwargs):
+    def before_loop(self, iteration: int, repetition: int = None):
+        """
+        Writes all the possible exchanges to the filesystem
+        :param iteration: 
+        :param repetition:
+        """
+        self._create_directory()
 
-        if notification_type == Observable.EXECUTED:
-            self.add_exchange(**kwargs)
-        elif notification_type == Observable.REMOVED:
-            self.add_removed(**kwargs)
-        elif notification_type == Observable.CLOSE:
-            # self.write()
-            pass
-        elif notification_type == Observable.FINISHED_ROUND:
-            self.write(**kwargs)
-
-    def add_exchange(self, **kwargs):
-        self.realized.append(kwargs["realized"])
-
-    def add_removed(self, **kwargs):
-        removed = kwargs["removed"]
-        self.deleted.append(removed)
-
-    def write(self, **kwargs):
-
-        if not os.path.exists("{0}/exchanges".format(self.dataset_name)):
-            os.makedirs("{0}/exchanges".format(self.dataset_name))
+        self.model_ref.sort_exchanges()
 
         writer = CsvWriter()
-        writer.write("{0}/exchanges/round.{1}.csv".format(self.dataset_name, kwargs["iteration"]+1), self.realized)
+        writer.write('{0}/exchanges/initial/before.{1}.csv'.format(self.output_directory, iteration),
+                     self.model_ref.exchanges)
 
-        self.setup()
+    def after_loop(self, realized: List[AbstractExchange], iteration: int):
+        """
+        Writes al the executed exchanges to the filesystem
+        :param realized: 
+        :param iteration:
+        """
+        self._create_directory()
+
+        writer = CsvWriter()
+        writer.write("{0}/exchanges/round.{1}.csv".format(self.output_directory, iteration + 1), realized)

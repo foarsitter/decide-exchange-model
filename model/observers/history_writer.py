@@ -1,8 +1,12 @@
 import csv
 
 import copy
+from typing import List
+import matplotlib.pyplot as plt
 
+from model.base import AbstractExchange, Issue
 from model.observers.observer import Observer, Observable
+
 
 
 class HistoryWriter(Observer):
@@ -11,20 +15,24 @@ class HistoryWriter(Observer):
     By exchange, by issue set and by actor
     """
 
-    def __init__(self, observable, model, output_dir):
-        super(HistoryWriter, self).__init__(observable=observable)
-        self.output_dir = output_dir
+    def __init__(self, observable: Observable):
+        super().__init__(observable=observable)
 
         self.preference_history = {}
         self.voting_history = {}
         self.voting_loss = {}
         self.preference_loss = {}
+        self.issue_obj = None
+        self._setup()
 
-        for issue in model.actor_issues:
-
+    def _setup(self):
+        """
+        Setup method.          
+        """
+        for issue in self.model_ref.actor_issues:
             issue_list = {}
 
-            for key, actor_issue in model.actor_issues[issue].items():
+            for key, actor_issue in self.model_ref.actor_issues[issue].items():
                 issue_list[actor_issue.actor_name] = []
 
             issue_list["nbs"] = []
@@ -34,17 +42,15 @@ class HistoryWriter(Observer):
             self.voting_loss[issue] = copy.deepcopy(issue_list)
             self.preference_loss[issue] = copy.deepcopy(issue_list)
 
-    def update(self, observable, notification_type, **kwargs):
-        if notification_type == Observable.CLOSE:
-            self.close(**kwargs)
-        elif notification_type == Observable.FINISHED_ROUND:
-            self.finish_round(**kwargs)
-        elif notification_type == Observable.PREPARE_NEXT_ROUND:
-            self.prepare_next(**kwargs)
+    def after_loop(self, realized: List[AbstractExchange], iteration: int):
 
-    def finish_round(self, **kwargs):
-
-        model = kwargs["model"]
+        """
+        After each round we calculate the variance
+        :param realized:         
+        :param iteration: 
+        :return: 
+        """
+        model = self.model_ref
 
         for issue in model.actor_issues:
 
@@ -63,44 +69,46 @@ class HistoryWriter(Observer):
             self.preference_history[issue]["nbs"].append(nbs)
             self.preference_loss[issue]["nbs"].append(nbs_var)
 
-    def prepare_next(self, **kwargs):
+    def end_loop(self, iteration: int):
+        """
+        Before each round we calculate the voting positoin
+        :param iteration:
+        :return: 
+        """
 
-        model = kwargs["model"]
+        for issue in self.model_ref.actor_issues:
 
-        for issue in model.actor_issues:
-
-            nbs = model.nbs[issue]
+            nbs = self.model_ref.nbs[issue]
             sum_var = 0
 
-            for key, actor_issue in model.actor_issues[issue].items():
+            for key, actor_issue in self.model_ref.actor_issues[issue].items():
                 position = actor_issue.position
                 sum_var += ((position - nbs) ** 2)
 
                 self.voting_history[issue][key].append(position)
                 self.voting_loss[issue][key].append(abs(actor_issue.position - nbs) * actor_issue.salience)
 
-            nbs_var = sum_var / len(model.actor_issues[issue])
+            nbs_var = sum_var / len(self.model_ref.actor_issues[issue])
 
             self.voting_history[issue]["nbs"].append(nbs)
             self.voting_loss[issue]["nbs"].append(nbs_var)
 
-    def loss(self):
-        pass
+    def after_execution(self):
+        """
+        Write all the data to the filesystem
+        """
 
-    def number_value(self, value):
-
-        return str(value)
-
-    def close(self, **kwargs):
         for issue in self.preference_history:
-            with open("{0}/issue.{1}.csv".format(self.output_dir, issue), 'w') as csv_file:
+            with open("{0}/{1}.csv".format(self.output_directory, issue), 'w') as csv_file:
                 writer = csv.writer(csv_file, delimiter=';', lineterminator='\n')
+
+                self.issue_obj = self.model_ref.issues[issue]  # type: Issue
 
                 heading = ["rnd-" + str(x) for x in range(len(self.voting_history[issue]["nbs"]))]
 
-                writer.writerow([issue])
+                writer.writerow([self.issue_obj.name, self.issue_obj.lower, self.issue_obj.upper])
                 writer.writerow(["Overview issue"])
-                writer.writerow(["round","nbs","voting nbs","nbs var", "vot vat"])
+                writer.writerow(["round", "nbs", "voting nbs", "nbs var", "vot vat"])
 
                 preference_nbs = self.preference_history[issue]["nbs"]
                 del self.preference_history[issue]["nbs"]
@@ -115,31 +123,38 @@ class HistoryWriter(Observer):
                 del self.voting_loss[issue]["nbs"]
 
                 for x in range(len(preference_nbs)):
-
-                    row = ["rn-" + str(x)]
-                    row.append(self.number_value(preference_nbs[x]))
-                    row.append(self.number_value(voting_nbs[x]))
-                    row.append(self.number_value(preference_nbs_var[x]))
-                    row.append(self.number_value(voting_nbs_var[x]))
-                    writer.writerow(row)
+                    writer.writerow(
+                        ["rn-" + str(x), self._number_value(preference_nbs[x]), self._number_value(voting_nbs[x]),
+                         self._number_value(preference_nbs_var[x]), self._number_value(voting_nbs_var[x])])
 
                 writer.writerow([])
                 writer.writerow(["Preference development NBS and all actors"])
                 writer.writerow(["actor"] + heading)
 
-                writer.writerow(["nbs"] + preference_nbs)
+                plt.clf()
+                nbs_values = self._number_list_value(preference_nbs)
+
+                writer.writerow(["nbs"] + nbs_values)
+
+                plt.plot(nbs_values, label='nbs')
 
                 for key, value in self.preference_history[issue].items():
-                    writer.writerow([key] + value)
+                    values = self._number_list_value(value)
+                    writer.writerow([key] + values)
+                    plt.plot(values, label=self.model_ref.actors[key].name)
+
+                plt.legend(loc='upper left')
+                plt.title(self.issue_obj)
+                plt.savefig('{0}/{1}.png'.format(self.output_directory, self.issue_obj.name))
 
                 writer.writerow([])
                 writer.writerow(["Voting development NBS and all actors"])
                 writer.writerow(["actor"] + heading)
 
-                writer.writerow(["nbs"] + voting_nbs)
+                writer.writerow(["nbs"] + self._number_list_value(voting_nbs))
 
                 for key, value in self.voting_history[issue].items():
-                    writer.writerow([key] + value)
+                    writer.writerow([key] + self._number_list_value(value))
 
                 writer.writerow([])
                 writer.writerow(["Preference variance and loss of all actors"])
@@ -156,3 +171,11 @@ class HistoryWriter(Observer):
 
                 for key, value in self.voting_loss[issue].items():
                     writer.writerow([key] + value)
+
+    def _number_value(self, value):
+        return self.issue_obj.de_normalize(value)
+
+    def _number_list_value(self, values):
+        for _, value in enumerate(values):
+            values[_] = self.issue_obj.de_normalize(value)
+        return values
