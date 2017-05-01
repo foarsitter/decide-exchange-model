@@ -1,4 +1,4 @@
-
+import os
 import threading
 import tkinter as tk
 import xml.etree.cElementTree as ET
@@ -9,10 +9,11 @@ from tkinter import messagebox
 from tkinter import ttk
 
 from model.base import AbstractModel
+from model.helpers import csvParser
 from model.helpers.helpers import ModelLoop
 from model.observers.exchanges_writer import ExchangesWriter
 from model.observers.externalities import Externalities
-from model.observers.history_writer import HistoryWriter
+from model.observers.issue_development import IssueDevelopment
 from model.observers.logger import Logger
 from model.observers.observer import Observable, Observer
 
@@ -133,7 +134,7 @@ class CSVFrame(tk.Frame):
         # an actor has only a name
 
         self.create_heading(["Actors"])
-        self.create_row(model.actors.values())
+        self.create_row([x.name for x in model.actors.values()])
 
         self.create_row([""])
 
@@ -152,19 +153,24 @@ class CSVFrame(tk.Frame):
 
         for key, actor_issues in model.actor_issues.items():
             for actor_issue in actor_issues.values():
-                self.create_row([actor_issue.actor_name, actor_issue.issue_name, int(actor_issue.position), actor_issue.salience, actor_issue.power])
+                self.create_row(
+                    [actor_issue.actor_name, actor_issue.issue_name, int(actor_issue.position), actor_issue.salience,
+                     actor_issue.power])
 
     def create_row(self, values):
 
         for __, value in enumerate(values):
-            tk.Label(self.scrolled_window.scrollwindow, text=value, relief=tk.GROOVE).grid(row=self.row_pointer, column=__, sticky=tk.W + tk.E)
+            tk.Label(self.scrolled_window.scrollwindow, text=value, relief=tk.GROOVE).grid(row=self.row_pointer,
+                                                                                           column=__,
+                                                                                           sticky=tk.W + tk.E)
 
         self.row_pointer += 1
 
     def create_heading(self, values):
 
         for __, value in enumerate(values):
-            tk.Label(self.scrolled_window.scrollwindow, text=value, relief=tk.GROOVE, font="Verdana 10 bold").grid(row=self.row_pointer, column=__, sticky=tk.W + tk.E)
+            tk.Label(self.scrolled_window.scrollwindow, text=value, relief=tk.GROOVE, font="Verdana 10 bold").grid(
+                row=self.row_pointer, column=__, sticky=tk.W + tk.E)
 
         self.row_pointer += 1
 
@@ -189,6 +195,17 @@ class MainApplication(tk.Frame):
         self.iterations = tk.StringVar()
         self.iterations.set(10)
         self.counter = tk.IntVar()
+        self.repetitions = tk.IntVar()
+        self.repetitions.set(1)
+
+        self.salience_weight = tk.DoubleVar()
+        self.salience_weight.set(0.4)
+
+        self.fixed_weight = tk.DoubleVar()
+        self.fixed_weight.set(0.1)
+
+        self.voting_positions = tk.IntVar()
+        self.voting_positions.set(0)
 
         # load settings from xml file
         self.load_settings()
@@ -219,6 +236,15 @@ class MainApplication(tk.Frame):
         r2 = ttk.Radiobutton(parent, text="Random Exchange Rate", variable=self.model, value="random")
         r2.grid(row=self.row(), column=1, sticky=tk.W)
 
+        self.entry_row("Repetitions (Random only)", self.repetitions)
+        self.entry_row("Salience Weight", self.salience_weight)
+        self.entry_row("Fixed Weight", self.fixed_weight)
+
+        row = self.row()
+        self.label("", row=row)
+        self.run_btn = ttk.Checkbutton(parent, text="Show voting positions", variable=self.voting_positions)
+        self.run_btn.grid(row=row, column=1, sticky=tk.W)
+
         row = self.row()
         self.label("", row=row)
         self.run_btn = ttk.Button(parent, text="Run", command=self.run_model)
@@ -232,7 +258,8 @@ class MainApplication(tk.Frame):
         self.progress_dialog = tk.Toplevel(self.parent)
         tk.Label(self.progress_dialog, text="Progress").pack(side=tk.TOP)
 
-        ttk.Progressbar(self.progress_dialog, orient="horizontal", length=400, mode="determinate", variable=self.counter, maximum=maximum).pack(side=tk.TOP)
+        ttk.Progressbar(self.progress_dialog, orient="horizontal", length=400, mode="determinate",
+                        variable=self.counter, maximum=maximum).pack(side=tk.TOP)
 
         center(self.progress_dialog)
 
@@ -242,8 +269,7 @@ class MainApplication(tk.Frame):
         if dialog:
             self.input_file.set(dialog.name)
 
-            model = model.base.AbstractModel()
-
+            model = AbstractModel()
 
             from model.helpers import csvParser
             csv_parser = csvParser.Parser(model)
@@ -251,7 +277,7 @@ class MainApplication(tk.Frame):
             model = csv_parser.read(self.input_file.get())
 
             table = CSVFrame(tk.Toplevel())
-            table.create_grid_table(model, csv_parser.issues)
+            table.create_grid_table(model, model.issues)
 
     def output(self):
         selected_dir = filedialog.askdirectory(initialdir=self.output_dir)
@@ -290,10 +316,19 @@ class MainApplication(tk.Frame):
 
         if os.path.isfile("model-settings.xml"):
 
-            for elm in ET.parse("model-settings.xml").getroot():
+            try:
+                for elm in ET.parse("model-settings.xml").getroot():
+                    if elm.tag in self.__dict__:
+                        self.__dict__[elm.tag].set(elm.text)
+            except ET.ParseError:
+                print('Invalid xml')
 
-                if elm.tag in self.__dict__:
-                    self.__dict__[elm.tag].set(elm.text)
+    def entry_row(self, label, text_variable):
+
+        row = self.row()
+        self.label(label, row=row)
+        self.E1 = ttk.Entry(self.parent, textvariable=text_variable)
+        self.E1.grid(row=row, column=1, sticky=tk.W)
 
     def to_xml(self):
 
@@ -304,7 +339,7 @@ class MainApplication(tk.Frame):
         for key, value in self.__dict__.items():
             if isinstance(value, tk.Variable) and key not in ignore:
                 child = ET.Element(key)
-                child.text = value.get()
+                child.text = str(value.get())
                 element.append(child)
 
         return element
@@ -325,50 +360,55 @@ class MainApplication(tk.Frame):
 
     def run(self):
 
+        start_time = datetime.now()
+
         if self.model.get() == "equal":
             from model.equalgain import EqualGainModel as Model
         else:
             from model.randomrate import RandomRateModel as Model
 
         # The event handlers for logging and writing the results to the disk.
-        event_handler = Observable()
-        Logger(event_handler)
 
-        start_time = datetime.now()
-
-        event_handler.notify(Observable.LOG, message="Start calculation at {0}".format(start_time))
+        output_directory = os.path.join(self.output_dir.get(), self.input_file.get().split("/")[-1].split(".")[0])
 
         model = Model()
+        event_handler = Observable(model_ref=model, output_directory=output_directory)
+        event_handler.log(message="Start calculation at {0}".format(start_time))
 
-        from model.helpers import csvParser
-        csv_parser = csvParser.Parser(model)
+        csv_parser = csvParser.Parser(model_ref=model)
 
-        data_set_name = os.path.join(self.output_dir.get(), self.input_file.get().split("/")[-1].split(".")[0])
+        if not os.path.isdir(output_directory):
+            os.mkdir(output_directory)
 
-        if not os.path.isdir(data_set_name):
-            os.mkdir(data_set_name)
+        Externalities(event_handler)
+        ExchangesWriter(event_handler)
+        IssueDevelopment(event_handler)
 
-        model = csv_parser.read(self.input_file.get())
+        event_handler.log(message="Parsed file {0}".format(self.input_file.get()))
 
-        Externalities(event_handler, model, data_set_name)
-        ExchangesWriter(event_handler, model, data_set_name)
-        HistoryWriter(event_handler, model, data_set_name)
+        event_handler.before_repetitions()
 
-        event_handler.notify(Observable.LOG, message="Parsed file {0}".format(self.input_file.get()))
+        for repetition in range(int(self.repetitions.get())):
 
-        model_loop = ModelLoop(model, event_handler)
+            model = csv_parser.read(self.input_file.get())
 
-        for iteration_number in range(int(self.iterations.get())):
+            model_loop = ModelLoop(model, event_handler, repetition)
 
-            if not self.interrupt:
-                model_loop.loop()
-                self.queue.put(iteration_number)
-            else:
-                print("interrupted")
-                break
+            event_handler.before_iterations(repetition)
 
-        event_handler.notify(Observable.CLOSE, model=self.model)
-        event_handler.notify(Observable.LOG, message="Finished in {0}".format(datetime.now() - start_time))
+            for iteration_number in range(int(self.iterations.get())):
+
+                if not self.interrupt:
+                    model_loop.loop()
+                    self.queue.put(iteration_number)
+                else:
+                    print("interrupted")
+                    break
+
+            event_handler.after_iterations(repetition)
+        event_handler.after_repetitions()
+
+        event_handler.log(message="Finished in {0}".format(datetime.now() - start_time))
 
         self.stop_periodic_call()
 
@@ -395,10 +435,6 @@ class MainApplication(tk.Frame):
 
 
 if __name__ == "__main__":
-
-    import sys,os
-    sys.path.append(os.getcwd())
-    
     root = tk.Tk()
     app = MainApplication(root)
 

@@ -253,3 +253,14 @@ def position_by_nbs(actor_issues, exchange_actor, nbs, denominator):
             sum_c_s_x += actor_issue.salience * actor_issue.power * actor_issue.position
 
     return (nbs * denominator - sum_c_s_x) / (exchange_actor.c * exchange_actor.s)
+
+
+def average_and_variance(values: list):
+
+    count = len(values)
+    average = sum(values) / count
+
+    variance = sum([(x - average)**2 for x in values]) / count
+
+    return average, variance
+

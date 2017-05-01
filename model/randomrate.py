@@ -267,16 +267,6 @@ class RandomRateModel(AbstractModel):
 
                     return self.highest_gain()
 
-        # second = {}
-        # third = {}
-        # fourth = {}
-
-        # # diagnostic
-        # for actor in exchange_actors_by_gain.keys():
-        #     for gain in exchange_actors_by_gain[actor].keys():
-        #         if len(exchange_actors_by_gain[actor][gain]) > 1:
-        #             print('There are equal gains!')
-
     def _lower_highest_gain(self, highest, second):
         """
         Lowers the highest gain to de second gain 

@@ -23,7 +23,7 @@ class Observer(object):
     def update(self, observable, notification_type, **kwargs):
         pass
 
-    def before_loop(self, iteration: int, repetition: int = None):
+    def before_loop(self, iteration: int, repetition: int):
         """
         The start event.
         :param iteration: int the current iteration number
@@ -31,16 +31,25 @@ class Observer(object):
         """
         pass
 
-    def after_loop(self, realized: List[AbstractExchange], iteration: int):
+    def finish_round(self, realized: List[AbstractExchange], iteration: int, repetition: int):
         pass
 
-    def end_loop(self, iteration: int):
+    def after_loop(self, realized: List[AbstractExchange], iteration: int, repetition: int):
         pass
 
-    def before_execution(self, repetition):
+    def end_loop(self, iteration: int, repetition: int):
         pass
 
-    def after_execution(self, repetition):
+    def before_iterations(self, repetition):
+        pass
+
+    def after_iterations(self, repetition):
+        pass
+
+    def before_repetitions(self):
+        pass
+
+    def after_repetitions(self):
         pass
 
     @staticmethod
@@ -62,8 +71,7 @@ class Observer(object):
     def removed_exchanges(self, exchanges: List[AbstractExchange]):
         pass
 
-    def finish_round(self, realized: List[AbstractExchange], iteration: int):
-        pass
+
 
 
 class Observable(Observer):
@@ -87,18 +95,26 @@ class Observable(Observer):
         for observer in self.__observers:
             observer.execute_exchange(exchange)
 
-    def after_loop(self, realized: List[AbstractExchange], iteration: int):
+    def after_loop(self, realized: List[AbstractExchange], iteration: int, repetition: int):
         for observer in self.__observers:
-            observer.after_loop(realized, iteration)
+            observer.after_loop(realized, iteration, repetition)
 
-    def end_loop(self, iteration: int):
+    def end_loop(self, iteration: int, repetition: int):
         for observer in self.__observers:
-            observer.end_loop(iteration)
+            observer.end_loop(iteration, repetition)
 
-    def before_execution(self, repetition):
+    def before_iterations(self, repetition):
         for observer in self.__observers:
-            observer.before_execution(repetition)
+            observer.before_iterations(repetition)
 
-    def after_execution(self, repetition):
+    def after_iterations(self, repetition):
         for observer in self.__observers:
-            observer.after_execution(repetition)
+            observer.after_iterations(repetition)
+
+    def after_repetitions(self):
+        for observer in self.__observers:
+            observer.after_repetitions()
+
+    def before_repetitions(self):
+        for observer in self.__observers:
+            observer.before_repetitions()

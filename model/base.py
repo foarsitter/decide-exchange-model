@@ -178,7 +178,7 @@ class AbstractExchangeActor(object):
         self.x_demand = model_ref.get_value(actor, demand_issue, "x")
         self.is_highest_gain = False
         self.start_position = self.x
-
+        self.model_ref = model_ref
         self.demand_issue = demand_issue
         self.supply_issue = supply_issue
 
@@ -223,8 +223,8 @@ class AbstractExchangeActor(object):
         Calculate the new starting postion for the next round
         :return:
         """
-        sw = Decimal(0.4)
-        fw = Decimal(0.1)
+        sw = Decimal(self.model_ref.SALIENCE_WEIGHT)
+        fw = Decimal(self.model_ref.FIXED_WEIGHT)
         swv = (1 - self.s) * sw * self.y
         fwv = fw * self.y
         pv = (1 - (1 - self.s) * sw - fw) * self.start_position
@@ -633,6 +633,10 @@ class AbstractExchange(object):
 
 
 class AbstractModel(object):
+
+    SALIENCE_WEIGHT = 0.4
+    FIXED_WEIGHT = 0.1
+
     def __init__(self):
         self.issues = {}
         self.actor_issues = defaultdict(dict)

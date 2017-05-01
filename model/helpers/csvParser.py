@@ -24,10 +24,10 @@ class Parser:
     rSalience = 4
     rPower = 5
 
-    data = None
+    model_ref = None
 
     def __init__(self, model_ref):
-        self.data = model_ref
+        self.model_ref = model_ref
 
     def read(self, filename):
         """
@@ -60,16 +60,16 @@ class Parser:
 
         self.create_issues()
 
-        for issue_id, v in self.data.actor_issues.items():
+        for issue_id, v in self.model_ref.actor_issues.items():
 
-            issue = self.data.issues[issue_id]
+            issue = self.model_ref.issues[issue_id]
 
-            for actor_name, value in self.data.actor_issues[issue_id].items():
-                normalized_position = issue.normalize(self.data.actor_issues[issue_id][actor_name].position)
+            for actor_name, value in self.model_ref.actor_issues[issue_id].items():
+                normalized_position = issue.normalize(self.model_ref.actor_issues[issue_id][actor_name].position)
 
-                self.data.actor_issues[issue_id][actor_name].position = normalized_position
+                self.model_ref.actor_issues[issue_id][actor_name].position = normalized_position
 
-        return self.data
+        return self.model_ref
 
     def parse_row_actor(self, row):
         """
@@ -77,14 +77,14 @@ class Parser:
         :param row:
         """
         from model.helpers.helpers import create_key
-        self.data.add_actor(create_key(row[1]))
+        self.model_ref.add_actor(create_key(row[1]))
 
     def parse_row_issue(self, row):
         """
         The csv row
         :param row:
         """
-        self.data.add_issue(row[1])
+        self.model_ref.add_issue(row[1])
 
     def parse_row_m(self, row):
         """
@@ -94,7 +94,7 @@ class Parser:
         from model.helpers.helpers import create_key
         issue_id = create_key(row[1])
 
-        issue = self.data.issues[issue_id]
+        issue = self.model_ref.issues[issue_id]
 
         value = Decimal(row[2].replace(",", "."))
 
@@ -105,18 +105,18 @@ class Parser:
         """
         Create the issues
         """
-        for issue_id, actor_issues in self.data.actor_issues.items():
+        for issue_id, actor_issues in self.model_ref.actor_issues.items():
 
-            if issue_id in self.data.issues:
+            if issue_id in self.model_ref.issues:
 
-                if self.data.issues[issue_id].upper is None or self.data.issues[issue_id].lower is None:
+                if self.model_ref.issues[issue_id].upper is None or self.model_ref.issues[issue_id].lower is None:
 
                     for actor_name, actor_issue in actor_issues.items():
-                        self.data.issues[issue_id].expand_lower(actor_issue.position)
-                        self.data.issues[issue_id].expand_upper(actor_issue.position)
+                        self.model_ref.issues[issue_id].expand_lower(actor_issue.position)
+                        self.model_ref.issues[issue_id].expand_upper(actor_issue.position)
 
-                self.data.issues[issue_id].calculate_delta()
-                self.data.issues[issue_id].calculate_step_size()
+                self.model_ref.issues[issue_id].calculate_delta()
+                self.model_ref.issues[issue_id].calculate_step_size()
             else:
                 raise Exception('fix this!')
 
@@ -130,6 +130,6 @@ class Parser:
         actor_id = create_key(row[self.rActor])
         issue_id = create_key(row[self.rIssue])
 
-        self.data.add_actor_issue(actor_id=actor_id, issue_id=issue_id, power=row[self.rPower].replace(",", "."),
-                                  salience=row[self.rSalience].replace(",", "."),
-                                  position=row[self.rPosition].replace(",", "."))
+        self.model_ref.add_actor_issue(actor_id=actor_id, issue_id=issue_id, power=row[self.rPower].replace(",", "."),
+                                       salience=row[self.rSalience].replace(",", "."),
+                                       position=row[self.rPosition].replace(",", "."))

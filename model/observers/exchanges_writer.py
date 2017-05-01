@@ -15,12 +15,15 @@ class ExchangesWriter(Observer):
     def __init__(self, observable: Observable):
         super().__init__(observable)
 
-    def _create_directory(self):
-        if not os.path.exists("{0}/exchanges".format(self.output_directory)):
-            os.makedirs("{0}/exchanges".format(self.output_directory))
+    def _create_directory(self, repetition: int):
+        if not os.path.exists("{0}/exchanges/{1}".format(self.output_directory, repetition)):
+            os.makedirs("{0}/exchanges/{1}".format(self.output_directory, repetition))
 
-        if not os.path.exists("{0}/exchanges/initial".format(self.output_directory)):
-            os.makedirs("{0}/exchanges/initial".format(self.output_directory))
+        if not os.path.exists("{0}/exchanges/{1}/initial".format(self.output_directory, repetition)):
+            os.makedirs("{0}/exchanges/{1}/initial".format(self.output_directory, repetition))
+
+    def before_iterations(self, repetition):
+        self._create_directory(repetition)
 
     def before_loop(self, iteration: int, repetition: int = None):
         """
@@ -28,21 +31,19 @@ class ExchangesWriter(Observer):
         :param iteration: 
         :param repetition:
         """
-        self._create_directory()
 
         self.model_ref.sort_exchanges()
 
         writer = CsvWriter()
-        writer.write('{0}/exchanges/initial/before.{1}.csv'.format(self.output_directory, iteration),
+        writer.write('{0}/exchanges/{2}/initial/before.{1}.csv'.format(self.output_directory, iteration, repetition),
                      self.model_ref.exchanges)
 
-    def after_loop(self, realized: List[AbstractExchange], iteration: int):
+    def after_loop(self, realized: List[AbstractExchange], iteration: int, repetition: int):
         """
         Writes al the executed exchanges to the filesystem
+        :param repetition: 
         :param realized: 
         :param iteration:
         """
-        self._create_directory()
-
         writer = CsvWriter()
-        writer.write("{0}/exchanges/round.{1}.csv".format(self.output_directory, iteration + 1), realized)
+        writer.write("{0}/exchanges/{2}/round.{1}.csv".format(self.output_directory, iteration + 1, repetition), realized)

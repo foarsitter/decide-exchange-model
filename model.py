@@ -5,7 +5,7 @@ from model.helpers import helpers, csvParser
 from model.helpers.helpers import ModelLoop
 from model.observers.exchanges_writer import ExchangesWriter
 from model.observers.externalities import Externalities
-from model.observers.history_writer import HistoryWriter
+from model.observers.issue_development import IssueDevelopment
 from model.observers.observer import Observable
 
 if __name__ == "__main__":
@@ -38,21 +38,23 @@ if __name__ == "__main__":
 
     Externalities(eventHandler)
     ExchangesWriter(eventHandler)
-    HistoryWriter(eventHandler)
+    IssueDevelopment(eventHandler)
 
     eventHandler.log(message="Parsed file".format(input_file))
 
-    model_loop = ModelLoop(model, eventHandler)
+    eventHandler.before_repetitions()
 
     for repetition in range(args.repetitions):
 
-        eventHandler.before_execution(repetition)
+        model_loop = ModelLoop(model, eventHandler, repetition)
+
+        eventHandler.before_iterations(repetition)
 
         for iteration_number in range(args.rounds):
             model_loop.loop()
 
-        eventHandler.after_execution(repetition)
+        eventHandler.after_iterations(repetition)
 
-
+    eventHandler.after_repetitions()
 
     eventHandler.log(message="Finished in {0}".format(datetime.now() - startTime))

@@ -16,7 +16,6 @@ class Externalities(Observer):
 
     def __init__(self, observable: Observable):
         super().__init__(observable)
-        self._setup()
 
     def _setup(self):
         """
@@ -25,38 +24,6 @@ class Externalities(Observer):
         self.connections = {}
         self.actors = defaultdict(lambda: defaultdict(int))
         self.exchanges = []
-
-    def execute_exchange(self, exchange: AbstractExchange):
-        """
-        Calculations of the externalities performed each round after an exchange is exectued
-        :param exchange: AbstractExchange        
-        """
-
-        issue_set_key = "{0}-{1}".format(exchange.p, exchange.q)
-
-        # an combination only exists once, so it can happen that we have to change the sequence of the keys
-        if issue_set_key not in self.model_ref.groups:
-            issue_set_key = "{0}-{1}".format(exchange.q, exchange.p)
-        # end if
-
-        inner = ['a', 'd']
-        outer = ['b', 'c']
-
-        # switch the inner and outer if this is not the case
-        if exchange.i.group != "a" and exchange.i.group != "d":
-            inner, outer = outer, inner
-        # end if
-
-        externalities = self._calculate_externalities(self.model_ref, exchange)
-
-        exchange_set = self._add_exchange_set(externalities, exchange, self.model_ref, inner, issue_set_key)
-
-        self._add_or_update_issue_set(issue_set_key, exchange, exchange_set)
-
-        self.exchanges.append(
-            [exchange.i.actor_name, exchange.i.supply_issue, exchange.j.actor_name, exchange.j.supply_issue,
-             exchange_set["ip"],
-             exchange_set["in"], exchange_set["op"], exchange_set["on"], exchange_set["own"]])
 
     def _add_exchange_set(self, externalities, realized, model, inner, issue_set_key):
         """
@@ -124,12 +91,12 @@ class Externalities(Observer):
 
         return results
 
-    def _create_directories(self):
+    def _create_directories(self, repetition):
         """
         Helper for creating the output directory        
         """
-        if not os.path.exists("{0}/externalities".format(self.output_directory)):
-            os.makedirs("{0}/externalities".format(self.output_directory))
+        if not os.path.exists("{0}/externalities/{1}".format(self.output_directory, repetition)):
+            os.makedirs("{0}/externalities/{1}".format(self.output_directory, repetition))
 
     def _ordered_actors(self):
         """
@@ -137,15 +104,50 @@ class Externalities(Observer):
         """
         return collections.OrderedDict(sorted(self.actors.items())).items()
 
-    def end_loop(self, iteration: int):
+    def execute_exchange(self, exchange: AbstractExchange):
         """
-        Write the data to the filesystem        
+        Calculations of the externalities performed each round after an exchange is exectued
+        :param exchange: AbstractExchange        
+        """
+
+        issue_set_key = "{0}-{1}".format(exchange.p, exchange.q)
+
+        # an combination only exists once, so it can happen that we have to change the sequence of the keys
+        if issue_set_key not in self.model_ref.groups:
+            issue_set_key = "{0}-{1}".format(exchange.q, exchange.p)
+        # end if
+
+        inner = ['a', 'd']
+        outer = ['b', 'c']
+
+        # switch the inner and outer if this is not the case
+        if exchange.i.group != "a" and exchange.i.group != "d":
+            inner, outer = outer, inner
+        # end if
+
+        externalities = self._calculate_externalities(self.model_ref, exchange)
+
+        exchange_set = self._add_exchange_set(externalities, exchange, self.model_ref, inner, issue_set_key)
+
+        self._add_or_update_issue_set(issue_set_key, exchange, exchange_set)
+
+        self.exchanges.append(
+            [exchange.i.actor_name, exchange.i.supply_issue, exchange.j.actor_name, exchange.j.supply_issue,
+             exchange_set["ip"],
+             exchange_set["in"], exchange_set["op"], exchange_set["on"], exchange_set["own"]])
+
+    def before_loop(self, iteration: int, repetition: int):
+        self._setup()
+        self._create_directories(repetition)
+
+    def end_loop(self, iteration: int, repetition: int):
+        """
+        Write the data to the filesystem
         :param iteration: int the current iteration round 
         :return: 
         """
-        self._create_directories()
 
-        with open("{0}/externalities/externalities.{1}.csv".format(self.output_directory, iteration + 1), 'w') as csv_file:
+        with open("{0}/externalities/{2}/externalities.{1}.csv".format(self.output_directory, iteration + 1, repetition), 'w') as csv_file:
             writer = csv.writer(csv_file, delimiter=';', lineterminator='\n')
 
             # headings
@@ -172,5 +174,4 @@ class Externalities(Observer):
             for realizations in self.exchanges:
                 writer.writerow(realizations)
 
-        # after each round reset the state of the object.
-        self._setup()
+

@@ -34,10 +34,11 @@ def create_key(value):
 
 
 class ModelLoop(object):
-    def __init__(self, model, event_handler: 'Observable'):
+    def __init__(self, model, event_handler: 'Observable', repetition: int):
         self.model = model
         self.event_handler = event_handler
         self.iteration_number = 0
+        self.repetition_number = repetition
 
     def loop(self):
         self.model.calc_nbs()
@@ -48,7 +49,7 @@ class ModelLoop(object):
         realized = []
 
         # call the event for beginning the loop
-        self.event_handler.before_loop(self.iteration_number)
+        self.event_handler.before_loop(self.iteration_number, self.repetition_number)
 
         while len(self.model.exchanges) > 0:
 
@@ -65,7 +66,7 @@ class ModelLoop(object):
                 print(realize_exchange)
 
         # call the event for ending the loop
-        self.event_handler.after_loop(realized=realized, iteration=self.iteration_number)
+        self.event_handler.after_loop(realized=realized, iteration=self.iteration_number, repetition=self.repetition_number)
 
         for exchange in realized:
             self.model.actor_issues[exchange.i.supply_issue][exchange.i.actor_name].position = exchange.i.y
@@ -73,7 +74,7 @@ class ModelLoop(object):
 
         # calc the new NBS on the voting positions and fire the event for ending this loop
         self.model.calc_nbs()
-        self.event_handler.end_loop(iteration=self.iteration_number)
+        self.event_handler.end_loop(iteration=self.iteration_number, repetition=self.repetition_number)
 
         # calculate for each realized exchange there new start positions
         for exchange in realized:
