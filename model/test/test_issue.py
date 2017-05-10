@@ -22,9 +22,9 @@ class TestIssue(TestCase):
         z = Issue(name="test", lower=0, upper=-60)
 
         self.assertEqual(z.step_size, 100 / -60)
-        self.assertEqual(z.de_normalize(50), -30)
-        self.assertEqual(z.de_normalize(0), 0)
-        self.assertEqual(z.de_normalize(100), -60)
+        self.assertAlmostEqual(z.de_normalize(50), -30, delta=1e-10)
+        self.assertAlmostEqual(z.de_normalize(0), 0, delta=1e-10)
+        self.assertAlmostEqual(z.de_normalize(100), -60, delta=1e-10)
 
         # case with a different starting position
 
