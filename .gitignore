@@ -1,6 +1,4 @@
-
 data/
 .idea/
 model-settings.xml
-
-
+*.pyc

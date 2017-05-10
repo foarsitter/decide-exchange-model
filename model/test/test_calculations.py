@@ -49,7 +49,7 @@ class TestNBSCalculations(TestCase):
     def test_by_absolute_move(self):
         csv = csvParser.Parser(self.model)
 
-        model = csv.read("data/input/CoP21.csv")
+        model = csv.read("data/input/sample_data.txt")
 
         # /	actor	issue	position	salience	power
         # D	China	financevol	100	0.5	1
@@ -57,29 +57,29 @@ class TestNBSCalculations(TestCase):
         # D	China	eaa	0	0.65	1
         # D	USA	eaa	100	0.4	1
 
-        i = model.actors["usa"]
-        j = model.actors["china"]
-        p = "financevol"
-        q = "eaa"
+        i = model.actors["wcentr"]
+        j = model.actors["willems"]
+        p = "tolheffingbinnenstad"
+        q = "extrainvestering"
         e = EqualGainExchange(i, j, p, q, model, groups=['a', 'd'])
 
         dp = by_absolute_move(model.actor_issues[e.i.supply_issue], e.i)
         dq = by_exchange_ratio(e.i, dp)
 
-        self.assertAlmostEqual(dp, Decimal(10.309), delta=0.001)
-        self.assertAlmostEqual(dq, Decimal(9.021), delta=0.001)
+        self.assertAlmostEqual(dp, Decimal(13.15789473684210526315789474), delta=0.001)
+        self.assertAlmostEqual(dq, Decimal(10.38781163434903047091412743), delta=0.001)
 
         move = reverse_move(model.actor_issues[e.j.supply_issue], exchange_ratio=dq, actor=e.j)
 
-        self.assertAlmostEqual(move, Decimal(89.214), delta=0.001)
+        self.assertAlmostEqual(move, Decimal(61.05117364047237206589881911), delta=0.001)
 
-        self.assertLess(move, e.i.x - e.j.x_demand)
+        self.assertLess(move, abs(e.i.x - e.j.x_demand))
 
         dp_1 = by_absolute_move(model.actor_issues[e.j.supply_issue], e.j)
         dq_1 = by_exchange_ratio(e.j, dp)
 
         move_1 = reverse_move(model.actor_issues[e.i.supply_issue], e.i, dq_1)
-        self.assertGreater(move_1, 100)
+        self.assertGreater(move_1, abs(e.i.x - e.j.x_demand))
 
     def test_sumSaliencePower(self):
         # a1 = ActorIssue("a", "p", 50, 0.75, 0.75)
@@ -91,17 +91,17 @@ class TestNBSCalculations(TestCase):
     def test_externalities(self):
         csv = csvParser.Parser(self.model)
 
-        model = csv.read("data/input/CoP21.csv")
+        model = csv.read("data/input/sample_data.txt")
 
         model.calc_nbs()
         model.determine_positions()
         model.calc_combinations()
         model.determine_groups()
 
-        i = model.actors["usa"]
-        j = model.actors["china"]
-        p = "financevol"
-        q = "eaa"
+        i = model.actors["d66"]
+        j = model.actors["cda"]
+        p = "wanneertol"
+        q = "tolheffingbinnenstad"
         e = EqualGainExchange(i, j, p, q, model, groups=['a', 'd'])
 
         e.calculate()

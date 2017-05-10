@@ -9,9 +9,9 @@ class TestParser(TestCase):
         self.parser = csvParser.Parser(EqualGainModel())
 
     def test_read(self):
-        model = self.parser.read('data/input/data_short.csv')
+        model = self.parser.read('data/input/sample_data.txt')
 
-        self.assertEqual(len(model.actors), 15)
-        self.assertEqual(len(model.issues), 3)
-        self.assertEqual(len(model.actor_issues), 3)
-        self.assertEqual(len(model.actor_issues[model.issues['mrv'].id]), 15)
+        self.assertEqual(len(model.actors), 10)
+        self.assertEqual(len(model.issues), 6)
+        self.assertEqual(len(model.actor_issues), 6)
+        self.assertEqual(len(model.actor_issues[model.issues['tolheffingbinnenstad'].id]), 10)

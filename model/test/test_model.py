@@ -9,7 +9,7 @@ from model.helpers import csvParser
 class TestModel(TestCase):
     def setUp(self):
         csv = csvParser.Parser(EqualGainModel())
-        self.model = csv.read("data/input/data_short.csv")
+        self.model = csv.read("data/input/sample_data.txt")
         # self.model = csv.read("data\\CoP21.csv")
 
     def test_addActor(self):
@@ -37,21 +37,21 @@ class TestModel(TestCase):
             c = len(model.groups[k]["c"])
             d = len(model.groups[k]["d"])
 
-            self.assertEqual(sum([a, b, c, d]), 15)
+            self.assertEqual(sum([a, b, c, d]), 10)
 
             totalactor_issues += a * d
             totalactor_issues += b * c
 
-        self.assertEqual(totalactor_issues, 103)
+        self.assertEqual(totalactor_issues, 240)
 
         e = model.highest_gain()
 
-        self.assertAlmostEqual(e.gain, Decimal(1.128903122498), delta=1e-8)
+        self.assertAlmostEqual(e.gain, Decimal(1.973684210526315789473684214), delta=1e-8)
 
         # the delta is necessary for the random component by exchanges which have an equal gain.
         # in some cases the gain of the exchanges (two exchanges with each two (unique) actors) are the same.
         # we pick random the next exchange. Theoretically it is even possible to get more exchanges with the same gain
-        self.assertAlmostEqual(len(model.exchanges), 102, delta=2)
+        self.assertAlmostEqual(len(model.exchanges), 239, delta=2)
         realized = list()
         realized.append(e)
 
@@ -61,7 +61,7 @@ class TestModel(TestCase):
         model.remove_invalid_exchanges(e1)
         realized.append(e1)
 
-        self.assertAlmostEqual(e1.gain, Decimal(0.756186984), delta=1e-8)
+        self.assertAlmostEqual(e1.gain, Decimal(1.79263630876534102340553952), delta=1e-8)
 
         while len(model.exchanges) > 0:
             realize = model.highest_gain()
@@ -81,7 +81,7 @@ class TestModel(TestCase):
 
     def test_exchange_99(self):
         csv = csvParser.Parser(EqualGainModel())
-        model = csv.read("data/input/CoP21.csv")
+        model = csv.read("data/input/sample_data.txt")
 
         model.calc_nbs()  # tested in test_calculations.py#test_calc_nbs
 
@@ -94,7 +94,7 @@ class TestModel(TestCase):
         in_iteration = 0
 
         for exchange in model.exchanges:
-            if exchange.equal_str(i="EU28", q="financevol", j="AOSIS", p="amb2050"):
+            if exchange.equal_str(i="d66", q="tolheffingbinnenstad", j="cda", p="tolhoogte"):
                 exchange_99 = exchange
 
         while len(model.exchanges) > 0:
@@ -103,7 +103,7 @@ class TestModel(TestCase):
 
             founded_99 = False
             for exchange in model.exchanges:
-                if exchange.equal_str(i="EU28", q="financevol", j="AOSIS", p="amb2050"):
+                if exchange.equal_str(i="d66", q="tolheffingbinnenstad", j="cda", p="tolhoogte"):
                     founded_99 = True
 
             if not founded_99:
