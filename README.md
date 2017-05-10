@@ -1,9 +1,9 @@
-[![Build Status](https://travis-ci.org/foarsitter/equal-gain-python.svg?branch=master)](https://travis-ci.org/foarsitter/equal-gain-python)
-[![Code Climate](https://codeclimate.com/github/foarsitter/equal-gain-python/badges/gpa.svg)](https://codeclimate.com/github/foarsitter/equal-gain-python)
-[![Test Coverage](https://codeclimate.com/github/foarsitter/equal-gain-python/badges/coverage.svg)](https://codeclimate.com/github/foarsitter/equal-gain-python/coverage)
-[![Issue Count](https://codeclimate.com/github/foarsitter/equal-gain-python/badges/issue_count.svg)](https://codeclimate.com/github/foarsitter/equal-gain-python)
+[![Build Status](https://travis-ci.org/foarsitter/decide-exchange-model.svg?branch=master)](https://travis-ci.org/foarsitter/decide-exchange-model)
+[![Code Climate](https://codeclimate.com/github/foarsitter/decide-exchange-model/badges/gpa.svg)](https://codeclimate.com/github/foarsitter/decide-exchange-model)
+[![Test Coverage](https://codeclimate.com/github/foarsitter/decide-exchange-model/badges/coverage.svg)](https://codeclimate.com/github/foarsitter/decide-exchange-model/coverage)
+[![Issue Count](https://codeclimate.com/github/foarsitter/decide-exchange-model/badges/issue_count.svg)](https://codeclimate.com/github/foarsitter/decide-exchange-model)
 
-# equal-gain-python
+# decide-exchange-model
 Equal Gain Model implementation in Python
 
 There are no external packages needed to run this project. But, because of performance reasons, we recommend the use of python 3. In a view tests python3 results in a performance boost of 16 times compared to python2.
@@ -11,7 +11,7 @@ There are no external packages needed to run this project. But, because of perfo
 Run 'python model.py --help' for instructions
   
 # Documentation 
-The documentation can be found on https://foarsitter.github.io/equal-gain-python/build/html/
+The documentation can be found on https://foarsitter.github.io/decide-exchange-model/build/html/
 
 # Installation
 Make sure you have Python (3.5 or higher is recommend) installed.
