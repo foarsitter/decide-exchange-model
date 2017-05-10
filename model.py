@@ -15,6 +15,7 @@ if __name__ == "__main__":
     output_dir = args.output
 
     output_directory = output_dir + "/" + input_file.split("/")[-1].split(".")[0]
+    output_directory = output_directory + "/" + args.model
 
     if not os.path.isdir(output_directory):
         os.makedirs(output_directory)
@@ -34,8 +35,6 @@ if __name__ == "__main__":
 
     csvParser = csvParser.Parser(model)
 
-    model = csvParser.read(input_file)
-
     Externalities(eventHandler)
     ExchangesWriter(eventHandler)
     IssueDevelopment(eventHandler)
@@ -46,11 +45,14 @@ if __name__ == "__main__":
 
     for repetition in range(args.repetitions):
 
+        model = csvParser.read(input_file)
+
         model_loop = ModelLoop(model, eventHandler, repetition)
 
         eventHandler.before_iterations(repetition)
 
         for iteration_number in range(args.rounds):
+            print("round {0}.{1}".format(repetition, iteration_number))
             model_loop.loop()
 
         eventHandler.after_iterations(repetition)

@@ -111,14 +111,15 @@ class RandomRateExchange(AbstractExchange):
         # first we try to move j to the position of i on issue p
         # we start with the calculation for j
 
-        a = float(self.j.s_demand / self.i.s)
-        b = float(self.i.s_demand / self.j.s)
+        if not self.re_calc:
+            a = float(self.j.s_demand / self.i.s)
+            b = float(self.i.s_demand / self.j.s)
 
-        if b > a:
-            a, b = b, a
+            if b > a:
+                a, b = b, a
 
-        self.dp = Decimal(random.uniform(a, b))
-        self.dq = Decimal(random.uniform(a, b))
+            self.dp = Decimal(random.uniform(a, b))
+            self.dq = Decimal(random.uniform(a, b))
 
         self.i.move = calculations.reverse_move(self.model.actor_issues[self.i.supply_issue], self.i, self.dq)
         self.j.move = abs(self.i.x_demand - self.j.x)
@@ -190,82 +191,70 @@ class RandomRateModel(AbstractModel):
 
     def highest_gain(self):
 
-        exchange_actors = self._get_sorted_exchange_actor_list()
+        highest_exchanges_result_list = []
 
-        # place each ExchangeActor in a dict where al his exchanges are ordered by the utility
-        exchange_actors_by_gain = defaultdict(lambda: defaultdict(list))
+        while len(highest_exchanges_result_list) == 0 and len(self.exchanges) > 0:
 
-        # sort all the gains by actor in a dict
-        # so we can sort this DESC
-        # now its possible to check which gain is the next in line to be lowered.
-        # this is always the second element, because the first element is the highest gain.
-        exchange_actors_by_actor = defaultdict(list)
+            exchange_actors = self._get_sorted_exchange_actor_list()
 
-        highest = {}
-        exchange_by_key = defaultdict()
+            # place each ExchangeActor in a dict where al his exchanges are ordered by the utility
+            exchange_actors_by_gain = defaultdict(lambda: defaultdict(list))
 
-        highest_exchanges = []
+            # sort all the gains by actor in a dict
+            # so we can sort this DESC
+            # now its possible to check which gain is the next in line to be lowered.
+            # this is always the second element, because the first element is the highest gain.
+            exchange_actors_by_actor = defaultdict(list)
 
-        for exchange_actor in exchange_actors:  # type: RandomRateExchangeActor
+            highest = {}
+            exchange_by_key = defaultdict()
 
-            if exchange_actor.actor_name not in highest:
-                highest[exchange_actor.actor_name] = exchange_actor
+            for exchange_actor in exchange_actors:  # type: RandomRateExchangeActor
 
-                if exchange_actor.exchange.key not in exchange_by_key:
-                    exchange_by_key[exchange_actor.exchange.key] = exchange_actor.exchange
-                else:
-                    highest_exchanges.append(exchange_actor.exchange)
+                if exchange_actor.actor_name not in highest:
+                    highest[exchange_actor.actor_name] = exchange_actor
 
-            exchange_actors_by_actor[exchange_actor.actor_name].append(exchange_actor.eu)
-            exchange_actors_by_gain[exchange_actor.actor_name][exchange_actor.eu].append(exchange_actor)
+                    if exchange_actor.exchange.key not in exchange_by_key:
+                        exchange_by_key[exchange_actor.exchange.key] = exchange_actor.exchange
+                    else:
+                        self.remove_exchange_by_key(exchange_actor.exchange.key)
+                        return exchange_actor.exchange
 
-        if len(highest_exchanges) > 0:
-            #  we have exchanges that are for both actors the highest one
+                exchange_actors_by_actor[exchange_actor.actor_name].append(exchange_actor.eu)
+                exchange_actors_by_gain[exchange_actor.actor_name][exchange_actor.eu].append(exchange_actor)
 
-            # execute this exchange
-            # remove it from self.exchanges
-            # and start over with this function
-
-            return_value = highest_exchanges[0]  # TODO STOKMAN alle ruilen uitvoeren?
-
-            self.remove_exchange_by_key(return_value.key)
-            # print('Valid move {0}'.format(return_value))
-            return return_value
-        else:
             # we have the highest and second highest.
             # highest[key] needs to be lowered to second[key]
 
             for actor_name, values in exchange_actors_by_actor.items():
-                if len(values) > 1:
-                    highest = values[0]
-                    second_highest = self._find_first_element_not_equal(values)
+                    if len(values) > 1:
+                        highest = values[0]
+                        second_highest = self._find_first_element_not_equal(values)
 
-                    if second_highest is not None:
+                        if second_highest is not None:
 
-                        delta_eu = highest - second_highest
+                            delta_eu = highest - second_highest
 
-                        highest_exchanges = exchange_actors_by_gain[actor_name][highest]
+                            highest_exchanges = exchange_actors_by_gain[actor_name][highest]
 
-                        for highest_exchange_actor in highest_exchanges:
+                            for highest_exchange_actor in highest_exchanges:
 
-                            if delta_eu < 0:
-                                print('delta eu cannot be lower than zero')
+                                if delta_eu < 0:
+                                    print('delta eu cannot be lower than zero')
 
-                            highest_exchange = highest_exchange_actor.exchange  # type: RandomRateExchange
-                            opposite_actor_name = highest_exchange_actor.opposite_actor.actor_name
+                                highest_exchange = highest_exchange_actor.exchange  # type: RandomRateExchange
+                                opposite_actor_name = highest_exchange_actor.opposite_actor.actor_name
 
-                            if highest_exchange[actor_name].y == highest_exchange[opposite_actor_name].x_demand:
-                                highest_exchange[opposite_actor_name].recalculate(delta_eu, increase=True)
-                            elif highest_exchange[opposite_actor_name].y == highest_exchange[actor_name].x_demand:
-                                highest_exchange[actor_name].recalculate(delta_eu, increase=False)
-                            else:
-                                highest_exchange[opposite_actor_name].recalculate(delta_eu, increase=True)
+                                if highest_exchange[actor_name].y == highest_exchange[opposite_actor_name].x_demand:
+                                    highest_exchange[opposite_actor_name].recalculate(delta_eu, increase=True)
+                                elif highest_exchange[opposite_actor_name].y == highest_exchange[actor_name].x_demand:
+                                    highest_exchange[actor_name].recalculate(delta_eu, increase=False)
+                                else:
+                                    highest_exchange[opposite_actor_name].recalculate(delta_eu, increase=True)
 
-                            highest_exchange[opposite_actor_name].adjust_utility(delta_eu)
+                                highest_exchange[opposite_actor_name].adjust_utility(delta_eu)
 
-                            print(highest_exchange_actor)
 
-                    return self.highest_gain()
 
     def _lower_highest_gain(self, highest, second):
         """
@@ -313,7 +302,7 @@ class RandomRateModel(AbstractModel):
                 del self.exchanges[__]
                 return
 
-        raise Exception('item not in list')
+
 
     def _find_first_element_not_equal(self, exchange_utility_list: List[Decimal]):
 

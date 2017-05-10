@@ -224,7 +224,7 @@ class MainApplication(tk.Frame):
         tk.Label(parent, textvariable=self.output_dir).grid(row=self.row(), column=1, sticky=tk.W)
 
         row = self.row()
-        self.label("Iterations", row=row)
+        self.label("Negotiation rounds", row=row)
         self.E1 = ttk.Entry(parent, textvariable=self.iterations)
         self.E1.grid(row=row, column=1, sticky=tk.W)
 
@@ -236,7 +236,7 @@ class MainApplication(tk.Frame):
         r2 = ttk.Radiobutton(parent, text="Random Exchange Rate", variable=self.model, value="random")
         r2.grid(row=self.row(), column=1, sticky=tk.W)
 
-        self.entry_row("Repetitions (Random only)", self.repetitions)
+        self.entry_row("Model repetitions", self.repetitions)
         self.entry_row("Salience Weight", self.salience_weight)
         self.entry_row("Fixed Weight", self.fixed_weight)
 

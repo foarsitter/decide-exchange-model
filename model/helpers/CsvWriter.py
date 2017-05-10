@@ -46,32 +46,56 @@ class CsvWriter:
                 exchange.gain]
         else:
             return [
+
                 # the actors
                 exchange.i.actor_name,
                 exchange.i.supply_issue,
-                exchange.i.eu,
-                exchange.i.is_highest_gain,
-                exchange.j.actor_name,
-                exchange.j.supply_issue,
-                exchange.j.eu,
-                exchange.j.is_highest_gain,
-                # the move of i
+                exchange.i.c,
+                exchange.i.s / exchange.i.s_demand,
+                "-",
                 exchange.i.x,
                 exchange.i.move,
                 exchange.i.y,
                 exchange.i.opposite_actor.x_demand,
-                # the move of j
+                exchange.i.eu, exchange.dp,
+                "",
+                exchange.j.actor_name,
+                exchange.j.supply_issue,
+                exchange.j.c,
+                exchange.j.s / exchange.j.s_demand,
+                "-",
                 exchange.j.x,
                 exchange.j.move,
                 exchange.j.y,
                 exchange.j.opposite_actor.x_demand,
-                # other info.
-                exchange.dp,
-                exchange.dq,
-                exchange.i.nbs_0,
-                exchange.i.nbs_1,
-                exchange.j.nbs_0,
-                exchange.j.nbs_1]
+                exchange.j.eu, exchange.dq]
+
+                # # the actors
+                # exchange.i.actor_name,
+                # exchange.i.supply_issue,
+                # exchange.i.eu,
+                # exchange.i.is_highest_gain,
+                # exchange.j.actor_name,
+                # exchange.j.supply_issue,
+                # exchange.j.eu,
+                # exchange.j.is_highest_gain,
+                # # the move of i
+                # exchange.i.x,
+                # exchange.i.move,
+                # exchange.i.y,
+                # exchange.i.opposite_actor.x_demand,
+                # # the move of j
+                # exchange.j.x,
+                # exchange.j.move,
+                # exchange.j.y,
+                # exchange.j.opposite_actor.x_demand,
+                # # other info.
+                # exchange.dp,
+                # exchange.dq,
+                # exchange.i.nbs_0,
+                # exchange.i.nbs_1,
+                # exchange.j.nbs_0,
+                # exchange.j.nbs_1]
 
     @staticmethod
     def create_heading(exchange):
