@@ -3,6 +3,7 @@ import csv
 import copy
 import os
 from collections import defaultdict
+from itertools import chain
 from typing import List
 
 from model import calculations
@@ -255,7 +256,6 @@ class IssueDevelopment(Observer):
         Write all the results to a summary with the averages for all repetitions
         :return: 
         """
-        print("after")
 
         self._create_directories("summary")
 
@@ -265,7 +265,7 @@ class IssueDevelopment(Observer):
 
                 self.issue_obj = self.model_ref.issues[issue]  # type: Issue
 
-                heading = ["rnd-" + str(x) for x in range(len(self.preference_history_sum[issue]["nbs"]))]
+                heading = list(chain.from_iterable([("rnd-" + str(x) + " avg", "rnd-" + str(x) + " var") for x in range(len(self.preference_history_sum[issue]["nbs"]))]))
 
                 writer.writerow([self.issue_obj.name, self.issue_obj.lower, self.issue_obj.upper])
                 writer.writerow(["Overview issue"])
@@ -293,6 +293,9 @@ class IssueDevelopment(Observer):
                 _ = self._number_value
 
                 # NBS related data.
+                if matplotlib_loaded:
+                    plt.clf()
+
                 for x in range(len(preference_nbs)):
 
                     if self.write_voting_position:
@@ -301,6 +304,10 @@ class IssueDevelopment(Observer):
                         v = calculations.average_and_variance(voting_nbs[x])
                         pvar = calculations.average_and_variance(preference_nbs_var[x])
                         vvar = calculations.average_and_variance(voting_nbs_var[x])
+
+                        if matplotlib_loaded:
+                            plt.plot(p, label='nbs')
+                            plt.plot(pvar, label='nbs var')
 
                         writer.writerow(
                             ["rn-" + str(x), _(p[0]), _(p[1]), _(v[0]), _(v[1]), _(pvar[0]), _(pvar[1]), _(vvar[0]), _(vvar[1])])
@@ -318,11 +325,20 @@ class IssueDevelopment(Observer):
                 for actor, value in self.preference_history_sum[issue].items():
 
                     row = [actor]
-
+                    avg_row = []
                     for iteration, values in value.items():
 
                         avg, var = calculations.average_and_variance(values)
+                        avg_row.append(avg)
                         row.append(avg)
                         row.append(var)
 
+                    if matplotlib_loaded:
+                        plt.plot(avg_row, label=actor)
+
                     writer.writerow(row)
+
+                if matplotlib_loaded:
+                    plt.legend(loc='upper left')
+                    plt.title(self.issue_obj)
+                    plt.savefig('{0}/issues/{2}/{1}.png'.format(self.output_directory, self.issue_obj.name, 'summary'))
