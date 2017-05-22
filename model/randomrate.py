@@ -47,9 +47,9 @@ class RandomRateExchangeActor(AbstractExchangeActor):
         # we can also decrease the shift.
         delta_O = delta_O if increase else delta_O * -1
 
-        self.adjust_position_by_outcome(delta_O, recursive=recursive)
+        self.adjust_position_by_outcome(delta_O, increase=increase, recursive=recursive)
 
-    def adjust_position_by_outcome(self, delta_O, recursive=True):
+    def adjust_position_by_outcome(self, delta_O, increase, recursive=True):
         new_outcome = self.nbs_1 + delta_O  # we have to use nbs_1 here, because it is an incremental shift.
 
         position = calculations.position_by_nbs(actor_issues=self.exchange.model.actor_issues[self.supply_issue],
@@ -57,7 +57,7 @@ class RandomRateExchangeActor(AbstractExchangeActor):
                                                 nbs=new_outcome,
                                                 denominator=self.exchange.model.nbs_denominators[self.supply_issue])
 
-        if delta_O < 0 and position < self.opposite_actor.x_demand or delta_O > 0 and position > self.opposite_actor.x_demand:
+        if increase and (delta_O < 0 and position < self.opposite_actor.x_demand or delta_O > 0 and position > self.opposite_actor.x_demand):
 
             if not recursive:
                 print('the gap is to small to close')
@@ -81,7 +81,7 @@ class RandomRateExchangeActor(AbstractExchangeActor):
         self.moves.append(position)
         self.y = position
         self.nbs_1 = new_outcome
-        # self.adjust_utility(delta_O)
+
 
     def adjust_utility(self, delta_O):
 
@@ -162,6 +162,9 @@ class RandomRateExchange(AbstractExchange):
     def __str__(self):
         return "{0}, {1}".format(str(self.i), str(self.j))
 
+    def __repr__(self):
+        return self.__str__()
+
     def __getitem__(self, item):
         if item == self.i.actor_name:
             return self.i
@@ -193,6 +196,8 @@ class RandomRateModel(AbstractModel):
 
         highest_exchanges_result_list = []
 
+        deadlock = defaultdict(int)
+
         while len(highest_exchanges_result_list) == 0 and len(self.exchanges) > 0:
 
             exchange_actors = self._get_sorted_exchange_actor_list()
@@ -208,6 +213,12 @@ class RandomRateModel(AbstractModel):
 
             highest = {}
             exchange_by_key = defaultdict()
+
+            deadlock[len(self.exchanges)] += 1
+            if deadlock[len(self.exchanges)] > 265:
+                print('interupt: %s' % len(self.exchanges))
+                self.exchanges.clear()
+                return None
 
             for exchange_actor in exchange_actors:  # type: RandomRateExchangeActor
 
@@ -246,9 +257,9 @@ class RandomRateModel(AbstractModel):
                                 opposite_actor_name = highest_exchange_actor.opposite_actor.actor_name
 
                                 if highest_exchange[actor_name].y == highest_exchange[opposite_actor_name].x_demand:
-                                    highest_exchange[opposite_actor_name].recalculate(delta_eu, increase=True)
+                                    highest_exchange[opposite_actor_name].recalculate(delta_eu, increase=False)
                                 elif highest_exchange[opposite_actor_name].y == highest_exchange[actor_name].x_demand:
-                                    highest_exchange[actor_name].recalculate(delta_eu, increase=False)
+                                    highest_exchange[actor_name].recalculate(delta_eu, increase=True)
                                 else:
                                     highest_exchange[opposite_actor_name].recalculate(delta_eu, increase=True)
 
@@ -280,12 +291,15 @@ class RandomRateModel(AbstractModel):
 
                     if highest_exchange[actor_name].y == highest_exchange[opposite_actor_name].x_demand:
                         highest_exchange[opposite_actor_name].recalculate(delta_eu, increase=True)
+                        highest_exchange[opposite_actor_name].adjust_utility(delta_eu)
                     elif highest_exchange[opposite_actor_name].y == highest_exchange[actor_name].x_demand:
                         highest_exchange[actor_name].recalculate(delta_eu, increase=False)
+                        highest_exchange[actor_name].adjust_utility(delta_eu)
                     else:
                         highest_exchange[opposite_actor_name].recalculate(delta_eu, increase=True)
+                        highest_exchange[opposite_actor_name].adjust_utility(delta_eu)
 
-                    highest_exchange[opposite_actor_name].adjust_utility(delta_eu)
+
 
     @staticmethod
     def new_exchange_factory(i, j, p, q, model, groups):
