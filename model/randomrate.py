@@ -36,7 +36,7 @@ class RandomRateExchangeActor(AbstractExchangeActor):
 
     def recalculate(self, delta_eu, increase):
 
-        # we should not need the opposite actor, because the move isnt effecting the other actors position
+        # we should not need the opposite actor, because the move isn't effecting the other actors position
         # opposite = self.exchange.opposite_actor
 
         delta_o = delta_eu / self.s
@@ -202,6 +202,8 @@ class RandomRateModel(AbstractModel):
 
     def highest_gain(self):
 
+        deadlock = defaultdict(int)
+
         while len(self.exchanges) > 0:
 
             exchange_actors = self._get_sorted_exchange_actor_list()
@@ -218,10 +220,17 @@ class RandomRateModel(AbstractModel):
             highest_actors = {}
             exchange_by_key = {}
 
+            deadlock[len(self.exchanges)] += 1
+
             for exchange_actor in exchange_actors:  # type: RandomRateExchangeActor
 
                 exchange_actors_by_actor[exchange_actor.actor_name].append(exchange_actor.eu)
                 exchange_actors_by_gain[exchange_actor.actor_name][exchange_actor.eu].append(exchange_actor)
+
+            if deadlock[len(self.exchanges)] > 1024:
+                print('deadlock')
+                self.exchanges.clear()
+                return None
 
             for exchange_actor in exchange_actors:
                 if exchange_actor.actor_name not in highest_actors:
@@ -233,7 +242,7 @@ class RandomRateModel(AbstractModel):
                         self.remove_exchange_by_key(exchange_actor.exchange.key)
                         return exchange_actor.exchange
 
-                if highest_actors[exchange_actor.actor_name].eu == exchange_actor.eu:
+                elif highest_actors[exchange_actor.actor_name].eu == exchange_actor.eu:
                     if exchange_actor.exchange.key not in exchange_by_key:
                         exchange_by_key[exchange_actor.exchange.key] = exchange_actor.exchange
                     else:
@@ -261,7 +270,7 @@ class RandomRateModel(AbstractModel):
 
                             if highest_exchange[actor_name].y == highest_exchange[opposite_actor_name].x_demand:
                                 highest_exchange[opposite_actor_name].recalculate(delta_eu, increase=False)
-                            elif highest_exchange[opposite_actor_name].y - highest_exchange[actor_name].x_demand:
+                            elif highest_exchange[opposite_actor_name].y == highest_exchange[actor_name].x_demand:
                                 highest_exchange[actor_name].recalculate(delta_eu, increase=True)
                             else:
                                 highest_exchange[opposite_actor_name].recalculate(delta_eu, increase=False)

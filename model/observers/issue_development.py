@@ -308,7 +308,7 @@ class IssueDevelopment(Observer):
                         vvar = calculations.average_and_variance(voting_nbs_var[x])
 
                         writer.writerow(
-                            ["rn-" + str(x), _(p[0]), _(p[1]), _(v[0]), _(v[1]), _(pvar[0]), _(pvar[1]), _(vvar[0]), _(vvar[1])])
+                            ["rn-" + str(x), _(p[0]), p[1], _(v[0]), v[1], _(pvar[0]), pvar[1], _(vvar[0]), vvar[1]])
 
                         p_line.append(_(p[0]))
                     else:
@@ -316,7 +316,7 @@ class IssueDevelopment(Observer):
                         pvar = calculations.average_and_variance(preference_nbs_var[x])
 
                         writer.writerow(
-                            ["rn-" + str(x), _(p[0]), _(p[1]), _(pvar[0]), _(pvar[1])])
+                            ["rn-" + str(x), _(p[0]), p[1], _(pvar[0]), pvar[1]])
 
                         p_line.append(_(p[0]))
 
