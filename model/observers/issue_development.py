@@ -296,6 +296,8 @@ class IssueDevelopment(Observer):
                 if matplotlib_loaded:
                     plt.clf()
 
+                p_line = []
+
                 for x in range(len(preference_nbs)):
 
                     if self.write_voting_position:
@@ -305,18 +307,21 @@ class IssueDevelopment(Observer):
                         pvar = calculations.average_and_variance(preference_nbs_var[x])
                         vvar = calculations.average_and_variance(voting_nbs_var[x])
 
-                        if matplotlib_loaded:
-                            plt.plot(p, label='nbs')
-                            plt.plot(pvar, label='nbs var')
-
                         writer.writerow(
                             ["rn-" + str(x), _(p[0]), _(p[1]), _(v[0]), _(v[1]), _(pvar[0]), _(pvar[1]), _(vvar[0]), _(vvar[1])])
+
+                        p_line.append(_(p[0]))
                     else:
                         p = calculations.average_and_variance(preference_nbs[x])
                         pvar = calculations.average_and_variance(preference_nbs_var[x])
 
                         writer.writerow(
                             ["rn-" + str(x), _(p[0]), _(p[1]), _(pvar[0]), _(pvar[1])])
+
+                        p_line.append(_(p[0]))
+
+                if matplotlib_loaded:
+                    plt.plot(p_line, label='nbs')
 
                 writer.writerow([])
                 writer.writerow(["Preference development NBS and all actors"])
@@ -329,9 +334,9 @@ class IssueDevelopment(Observer):
                     for iteration, values in value.items():
 
                         avg, var = calculations.average_and_variance(values)
-                        avg_row.append(avg)
-                        row.append(avg)
-                        row.append(var)
+                        avg_row.append(_(avg))
+                        row.append(_(avg))
+                        row.append(_(var))
 
                     if matplotlib_loaded:
                         plt.plot(avg_row, label=actor)
