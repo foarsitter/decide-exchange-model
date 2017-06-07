@@ -56,6 +56,7 @@ class ModelLoop(object):
             realize_exchange = self.model.highest_gain()
 
             if realize_exchange and realize_exchange.is_valid:
+
                 removed_exchanges = self.model.remove_invalid_exchanges(realize_exchange)
 
                 realized.append(realize_exchange)

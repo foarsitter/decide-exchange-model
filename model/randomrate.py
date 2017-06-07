@@ -86,8 +86,13 @@ class RandomRateExchangeActor(AbstractExchangeActor):
 
         self.moves.append(move)
         self.exchange.is_valid = self.is_move_valid(move)
-        self.y = position
-        self.nbs_1 = new_outcome
+        if self.exchange.is_valid:
+            self.y = position
+            if self.exchange.i.y > 100 or self.exchange.j.y > 100:
+                self.exchange.is_valid = False
+            if self.exchange.i.y < 0 or self.exchange.j.y < 0:
+                self.exchange.is_valid = False
+            self.nbs_1 = new_outcome
 
     def adjust_utility(self, delta_o):
 

@@ -318,7 +318,7 @@ class IssueDevelopment(Observer):
                         writer.writerow(
                             ["rn-" + str(x), _(p[0]), p[1], _(pvar[0]), pvar[1]])
 
-                        p_line.append(_(p[0]))
+                        p_line.append((p[0]))
 
                 if matplotlib_loaded:
                     plt.plot(p_line, label='nbs')
@@ -334,9 +334,9 @@ class IssueDevelopment(Observer):
                     for iteration, values in value.items():
 
                         avg, var = calculations.average_and_variance(values)
-                        avg_row.append(_(avg))
-                        row.append(_(avg))
-                        row.append(_(var))
+                        avg_row.append((avg))
+                        row.append((avg))
+                        row.append((var))
 
                     if matplotlib_loaded:
                         plt.plot(avg_row, label=actor)

@@ -378,7 +378,7 @@ class MainApplication(tk.Frame):
         csv_parser = csvParser.Parser(model_ref=model)
 
         if not os.path.isdir(output_directory):
-            os.mkdir(output_directory)
+            os.makedirs(output_directory)
 
         Externalities(event_handler)
         ExchangesWriter(event_handler)
