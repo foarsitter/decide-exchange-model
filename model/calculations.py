@@ -230,8 +230,10 @@ def actor_externalities(actor_name, model_ref, realized):
 
         return ext
 
-    raise Exception(
-        'Actor is not in collection. Calculation of the externalities is therefore not possible. Is your data correct?')
+    return 0
+    #
+    # raise Exception(
+    #     'Actor is not in collection. Calculation of the externalities is therefore not possible. Is your data correct?')
 
 
 def position_by_nbs(actor_issues, exchange_actor, nbs, denominator):

@@ -210,6 +210,9 @@ class MainApplication(tk.Frame):
         # load settings from xml file
         self.load_settings()
 
+        row = self.row()
+        self.label("Help", row=row)
+        self.label("https://github.com/foarsitter/decide-exchange-model", row=row, column=1)
         # layout
         row = self.row()
         self.label("Select input file", row=row)
@@ -369,7 +372,7 @@ class MainApplication(tk.Frame):
 
         # The event handlers for logging and writing the results to the disk.
 
-        output_directory = os.path.join(self.output_dir.get(), self.input_file.get().split("/")[-1].split(".")[0])
+        output_directory = os.path.join(self.output_dir.get(), self.input_file.get().split("/")[-1].split(".")[0], self.model.get())
 
         model = Model()
         event_handler = Observable(model_ref=model, output_directory=output_directory)
@@ -440,6 +443,6 @@ if __name__ == "__main__":
 
     center(root)
 
-    root.title("Decide Exchange Model")
+    root.title("Decide Exchange Model (Equal Exchange Rate)")
 
     root.mainloop()

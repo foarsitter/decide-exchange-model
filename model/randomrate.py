@@ -209,6 +209,8 @@ class RandomRateModel(AbstractModel):
 
         deadlock = defaultdict(int)
 
+        pointers = defaultdict(int)
+
         while len(self.exchanges) > 0:
 
             exchange_actors = self._get_sorted_exchange_actor_list()
@@ -237,6 +239,46 @@ class RandomRateModel(AbstractModel):
                 self.exchanges.clear()
                 return None
 
+            import csv
+            # from model.helpers.CsvWriter import CsvWriter
+            # for actor_name, _ in exchange_actors_by_actor.items():
+            #
+            #     reversed_values = exchange_actors_by_gain[actor_name].values()
+            #
+            #     pointer = pointers[actor_name]
+            #     file_name = 'data/output/dump/{actor}/{pointer}.csv'.format(pointer=pointer, actor=actor_name)
+            #
+            #     with open(file_name, 'w') as csv_file:
+            #         writer = csv.writer(csv_file)
+            #
+            #         writer.writerow([actor_name])
+            #         writer.writerow(CsvWriter.create_heading(None))
+            #         for s_value in reversed_values:
+            #             for exchange_actor in s_value:
+            #                 ___exchange_actor = exchange_actor  # type: RandomRateExchangeActor
+            #                 data = [exchange_actor.actor_name,
+            #                         ___exchange_actor.supply_issue,
+            #                         ___exchange_actor.c,
+            #                         ___exchange_actor.s / exchange_actor.s_demand,
+            #                         ___exchange_actor.x,
+            #                         ___exchange_actor.move,
+            #                         ___exchange_actor.y,
+            #                         ___exchange_actor.opposite_actor.x_demand,
+            #                         ___exchange_actor.eu, ___exchange_actor.exchange.dp, "",
+            #                         ___exchange_actor.opposite_actor.actor_name,
+            #                         ___exchange_actor.opposite_actor.supply_issue,
+            #                         ___exchange_actor.opposite_actor.c,
+            #                         ___exchange_actor.opposite_actor.s / exchange_actor.s_demand,
+            #                         ___exchange_actor.opposite_actor.x,
+            #                         ___exchange_actor.opposite_actor.move,
+            #                         ___exchange_actor.opposite_actor.y,
+            #                         ___exchange_actor.opposite_actor.opposite_actor.x_demand,
+            #                         ___exchange_actor.opposite_actor.eu, ___exchange_actor.exchange.dq
+            #                         ]
+            #                 writer.writerow(data)
+            #
+            #     pointers[actor_name] += 1
+
             for exchange_actor in exchange_actors:
                 if exchange_actor.actor_name not in highest_actors:
                     highest_actors[exchange_actor.actor_name] = exchange_actor
@@ -253,9 +295,6 @@ class RandomRateModel(AbstractModel):
                     else:
                         self.remove_exchange_by_key(exchange_actor.exchange.key)
                         return exchange_actor.exchange
-
-            # we have the highest and second highest.
-            # highest[key] needs to be lowered to second[key]
 
             for actor_name, values in exchange_actors_by_actor.items():
                 if len(values) > 1:
@@ -281,6 +320,7 @@ class RandomRateModel(AbstractModel):
                                 highest_exchange[opposite_actor_name].recalculate(delta_eu, increase=False)
 
                             highest_exchange[opposite_actor_name].adjust_utility(delta_eu)
+
 
     @staticmethod
     def new_exchange_factory(i, j, p, q, model, groups):
