@@ -6,6 +6,8 @@ from collections import defaultdict
 from itertools import chain
 from typing import List
 
+import math
+
 from model import calculations
 
 matplotlib_loaded = True
@@ -260,12 +262,12 @@ class IssueDevelopment(Observer):
         self._create_directories("summary")
 
         for issue in self.preference_history_sum:
-            with open("{0}/issues/{2}/{1}.csv".format(self.output_directory, issue, 'summary'), 'w') as csv_file:
+            with open("{0}/issues/{2}/{1}.{2}.csv".format(self.output_directory, issue, 'summary'), 'w') as csv_file:
                 writer = csv.writer(csv_file, delimiter=';', lineterminator='\n')
 
                 self.issue_obj = self.model_ref.issues[issue]  # type: Issue
 
-                heading = list(chain.from_iterable([("rnd-" + str(x) + " avg", "rnd-" + str(x) + " var") for x in range(len(self.preference_history_sum[issue]["nbs"]))]))
+                heading = ["rnd-" + str(x) for x in range(len(self.preference_history_sum[issue]["nbs"]))]
 
                 writer.writerow([self.issue_obj.name, self.issue_obj.lower, self.issue_obj.upper])
                 writer.writerow(["Overview issue"])
@@ -324,23 +326,33 @@ class IssueDevelopment(Observer):
                     plt.plot(p_line, label='nbs')
 
                 writer.writerow([])
-                writer.writerow(["Preference development NBS and all actors"])
+                writer.writerow(["AVG Preference development NBS and all actors"])
                 writer.writerow(["actor"] + heading)
+
+                var_rows = []
 
                 for actor, value in self.preference_history_sum[issue].items():
 
                     row = [actor]
+                    var_row = [actor]
                     avg_row = []
                     for iteration, values in value.items():
 
                         avg, var = calculations.average_and_variance(values)
                         avg_row.append((avg))
-                        row.append((avg))
-                        row.append((var))
+                        var_row.append(math.sqrt(var))
 
                     if matplotlib_loaded:
                         plt.plot(avg_row, label=actor)
 
+                    writer.writerow([actor] + avg_row)
+                    var_rows.append(var_row)
+
+                writer.writerow([])
+                writer.writerow(["Standard deviation"])
+                writer.writerow(["actor"] + heading)
+
+                for row in var_rows:
                     writer.writerow(row)
 
                 if matplotlib_loaded:
