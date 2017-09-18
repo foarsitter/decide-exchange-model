@@ -235,11 +235,18 @@ class RandomRateModel(AbstractModel):
                 exchange_actors_by_gain[exchange_actor.actor_name][exchange_actor.eu].append(exchange_actor)
 
             if deadlock[len(self.exchanges)] > 1024:
+                # TODO this should never happen?
                 print('deadlock')
+
+                for ex in self.exchanges:
+                    print(ex)
+
+
                 self.exchanges.clear()
                 return None
 
             import csv
+            # TODO: remove commented code
             # from model.helpers.CsvWriter import CsvWriter
             # for actor_name, _ in exchange_actors_by_actor.items():
             #
@@ -279,10 +286,19 @@ class RandomRateModel(AbstractModel):
             #
             #     pointers[actor_name] += 1
 
+            # is there an exchange where both actors archive their highest gain
             for exchange_actor in exchange_actors:
+                # if an actor is not yet in the list, add him
+                # the list is sorted by gain so the first result is the exchange with the highest gain
+                # elif, if the actor experience a gain that is equal to the previous highest gain, mark the exchange
+                # to the highest also, return the exchange when this already is the case.
                 if exchange_actor.actor_name not in highest_actors:
                     highest_actors[exchange_actor.actor_name] = exchange_actor
 
+                    # if the exchange is not yet present, mark this exchange as an exchange where on of the both actors
+                    # achieves his highest gain
+                    # otherwise this exchange is already marked, then we have found an exchange where both actors
+                    # achieve there highest gain
                     if exchange_actor.exchange.key not in exchange_by_key:
                         exchange_by_key[exchange_actor.exchange.key] = exchange_actor.exchange
                     else:
@@ -296,17 +312,20 @@ class RandomRateModel(AbstractModel):
                         self.remove_exchange_by_key(exchange_actor.exchange.key)
                         return exchange_actor.exchange
 
+            # lower highest gains
             for actor_name, values in exchange_actors_by_actor.items():
+                # do nothing when the actor only has one exchange left because this exchange is automatically his highest
                 if len(values) > 1:
                     highest = values[0]
-                    second_highest = self._find_first_element_not_equal(values)
 
+                    second_highest = self._find_first_element_not_equal(values)
+                    # if all the exchanges have the same gain, do nothing
                     if second_highest is not None:
 
                         delta_eu = highest - second_highest
 
                         highest_exchanges = exchange_actors_by_gain[actor_name][highest]
-
+                        # lower ALL the exchanges with the highest gain
                         for highest_exchange_actor in highest_exchanges:
 
                             highest_exchange = highest_exchange_actor.exchange  # type: RandomRateExchange
@@ -320,7 +339,6 @@ class RandomRateModel(AbstractModel):
                                 highest_exchange[opposite_actor_name].recalculate(delta_eu, increase=False)
 
                             highest_exchange[opposite_actor_name].adjust_utility(delta_eu)
-
 
     @staticmethod
     def new_exchange_factory(i, j, p, q, model, groups):
