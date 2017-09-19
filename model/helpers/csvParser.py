@@ -130,6 +130,6 @@ class Parser:
         actor_id = create_key(row[self.rActor])
         issue_id = create_key(row[self.rIssue])
 
-        self.model_ref.add_actor_issue(actor_id=actor_id, issue_id=issue_id, power=row[self.rPower].replace(",", "."),
+        self.model_ref.add_actor_issue(actor=actor_id, issue=issue_id, power=row[self.rPower].replace(",", "."),
                                        salience=row[self.rSalience].replace(",", "."),
                                        position=row[self.rPosition].replace(",", "."))

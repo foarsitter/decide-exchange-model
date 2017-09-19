@@ -1,4 +1,5 @@
 import model.base
+from model.equalgain import EqualGainExchange, EqualGainExchangeActor
 
 
 def calc_nbs(actor_issues, denominator):
@@ -201,6 +202,21 @@ def expected_utility(actor, demand_exchange_ratio, supply_exchange_ratio):
     return demand_exchange_ratio * actor.s - supply_exchange_ratio * actor.s_demand
 
 
+def is_gain_equal(eui, euj, threshold=1e-25):
+    """
+
+    :param eui: The utility gain of actor i
+    :param euj: The utility gain of actor j
+    :param threshold: The threshold where the diff needs to be below
+    :return: True when the gains are (approximately) equal
+    """
+    if abs(eui - euj) > threshold:
+        raise Exception("Expected equal gain but found {0} and {1} results in {2}. "
+                        "Adjust the above threshold to a higher value and continue.".format(eui, euj, abs(eui - euj)))
+
+    return True
+
+
 def actor_externalities(actor_name, model_ref, realized):
     """
     Calculate the externalities from an exchange
@@ -266,3 +282,12 @@ def average_and_variance(values: list):
 
     return average, variance
 
+
+def maximum_possible_utility_gain(exchange: EqualGainExchange, actor: EqualGainExchangeActor):
+
+    # a maximum of utility gain is achieved when actor i moves completely to the position of j,
+    #  while j does not move at all
+
+    exchange.calculate()
+
+    pass

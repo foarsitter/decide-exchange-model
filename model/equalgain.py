@@ -1,5 +1,5 @@
 from operator import attrgetter
-from random import random
+import random
 
 from model import calculations
 from model.base import AbstractModel, AbstractExchange, AbstractExchangeActor, Actor
@@ -25,6 +25,7 @@ class EqualGainExchange(AbstractExchange):
         self.i.move = calculations.reverse_move(self.model.actor_issues[self.i.supply_issue], self.i, self.dq)
         self.j.move = abs(self.i.x_demand - self.j.x)
 
+        # if the move exceeds the interval
         if abs(self.i.move) > abs(self.j.x_demand - self.i.x):
             self.dq = calculations.by_absolute_move(self.model.actor_issues[self.i.supply_issue], self.i)
             self.dp = calculations.by_exchange_ratio(self.i, self.dq)
@@ -36,24 +37,28 @@ class EqualGainExchange(AbstractExchange):
         # this check is only necessary for the smallest exchange,
         # because if the smallest exchange exceeds the limit the larger one will definitely do so
 
+        # determine the direction of both moves
         if self.i.x > self.j.x_demand:
             self.i.move *= -1
 
         if self.j.x > self.i.x_demand:
             self.j.move *= -1
 
+        # keep the moves in memory so we can check the direction of the actor
         self.i.moves.append(self.i.move)
         self.j.moves.append(self.j.move)
 
+        # adjust the voting positions
         self.i.y = self.i.x + self.i.move
         self.j.y = self.j.x + self.j.move
 
+        # calculate the utility gains for both actors
         eui = calculations.expected_utility(self.i, self.dq, self.dp)
         euj = calculations.expected_utility(self.j, self.dp, self.dq)
 
-        if abs(eui - euj) > 0.0001:
-            raise Exception("Expected equal gain")
-        else:
+        # since this is the Equal Gain model, the gains should be equal
+        # we cannot do a exact match, but 20 decimals will do since python3 uses 28 decimals for their Decimal as default
+        if calculations.is_gain_equal(eui, euj):
             self.gain = abs(eui)
 
         b1 = self.i.is_move_valid(self.i.move)
@@ -99,7 +104,7 @@ class EqualGainModel(AbstractModel):
                 next_exchange = self.exchanges[0]
 
                 if abs(realize.gain - next_exchange.gain) < 1e-10:
-                    if random() >= 0.5:
+                    if random.random() >= 0.5:
                         self.exchanges.append(realize)
                         realize = self.exchanges.pop(0)
                     else:

@@ -286,7 +286,7 @@ class AbstractExchangeActor(object):
         return hash(self.actor_name)
 
 
-class AbstractExchange(object):
+class AbstractExchange:
     """
     An exchange between two actors and two issues. Each actor has a demand and supply issue
     """
@@ -453,14 +453,14 @@ class AbstractExchange(object):
                                                     self.model.nbs_denominators[self.j.supply_issue])
 
             if abs(nbs_1 - self.i.x_demand) > 0.000001:
-                new_pos = model.calculations.adjusted_nbs_by_position(self.model.actor_issues[self.j.supply_issue],
+                new_pos = calculations.adjusted_nbs_by_position(self.model.actor_issues[self.j.supply_issue],
                                                                       self.updates[self.j.supply_issue],
                                                                       self.j.actor_name, self.j.x, self.i.x_demand,
                                                                       self.model.nbs_denominators[self.j.supply_issue])
 
                 # self.is_valid = False
-                # raise Exception("Not Posible!")
-                return
+                raise Exception("Not Possible!") # TODO FIX this code, should be removed
+
 
             eui = calculations.expected_utility(self.i, self.dq, self.dp)
             euj = calculations.expected_utility(self.j, self.dp, self.dq)
@@ -695,7 +695,7 @@ class AbstractModel(object):
             if field is "x":
                 return a.position
 
-    def add_actor(self, actor_name):
+    def add_actor(self, actor_name) -> Actor:
         """
         Add an actor to the model
         :param actor_name:
@@ -705,7 +705,7 @@ class AbstractModel(object):
         self.actors[actor.id] = actor
         return actor
 
-    def add_issue(self, issue_name):
+    def add_issue(self, issue_name) -> Issue:
         """
         Add an issue to the model
         :param issue_name:
@@ -714,26 +714,22 @@ class AbstractModel(object):
         self.issues[issue.id] = issue
         return issue
 
-    def add_actor_issue(self, actor_id, issue_id, position, salience, power):
+    def add_actor_issue(self, actor, issue, position, salience, power):
         """
         Add an actor issue to the model
-        :param actor_id: Actor
-        :param issue_id: Issue
+        :param actor: Actor
+        :param issue: Issue
         :param position: Double
         :param salience: Double
         :param power: Double
         :return:
         """
 
-        if not isinstance(actor_id, Actor):
-            actor = self.actors[actor_id]
-        else:
-            actor = actor_id
+        if not isinstance(actor, Actor):
+            actor = self.actors[actor]
 
-        if not isinstance(issue_id, Issue):
-            issue = self.issues[issue_id]
-        else:
-            issue = issue_id
+        if not isinstance(issue, Issue):
+            issue = self.issues[issue]
 
         self.actor_issues[issue.id][actor.id] = ActorIssue(actor, issue, position, salience, power)
 
