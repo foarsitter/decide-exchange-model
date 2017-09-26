@@ -103,7 +103,7 @@ def adjusted_nbs(actor_issues, updates, actor, new_position, denominator):
     copy_ai = {}
 
     for k, v in actor_issues.items():
-        copy_ai[v.actor_name] = base.ActorIssue(v.actor, v.issue, position=v.position, power=v.power,
+        copy_ai[v.actor.name] = base.ActorIssue(v.actor, v.issue, position=v.position, power=v.power,
                                                 salience=v.salience)
 
     for key, value in updates.items():
@@ -329,3 +329,16 @@ def maximum_possible_utility_gain(exchange: 'equalgain.EqualGainExchange', actor
     exchange.calculate()
 
     pass
+
+
+def exchange_ratio_by_zero_gain(delta_q, sq, sp, utility=0):
+    """
+    Calculates the exchange ratio by a gain of 0.
+    Used for the new model
+    :param utility: Always 0
+    :param delta_q:  Exchange Ratio
+    :param sq: Salience
+    :param sp: Salience
+    :return:
+    """
+    return abs((utility - (delta_q * sq)) / sp)

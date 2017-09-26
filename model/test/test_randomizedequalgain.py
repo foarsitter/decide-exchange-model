@@ -39,58 +39,45 @@ class TestRandomizedEqualGain(TestCase):
 
         self.assertAlmostEqual(eui, euj, delta=1e-25)  # here we have an equal utility gain
 
-        X = euj
+        r = decimal.Decimal(0.1)  # decimal.Decimal(random.random())  # between 0 and 1
 
-        # we should choose a random actor, but we assume i is selected
-        # random_actor = exchange.i if random.getrandbits(1) else exchange.j
+        exchange_ratio_zero_i = calculations.exchange_ratio_by_zero_gain(exchange.dp, exchange.i.s, exchange.i.s_demand)
+        eui_max = calculations.expected_utility(exchange.i, exchange.dp, exchange_ratio_zero_i)
 
-        random_actor = exchange.i  # type: EqualGainExchangeActor
+        if eui_max > 1e-10:
+            raise Exception('error')
 
-        # to achieve the maximum gain, the actor moves completely to the other side
-        # random_actor.y = exchange.j.x_demand
-        # while the other actor does not move
-        # random_actor.opposite_actor.y = random_actor.opposite_actor.x
+        yi = abs(calculations.expected_utility(exchange.i.opposite_actor, exchange_ratio_zero_i, exchange.dp))
 
-        # nbs = model.nbs[random_actor.supply_issue]
-        # nbs_adj = calculations.adjusted_nbs(model.actor_issues[random_actor.supply_issue],
-        #                           {},
-        #                           random_actor.actor_name, random_actor.y,
-        #                           model.nbs_denominators[random_actor.supply_issue])
+        xi = exchange.gain
+        eu_ir = ((xi - r * xi), (xi + r * (yi-xi)))
 
-        # nbs_diff = abs(nbs-nbs_adj)
+        ####
+        ####
+        # start J
+        ####
+        ####
 
-        # eui_max = nbs_diff * random_actor.s
+        exchange_ratio_zero_j = calculations.exchange_ratio_by_zero_gain(exchange.dq, exchange.j.s,
+                                                                         exchange.j.s_demand)
+        euj_max = calculations.expected_utility(exchange.j, exchange.dq, exchange_ratio_zero_j)
 
-        gain = X / random_actor.opposite_actor.s
+        if euj_max > 1e-10:
+            raise Exception('error')
 
-        Y = eui + gain * random_actor.s
+        yj = abs(calculations.expected_utility(exchange.j.opposite_actor, exchange.dq, exchange_ratio_zero_j))
 
-        nbs_adjusted = random_actor.nbs_1 - gain
+        xj = exchange.gain
 
-        new_pos = calculations.position_by_nbs(model.actor_issues[random_actor.supply_issue],
-                                               random_actor,
-                                               nbs_adjusted,
-                                               model.nbs_denominators[random_actor.supply_issue])
+        eu_jr = ((xj - r * xj), (xi + r * (yj - xj)))
 
-        random_actor.y = new_pos
+        if random.getrandbits(1) == 1:
+            eui = eu_ir[0]
+            euj = eu_jr[1]
+        else:
+            eui = eu_ir[1]
+            euj = eu_jr[0]
 
-        r = decimal.Decimal(random.random())  # between 0 and 1
+        print(eui)
+        print(euj)
 
-        eu_ir = ((X - r * X), (X + r * (Y-X)))
-
-        # // en dan?
-
-        dus = random.uniform(float(eu_ir[0]), float(eu_ir[1]))
-
-        delta_x_i = abs(random_actor.x - random_actor.y)
-        delta_x_j = abs(random_actor.opposite_actor.x - random_actor.opposite_actor.y)
-
-        dp = calculations.exchange_ratio(delta_x_i, salience=random_actor.s, power=random_actor.c,
-                                    dominator=model.nbs_denominators[random_actor.supply_issue])
-        dq = calculations.exchange_ratio(delta_x_j, salience=random_actor.opposite_actor.s, power=random_actor.opposite_actor.c,
-                                    dominator=model.nbs_denominators[random_actor.opposite_actor.supply_issue])
-
-        eui = calculations.expected_utility(random_actor, dq, dp)
-        euj = calculations.expected_utility(random_actor.opposite_actor, dp, dq)
-
-        print('done..')

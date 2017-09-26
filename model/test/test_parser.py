@@ -1,12 +1,12 @@
 from unittest import TestCase
 
-from . import csvParser
+from . import csvparser
 from .. import equalgain
 
 
 class TestParser(TestCase):
     def setUp(self):
-        self.parser = csvParser.Parser(equalgain.EqualGainModel())
+        self.parser = csvparser.CsvParser(equalgain.EqualGainModel())
 
     def test_read(self):
         model = self.parser.read('data/input/sample_data.txt')
