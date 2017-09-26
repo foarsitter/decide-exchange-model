@@ -109,6 +109,7 @@ class Actor:
     def __repr__(self):
         return self.__str__()
 
+
 class ActorIssue:
     """
     Represents a combination between an actor and issue
@@ -121,16 +122,15 @@ class ActorIssue:
         :param salience: Double
         :param power: Double
         """
-        self.actor_name = actor.name
+
         self.actor = actor
-        self.group = ""
 
         self.power = Decimal(power)
         self.position = Decimal(position)
         self.salience = Decimal(salience)
         self.left = False  # left of nbs
 
-        self.issue_name = issue.name  # TODO deprecated: use issue.name instead
+        # self.issue_name = issue.name  # TODO deprecated: use issue.name instead
         self.issue = issue
 
     def is_left_to_nbs(self, nbs):
@@ -143,7 +143,7 @@ class ActorIssue:
         return self.left
 
     def __str__(self):
-        return "{0} on {1} with x={2}, s={3}, c={4}".format(self.actor_name,
+        return "{0} on {1} with x={2}, s={3}, c={4}".format(self.actor.name,
                                                             self.issue.name,
                                                             self.position,
                                                             self.salience,
@@ -155,7 +155,7 @@ class ActorIssue:
         :param other: 
         :return: 
         """
-        return self.actor_name == other.actor_name and self.issue.name == other.issue_name
+        return self.actor == other.actor and self.issue.name == other.issue_name
 
 
 class AbstractExchangeActor(object):
@@ -163,7 +163,7 @@ class AbstractExchangeActor(object):
     Represents an exchange actor. Contains his demand and supply issues and voting-position
     """
 
-    def __init__(self, model_ref: 'AbstractExchange', actor: Actor, demand_issue: Issue, supply_issue: Issue, group: List[str]):
+    def __init__(self, model_ref: 'AbstractModel', actor: Actor, demand_issue: Issue, supply_issue: Issue, group: List[str]):
         """
         Constructor, must be invoked
 
@@ -173,6 +173,10 @@ class AbstractExchangeActor(object):
         :param supply_issue: Issue
         :param group: tuple
         """
+
+        self.supply = model_ref.actor_issues[supply_issue][actor]
+        self.demand = model_ref.actor_issues[supply_issue][actor]
+
         self.c = model_ref.get_value(actor, supply_issue, "c")
         self.s = model_ref.get_value(actor, supply_issue, "s")
         self.x = model_ref.get_value(actor, supply_issue, "x")
