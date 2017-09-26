@@ -1,16 +1,16 @@
-from operator import attrgetter
 import random
+from operator import attrgetter
 
-from model import calculations
-from model.base import AbstractModel, AbstractExchange, AbstractExchangeActor, Actor
+from . import base
+from . import calculations
 
 
-class EqualGainExchangeActor(AbstractExchangeActor):
-    def __init__(self, model_ref: AbstractModel, actor: Actor, demand_issue, supply_issue, group):
+class EqualGainExchangeActor(base.AbstractExchangeActor):
+    def __init__(self, model_ref: base.AbstractModel, actor: base.Actor, demand_issue, supply_issue, group):
         super().__init__(model_ref, actor, demand_issue, supply_issue, group)
 
 
-class EqualGainExchange(AbstractExchange):
+class EqualGainExchange(base.AbstractExchange):
 
     def calculate(self):
         # TODO REWRITE
@@ -75,7 +75,7 @@ class EqualGainExchange(AbstractExchange):
             self.check_nbs_i()
 
 
-class EqualGainModel(AbstractModel):
+class EqualGainModel(base.AbstractModel):
     """
     Equal Gain implementation
     """

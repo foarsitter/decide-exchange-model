@@ -1,6 +1,8 @@
 import argparse
 import re
-from model.helpers.csvParser import Parser
+
+from . import csvParser
+from ..observers import observer
 
 
 def parse_arguments():
@@ -9,8 +11,9 @@ def parse_arguments():
                                                  "{1} for an issue,\n"
                                                  "{2} for actor values for each issue.\n"
                                                  "We expect for {2} the following order in values: "
-                                                 "actor, issue, position, salience, power".format(Parser.cA, Parser.cP,
-                                                                                                  Parser.cD))
+                                                 "actor, issue, position, salience, power".format(csvParser.Parser.cA,
+                                                                                                  csvParser.Parser.cP,
+                                                                                                  csvParser.Parser.cD))
     parser.add_argument('--model',
                         help='The type of the model. The options are "equal" for the Equal Gain model and '
                              '"random" for the RandomRate model ',
@@ -18,7 +21,8 @@ def parse_arguments():
 
     parser.add_argument('--rounds', help='The number of round the model needs to be executed', default=10, type=int)
     parser.add_argument('--repetitions', help='How many times it has te be repeated?', default=1, type=int)
-    parser.add_argument('--input', help='The location of the csv input file. ', default="data/input/sample_data.txt", type=str)
+    parser.add_argument('--input', help='The location of the csv input file. ', default="data/input/sample_data.txt",
+                        type=str)
     parser.add_argument('--output', help='Output directory ', default="data/output/", type=str)
 
     return parser.parse_args()
@@ -34,7 +38,7 @@ def create_key(value):
 
 
 class ModelLoop(object):
-    def __init__(self, model, event_handler: 'Observable', repetition: int):
+    def __init__(self, model, event_handler: observer.Observable, repetition: int):
         self.model = model
         self.event_handler = event_handler
         self.iteration_number = 0
@@ -67,7 +71,8 @@ class ModelLoop(object):
                 print(realize_exchange)
 
         # call the event for ending the loop
-        self.event_handler.after_loop(realized=realized, iteration=self.iteration_number, repetition=self.repetition_number)
+        self.event_handler.after_loop(realized=realized, iteration=self.iteration_number,
+                                      repetition=self.repetition_number)
 
         for exchange in realized:
             self.model.actor_issues[exchange.i.supply_issue][exchange.i.actor_name].position = exchange.i.y

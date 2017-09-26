@@ -3,18 +3,18 @@ import csv
 import os
 from collections import defaultdict
 
-from model import calculations
-from model.base import AbstractExchange
-from model.observers.observer import Observer, Observable
+from .. import base
+from .. import calculations
+from ..observers import observer
 
 
-class Externalities(Observer):
+class Externalities(observer.Observer):
     """
     There are three stages of externalities: by exchange, by issue combination and by actor. This class writes at the 
     end of each loop the externalities to the filesystem. 
     """
 
-    def __init__(self, observable: Observable):
+    def __init__(self, observable: observer.Observable):
         super().__init__(observable)
 
     def _setup(self):
@@ -104,7 +104,7 @@ class Externalities(Observer):
         """
         return collections.OrderedDict(sorted(self.actors.items())).items()
 
-    def execute_exchange(self, exchange: AbstractExchange):
+    def execute_exchange(self, exchange: base.AbstractExchange):
         """
         Calculations of the externalities performed each round after an exchange is exectued
         :param exchange: AbstractExchange        

@@ -1,32 +1,29 @@
-import csv
-
 import copy
+import csv
+import math
 import os
 from collections import defaultdict
-from itertools import chain
 from typing import List
 
-import math
-
-from model import calculations
+from .. import calculations
+from .. import base
+from ..observers import observer
 
 matplotlib_loaded = True
+
 try:
     import matplotlib.pyplot as plt
 except:
     matplotlib_loaded = False
 
-from model.base import AbstractExchange, Issue
-from model.observers.observer import Observer, Observable
 
-
-class IssueDevelopment(Observer):
+class IssueDevelopment(observer.Observer):
     """
     There are three stages of externalities
     By exchange, by issue set and by actor
     """
 
-    def __init__(self, observable: Observable, write_voting_position=False):
+    def __init__(self, observable: observer.Observable, write_voting_position=False):
         super().__init__(observable=observable)
 
         self.preference_history = {}
@@ -96,7 +93,7 @@ class IssueDevelopment(Observer):
     def before_loop(self, iteration: int, repetition: int):
         pass
 
-    def after_loop(self, realized: List[AbstractExchange], iteration: int, repetition: int):
+    def after_loop(self, realized: List[base.AbstractExchange], iteration: int, repetition: int):
 
         """
         After each round we calculate the variance
@@ -337,7 +334,6 @@ class IssueDevelopment(Observer):
                     var_row = [actor]
                     avg_row = []
                     for iteration, values in value.items():
-
                         avg, var = calculations.average_and_variance(values)
                         avg_row.append((avg))
                         var_row.append(math.sqrt(var))

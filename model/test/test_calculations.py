@@ -1,7 +1,6 @@
 from decimal import *
 from unittest import TestCase
 
-from model import calculations
 from model.base import ActorIssue, Actor, Issue
 from model.calculations import calc_nbs_denominator, calc_nbs, adjusted_nbs, by_absolute_move, by_exchange_ratio, \
     reverse_move, sum_salience_power

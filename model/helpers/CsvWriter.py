@@ -1,6 +1,6 @@
 import csv
 
-from model.equalgain import EqualGainExchange
+from .. import equalgain
 
 
 class CsvWriter:
@@ -20,7 +20,7 @@ class CsvWriter:
     @staticmethod
     def create_row(exchange):
 
-        if isinstance(exchange, EqualGainExchange):
+        if isinstance(exchange, equalgain.EqualGainExchange):
             return [
                 # the actors
                 exchange.i.actor_name,
@@ -71,7 +71,7 @@ class CsvWriter:
     @staticmethod
     def create_heading(exchange):
 
-        if isinstance(exchange, EqualGainExchange):
+        if isinstance(exchange, equalgain.EqualGainExchange):
             return [
                 # the actors
                 "actor_name",  # exchange.i.actor_name,

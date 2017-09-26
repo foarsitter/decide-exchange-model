@@ -1,8 +1,8 @@
 from typing import List
 
-from model.base import AbstractModel, AbstractExchange
-from model.equalgain import EqualGainExchange
-from model.randomrate import RandomRateExchange
+from .. import base
+from .. import equalgain
+from .. import randomrate
 
 
 class Observer(object):
@@ -31,10 +31,10 @@ class Observer(object):
         """
         pass
 
-    def finish_round(self, realized: List[AbstractExchange], iteration: int, repetition: int):
+    def finish_round(self, realized: List[base.AbstractExchange], iteration: int, repetition: int):
         pass
 
-    def after_loop(self, realized: List[AbstractExchange], iteration: int, repetition: int):
+    def after_loop(self, realized: List[base.AbstractExchange], iteration: int, repetition: int):
         pass
 
     def end_loop(self, iteration: int, repetition: int):
@@ -56,22 +56,20 @@ class Observer(object):
     def log(message: str):
         print(message)
 
-    def execute_exchange(self, exchange: AbstractExchange):
-        if isinstance(exchange, EqualGainExchange):
+    def execute_exchange(self, exchange: base.AbstractExchange):
+        if isinstance(exchange, equalgain.EqualGainExchange):
             return self._execute_equal_exchange(exchange)
-        elif isinstance(exchange, RandomRateExchange):
+        elif isinstance(exchange, randomrate.RandomRateExchange):
             return self._execute_random_exchange(exchange)
 
-    def _execute_equal_exchange(self, exchange: EqualGainExchange):
+    def _execute_equal_exchange(self, exchange: equalgain.EqualGainExchange):
         pass
 
-    def _execute_random_exchange(self, exchange: RandomRateExchange):
+    def _execute_random_exchange(self, exchange: randomrate.RandomRateExchange):
         pass
 
-    def removed_exchanges(self, exchanges: List[AbstractExchange]):
+    def removed_exchanges(self, exchanges: List[base.AbstractExchange]):
         pass
-
-
 
 
 class Observable(Observer):
@@ -79,7 +77,7 @@ class Observable(Observer):
     Even the Observable is and Observer, this gives us the possibility to call the right method with the correct params
     """
 
-    def __init__(self, model_ref: AbstractModel, output_directory: str):
+    def __init__(self, model_ref: base.AbstractModel, output_directory: str):
         self.__observers = []
         self.model_ref = model_ref
         self.output_directory = output_directory
@@ -91,11 +89,11 @@ class Observable(Observer):
         for observer in self.__observers:
             observer.before_loop(iteration, repetition)
 
-    def execute_exchange(self, exchange: AbstractExchange):
+    def execute_exchange(self, exchange: base.AbstractExchange):
         for observer in self.__observers:
             observer.execute_exchange(exchange)
 
-    def after_loop(self, realized: List[AbstractExchange], iteration: int, repetition: int):
+    def after_loop(self, realized: List[base.AbstractExchange], iteration: int, repetition: int):
         for observer in self.__observers:
             observer.after_loop(realized, iteration, repetition)
 

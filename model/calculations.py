@@ -1,9 +1,49 @@
-import model.base
-from model.equalgain import EqualGainExchange, EqualGainExchangeActor
+import decimal
+from typing import List, Tuple
+
+from . import base
+from . import equalgain
+
+"""
+TODO: This package should be rewritten
+
+It contains references with .base and .equalgain while this is a calculation package
+
+An abstraction layer needs to be provided by the model (abstract, equal or random) with the correct paramters
+
+The calculations are only on numbers, or list of numbers.
+ 
+"""
+
+
+def calc_nbs_new_2(actors: List[Tuple[decimal.Decimal, decimal.Decimal, decimal.Decimal]]):
+
+    for x in actors:
+        x
+    pass
+
+
+def calc_nbs_new(power: List[decimal.Decimal], salience: List[decimal.Decimal], position: List[decimal.Decimal],
+                 denominator=None):
+    """
+    Denominator is for caching
+    :param power:
+    :param salience:
+    :param position:
+    :param denominator:
+    :return:
+    """
+    if denominator is None:
+        denominator = 1
+
+    numerator = sum([power * salience * position for power, salience, position in zip(power, salience, position)])
+
+    return numerator / denominator
 
 
 def calc_nbs(actor_issues, denominator):
     """
+    TODO: the signature of this function should be different. List/dict salience, power, position
     Calculate the Nash bargaining solution.
 
     This is calculate in the following way:
@@ -63,8 +103,8 @@ def adjusted_nbs(actor_issues, updates, actor, new_position, denominator):
     copy_ai = {}
 
     for k, v in actor_issues.items():
-        copy_ai[v.actor_name] = model.base.ActorIssue(v.actor, v.issue, position=v.position, power=v.power,
-                                                      salience=v.salience)
+        copy_ai[v.actor_name] = base.ActorIssue(v.actor, v.issue, position=v.position, power=v.power,
+                                                salience=v.salience)
 
     for key, value in updates.items():
         if key in copy_ai:  # TODO: this should not be possible
@@ -92,8 +132,8 @@ def adjusted_nbs_by_position(actor_issues, updates, actor, x_pos, new_nbs, denom
     copy_ai = {}
 
     for k, v in actor_issues.items():
-        copy_ai[v.actor_name] = model.base.ActorIssue(v.actor, v.issue, position=v.position, power=v.power,
-                                                      salience=v.salience)
+        copy_ai[v.actor_name] = base.ActorIssue(v.actor, v.issue, position=v.position, power=v.power,
+                                                salience=v.salience)
 
     # to be calculate:
     copy_ai[actor].position = x_pos
@@ -274,17 +314,15 @@ def position_by_nbs(actor_issues, exchange_actor, nbs, denominator):
 
 
 def average_and_variance(values: list):
-
     count = len(values)
     average = sum(values) / count
 
-    variance = sum([(x - average)**2 for x in values]) / count
+    variance = sum([(x - average) ** 2 for x in values]) / count
 
     return average, variance
 
 
-def maximum_possible_utility_gain(exchange: EqualGainExchange, actor: EqualGainExchangeActor):
-
+def maximum_possible_utility_gain(exchange: 'equalgain.EqualGainExchange', actor: 'equalgain.EqualGainExchangeActor'):
     # a maximum of utility gain is achieved when actor i moves completely to the position of j,
     #  while j does not move at all
 

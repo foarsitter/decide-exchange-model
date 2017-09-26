@@ -1,10 +1,8 @@
+import decimal
 import random
 from unittest import TestCase
 
-import decimal
-
 from model import calculations
-from model.base import Actor, Issue, ActorIssue
 from model.equalgain import EqualGainModel, EqualGainExchange, EqualGainExchangeActor
 
 

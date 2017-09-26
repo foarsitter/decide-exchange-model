@@ -14,7 +14,6 @@ from model.helpers.helpers import ModelLoop
 from model.observers.exchanges_writer import ExchangesWriter
 from model.observers.externalities import Externalities
 from model.observers.issue_development import IssueDevelopment
-from model.observers.logger import Logger
 from model.observers.observer import Observable, Observer
 
 

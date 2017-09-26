@@ -4,7 +4,6 @@ import os
 from decimal import Decimal
 
 
-
 class Parser:
     # csv row identifiers
     cA = "#A"  # A = actor
@@ -119,7 +118,6 @@ class Parser:
                 self.model_ref.issues[issue_id].calculate_step_size()
             else:
                 raise Exception('fix this!')
-
 
     def parse_row_d(self, row):
         """

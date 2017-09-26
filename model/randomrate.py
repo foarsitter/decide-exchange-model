@@ -5,8 +5,8 @@ from decimal import *
 from operator import attrgetter
 from typing import List
 
-from model import calculations
-from model.base import AbstractExchangeActor, AbstractExchange, AbstractModel, Actor, Issue
+from . import calculations
+from .base import AbstractExchangeActor, AbstractExchange, AbstractModel, Actor, Issue
 
 
 class RandomRateExchangeActor(AbstractExchangeActor):
@@ -245,7 +245,6 @@ class RandomRateModel(AbstractModel):
                 self.exchanges.clear()
                 return None
 
-            import csv
             # TODO: remove commented code
             # from model.helpers.CsvWriter import CsvWriter
             # for actor_name, _ in exchange_actors_by_actor.items():

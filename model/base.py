@@ -3,9 +3,7 @@ from decimal import Decimal
 from itertools import combinations
 from typing import List
 
-
-from model.helpers.helpers import create_key
-from model import calculations
+from .helpers import helpers
 
 
 class Issue:
@@ -28,7 +26,7 @@ class Issue:
 
         self.name = name
 
-        self.id = issue_id if issue_id else create_key(name)
+        self.id = issue_id if issue_id else helpers.create_key(name)
 
         self.lower = lower
         self.upper = upper
@@ -91,7 +89,7 @@ class Actor:
     """
     def __init__(self, name, actor_id=None):
         self.name = name
-        self.id = actor_id if actor_id else create_key(name)
+        self.id = actor_id if actor_id else helpers.create_key(name)
 
     def __eq__(self, other):
 
@@ -108,6 +106,7 @@ class Actor:
 
     def __repr__(self):
         return self.__str__()
+
 
 class ActorIssue:
     """
@@ -158,12 +157,12 @@ class ActorIssue:
         return self.actor_name == other.actor_name and self.issue.name == other.issue_name
 
 
-class AbstractExchangeActor(object):
+class AbstractExchangeActor:
     """
     Represents an exchange actor. Contains his demand and supply issues and voting-position
     """
 
-    def __init__(self, model_ref: 'AbstractExchange', actor: Actor, demand_issue: Issue, supply_issue: Issue, group: List[str]):
+    def __init__(self, model_ref: 'AbstractModel', actor: Actor, demand_issue: Issue, supply_issue: Issue, group: List[str]):
         """
         Constructor, must be invoked
 
@@ -345,6 +344,8 @@ class AbstractExchange:
         TODO: create universal method because of code duplication in self.check_nbs_j
         :return:
         """
+        from . import calculations
+
         self.i.nbs_0 = calculations.adjusted_nbs(self.model.actor_issues[self.i.supply_issue],
                                                        self.updates[self.i.supply_issue],
                                                        self.i.actor_name, self.i.x,
@@ -400,6 +401,7 @@ class AbstractExchange:
             self.is_valid = b1 and b2
 
     def check_nbs_j(self):
+        from . import calculations
         """
         Calculate if the NBS/outcome doesn't shifts over the original position of actor i
         TODO: create universal method because of code duplication in self.check_nbs_i
@@ -637,7 +639,7 @@ class AbstractExchange:
         return self.i == other.i and self.j == other.j
 
 
-class AbstractModel(object):
+class AbstractModel:
 
     SALIENCE_WEIGHT = 0.4
     FIXED_WEIGHT = 0.1
@@ -751,6 +753,7 @@ class AbstractModel(object):
         return e
 
     def calc_nbs(self):
+        from . import calculations
         """
         Calculate the nash bargaining solution for all the issue
         """
