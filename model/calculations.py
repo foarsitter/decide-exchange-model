@@ -1,8 +1,7 @@
 import decimal
 from typing import List, Tuple
 
-from . import base
-from . import equalgain
+from .base import ActorIssue, SupplyActorIssue, AbstractExchangeActor, AbstractModel, Actor, AbstractExchange
 
 """
 TODO: This package should be rewritten
@@ -103,8 +102,7 @@ def adjusted_nbs(actor_issues, updates, actor, new_position, denominator):
     copy_ai = {}
 
     for k, v in actor_issues.items():
-        copy_ai[v.actor.name] = base.ActorIssue(v.actor, v.issue, position=v.position, power=v.power,
-                                                salience=v.salience)
+        copy_ai[v.actor.name] = ActorIssue(v.actor, v.issue, position=v.position, power=v.power, salience=v.salience)
 
     for key, value in updates.items():
         if key in copy_ai:  # TODO: this should not be possible
@@ -132,8 +130,7 @@ def adjusted_nbs_by_position(actor_issues, updates, actor, x_pos, new_nbs, denom
     copy_ai = {}
 
     for k, v in actor_issues.items():
-        copy_ai[v.actor_name] = base.ActorIssue(v.actor, v.issue, position=v.position, power=v.power,
-                                                salience=v.salience)
+        copy_ai[v.actor.name] = ActorIssue(v.actor, v.issue, position=v.position, power=v.power, salience=v.salience)
 
     # to be calculate:
     copy_ai[actor].position = x_pos
@@ -154,7 +151,7 @@ def adjusted_nbs_by_position(actor_issues, updates, actor, x_pos, new_nbs, denom
     return right
 
 
-def reverse_move(actor_issues, actor, exchange_ratio):
+def reverse_move(actor_issues, actor: AbstractExchangeActor, exchange_ratio):
     """
 
     :param actor_issues:
@@ -162,13 +159,13 @@ def reverse_move(actor_issues, actor, exchange_ratio):
     :param exchange_ratio:
     :return:
     """
-    si = actor.s
-    ci = actor.c
+    si = actor.supply.salience
+    ci = actor.supply.power
 
     return (exchange_ratio * sum_salience_power(actor_issues)) / (ci * si)
 
 
-def by_exchange_ratio(supply_actor, exchange_ratio):
+def by_exchange_ratio(supply_actor: AbstractExchangeActor, exchange_ratio):
     """
 
     :param supply_actor: ExchangeActor
@@ -178,16 +175,16 @@ def by_exchange_ratio(supply_actor, exchange_ratio):
 
     d_actor = supply_actor.opposite_actor
 
-    sip = supply_actor.s_demand  # model.get(s_actor.actor, s_actor.demand, "s")
-    sjp = d_actor.s  # model.get(d_actor.actor, s_actor.demand, "s")
+    sip = supply_actor.demand.salience  # model.get(s_actor.actor, s_actor.demand, "s")
+    sjp = d_actor.supply.salience  # model.get(d_actor.actor, s_actor.demand, "s")
 
-    sj_supply = d_actor.s_demand  # model.get(d_actor.actor, s_actor.supply, "s")
-    si_supply = supply_actor.s  # model.get(s_actor.actor, s_actor.supply, "s")
+    sj_supply = d_actor.demand.salience  # model.get(d_actor.actor, s_actor.supply, "s")
+    si_supply = supply_actor.supply.salience  # model.get(s_actor.actor, s_actor.supply, "s")
 
     return ((si_supply + sj_supply) / (sip + sjp)) * exchange_ratio
 
 
-def by_absolute_move(actor_issues, s_actor):
+def by_absolute_move(actor_issues, s_actor: AbstractExchangeActor):
     """
 
     :param actor_issues:
@@ -196,11 +193,11 @@ def by_absolute_move(actor_issues, s_actor):
     """
     d_actor = s_actor.opposite_actor
 
-    xip = d_actor.x_demand
-    xjp = s_actor.x
+    xip = d_actor.demand.position
+    xjp = s_actor.supply.position
 
-    sjp = s_actor.s
-    cjp = s_actor.c
+    sjp = s_actor.supply.salience
+    cjp = s_actor.supply.power
 
     sum_sc = sum_salience_power(actor_issues)
 
@@ -239,7 +236,7 @@ def expected_utility(actor, demand_exchange_ratio, supply_exchange_ratio):
     :param supply_exchange_ratio:
     :return:
     """
-    return demand_exchange_ratio * actor.s - supply_exchange_ratio * actor.s_demand
+    return abs(demand_exchange_ratio * actor.supply.salience - supply_exchange_ratio * actor.demand.salience)
 
 
 def is_gain_equal(eui, euj, threshold=1e-25):
@@ -257,7 +254,7 @@ def is_gain_equal(eui, euj, threshold=1e-25):
     return True
 
 
-def actor_externalities(actor_name, model_ref, realized):
+def actor_externalities(actor: Actor, model_ref: AbstractModel, realized: AbstractExchange):
     """
     Calculate the externalities from an exchange
 
@@ -267,13 +264,13 @@ def actor_externalities(actor_name, model_ref, realized):
     :return: the Decimal value of the externality
     """
 
-    if actor_name in model_ref.actor_issues[realized.j.supply_issue] \
-            and actor_name in model_ref.actor_issues[realized.i.supply_issue]:
-        xp = model_ref.actor_issues[realized.j.supply_issue][actor_name].position
-        sp = model_ref.actor_issues[realized.j.supply_issue][actor_name].salience
+    if actor in model_ref.actor_issues[realized.j.supply.issue] \
+            and actor in model_ref.actor_issues[realized.i.supply.issue]:
+        xp = model_ref.actor_issues[realized.j.supply.issue][actor].position
+        sp = model_ref.actor_issues[realized.j.supply.issue][actor].salience
 
-        xq = model_ref.actor_issues[realized.i.supply_issue][actor_name].position
-        sq = model_ref.actor_issues[realized.i.supply_issue][actor_name].salience
+        xq = model_ref.actor_issues[realized.i.supply.issue][actor].position
+        sq = model_ref.actor_issues[realized.i.supply.issue][actor].salience
 
         l0 = abs(realized.j.nbs_0 - xp)
         l1 = abs(realized.j.nbs_1 - xp)
@@ -322,16 +319,7 @@ def average_and_variance(values: list):
     return average, variance
 
 
-def maximum_possible_utility_gain(exchange: 'equalgain.EqualGainExchange', actor: 'equalgain.EqualGainExchangeActor'):
-    # a maximum of utility gain is achieved when actor i moves completely to the position of j,
-    #  while j does not move at all
-
-    exchange.calculate()
-
-    pass
-
-
-def exchange_ratio_by_zero_gain(delta_q, sq, sp, utility=0):
+def exchange_ratio_by_expected_utility(delta_q, sq, sp, utility=0):
     """
     Calculates the exchange ratio by a gain of 0.
     Used for the new model

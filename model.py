@@ -5,7 +5,7 @@ if __name__ == "__main__":
     import os
     from datetime import datetime
 
-    from model.helpers import helpers, csvParser
+    from model.helpers import helpers, csvparser
     from model.helpers.helpers import ModelLoop
     from model.observers.exchanges_writer import ExchangesWriter
     from model.observers.externalities import Externalities
@@ -37,7 +37,7 @@ if __name__ == "__main__":
     eventHandler = Observable(model_ref=model, output_directory=output_directory)
     eventHandler.log(message="Start calculation at {0}".format(startTime))
 
-    csvParser = csvParser.Parser(model)
+    csvParser = csvparser.CsvParser(model)
 
     Externalities(eventHandler)
     ExchangesWriter(eventHandler)

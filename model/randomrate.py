@@ -5,41 +5,29 @@ from decimal import *
 from operator import attrgetter
 from typing import List
 
+from . import base
 from . import calculations
-from .base import AbstractExchangeActor, AbstractExchange, AbstractModel, Actor, Issue
 
 
-class RandomRateExchangeActor(AbstractExchangeActor):
+class RandomRateExchangeActor(base.AbstractExchangeActor):
     """
     Random Rate solution of the model.
     Where the expected utility in de Equal Gain solution are equal,
     the utility here is calculated on a random exchange ratio.
     """
 
-    def __init__(self, model_ref: 'AbstractExchange', actor: Actor, demand_issue: Issue, supply_issue: Issue, group):
-        """
-        Constructor, needs to call super()
-        :param model_ref:
-        :param actor:
-        :param demand_issue:
-        :param supply_issue:
-        :param group:
-        """
-        super().__init__(model_ref, actor, demand_issue, supply_issue, group)
-        self.eu = 0
-        self.exchange = None
-
     def __str__(self):
-        return "{1} {2} {3:.1f} {4:.1f} ({5:.1f}) {0:.10f} ".format(self.eu, self.actor_name, self.supply_issue, self.x,
+        return "{1} {2} {3:.1f} {4:.1f} ({5:.1f}) {0:.10f} ".format(self.eu, self.actor.name, self.supply.issue,
+                                                                    self.supply.position,
                                                                     self.y,
-                                                                    self.opposite_actor.x_demand)
+                                                                    self.opposite_actor.demand.position)
 
     def recalculate(self, delta_eu, increase):
 
         # we should not need the opposite actor, because the move isn't effecting the other actors position
         # opposite = self.exchange.opposite_actor
 
-        delta_o = delta_eu / self.s
+        delta_o = delta_eu / self.supply.salience
 
         # determine in which direction the nbs is moving
 
@@ -54,21 +42,21 @@ class RandomRateExchangeActor(AbstractExchangeActor):
     def adjust_position_by_outcome(self, delta_o, increase):
         new_outcome = self.nbs_1 + delta_o  # we have to use nbs_1 here, because it is an incremental shift.
 
-        position = calculations.position_by_nbs(actor_issues=self.exchange.model.actor_issues[self.supply_issue],
+        position = calculations.position_by_nbs(actor_issues=self.exchange.model.actor_issues[self.supply.issue],
                                                 exchange_actor=self,
                                                 nbs=new_outcome,
-                                                denominator=self.exchange.model.nbs_denominators[self.supply_issue])
+                                                denominator=self.exchange.model.nbs_denominators[self.supply.issue])
 
-        if increase and (delta_o < 0 and position < self.opposite_actor.x_demand
-                         or delta_o > 0 and position > self.opposite_actor.x_demand):
-            position = self.opposite_actor.x_demand
+        if increase and (delta_o < 0 and position < self.opposite_actor.demand.position
+                         or delta_o > 0 and position > self.opposite_actor.demand.position):
+            position = self.opposite_actor.demand.position
 
-            adjusted_nbs = calculations.adjusted_nbs(actor_issues=self.exchange.model.actor_issues[self.supply_issue],
+            adjusted_nbs = calculations.adjusted_nbs(actor_issues=self.exchange.model.actor_issues[self.supply.issue],
                                                      updates=self.exchange.updates,
-                                                     actor=self.actor_name,
+                                                     actor=self.actor,
                                                      new_position=position,
                                                      denominator=self.exchange.model.nbs_denominators[
-                                                         self.supply_issue])
+                                                         self.supply.issue])
 
             new_outcome = adjusted_nbs
             delta_o_consumed = abs(new_outcome - self.nbs_1) - delta_o
@@ -80,9 +68,9 @@ class RandomRateExchangeActor(AbstractExchangeActor):
 
         # calculate the move in the right direction
         if previous_move < 0:
-            move = abs(self.x - position) * -1
+            move = abs(self.supply.position - position) * -1
         else:
-            move = abs(self.x - position)
+            move = abs(self.supply.position - position)
 
         self.moves.append(move)
         self.exchange.is_valid = self.is_move_valid(move)
@@ -96,11 +84,11 @@ class RandomRateExchangeActor(AbstractExchangeActor):
 
     def adjust_utility(self, delta_o):
 
-        self.eu += abs(delta_o) * self.s
+        self.eu += abs(delta_o) * self.supply.salience
         self.opposite_actor.eu -= delta_o
 
 
-class RandomRateExchange(AbstractExchange):
+class RandomRateExchange(base.AbstractExchange):
     """
     An exchange for the random rate model
     """
@@ -166,9 +154,8 @@ class RandomRateExchange(AbstractExchange):
         self.is_valid = b1 and b2
 
         if self.is_valid:
-
-            self.check_nbs_j()
-            self.check_nbs_i()
+            self.i.check_nbs()
+            self.j.check_nbs()
 
     def __str__(self):
         return "{0}, {1}".format(str(self.i), str(self.j))
@@ -185,7 +172,61 @@ class RandomRateExchange(AbstractExchange):
         raise Exception("Actor {0} not in exchange".format(item))
 
 
-class RandomRateModel(AbstractModel):
+    def csv_row(self, head=False):
+
+        if head:
+            return [
+
+                # the actors
+                "actor",
+                "issue",
+                "power",
+                "sal s/d",
+                "start",
+                "move",
+                "voting",
+                "demand",
+                "gain",
+                "exchange ratio",
+                "",
+                "actor",
+                "issue",
+                "power",
+                "sal s/d",
+                "start",
+                "move",
+                "voting",
+                "demand",
+                "gain",
+                "exchange ratio"]
+
+        exchange = self
+
+        return[
+
+            # the actors
+            exchange.i.actor_name,
+            exchange.i.supply_issue,
+            exchange.i.c,
+            exchange.i.s / exchange.i.s_demand,
+            exchange.i.x,
+            exchange.i.move,
+            exchange.i.y,
+            exchange.i.opposite_actor.x_demand,
+            exchange.i.eu, exchange.dp,
+            "",
+            exchange.j.actor_name,
+            exchange.j.supply_issue,
+            exchange.j.c,
+            exchange.j.s / exchange.j.s_demand,
+            exchange.j.x,
+            exchange.j.move,
+            exchange.j.y,
+            exchange.j.opposite_actor.x_demand,
+            exchange.j.eu, exchange.dq]
+
+
+class RandomRateModel(base.AbstractModel):
     """
     The Random Rate implementation
     """
@@ -209,8 +250,6 @@ class RandomRateModel(AbstractModel):
 
         deadlock = defaultdict(int)
 
-        pointers = defaultdict(int)
-
         while len(self.exchanges) > 0:
 
             exchange_actors = self._get_sorted_exchange_actor_list()
@@ -231,59 +270,18 @@ class RandomRateModel(AbstractModel):
 
             for exchange_actor in exchange_actors:  # type: RandomRateExchangeActor
 
-                exchange_actors_by_actor[exchange_actor.actor_name].append(exchange_actor.eu)
-                exchange_actors_by_gain[exchange_actor.actor_name][exchange_actor.eu].append(exchange_actor)
+                exchange_actors_by_actor[exchange_actor.actor.name].append(exchange_actor.eu)
+                exchange_actors_by_gain[exchange_actor.actor.name][exchange_actor.eu].append(exchange_actor)
 
             if deadlock[len(self.exchanges)] > 1024:
-                # TODO this should never happen?
+                # this should never happen?
                 print('deadlock')
 
                 for ex in self.exchanges:
                     print(ex)
 
-
                 self.exchanges.clear()
                 return None
-
-            # TODO: remove commented code
-            # from model.helpers.CsvWriter import CsvWriter
-            # for actor_name, _ in exchange_actors_by_actor.items():
-            #
-            #     reversed_values = exchange_actors_by_gain[actor_name].values()
-            #
-            #     pointer = pointers[actor_name]
-            #     file_name = 'data/output/dump/{actor}/{pointer}.csv'.format(pointer=pointer, actor=actor_name)
-            #
-            #     with open(file_name, 'w') as csv_file:
-            #         writer = csv.writer(csv_file)
-            #
-            #         writer.writerow([actor_name])
-            #         writer.writerow(CsvWriter.create_heading(None))
-            #         for s_value in reversed_values:
-            #             for exchange_actor in s_value:
-            #                 ___exchange_actor = exchange_actor  # type: RandomRateExchangeActor
-            #                 data = [exchange_actor.actor_name,
-            #                         ___exchange_actor.supply_issue,
-            #                         ___exchange_actor.c,
-            #                         ___exchange_actor.s / exchange_actor.s_demand,
-            #                         ___exchange_actor.x,
-            #                         ___exchange_actor.move,
-            #                         ___exchange_actor.y,
-            #                         ___exchange_actor.opposite_actor.x_demand,
-            #                         ___exchange_actor.eu, ___exchange_actor.exchange.dp, "",
-            #                         ___exchange_actor.opposite_actor.actor_name,
-            #                         ___exchange_actor.opposite_actor.supply_issue,
-            #                         ___exchange_actor.opposite_actor.c,
-            #                         ___exchange_actor.opposite_actor.s / exchange_actor.s_demand,
-            #                         ___exchange_actor.opposite_actor.x,
-            #                         ___exchange_actor.opposite_actor.move,
-            #                         ___exchange_actor.opposite_actor.y,
-            #                         ___exchange_actor.opposite_actor.opposite_actor.x_demand,
-            #                         ___exchange_actor.opposite_actor.eu, ___exchange_actor.exchange.dq
-            #                         ]
-            #                 writer.writerow(data)
-            #
-            #     pointers[actor_name] += 1
 
             # is there an exchange where both actors archive their highest gain
             for exchange_actor in exchange_actors:
@@ -313,7 +311,7 @@ class RandomRateModel(AbstractModel):
 
             # lower highest gains
             for actor_name, values in exchange_actors_by_actor.items():
-                # do nothing when the actor only has one exchange left because this exchange is automatically his highest
+                # do nothing when the actor has one exchange left because this exchange is automatically his highest
                 if len(values) > 1:
                     highest = values[0]
 
@@ -361,3 +359,6 @@ class RandomRateModel(AbstractModel):
         for value in exchange_utility_list:
             if abs(value - previous_value) > 0:
                 return value
+
+
+

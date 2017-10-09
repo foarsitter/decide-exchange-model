@@ -2,7 +2,7 @@ import os
 from typing import List
 
 from .. import base
-from ..helpers import CsvWriter
+from ..helpers import csvwriter
 from ..observers import observer
 
 
@@ -34,7 +34,7 @@ class ExchangesWriter(observer.Observer):
 
         self.model_ref.sort_exchanges()
 
-        writer = CsvWriter.CsvWriter()
+        writer = csvwriter.CsvWriter()
         writer.write('{0}/exchanges/{2}/initial/before.{1}.csv'.format(self.output_directory, iteration, repetition),
                      self.model_ref.exchanges)
 
@@ -45,6 +45,6 @@ class ExchangesWriter(observer.Observer):
         :param realized: 
         :param iteration:
         """
-        writer = CsvWriter.CsvWriter()
+        writer = csvwriter.CsvWriter()
         writer.write("{0}/exchanges/{2}/round.{1}.csv".format(self.output_directory, iteration + 1, repetition),
                      realized)

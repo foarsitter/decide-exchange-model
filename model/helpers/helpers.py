@@ -1,8 +1,7 @@
 import argparse
 import re
 
-from . import csvParser
-from ..observers import observer
+from . import csvparser
 
 
 def parse_arguments():
@@ -11,9 +10,9 @@ def parse_arguments():
                                                  "{1} for an issue,\n"
                                                  "{2} for actor values for each issue.\n"
                                                  "We expect for {2} the following order in values: "
-                                                 "actor, issue, position, salience, power".format(csvParser.Parser.cA,
-                                                                                                  csvParser.Parser.cP,
-                                                                                                  csvParser.Parser.cD))
+                                                 "actor, issue, position, salience, power".format(csvparser.CsvParser.cA,
+                                                                                                  csvparser.CsvParser.cP,
+                                                                                                  csvparser.CsvParser.cD))
     parser.add_argument('--model',
                         help='The type of the model. The options are "equal" for the Equal Gain model and '
                              '"random" for the RandomRate model ',
@@ -38,7 +37,7 @@ def create_key(value):
 
 
 class ModelLoop(object):
-    def __init__(self, model, event_handler: observer.Observable, repetition: int):
+    def __init__(self, model, event_handler: 'observer.Observable', repetition: int):
         self.model = model
         self.event_handler = event_handler
         self.iteration_number = 0
@@ -75,8 +74,8 @@ class ModelLoop(object):
                                       repetition=self.repetition_number)
 
         for exchange in realized:
-            self.model.actor_issues[exchange.i.supply_issue][exchange.i.actor_name].position = exchange.i.y
-            self.model.actor_issues[exchange.j.supply_issue][exchange.j.actor_name].position = exchange.j.y
+            self.model.actor_issues[exchange.i.supply.issue][exchange.i.actor].position = exchange.i.y
+            self.model.actor_issues[exchange.j.supply.issue][exchange.j.actor].position = exchange.j.y
 
         # calc the new NBS on the voting positions and fire the event for ending this loop
         self.model.calc_nbs()
@@ -85,9 +84,9 @@ class ModelLoop(object):
         # calculate for each realized exchange there new start positions
         for exchange in realized:
             pi = exchange.i.new_start_position()
-            self.model.actor_issues[exchange.i.supply_issue][exchange.i.actor_name].position = pi
+            self.model.actor_issues[exchange.i.supply.issue][exchange.i.actor].position = pi
 
             pj = exchange.j.new_start_position()
-            self.model.actor_issues[exchange.j.supply_issue][exchange.j.actor_name].position = pj
+            self.model.actor_issues[exchange.j.supply.issue][exchange.j.actor].position = pj
 
         self.iteration_number += 1

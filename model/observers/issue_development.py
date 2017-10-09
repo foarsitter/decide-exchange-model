@@ -5,8 +5,8 @@ import os
 from collections import defaultdict
 from typing import List
 
-from .. import calculations
 from .. import base
+from .. import calculations
 from ..observers import observer
 
 matplotlib_loaded = True
@@ -48,7 +48,7 @@ class IssueDevelopment(observer.Observer):
             issue_list = {}
 
             for key, actor_issue in self.model_ref.actor_issues[issue].items():
-                issue_list[actor_issue.actor_name] = []
+                issue_list[actor_issue.actor.name] = []
 
             issue_list["nbs"] = []
 

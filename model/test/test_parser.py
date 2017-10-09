@@ -1,7 +1,7 @@
 from unittest import TestCase
 
-from . import csvparser
-from .. import equalgain
+from model.helpers import csvparser
+from model import equalgain
 
 
 class TestParser(TestCase):
@@ -14,4 +14,4 @@ class TestParser(TestCase):
         self.assertEqual(len(model.actors), 10)
         self.assertEqual(len(model.issues), 6)
         self.assertEqual(len(model.actor_issues), 6)
-        self.assertEqual(len(model.actor_issues[model.issues['tolheffingbinnenstad'].id]), 10)
+        self.assertEqual(len(model.actor_issues[model.issues['tolheffingbinnenstad']]), 10)

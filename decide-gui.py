@@ -9,7 +9,7 @@ from tkinter import messagebox
 from tkinter import ttk
 
 from model.base import AbstractModel
-from model.helpers import csvParser
+from model.helpers import csvparser
 from model.helpers.helpers import ModelLoop
 from model.observers.exchanges_writer import ExchangesWriter
 from model.observers.externalities import Externalities
@@ -273,8 +273,8 @@ class MainApplication(tk.Frame):
 
             model = AbstractModel()
 
-            from model.helpers import csvParser
-            csv_parser = csvParser.Parser(model)
+            from model.helpers import csvparser
+            csv_parser = csvparser.CsvParser(model)
 
             model = csv_parser.read(self.input_file.get())
 
@@ -288,9 +288,6 @@ class MainApplication(tk.Frame):
             os.makedirs(selected_dir)
 
         self.output_dir.set(selected_dir)
-
-    def model_type(self):
-        print(self.model.get())
 
     @staticmethod
     def col():
@@ -377,7 +374,7 @@ class MainApplication(tk.Frame):
         event_handler = Observable(model_ref=model, output_directory=output_directory)
         event_handler.log(message="Start calculation at {0}".format(start_time))
 
-        csv_parser = csvParser.Parser(model_ref=model)
+        csv_parser = csvparser.CsvParser(model_ref=model)
 
         if not os.path.isdir(output_directory):
             os.makedirs(output_directory)

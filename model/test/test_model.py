@@ -3,12 +3,12 @@ from decimal import *
 from unittest import TestCase
 
 from model.equalgain import EqualGainModel
-from model.helpers import csvParser
+from model.helpers import csvparser
 
 
 class TestModel(TestCase):
     def setUp(self):
-        csv = csvParser.Parser(EqualGainModel())
+        csv = csvparser.CsvParser(EqualGainModel())
         self.model = csv.read("data/input/sample_data.txt")
         # self.model = csv.read("data\\CoP21.csv")
 
@@ -78,40 +78,3 @@ class TestModel(TestCase):
         k = 2
 
         self.assertEqual(combinations, math.factorial(n) / (math.factorial(k) * math.factorial(n - k)))
-
-    def test_exchange_99(self):
-        csv = csvParser.Parser(EqualGainModel())
-        model = csv.read("data/input/sample_data.txt")
-
-        model.calc_nbs()  # tested in test_calculations.py#test_calc_nbs
-
-        model.calc_combinations()  # tested below
-        model.determine_positions()
-        model.determine_groups()
-
-        exchange_99 = None
-
-        in_iteration = 0
-
-        for exchange in model.exchanges:
-            if exchange.equal_str(i="d66", q="tolheffingbinnenstad", j="cda", p="tolhoogte"):
-                exchange_99 = exchange
-
-        while len(model.exchanges) > 0:
-            realize = model.highest_gain()
-            model.remove_invalid_exchanges(realize)
-
-            founded_99 = False
-            for exchange in model.exchanges:
-                if exchange.equal_str(i="d66", q="tolheffingbinnenstad", j="cda", p="tolhoogte"):
-                    founded_99 = True
-
-            if not founded_99:
-                break
-
-            in_iteration += 1
-
-        if exchange_99 is not None:
-            exchange_99.recalculate(realize)
-            # TODO: fix this test
-            # self.assertEqual(exchange_99.i.y, 0)

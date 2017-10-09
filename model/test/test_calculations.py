@@ -5,7 +5,7 @@ from model.base import ActorIssue, Actor, Issue
 from model.calculations import calc_nbs_denominator, calc_nbs, adjusted_nbs, by_absolute_move, by_exchange_ratio, \
     reverse_move, sum_salience_power
 from model.equalgain import EqualGainExchange, EqualGainModel
-from model.helpers import csvParser
+from model.helpers import csvparser
 
 
 class TestNBSCalculations(TestCase):
@@ -46,7 +46,7 @@ class TestNBSCalculations(TestCase):
                          Decimal(200) / Decimal(3))
 
     def test_by_absolute_move(self):
-        csv = csvParser.Parser(self.model)
+        csv = csvparser.CsvParser(self.model)
 
         model = csv.read("data/input/sample_data.txt")
 
@@ -58,8 +58,8 @@ class TestNBSCalculations(TestCase):
 
         i = model.actors["wcentr"]
         j = model.actors["willems"]
-        p = "tolheffingbinnenstad"
-        q = "extrainvestering"
+        p = model.issues["tolheffingbinnenstad"]
+        q = model.issues["extrainvestering"]
         e = EqualGainExchange(i, j, p, q, model, groups=['a', 'd'])
 
         dp = by_absolute_move(model.actor_issues[e.i.supply_issue], e.i)
@@ -88,7 +88,7 @@ class TestNBSCalculations(TestCase):
         self.assertEqual(sum_salience_power({"a": self.a, "b": self.b, "c": self.c}), (3))
 
     def test_externalities(self):
-        csv = csvParser.Parser(self.model)
+        csv = csvparser.CsvParser(self.model)
 
         model = csv.read("data/input/sample_data.txt")
 
@@ -99,14 +99,14 @@ class TestNBSCalculations(TestCase):
 
         i = model.actors["d66"]
         j = model.actors["cda"]
-        p = "wanneertol"
-        q = "tolheffingbinnenstad"
+        p = model.issues['wanneertol']
+        q = model.issues["tolheffingbinnenstad"]
         e = EqualGainExchange(i, j, p, q, model, groups=['a', 'd'])
 
         e.calculate()
 
         nbs_0 = model.nbs[p]
-        nbs_1 = adjusted_nbs(model.actor_issues[p], e.updates, e.j.actor_name, e.j.y,
+        nbs_1 = adjusted_nbs(model.actor_issues[p], e.updates, e.j.actor, e.j.y,
                              model.nbs_denominators[p])
         #
         # Russia = model.actor_issues[p]["rusia"]  # russia is an D group actor, so he is inner
