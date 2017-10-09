@@ -123,7 +123,7 @@ class Actor:
         Human representation of this object
         :return:
         """
-        return self.name
+        return self.name + ' (actor)'
 
     def __repr__(self):
         """
@@ -623,8 +623,7 @@ class AbstractExchange:
                 self.invalidate_move()
                 self.re_calc = True
 
-        if (self.i.actor == exchange.i.actor and self.i.demand.issue == exchange.i.demand.issue) or (
-                        self.j.actor == exchange.i.actor and self.j.demand.issue == exchange.i.demand.issue):
+        if exchange.i.equals_actor_demand_issue(self.j) or exchange.i.equals_actor_demand_issue(self.i):
 
             if exchange.j.actor in self.updates[exchange.i.demand.issue]:
                 self.update_updates(exchange.j, exchange.i.demand.issue,

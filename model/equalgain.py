@@ -79,105 +79,105 @@ class EqualGainExchange(base.AbstractExchange):
 
         p = decimal.Decimal(0)
 
-        if self.i.supply.position > self.i.y:
-            if self.j.demand.position > self.i.y:
-                print('I cannot move beyond J')
+        # if self.i.supply.position > self.i.y:
+        #     if self.j.demand.position > self.i.y:
+        #         print('I cannot move beyond J')
 
-        if self.is_valid and p > 0:
-
-            eu = self.gain
-
-            U = decimal.Decimal(random.uniform(0, 1))
-            V = decimal.Decimal(random.uniform(0, 1))
-            Z = decimal.Decimal(random.uniform(0, 1))
-
-            if U < 0.5:
-                if V < 0.5:
-                    exchange_ratio_zero_i = calculations.exchange_ratio_by_expected_utility(self.dp,
-                                                                                            self.i.supply.salience,
-                                                                                            self.i.demand.salience)
-                    eui = p * Z * (abs(calculations.expected_utility(self.i, exchange_ratio_zero_i, self.dp)) - eu) + eu
-                else:
-                    eui = eu - p * Z * eu
-
-                # calculate the expected utility of J
-
-                move_i = abs(self.i.supply.position - self.i.opposite_actor.demand.position)
-                # supply exchange ratio for i, demand for j
-                exchange_ratio_i_supply = calculations.exchange_ratio(move_i,
-                                                                      self.i.supply.salience,
-                                                                      self.i.supply.power,
-                                                                      self.model.nbs_denominators[self.i.supply.issue])
-
-                # supply exchange ratio for j, demand for i
-                exchange_ratio_i_demand = calculations.exchange_ratio_by_expected_utility(exchange_ratio_i_supply,
-                                                                                          self.i.supply.salience,
-                                                                                          self.i.demand.salience,
-                                                                                          utility=eui)
-
-                exchange_ratio_j_supply = exchange_ratio_i_demand
-                exchange_ratio_j_demand = exchange_ratio_i_supply
-
-                move_j = calculations.reverse_move(self.j.actor_issues(), self.j, exchange_ratio_j_supply)
-
-                delta_x_j_supply = abs(self.j.supply.position - self.j.opposite_actor.demand.position)
-
-                euj = abs(calculations.expected_utility(self.j, exchange_ratio_j_demand, exchange_ratio_j_supply))
-                eui_check = abs(calculations.expected_utility(self.i, exchange_ratio_i_supply, exchange_ratio_i_demand))
-
-                if abs(move_j) > delta_x_j_supply:
-                    exchange_ratio_j_supply = calculations.exchange_ratio(delta_x_j_supply,
-                                                                          self.j.supply.salience,
-                                                                          self.j.supply.power,
-                                                                          self.model.nbs_denominators[
-                                                                              self.j.supply.issue])
-
-                    exchange_ratio_j_demand = calculations.by_exchange_ratio(self.j, exchange_ratio_j_supply)
-
-                    move_i = calculations.reverse_move(self.i.actor_issues(), self.i, exchange_ratio_j_demand)
-
-                    if abs(move_i) < abs(self.i.supply.position - self.i.opposite_actor.demand.position):  # TODO remove extra check, since it will never occur
-                        euj = abs(calculations.expected_utility(self.j, exchange_ratio_j_supply, exchange_ratio_j_demand))
-                        eui_check = abs(calculations.expected_utility(self.i, exchange_ratio_i_supply, exchange_ratio_i_demand))
-                    else:
-                        raise Exception('Impossible')
-                else:
-                    pass  # proceed with exchange
-
-                if abs(eui_check - eui) > 1e-10:
-                    raise Exception('the gain is already calculate, should be the same')
-
-                self.i.eu = eui
-                self.j.eu = euj
-
-                self.i.move = move_i
-                self.j.move = move_j
-                print('h')
-            else:
-                if V < 0.5:
-                    exchange_ratio_zero_j = calculations.exchange_ratio_by_expected_utility(self.dq,
-                                                                                            self.j.supply.salience,
-                                                                                            self.j.demand.salience)
-                    euj_max = calculations.expected_utility(self.i, self.dp, exchange_ratio_zero_j)
-                    euj = p * Z * (euj_max - eu) + eu
-                else:
-                    euj = eu - p * Z * eu
-
-                supply_actor = self.j
-                new_gain = euj
-
-                delta_x = abs(supply_actor.supply.position - supply_actor.opposite_actor.demand.position)
-                # supply exchange ratio for i, demand for j
-                exchange_ratio = calculations.exchange_ratio(delta_x, supply_actor.supply.salience,
-                                                             supply_actor.supply.power,
-                                                             self.model.nbs_denominators[supply_actor.supply.issue])
-
-                # supply exchange ratio for j, demand for i
-                dq = calculations.exchange_ratio_by_expected_utility(exchange_ratio, supply_actor.supply.salience,
-                                                                     supply_actor.demand.salience, utility=new_gain)
-
-                euj = calculations.expected_utility(supply_actor.opposite_actor, dq, exchange_ratio)
-            print(euj)
+        # if self.is_valid and p > 0:
+        #
+        #     eu = self.gain
+        #
+        #     U = decimal.Decimal(random.uniform(0, 1))
+        #     V = decimal.Decimal(random.uniform(0, 1))
+        #     Z = decimal.Decimal(random.uniform(0, 1))
+        #
+        #     if U < 0.5:
+        #         if V < 0.5:
+        #             exchange_ratio_zero_i = calculations.exchange_ratio_by_expected_utility(self.dp,
+        #                                                                                     self.i.supply.salience,
+        #                                                                                     self.i.demand.salience)
+        #             eui = p * Z * (abs(calculations.expected_utility(self.i, exchange_ratio_zero_i, self.dp)) - eu) + eu
+        #         else:
+        #             eui = eu - p * Z * eu
+        #
+        #         # calculate the expected utility of J
+        #
+        #         move_i = abs(self.i.supply.position - self.i.opposite_actor.demand.position)
+        #         # supply exchange ratio for i, demand for j
+        #         exchange_ratio_i_supply = calculations.exchange_ratio(move_i,
+        #                                                               self.i.supply.salience,
+        #                                                               self.i.supply.power,
+        #                                                               self.model.nbs_denominators[self.i.supply.issue])
+        #
+        #         # supply exchange ratio for j, demand for i
+        #         exchange_ratio_i_demand = calculations.exchange_ratio_by_expected_utility(exchange_ratio_i_supply,
+        #                                                                                   self.i.supply.salience,
+        #                                                                                   self.i.demand.salience,
+        #                                                                                   utility=eui)
+        #
+        #         exchange_ratio_j_supply = exchange_ratio_i_demand
+        #         exchange_ratio_j_demand = exchange_ratio_i_supply
+        #
+        #         move_j = calculations.reverse_move(self.j.actor_issues(), self.j, exchange_ratio_j_supply)
+        #
+        #         delta_x_j_supply = abs(self.j.supply.position - self.j.opposite_actor.demand.position)
+        #
+        #         euj = abs(calculations.expected_utility(self.j, exchange_ratio_j_demand, exchange_ratio_j_supply))
+        #         eui_check = abs(calculations.expected_utility(self.i, exchange_ratio_i_supply, exchange_ratio_i_demand))
+        #
+        #         if abs(move_j) > delta_x_j_supply:
+        #             exchange_ratio_j_supply = calculations.exchange_ratio(delta_x_j_supply,
+        #                                                                   self.j.supply.salience,
+        #                                                                   self.j.supply.power,
+        #                                                                   self.model.nbs_denominators[
+        #                                                                       self.j.supply.issue])
+        #
+        #             exchange_ratio_j_demand = calculations.by_exchange_ratio(self.j, exchange_ratio_j_supply)
+        #
+        #             move_i = calculations.reverse_move(self.i.actor_issues(), self.i, exchange_ratio_j_demand)
+        #
+        #             if abs(move_i) < abs(self.i.supply.position - self.i.opposite_actor.demand.position):  # TODO remove extra check, since it will never occur
+        #                 euj = abs(calculations.expected_utility(self.j, exchange_ratio_j_supply, exchange_ratio_j_demand))
+        #                 eui_check = abs(calculations.expected_utility(self.i, exchange_ratio_i_supply, exchange_ratio_i_demand))
+        #             else:
+        #                 raise Exception('Impossible')
+        #         else:
+        #             pass  # proceed with exchange
+        #
+        #         if abs(eui_check - eui) > 1e-10:
+        #             raise Exception('the gain is already calculate, should be the same')
+        #
+        #         self.i.eu = eui
+        #         self.j.eu = euj
+        #
+        #         self.i.move = move_i
+        #         self.j.move = move_j
+        #         print('h')
+        #     else:
+        #         if V < 0.5:
+        #             exchange_ratio_zero_j = calculations.exchange_ratio_by_expected_utility(self.dq,
+        #                                                                                     self.j.supply.salience,
+        #                                                                                     self.j.demand.salience)
+        #             euj_max = calculations.expected_utility(self.i, self.dp, exchange_ratio_zero_j)
+        #             euj = p * Z * (euj_max - eu) + eu
+        #         else:
+        #             euj = eu - p * Z * eu
+        #
+        #         supply_actor = self.j
+        #         new_gain = euj
+        #
+        #         delta_x = abs(supply_actor.supply.position - supply_actor.opposite_actor.demand.position)
+        #         # supply exchange ratio for i, demand for j
+        #         exchange_ratio = calculations.exchange_ratio(delta_x, supply_actor.supply.salience,
+        #                                                      supply_actor.supply.power,
+        #                                                      self.model.nbs_denominators[supply_actor.supply.issue])
+        #
+        #         # supply exchange ratio for j, demand for i
+        #         dq = calculations.exchange_ratio_by_expected_utility(exchange_ratio, supply_actor.supply.salience,
+        #                                                              supply_actor.demand.salience, utility=new_gain)
+        #
+        #         euj = calculations.expected_utility(supply_actor.opposite_actor, dq, exchange_ratio)
+        #     print(euj)
 
     def csv_row(self, head=False):
 
