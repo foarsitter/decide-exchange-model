@@ -1,4 +1,4 @@
-
+import decimal
 
 if __name__ == "__main__":
 
@@ -25,7 +25,9 @@ if __name__ == "__main__":
     if args.model == "equal":
         import model.equalgain as Model
 
-        model = Model.EqualGainModel()
+        p = decimal.Decimal(args.p)
+
+        model = Model.EqualGainModel(randomized_value=p)
     else:
         import model.randomrate as Model
 

@@ -2,7 +2,6 @@ import decimal
 from collections import defaultdict
 from decimal import Decimal
 from itertools import combinations
-from typing import List
 
 from .helpers import helpers
 
