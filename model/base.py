@@ -557,20 +557,20 @@ class AbstractExchange:
         invalid_j = False
 
         if self.i.equals_actor_supply_issue(exchange.i):
-            self.i.x = exchange.i.y
+            self.i.supply.position = exchange.i.y
             self.i.moves.append(exchange.i.moves[-1])
             invalid_i = True
         elif self.i.equals_actor_supply_issue(exchange.j):
-            self.i.x = exchange.j.y
+            self.i.supply.position = exchange.j.y
             self.i.moves.append(exchange.j.moves[-1])
             invalid_i = True
 
         if self.j.equals_actor_supply_issue(exchange.i):
-            self.j.x = exchange.i.y
+            self.j.supply.position = exchange.i.y
             self.j.moves.append(exchange.i.moves[-1])
             invalid_j = True
         elif self.j.equals_actor_supply_issue(exchange.j):
-            self.j.x = exchange.j.y
+            self.j.supply.position = exchange.j.y
             self.j.moves.append(exchange.j.moves[-1])
             invalid_j = True
 
