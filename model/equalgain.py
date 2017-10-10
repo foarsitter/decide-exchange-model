@@ -90,7 +90,7 @@ class EqualGainExchange(base.AbstractExchange):
 
         p = decimal.Decimal(self.model.randomized_value)
 
-        if self.is_valid and p > 0:
+        if p > 0:
 
             eu = self.gain
 
@@ -158,8 +158,11 @@ class EqualGainExchange(base.AbstractExchange):
                     else:
                         raise Exception('Impossible')
 
-                if abs(eui_check - eui) > 1e-10:
-                    raise Exception('the gain is already calculate, should be the same')
+                # if move_i < 0 or move_i > 100 or move_j < 0 or move_j > 100:
+                #     raise Exception('Impossible')
+                #
+                # if self.is_valid and abs(eui_check - eui) > 1e-10:
+                #     raise Exception('the gain is already calculate, should be the same {}={}'.format(eui, eui_check))
 
                 self.i.eu = eui
                 self.j.eu = euj
@@ -228,14 +231,20 @@ class EqualGainExchange(base.AbstractExchange):
                     else:
                         raise Exception('Impossible')
 
-                if abs(euj_check - euj) > 1e-10:
-                    raise Exception('the gain is already calculate, should be the same')
+                # if move_i < 0 or move_i > 100 or move_j < 0 or move_j > 100:
+                #     raise Exception('Impossible')
+                #
+                # if self.is_valid and abs(euj_check - euj) > 1e-10:
+                #     raise Exception('the gain is already calculate, should be the same {0}-{1} {2}'.format(euj_check, euj, self.is_valid))
 
                 self.i.eu = eui
                 self.j.eu = euj
 
                 self.i.move = move_i
                 self.j.move = move_j
+
+            if z < 1e-10:
+                raise Exception('Impossible')
 
             if self.i.supply.position > self.j.demand.position:
                 self.i.move *= -1

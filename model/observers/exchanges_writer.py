@@ -29,7 +29,7 @@ class ExchangesWriter(observer.Observer):
         """
         Writes all the possible exchanges to the filesystem
         :param iteration: 
-        :param repetition:
+        :param repetition:`
         """
 
         self.model_ref.sort_exchanges()

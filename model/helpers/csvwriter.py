@@ -12,4 +12,5 @@ class CsvWriter:
             writer.writerow(realized[0].csv_row(head=True))
 
             for exchange in realized:
-                writer.writerow(exchange.csv_row())
+                if exchange.is_valid:
+                    writer.writerow(exchange.csv_row())
