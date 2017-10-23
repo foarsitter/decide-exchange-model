@@ -51,16 +51,34 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
                                                        self.supply.power,
                                                        self.model.nbs_denominators[self.supply.issue])
 
+        exchange_ratio_p = calculations.exchange_ratio(abs(self.opposite_actor.supply.position - self.demand.position),
+                                                       self.opposite_actor.supply.salience,
+                                                       self.opposite_actor.supply.power,
+                                                       self.model.nbs_denominators[self.opposite_actor.supply.issue])
+
+        dp = self.exchange.dp
+        dq = self.exchange.dq
+
         # supply exchange ratio for j, demand for i
         exchange_ratio_p = calculations.exchange_ratio_by_expected_utility(exchange_ratio_q,
                                                                                self.supply.salience,
                                                                                self.demand.salience,
                                                                                utility=eui)
 
-        eui_check = abs(calculations.expected_utility(self, exchange_ratio_q, exchange_ratio_p))
+        exchange_ratio_p_inverse = calculations.exchange_ratio_by_expected_utility(exchange_ratio_q,
+                                                                           self.demand.salience,
+                                                                           self.supply.salience,
+                                                                           utility=eui)
 
-        if abs(eui_check - eui) > 1e-10:
+        eui_check = abs(calculations.expected_utility(self, exchange_ratio_q, exchange_ratio_p))
+        eui_check_inverse = abs(calculations.expected_utility(self, exchange_ratio_q, exchange_ratio_p_inverse))
+        eui_check_inverse_2 = abs(calculations.expected_utility(self, exchange_ratio_p_inverse, exchange_ratio_q))
+
+        if abs(eui_check - eui) > 1e-10 and abs(eui_check_inverse_2 - eui) > 1e-10:
             raise Exception('deze moet gelijk zijn.')
+
+        if abs(eui_check_inverse_2 - eui) < 1e-10:
+            exchange_ratio_p = exchange_ratio_p_inverse
 
         move_j = calculations.reverse_move(self.opposite_actor.actor_issues(), self.opposite_actor,
                                            exchange_ratio_p)
@@ -81,11 +99,20 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
                                                                                  self.supply.salience,
                                                                                  utility=eui)
 
+            exchange_ratio_q_b_inverse = calculations.exchange_ratio_by_expected_utility(exchange_ratio_p_b,
+                                                                                 self.supply.salience,
+                                                                                 self.demand.salience,
+                                                                                 utility=eui)
+
             move_j_b = delta_x_j_supply
             move_i_b = calculations.reverse_move(self.actor_issues(), self, exchange_ratio_q_b)
+            move_i_b_inverse = calculations.reverse_move(self.actor_issues(), self, exchange_ratio_q_b_inverse)
 
             exchange_ratio_p_b_2 = calculations.exchange_ratio(move_i_b, self.supply.salience, self.supply.power,
                                                                self.model.nbs_denominators[self.supply.issue])
+
+            if move_i_b > abs(self.supply.position - self.opposite_actor.demand.position):
+                move_i_b = move_i_b_inverse
 
             if abs(move_i_b) < abs(self.supply.position - self.opposite_actor.demand.position):
 
