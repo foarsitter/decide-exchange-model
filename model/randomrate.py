@@ -171,7 +171,6 @@ class RandomRateExchange(base.AbstractExchange):
 
         raise Exception("Actor {0} not in exchange".format(item))
 
-
     def csv_row(self, head=False):
 
         if head:

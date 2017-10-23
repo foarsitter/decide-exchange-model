@@ -419,11 +419,16 @@ class AbstractExchangeActor:
         elif self.opposite_actor.demand.position <= self.nbs_0 and self.opposite_actor.demand.position <= self.nbs_1:
             pass
         else:
-            new_pos = self.adjust_nbs(self.opposite_actor.demand.position)
+            # new_pos = self.adjusted_nbs_by_position(self.opposite_actor.demand.position)
+
+            delta = abs(calculations.adjusted_nbs_by_position(self.actor_issues(),
+                                                            self.exchange.updates[self.supply.issue],
+                                                            self.actor, self.supply.position, self.opposite_actor.demand.position,
+                                                            self.model.nbs_denominators[self.supply.issue]))
 
             # TODO why don't we use the calculations functions here?
 
-            self.exchange.dp = calculations.exchange_ratio(abs(new_pos - self.supply.position),
+            self.exchange.dp = calculations.exchange_ratio(delta,
                                                            self.supply.salience,
                                                            self.supply.power,
                                                            self.model.nbs_denominators[self.supply.issue])
@@ -432,7 +437,7 @@ class AbstractExchangeActor:
 
             self.opposite_actor.move = calculations.reverse_move(
                 self.model.actor_issues[self.opposite_actor.supply.issue], self.opposite_actor, self.exchange.dq)
-            self.move = abs(new_pos - self.supply.position)
+            self.move = delta
 
             if self.opposite_actor.supply.position > self.demand.position:
                 self.opposite_actor.move *= -1
@@ -458,6 +463,8 @@ class AbstractExchangeActor:
 
             b1 = self.opposite_actor.is_move_valid(self.opposite_actor.move)
             b2 = self.is_move_valid(self.move)
+
+            self.nbs_1 = self.adjust_nbs(self.y)
 
             self.exchange.is_valid = b1 and b2
 

@@ -19,7 +19,7 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
         self.equal_gain_voting = '-'
         self.z = '-'
 
-    def randomized_gain(self, u, v, z):
+    def randomized_gain(self, u, v, z, exchange_ratio):
 
         p = self.exchange.model.randomized_value
 
@@ -29,11 +29,11 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
         self.opposite_actor.z = '-'
 
         if v:  # V < 0.5:
-            exchange_ratio_zero_i = calculations.exchange_ratio_by_expected_utility(self.exchange.dq,
+            exchange_ratio_zero_i = calculations.exchange_ratio_by_expected_utility(exchange_ratio,
                                                                                     self.supply.salience,
                                                                                     self.demand.salience)
 
-            eui_max = abs(calculations.expected_utility(self, exchange_ratio_zero_i, self.exchange.dq))
+            eui_max = abs(calculations.expected_utility(self, exchange_ratio_zero_i, exchange_ratio))
 
             eui = p * z * (eui_max - eu) + eu
         else:
@@ -48,6 +48,7 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
                                                               self.supply.power,
                                                               self.model.nbs_denominators[self.supply.issue])
 
+        test = calculations.by_exchange_ratio(self, exchange_ratio_i_supply)
         # supply exchange ratio for j, demand for i
         exchange_ratio_i_demand = calculations.exchange_ratio_by_expected_utility(exchange_ratio_i_supply,
                                                                                   self.supply.salience,
@@ -116,14 +117,32 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
         self.exchange.is_valid = b1 and b2
 
         if abs(eui - eui_check) > 1e-10:
-            self.exchange.is_valid = False
-            print('test')
+            raise Exception('This is not correct!')
 
-            #raise Exception('This is not correct!')
+        self.check_nbs()
+        self.opposite_actor.check_nbs()
 
-        # self.check_nbs()
-        # self.opposite_actor.check_nbs()
+        nbs_i_0 = self.adjust_nbs(self.supply.position)
 
+        nbs_i_1 = self.adjust_nbs(self.y)
+
+        nbs_j_0 = self.opposite_actor.adjust_nbs(self.opposite_actor.supply.position)
+
+        nbs_j_1 = self.opposite_actor.adjust_nbs(self.opposite_actor.y)
+
+        delta_nbs_i = abs(nbs_i_0 - nbs_i_1)
+        delta_nbs_j = abs(nbs_j_0 - nbs_j_1)
+
+        eu_i_2 = abs(delta_nbs_i * self.supply.salience - delta_nbs_j * self.demand.salience)
+        eu_i_2c = abs(delta_nbs_i * self.demand.salience - delta_nbs_j * self.supply.salience)
+        eu_i_2a = abs(delta_nbs_j * self.opposite_actor.supply.salience - delta_nbs_i * self.opposite_actor.demand.salience)
+        eu_i_2b = abs(delta_nbs_j * self.opposite_actor.demand.salience - delta_nbs_i * self.opposite_actor.supply.salience)
+
+        if abs(eu_i_2 - self.eu) > 1e-10:
+            print('hi')
+
+        if abs(self.exchange.gain - self.eu) > 1e-10 or abs(self.exchange.gain - self.opposite_actor.eu) > 1e-10:
+            print('hoi')
 
 class EqualGainExchange(base.AbstractExchange):
 
@@ -190,23 +209,49 @@ class EqualGainExchange(base.AbstractExchange):
         if self.is_valid:
             self.i.check_nbs()
             self.j.check_nbs()
+
+            b1 = self.i.is_move_valid(self.i.move)
+            b2 = self.j.is_move_valid(self.j.move)
+
+            self.is_valid = b1 and b2
         else:
             return  # stop if its not valid
 
-        p = decimal.Decimal(self.model.randomized_value)
-
-        if p > 0:
-
-            u = random.getrandbits(1)
-            v = random.getrandbits(1)
-
-            z = decimal.Decimal(random.uniform(0, 1))
-
-            if u:  # U < 0.5:
-                self.i.randomized_gain(u, v, z)
-
-            else:
-                self.j.randomized_gain(u, v, z)
+        # p = decimal.Decimal(self.model.randomized_value)
+        #
+        # u = random.uniform(0, 1) > 0.5
+        # v = random.uniform(0, 1) > 0.5
+        #
+        # z = decimal.Decimal(random.uniform(0, 1))
+        #
+        # if self.i.y > 100 or self.i.y < 0:
+        #     print('error')
+        #     t1 = self.i.is_move_valid(self.i.move)
+        # elif self.j.y > 100 or self.j.y < 0:
+        #     print('error')
+        #     t2 = self.j.is_move_valid(self.j.move)
+        #
+        # if u:  # U < 0.5:
+        #     self.i.randomized_gain(u, v, z, self.dp)
+        # else:
+        #     self.j.randomized_gain(u, v, z, self.dq)p = decimal.Decimal(self.model.randomized_value)
+        #
+        # u = random.uniform(0, 1) > 0.5
+        # v = random.uniform(0, 1) > 0.5
+        #
+        # z = decimal.Decimal(random.uniform(0, 1))
+        #
+        # if self.i.y > 100 or self.i.y < 0:
+        #     print('error')
+        #     t1 = self.i.is_move_valid(self.i.move)
+        # elif self.j.y > 100 or self.j.y < 0:
+        #     print('error')
+        #     t2 = self.j.is_move_valid(self.j.move)
+        #
+        # if u:  # U < 0.5:
+        #     self.i.randomized_gain(u, v, z, self.dp)
+        # else:
+        #     self.j.randomized_gain(u, v, z, self.dq)
 
     def csv_row(self, head=False):
 
@@ -230,6 +275,7 @@ class EqualGainExchange(base.AbstractExchange):
                 "nbs 0",
                 "nbs 1",
                 "delta nbs",
+                "check",
                 "",
                 "actor_name",  # exchange.i.actor_name,
                 "supply",  # exchange.i.supply,
@@ -248,12 +294,19 @@ class EqualGainExchange(base.AbstractExchange):
                 "nbs 0",
                 "nbs 1",
                 "delta nbs",
+                "check"
             ]
 
         exchange = self
 
         delta_nbs_i = abs(exchange.i.nbs_0 - exchange.i.nbs_1)
         delta_nbs_j = abs(exchange.j.nbs_0 - exchange.j.nbs_1)
+
+        eu_i = abs(delta_nbs_i * exchange.i.supply.salience - delta_nbs_j * exchange.i.demand.salience)
+        eu_j = abs(delta_nbs_j * exchange.j.supply.salience - delta_nbs_i * exchange.j.demand.salience)
+
+        check_i = abs(eu_i - exchange.i.eu) < 1e-10
+        check_j = abs(eu_j - exchange.j.eu) < 1e-10
 
         return [
             # the actors
@@ -274,6 +327,7 @@ class EqualGainExchange(base.AbstractExchange):
             exchange.i.nbs_0,
             exchange.i.nbs_1,
             delta_nbs_i,
+            check_i,
             "",
             exchange.j.actor.name,
             exchange.j.supply.issue,
@@ -292,6 +346,7 @@ class EqualGainExchange(base.AbstractExchange):
             exchange.j.nbs_0,
             exchange.j.nbs_1,
             delta_nbs_j,
+            check_j,
         ]
 
 

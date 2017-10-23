@@ -115,8 +115,8 @@ def adjusted_nbs(actor_issues, updates, actor, new_position, denominator):
 
 def adjusted_nbs_by_position(actor_issues, updates, actor, x_pos, new_nbs, denominator):
     """
-    Calculate the new position of the given actor when the NBS is adjusted
-
+    Calculate the new position (delta) of the given actor when the NBS is adjusted
+    TODO: fix this! the delta is calculated
     :param actor_issues:
     :param updates:
     :param actor:
