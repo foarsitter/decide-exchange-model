@@ -70,6 +70,10 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
                                                                            self.supply.salience,
                                                                            utility=eui)
 
+        df_i = self.demand.salience / self.supply.salience
+        df_j = self.opposite_actor.demand.salience / self.opposite_actor.supply.salience
+        df_t = df_i / df_j
+
         eui_check = abs(calculations.expected_utility(self, exchange_ratio_q, exchange_ratio_p))
         eui_check_inverse = abs(calculations.expected_utility(self, exchange_ratio_q, exchange_ratio_p_inverse))
         eui_check_inverse_2 = abs(calculations.expected_utility(self, exchange_ratio_p_inverse, exchange_ratio_q))
@@ -77,8 +81,12 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
         if abs(eui_check - eui) > 1e-10 and abs(eui_check_inverse_2 - eui) > 1e-10:
             raise Exception('deze moet gelijk zijn.')
 
-        if abs(eui_check_inverse_2 - eui) < 1e-10:
+        if  abs(eui - eui_check) > 1e-10 and abs(eui_check_inverse_2 - eui) < 1e-10:
             exchange_ratio_p = exchange_ratio_p_inverse
+            eui_check = eui_check_inverse_2
+
+        original_move_i = self.exchange.i.move
+        original_move_j = self.exchange.j.move
 
         move_j = calculations.reverse_move(self.opposite_actor.actor_issues(), self.opposite_actor,
                                            exchange_ratio_p)
@@ -86,6 +94,13 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
         euj = abs(calculations.expected_utility(self.opposite_actor, exchange_ratio_p, exchange_ratio_q))
 
         delta_x_j_supply = abs(self.opposite_actor.supply.position - self.demand.position)
+
+        if p == 0 and abs(eui - euj) > 1e-10 and abs(move_j) < delta_x_j_supply:
+            move_j_a = calculations.reverse_move(self.opposite_actor.actor_issues(), self.opposite_actor,
+                                               exchange_ratio_p_inverse)
+
+            print('deze moet ik hebben!')
+            move_j = move_j_a
 
         if abs(move_j) > delta_x_j_supply:
             exchange_ratio_p_b = calculations.exchange_ratio(delta_x_j_supply,
@@ -108,11 +123,12 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
             move_i_b = calculations.reverse_move(self.actor_issues(), self, exchange_ratio_q_b)
             move_i_b_inverse = calculations.reverse_move(self.actor_issues(), self, exchange_ratio_q_b_inverse)
 
-            exchange_ratio_p_b_2 = calculations.exchange_ratio(move_i_b, self.supply.salience, self.supply.power,
+            exchange_ratio_p_b_2 = calculations.exchange_ratio(move_i_b_inverse, self.supply.salience, self.supply.power,
                                                                self.model.nbs_denominators[self.supply.issue])
 
             if move_i_b > abs(self.supply.position - self.opposite_actor.demand.position):
                 move_i_b = move_i_b_inverse
+                exchange_ratio_q_b = exchange_ratio_q_b_inverse
 
             if abs(move_i_b) < abs(self.supply.position - self.opposite_actor.demand.position):
 
@@ -125,7 +141,7 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
                 else:
 
                     if p == 0 and abs(eui - euj) > 1e-10:
-                        print('not equal....')
+                        raise Exception('not equal....')
 
                     move_i = move_i_b
                     move_j = move_j_b
@@ -134,7 +150,7 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
 
         if abs(eui - eui_check) > 1e-10:
             # raise Exception('This is not correct!')
-            print('This is not correct!')
+            raise Exception('This is not correct!')
 
         if p == 0 and abs(eui - euj) > 1e-10:
 
@@ -148,14 +164,14 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
 
             euj_2 = abs(calculations.expected_utility(self.opposite_actor, exchange_ratio_q, exchange_ratio_p))
 
-            print('not equal....')
+            # raise Exception('not equal....')
             # raise Exception('not equal....')
 
         if eui_max is None:
             # if they are not equal
             if not abs(euj - eui) < 1e-10:
                 if (euj - eui) < 1e-10:
-                    print('euj should be lager')
+                    raise Exception('euj should be lager')
 
         self.eu = eui
         self.opposite_actor.eu = euj
@@ -283,11 +299,10 @@ class EqualGainExchange(base.AbstractExchange):
         z = decimal.Decimal(random.uniform(0, 1))
 
         if self.i.y > 100 or self.i.y < 0:
-            print('de move van i is groter of kleiner dan 100 {0}'.format(self.i.y))
-            t1 = self.i.is_move_valid(self.i.move)
+            raise Exception('de move van i is groter of kleiner dan 100 {0}'.format(self.i.y))
+
         elif self.j.y > 100 or self.j.y < 0:
-            print('de move van j is groter of kleiner dan 100 {0}'.format(self.j.y))
-            t2 = self.j.is_move_valid(self.j.move)
+            raise Exception('de move van j is groter of kleiner dan 100 {0}'.format(self.j.y))
 
         if u:  # U < 0.5:
             self.i.randomized_gain(u, v, z, self.dp, "dp")
@@ -295,11 +310,10 @@ class EqualGainExchange(base.AbstractExchange):
             self.j.randomized_gain(u, v, z, self.dq, "dq")
 
         if self.i.y > 100 or self.i.y < 0:
-            print('de move van i is groter of kleiner dan 100 {0}'.format(self.i.y))
-            t1 = self.i.is_move_valid(self.i.move)
+            raise Exception('de move van i is groter of kleiner dan 100 {0}'.format(self.i.y))
+
         elif self.j.y > 100 or self.j.y < 0:
-            print('de move van j is groter of kleiner dan 100 {0}'.format(self.j.y))
-            t2 = self.j.is_move_valid(self.j.move)
+            raise Exception('de move van j is groter of kleiner dan 100 {0}'.format(self.j.y))
 
     def csv_row(self, head=False):
 

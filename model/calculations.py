@@ -151,25 +151,25 @@ def adjusted_nbs_by_position(actor_issues, updates, actor, x_pos, new_nbs, denom
     return right
 
 
-def reverse_move(actor_issues, actor: AbstractExchangeActor, exchange_ratio):
+def reverse_move(actor_issues, actor, c_exchange_ratio):
     """
 
     :param actor_issues:
     :param actor:
-    :param exchange_ratio:
+    :param c_exchange_ratio:
     :return:
     """
     si = actor.supply.salience
     ci = actor.supply.power
 
-    return (exchange_ratio * sum_salience_power(actor_issues)) / (ci * si)
+    return (c_exchange_ratio * sum_salience_power(actor_issues)) / (ci * si)
 
 
-def by_exchange_ratio(supply_actor: AbstractExchangeActor, exchange_ratio):
+def by_exchange_ratio(supply_actor: AbstractExchangeActor, c_exchange_ratio):
     """
 
     :param supply_actor: ExchangeActor
-    :param exchange_ratio: Decimal
+    :param c_exchange_ratio: Decimal
     :return: Decimal
     """
 
@@ -181,7 +181,7 @@ def by_exchange_ratio(supply_actor: AbstractExchangeActor, exchange_ratio):
     sj_supply = d_actor.demand.salience  # model.get(d_actor.actor, s_actor.supply, "s")
     si_supply = supply_actor.supply.salience  # model.get(s_actor.actor, s_actor.supply, "s")
 
-    return ((si_supply + sj_supply) / (sip + sjp)) * exchange_ratio
+    return ((si_supply + sj_supply) / (sip + sjp)) * c_exchange_ratio
 
 
 def by_absolute_move(actor_issues, s_actor: AbstractExchangeActor):
