@@ -151,7 +151,7 @@ def adjusted_nbs_by_position(actor_issues, updates, actor, x_pos, new_nbs, denom
     return right
 
 
-def reverse_move(actor_issues, actor: AbstractExchangeActor, exchange_ratio):
+def reverse_move(actor_issues, actor: AbstractExchangeActor, c_exchange_ratio):
     """
 
     :param actor_issues:
@@ -162,7 +162,7 @@ def reverse_move(actor_issues, actor: AbstractExchangeActor, exchange_ratio):
     si = actor.supply.salience
     ci = actor.supply.power
 
-    return (exchange_ratio * sum_salience_power(actor_issues)) / (ci * si)
+    return (c_exchange_ratio * sum_salience_power(actor_issues)) / (ci * si)
 
 
 def by_exchange_ratio(supply_actor: AbstractExchangeActor, exchange_ratio):
@@ -329,4 +329,4 @@ def exchange_ratio_by_expected_utility(delta_q, sq, sp, utility=0):
     :param sp: Salience
     :return:
     """
-    return abs((utility - (delta_q * sq)) / sp)
+    return (utility + (delta_q * sq)) / sp

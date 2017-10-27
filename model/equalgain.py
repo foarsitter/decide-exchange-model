@@ -52,18 +52,16 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
                                                        self.model.nbs_denominators[self.supply.issue])
 
         # supply exchange ratio for j, demand for i
-        exchange_ratio_p = calculations.exchange_ratio_by_expected_utility(exchange_ratio_q,
-                                                                               self.supply.salience,
-                                                                               self.demand.salience,
-                                                                               utility=eui)
+        exchange_ratio_p = (eui + exchange_ratio_q * self.supply.salience) / self.demand.salience
 
         eui_check = abs(calculations.expected_utility(self, exchange_ratio_q, exchange_ratio_p))
 
         if abs(eui_check - eui) > 1e-10:
             raise Exception('deze moet gelijk zijn.')
 
-        move_j = calculations.reverse_move(self.opposite_actor.actor_issues(), self.opposite_actor,
-                                           exchange_ratio_p)
+        move_j = calculations.reverse_move(actor_issues=self.opposite_actor.actor_issues(),
+                                           actor=self.opposite_actor,
+                                           c_exchange_ratio=exchange_ratio_p)
 
         euj = abs(calculations.expected_utility(self.opposite_actor, exchange_ratio_p, exchange_ratio_q))
 
@@ -76,16 +74,10 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
                                                              self.model.nbs_denominators[
                                                                  self.opposite_actor.supply.issue])
 
-            exchange_ratio_q_b = calculations.exchange_ratio_by_expected_utility(exchange_ratio_p_b,
-                                                                                 self.demand.salience,
-                                                                                 self.supply.salience,
-                                                                                 utility=eui)
+            exchange_ratio_q_b = abs((eui - exchange_ratio_p_b * self.demand.salience) / self.supply.salience)
 
             move_j_b = delta_x_j_supply
             move_i_b = calculations.reverse_move(self.actor_issues(), self, exchange_ratio_q_b)
-
-            exchange_ratio_p_b_2 = calculations.exchange_ratio(move_i_b, self.supply.salience, self.supply.power,
-                                                               self.model.nbs_denominators[self.supply.issue])
 
             if abs(move_i_b) < abs(self.supply.position - self.opposite_actor.demand.position):
 
@@ -96,39 +88,22 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
                     # print('This is not correct!')
                     raise Exception('This is not correct!')
                 else:
-
-                    if p == 0 and abs(eui - euj) > 1e-10:
-                        print('not equal....')
-
                     move_i = move_i_b
                     move_j = move_j_b
             else:
                 raise Exception('Impossible')
 
         if abs(eui - eui_check) > 1e-10:
-            # raise Exception('This is not correct!')
-            print('This is not correct!')
-
-        if p == 0 and abs(eui - euj) > 1e-10:
-
-            exchange_ratio_p_2 = calculations.exchange_ratio_by_expected_utility(exchange_ratio_q,
-                                                                               self.demand.salience,
-                                                                               self.supply.salience,
-                                                                               utility=eui)
-
-            move_j_2 = calculations.reverse_move(self.opposite_actor.actor_issues(), self.opposite_actor,
-                                                 exchange_ratio_p_2)
-
-            euj_2 = abs(calculations.expected_utility(self.opposite_actor, exchange_ratio_q, exchange_ratio_p))
-
-            print('not equal....')
-            # raise Exception('not equal....')
+            raise Exception('This is not correct!')
 
         if eui_max is None:
             # if they are not equal
             if not abs(euj - eui) < 1e-10:
                 if (euj - eui) < 1e-10:
-                    print('euj should be lager')
+                    raise Exception('euj should be lager')
+
+        if p == 0 and abs(eui - euj) > 1e-10:
+            print('Not Equal Gain. {0}'.format(self.is_adjusted_by_nbs or self.opposite_actor.is_adjusted_by_nbs))
 
         self.eu = eui
         self.opposite_actor.eu = euj
@@ -156,26 +131,8 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
 
         self.exchange.is_valid = b1 and b2
 
-        # self.check_nbs()
-        # self.opposite_actor.check_nbs()
-        #
-        # nbs_i_0 = self.adjust_nbs(self.supply.position)
-        #
-        # nbs_i_1 = self.adjust_nbs(self.y)
-        #
-        # nbs_j_0 = self.opposite_actor.adjust_nbs(self.opposite_actor.supply.position)
-        #
-        # nbs_j_1 = self.opposite_actor.adjust_nbs(self.opposite_actor.y)
-        #
-        # delta_nbs_i = abs(nbs_i_0 - nbs_i_1)
-        # delta_nbs_j = abs(nbs_j_0 - nbs_j_1)
-        #
-        # eu_i_2 = abs(delta_nbs_i * self.supply.salience - delta_nbs_j * self.demand.salience)
-        # eu_i_2c = abs(delta_nbs_i * self.demand.salience - delta_nbs_j * self.supply.salience)
-        # eu_i_2a = abs(
-        #     delta_nbs_j * self.opposite_actor.supply.salience - delta_nbs_i * self.opposite_actor.demand.salience)
-        # eu_i_2b = abs(
-        #     delta_nbs_j * self.opposite_actor.demand.salience - delta_nbs_i * self.opposite_actor.supply.salience)
+        self.check_nbs()
+        self.opposite_actor.check_nbs()
 
 
 class EqualGainExchange(base.AbstractExchange):

@@ -299,6 +299,8 @@ class AbstractExchangeActor:
         self.exchange = exchange
         self.model = model
 
+        self.is_adjusted_by_nbs = False
+
     def is_move_valid(self, move):
 
         """
@@ -422,9 +424,10 @@ class AbstractExchangeActor:
             # new_pos = self.adjusted_nbs_by_position(self.opposite_actor.demand.position)
 
             delta = abs(calculations.adjusted_nbs_by_position(self.actor_issues(),
-                                                            self.exchange.updates[self.supply.issue],
-                                                            self.actor, self.supply.position, self.opposite_actor.demand.position,
-                                                            self.model.nbs_denominators[self.supply.issue]))
+                                                              self.exchange.updates[self.supply.issue],
+                                                              self.actor, self.supply.position,
+                                                              self.opposite_actor.demand.position,
+                                                              self.model.nbs_denominators[self.supply.issue]))
 
             # TODO why don't we use the calculations functions here?
 
@@ -467,6 +470,8 @@ class AbstractExchangeActor:
             self.nbs_1 = self.adjust_nbs(self.y)
 
             self.exchange.is_valid = b1 and b2
+
+            self.is_adjusted_by_nbs = True
 
     def __str__(self):
         """
