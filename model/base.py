@@ -423,13 +423,15 @@ class AbstractExchangeActor:
         else:
             # new_pos = self.adjusted_nbs_by_position(self.opposite_actor.demand.position)
 
-            delta = abs(calculations.adjusted_nbs_by_position(self.actor_issues(),
+            new_pos = calculations.adjusted_nbs_by_position(self.actor_issues(),
                                                               self.exchange.updates[self.supply.issue],
                                                               self.actor, self.supply.position,
                                                               self.opposite_actor.demand.position,
-                                                              self.model.nbs_denominators[self.supply.issue]))
+                                                              self.model.nbs_denominators[self.supply.issue])
 
             # TODO why don't we use the calculations functions here?
+
+            delta = abs(new_pos - self.supply.position)
 
             self.exchange.dp = calculations.exchange_ratio(delta,
                                                            self.supply.salience,

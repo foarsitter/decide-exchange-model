@@ -130,7 +130,7 @@ def adjusted_nbs_by_position(actor_issues, updates, actor, x_pos, new_nbs, denom
     copy_ai = {}
 
     for k, v in actor_issues.items():
-        copy_ai[v.actor.name] = ActorIssue(v.actor, v.issue, position=v.position, power=v.power, salience=v.salience)
+        copy_ai[v.actor] = ActorIssue(v.actor, v.issue, position=v.position, power=v.power, salience=v.salience)
 
     # to be calculate:
     copy_ai[actor].position = x_pos
