@@ -1,6 +1,6 @@
 import sys
 
-from model.observers.observer import Observer, Observable
+from ..observers.observer import Observer, Observable
 
 
 class Logger(Observer):

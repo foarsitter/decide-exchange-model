@@ -3,7 +3,7 @@ python:
   - "3.5"
 # command to run tests
 install:
-  - pip install codecov coverage codeclimate-test-reporter
+  - pip install codecov coverage codeclimate-test-reporter scipy
 script: nosetests --with-coverage --cover-erase
 after_success:
   - coverage

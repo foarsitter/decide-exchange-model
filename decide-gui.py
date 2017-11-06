@@ -8,13 +8,14 @@ from tkinter import filedialog
 from tkinter import messagebox
 from tkinter import ttk
 
+import decimal
+
 from model.base import AbstractModel
-from model.helpers import csvParser
+from model.helpers import csvparser
 from model.helpers.helpers import ModelLoop
 from model.observers.exchanges_writer import ExchangesWriter
 from model.observers.externalities import Externalities
 from model.observers.issue_development import IssueDevelopment
-from model.observers.logger import Logger
 from model.observers.observer import Observable, Observer
 
 
@@ -201,6 +202,9 @@ class MainApplication(tk.Frame):
         self.salience_weight = tk.DoubleVar()
         self.salience_weight.set(0.4)
 
+        self.randomized_value = tk.DoubleVar()
+        self.randomized_value.set(0.1)
+
         self.fixed_weight = tk.DoubleVar()
         self.fixed_weight.set(0.1)
 
@@ -231,6 +235,8 @@ class MainApplication(tk.Frame):
         self.E1 = ttk.Entry(parent, textvariable=self.iterations)
         self.E1.grid(row=row, column=1, sticky=tk.W)
 
+        self.entry_row("Model repetitions", self.repetitions)
+
         row = self.row()
         self.label("Exchange type", row=row)
         r1 = ttk.Radiobutton(parent, text="Equal Exchange Rate", variable=self.model, value="equal")
@@ -239,7 +245,7 @@ class MainApplication(tk.Frame):
         r2 = ttk.Radiobutton(parent, text="Random Exchange Rate", variable=self.model, value="random")
         r2.grid(row=self.row(), column=1, sticky=tk.W)
 
-        self.entry_row("Model repetitions", self.repetitions)
+        self.entry_row("Randomized equal gain value", self.randomized_value)
         self.entry_row("Salience Weight", self.salience_weight)
         self.entry_row("Fixed Weight", self.fixed_weight)
 
@@ -274,8 +280,8 @@ class MainApplication(tk.Frame):
 
             model = AbstractModel()
 
-            from model.helpers import csvParser
-            csv_parser = csvParser.Parser(model)
+            from model.helpers import csvparser
+            csv_parser = csvparser.CsvParser(model)
 
             model = csv_parser.read(self.input_file.get())
 
@@ -289,9 +295,6 @@ class MainApplication(tk.Frame):
             os.makedirs(selected_dir)
 
         self.output_dir.set(selected_dir)
-
-    def model_type(self):
-        print(self.model.get())
 
     @staticmethod
     def col():
@@ -342,7 +345,10 @@ class MainApplication(tk.Frame):
         for key, value in self.__dict__.items():
             if isinstance(value, tk.Variable) and key not in ignore:
                 child = ET.Element(key)
-                child.text = str(value.get())
+                try:
+                    child.text = str(value.get())
+                except tk.TclError:
+                    child.text = str('')
                 element.append(child)
 
         return element
@@ -367,18 +373,22 @@ class MainApplication(tk.Frame):
 
         if self.model.get() == "equal":
             from model.equalgain import EqualGainModel as Model
+            try:
+                model = Model(randomized_value=decimal.Decimal(self.randomized_value.get()))
+            except tk.TclError:
+                model = Model(randomized_value=None)
         else:
             from model.randomrate import RandomRateModel as Model
+            model = Model()
 
         # The event handlers for logging and writing the results to the disk.
 
         output_directory = os.path.join(self.output_dir.get(), self.input_file.get().split("/")[-1].split(".")[0], self.model.get())
 
-        model = Model()
         event_handler = Observable(model_ref=model, output_directory=output_directory)
         event_handler.log(message="Start calculation at {0}".format(start_time))
 
-        csv_parser = csvParser.Parser(model_ref=model)
+        csv_parser = csvparser.CsvParser(model_ref=model)
 
         if not os.path.isdir(output_directory):
             os.makedirs(output_directory)

@@ -1,14 +1,16 @@
-import os
-from datetime import datetime
-
-from model.helpers import helpers, csvParser
-from model.helpers.helpers import ModelLoop
-from model.observers.exchanges_writer import ExchangesWriter
-from model.observers.externalities import Externalities
-from model.observers.issue_development import IssueDevelopment
-from model.observers.observer import Observable
+import decimal
 
 if __name__ == "__main__":
+
+    import os
+    from datetime import datetime
+
+    from model.helpers import helpers, csvparser
+    from model.helpers.helpers import ModelLoop
+    from model.observers.exchanges_writer import ExchangesWriter
+    from model.observers.externalities import Externalities
+    from model.observers.issue_development import IssueDevelopment
+    from model.observers.observer import Observable
 
     args = helpers.parse_arguments()
     input_file = args.input
@@ -21,19 +23,26 @@ if __name__ == "__main__":
         os.makedirs(output_directory)
 
     if args.model == "equal":
-        from model.equalgain import EqualGainModel as Model
+        import model.equalgain as Model
+
+        if args.p != 'None':
+            p = decimal.Decimal(args.p)
+        else:
+            p = None
+
+        model = Model.EqualGainModel(randomized_value=p)
     else:
-        from model.randomrate import RandomRateModel as Model
+        import model.randomrate as Model
+
+        model = Model.RandomRateModel()
 
     startTime = datetime.now()
-
-    model = Model()
 
     # The event handlers for logging and writing the results to the disk.
     eventHandler = Observable(model_ref=model, output_directory=output_directory)
     eventHandler.log(message="Start calculation at {0}".format(startTime))
 
-    csvParser = csvParser.Parser(model)
+    csvParser = csvparser.CsvParser(model)
 
     Externalities(eventHandler)
     ExchangesWriter(eventHandler)

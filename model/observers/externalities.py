@@ -3,18 +3,18 @@ import csv
 import os
 from collections import defaultdict
 
-from model import calculations
-from model.base import AbstractExchange
-from model.observers.observer import Observer, Observable
+from .. import base
+from .. import calculations
+from ..observers import observer
 
 
-class Externalities(Observer):
+class Externalities(observer.Observer):
     """
     There are three stages of externalities: by exchange, by issue combination and by actor. This class writes at the 
     end of each loop the externalities to the filesystem. 
     """
 
-    def __init__(self, observable: Observable):
+    def __init__(self, observable: observer.Observable):
         super().__init__(observable)
 
     def _setup(self):
@@ -33,12 +33,12 @@ class Externalities(Observer):
 
         exchange_set = defaultdict(int)
 
-        for actor_name, value in externalities.items():
+        for actor, value in externalities.items():
 
-            if actor_name == realized.i.actor_name or actor_name == realized.j.actor_name:  # own, always positive
+            if actor == realized.i.actor:  # own, always positive
                 key = "own"
             else:
-                is_inner = actor_name in model.groups[issue_set_key][inner[0]] or actor_name in \
+                is_inner = actor in model.groups[issue_set_key][inner[0]] or actor in \
                                                                                   model.groups[issue_set_key][inner[1]]
 
                 if value > 0:  # positive
@@ -52,7 +52,7 @@ class Externalities(Observer):
                     else:  # outer
                         key = "on"
 
-            self.actors[actor_name][key] += value
+            self.actors[actor][key] += value
             exchange_set[key] += value
 
         return exchange_set
@@ -104,7 +104,7 @@ class Externalities(Observer):
         """
         return collections.OrderedDict(sorted(self.actors.items())).items()
 
-    def execute_exchange(self, exchange: AbstractExchange):
+    def execute_exchange(self, exchange: base.AbstractExchange):
         """
         Calculations of the externalities performed each round after an exchange is exectued
         :param exchange: AbstractExchange        
@@ -121,7 +121,7 @@ class Externalities(Observer):
         outer = ['b', 'c']
 
         # switch the inner and outer if this is not the case
-        if exchange.i.group != "a" and exchange.i.group != "d":
+        if exchange.groups[0] != "a" and exchange.groups[0] != "d":
             inner, outer = outer, inner
         # end if
 
@@ -132,7 +132,7 @@ class Externalities(Observer):
         self._add_or_update_issue_set(issue_set_key, exchange, exchange_set)
 
         self.exchanges.append(
-            [exchange.i.actor_name, exchange.i.supply_issue, exchange.j.actor_name, exchange.j.supply_issue,
+            [exchange.i.actor, exchange.i.supply.issue, exchange.j.actor, exchange.j.supply.issue,
              exchange_set["ip"],
              exchange_set["in"], exchange_set["op"], exchange_set["on"], exchange_set["own"]])
 
@@ -143,11 +143,14 @@ class Externalities(Observer):
     def end_loop(self, iteration: int, repetition: int):
         """
         Write the data to the filesystem
-        :param iteration: int the current iteration round 
+        :param repetition:
+        :param iteration: int the current iteration round
         :return: 
         """
 
-        with open("{0}/externalities/{2}/externalities.{1}.csv".format(self.output_directory, iteration + 1, repetition), 'w') as csv_file:
+        with open(
+                "{0}/externalities/{2}/externalities.{1}.csv".format(self.output_directory, iteration + 1, repetition),
+                'w') as csv_file:
             writer = csv.writer(csv_file, delimiter=';', lineterminator='\n')
 
             # headings
@@ -173,5 +176,3 @@ class Externalities(Observer):
 
             for realizations in self.exchanges:
                 writer.writerow(realizations)
-
-

@@ -3,9 +3,10 @@ import csv
 import os
 from decimal import Decimal
 
+from .. import base
 
 
-class Parser:
+class CsvParser:
     # csv row identifiers
     cA = "#A"  # A = actor
     # P = issues
@@ -24,9 +25,7 @@ class Parser:
     rSalience = 4
     rPower = 5
 
-    model_ref = None
-
-    def __init__(self, model_ref):
+    def __init__(self, model_ref: 'base.AbstractModel'):
         self.model_ref = model_ref
 
     def read(self, filename):
@@ -88,13 +87,20 @@ class Parser:
 
     def parse_row_m(self, row):
         """
-        Parse the #M row
+        Parse the #M row containing the dimensions of the issues
         :param row:
         """
         from model.helpers.helpers import create_key
         issue_id = create_key(row[1])
 
-        issue = self.model_ref.issues[issue_id]
+        issue = None
+
+        for obj in self.model_ref.issues.values():
+            if obj.issue_id == issue_id:
+                issue = obj
+
+        if not isinstance(issue, base.Issue):
+            raise Exception('The issue variable it not the correct type')
 
         value = Decimal(row[2].replace(",", "."))
 
@@ -119,7 +125,6 @@ class Parser:
                 self.model_ref.issues[issue_id].calculate_step_size()
             else:
                 raise Exception('fix this!')
-
 
     def parse_row_d(self, row):
         """
