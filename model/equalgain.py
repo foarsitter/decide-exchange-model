@@ -19,6 +19,8 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
 
         self.equal_gain_voting = '-'
         self.z = '-'
+        self.u = '-'
+        self.v = '-'
 
     def randomized_gain(self, u, v, z, exchange_ratio):
 
@@ -27,11 +29,15 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
         eu = self.exchange.gain
 
         self.z = z
+        self.u = u
+        self.v = v
+        self.opposite_actor.u = '-'
+        self.opposite_actor.v = '-'
         self.opposite_actor.z = '-'
 
         eui_max = None
 
-        if v:  # V < 0.5:
+        if v > 0.5:  # V < 0.5:
             exchange_ratio_zero_i = calculations.exchange_ratio_by_expected_utility(exchange_ratio,
                                                                                     self.supply.salience,
                                                                                     self.demand.salience)
@@ -91,6 +97,7 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
                     move_j_a = move_j
 
                 nbs_adjusted = self.opposite_actor.adjust_nbs(position=self.opposite_actor.supply.position + move_j_a)
+                self.opposite_actor.nbs_0 = nbs_adjusted
 
                 if self.demand.position >= self.opposite_actor.nbs_0 and self.demand.position >= nbs_adjusted:
                     pass
@@ -226,6 +233,12 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
 
         self.exchange.is_valid = b1 and b2
 
+        self.nbs_0 = self.adjust_nbs(self.supply.position)
+        self.nbs_1 = self.adjust_nbs(self.y)
+
+        self.opposite_actor.nbs_0 = self.opposite_actor.adjust_nbs(self.opposite_actor.supply.position)
+        self.opposite_actor.nbs_1 = self.opposite_actor.adjust_nbs(self.opposite_actor.y)
+
 
 class EqualGainExchange(base.AbstractExchange):
     actor_class = EqualGainExchangeActor
@@ -295,12 +308,12 @@ class EqualGainExchange(base.AbstractExchange):
         else:
             return  # stop if its not valid
 
-        u = random.uniform(0, 1) > 0.5
-        v = random.uniform(0, 1) > 0.5
+        u = random.uniform(0, 1)
+        v = random.uniform(0, 1)
 
         z = decimal.Decimal(random.uniform(0, 1))
 
-        if u:  # U < 0.5:
+        if u > 0.5:
             self.i.randomized_gain(u, v, z, self.dp)
         else:
             self.j.randomized_gain(u, v, z, self.dq)
@@ -321,6 +334,8 @@ class EqualGainExchange(base.AbstractExchange):
                 "voting",
                 "equal gain voting",
                 "demand",
+                "u",
+                "v",
                 "z",
                 "eu",
                 "gain",
@@ -340,6 +355,8 @@ class EqualGainExchange(base.AbstractExchange):
                 "voting",
                 "equal gain voting",
                 "demand",
+                "u",
+                "v",
                 "z",
                 "eu",
                 "gain",
@@ -373,6 +390,8 @@ class EqualGainExchange(base.AbstractExchange):
             exchange.i.y,
             exchange.i.equal_gain_voting,
             exchange.i.opposite_actor.demand.position,
+            exchange.i.u,
+            exchange.i.v,
             exchange.i.z,
             exchange.i.eu,
             exchange.gain,
@@ -392,6 +411,8 @@ class EqualGainExchange(base.AbstractExchange):
             exchange.j.y,
             exchange.j.equal_gain_voting,
             exchange.j.opposite_actor.demand.position,
+            exchange.j.u,
+            exchange.j.v,
             exchange.j.z,
             exchange.j.eu,
             exchange.gain,
