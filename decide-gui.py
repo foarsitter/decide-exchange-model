@@ -345,7 +345,10 @@ class MainApplication(tk.Frame):
         for key, value in self.__dict__.items():
             if isinstance(value, tk.Variable) and key not in ignore:
                 child = ET.Element(key)
-                child.text = str(value.get())
+                try:
+                    child.text = str(value.get())
+                except tk.TclError:
+                    child.text = str('')
                 element.append(child)
 
         return element
@@ -370,7 +373,10 @@ class MainApplication(tk.Frame):
 
         if self.model.get() == "equal":
             from model.equalgain import EqualGainModel as Model
-            model = Model(decimal.Decimal(self.randomized_value.get()))
+            try:
+                model = Model(randomized_value=decimal.Decimal(self.randomized_value.get()))
+            except tk.TclError:
+                model = Model(randomized_value=None)
         else:
             from model.randomrate import RandomRateModel as Model
             model = Model()

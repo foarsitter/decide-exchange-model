@@ -25,7 +25,10 @@ if __name__ == "__main__":
     if args.model == "equal":
         import model.equalgain as Model
 
-        p = decimal.Decimal(args.p)
+        if args.p != 'None':
+            p = decimal.Decimal(args.p)
+        else:
+            p = None
 
         model = Model.EqualGainModel(randomized_value=p)
     else:

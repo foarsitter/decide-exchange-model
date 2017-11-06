@@ -18,7 +18,7 @@ def parse_arguments():
                              '"random" for the RandomRate model ',
                         default='equal', type=str)
 
-    parser.add_argument('--p', help='Randomized Equal Gain', default='0', type=str)
+    parser.add_argument('--p', help='Randomized Equal Gain', default=None, type=str)
     parser.add_argument('--rounds', help='The number of round the model needs to be executed', default=10, type=int)
     parser.add_argument('--repetitions', help='How many times it has te be repeated?', default=1, type=int)
     parser.add_argument('--input', help='The location of the csv input file. ', default="data/input/sample_data.txt",

@@ -308,15 +308,17 @@ class EqualGainExchange(base.AbstractExchange):
         else:
             return  # stop if its not valid
 
-        u = random.uniform(0, 1)
-        v = random.uniform(0, 1)
+        if self.model.randomized_value is not None:
 
-        z = decimal.Decimal(random.uniform(0, 1))
+            u = random.uniform(0, 1)
+            v = random.uniform(0, 1)
 
-        if u > 0.5:
-            self.i.randomized_gain(u, v, z, self.dp)
-        else:
-            self.j.randomized_gain(u, v, z, self.dq)
+            z = decimal.Decimal(random.uniform(0, 1))
+
+            if u > 0.5:
+                self.i.randomized_gain(u, v, z, self.dp)
+            else:
+                self.j.randomized_gain(u, v, z, self.dq)
 
     def csv_row(self, head=False):
 
@@ -434,7 +436,7 @@ class EqualGainModel(base.AbstractModel):
     """
     ALLOW_RANDOM = True
 
-    def __init__(self, randomized_value=0):
+    def __init__(self, randomized_value=None):
         super().__init__()
 
         self.randomized_value = randomized_value

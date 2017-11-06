@@ -334,7 +334,7 @@ class AbstractExchangeActor:
         fw = Decimal(self.model.FIXED_WEIGHT)
         swv = (1 - self.supply.salience) * sw * self.y
         fwv = fw * self.y
-        pv = (1 - (1 - self.supply.salience) * sw - fw) * self.supply.position
+        pv = (1 - (1 - self.supply.salience) * sw - fw) * self.start_position
         x_t1 = swv + fwv + pv
 
         return x_t1
