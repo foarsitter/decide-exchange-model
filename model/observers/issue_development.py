@@ -354,4 +354,4 @@ class IssueDevelopment(observer.Observer):
                 if matplotlib_loaded:
                     plt.legend(loc='upper left')
                     plt.title(self.issue_obj)
-                    plt.savefig('{0}/issues/{2}/{1}.png'.format(self.output_directory, self.issue_obj.name, 'summary'))
+                    plt.savefig('{0}/issues/{2}/{1}.png'.format(self.output_directory, self.issue_obj.issue_id, 'summary'))

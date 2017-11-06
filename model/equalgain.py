@@ -20,7 +20,7 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
         self.equal_gain_voting = '-'
         self.z = '-'
 
-    def randomized_gain(self, u, v, z, exchange_ratio, exchange_ratio_string):
+    def randomized_gain(self, u, v, z, exchange_ratio):
 
         p = self.exchange.model.randomized_value
 
@@ -124,9 +124,6 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
                     euj = abs(calculations.expected_utility(self.opposite_actor, exchange_ratio_p, exchange_ratio_q))
                     eui_check = abs(calculations.expected_utility(self, exchange_ratio_q, exchange_ratio_p))
 
-                    # if p == 0 and abs(eui - euj) > 1e-10:
-                    #     raise Exception('Fail: adjusting nbs.')
-
                     move_i = move_i_b
                     move_j = move_j_a
 
@@ -146,9 +143,11 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
 
             # the nbs shifts beyond the position of the demand position
 
-            if self.opposite_actor.demand.position >= self.nbs_0 and self.opposite_actor.demand.position >= nbs_adjusted:
+            if self.opposite_actor.demand.position >= self.nbs_0 and \
+                    self.opposite_actor.demand.position >= nbs_adjusted:
                 pass
-            elif self.opposite_actor.demand.position <= self.nbs_0 and self.opposite_actor.demand.position <= nbs_adjusted:
+            elif self.opposite_actor.demand.position <= self.nbs_0 and \
+                    self.opposite_actor.demand.position <= nbs_adjusted:
                 pass
             else:
 
@@ -186,8 +185,9 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
 
         if abs(eui - eui_check) > 1e-10:
             raise Exception('Fail: the expected utility of the check ({0})'
-                            ' does not match the expected utility ({1}), {2}.'.format(eui_check, eui,
-                                                                                      self.opposite_actor.is_adjusted_by_nbs))
+                            ' does not match the expected utility ({1}), {2}.'
+                            .format(eui_check, eui,
+                                    self.opposite_actor.is_adjusted_by_nbs))
 
         if eui_max is None:
             # if they are not equal (occurs by p=0.0)
@@ -250,10 +250,6 @@ class EqualGainExchange(base.AbstractExchange):
             self.i.move = abs(self.j.demand.position - self.i.supply.position)
             self.j.move = calculations.reverse_move(self.j.actor_issues(), self.j, self.dp)
 
-        # TODO add check of NBS.
-        # this check is only necessary for the smallest exchange,
-        # because if the smallest exchange exceeds the limit the larger one will definitely do so
-
         # determine the direction of both moves
         if self.i.supply.position > self.j.demand.position:
             self.i.move *= -1
@@ -304,24 +300,10 @@ class EqualGainExchange(base.AbstractExchange):
 
         z = decimal.Decimal(random.uniform(0, 1))
 
-        if self.i.y > 100 or self.i.y < 0:
-            print('de move van i is groter of kleiner dan 100 {0}'.format(self.i.y))
-            t1 = self.i.is_move_valid(self.i.move)
-        elif self.j.y > 100 or self.j.y < 0:
-            print('de move van j is groter of kleiner dan 100 {0}'.format(self.j.y))
-            t2 = self.j.is_move_valid(self.j.move)
-
         if u:  # U < 0.5:
-            self.i.randomized_gain(u, v, z, self.dp, "dp")
+            self.i.randomized_gain(u, v, z, self.dp)
         else:
-            self.j.randomized_gain(u, v, z, self.dq, "dq")
-
-        if self.i.y > 100 or self.i.y < 0:
-            print('de move van i is groter of kleiner dan 100 {0}'.format(self.i.y))
-            t1 = self.i.is_move_valid(self.i.move)
-        elif self.j.y > 100 or self.j.y < 0:
-            print('de move van j is groter of kleiner dan 100 {0}'.format(self.j.y))
-            t2 = self.j.is_move_valid(self.j.move)
+            self.j.randomized_gain(u, v, z, self.dq)
 
     def csv_row(self, head=False):
 
