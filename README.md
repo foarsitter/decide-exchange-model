@@ -6,7 +6,7 @@
 # decide-exchange-model
 Equal Gain Model implementation in Python
 
-There are no external packages needed to run this project. But, because of performance reasons, we recommend the use of python 3. In a view tests python3 results in a performance boost of 16 times compared to python2.
+There are no external packages needed to run this project but the project is only compatible with python3
 
 Run 'python model.py --help' for instructions
   

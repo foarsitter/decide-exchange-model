@@ -382,8 +382,14 @@ class MainApplication(tk.Frame):
             model = Model()
 
         # The event handlers for logging and writing the results to the disk.
+        model.data_set_name = self.input_file.get().split("/")[-1].split(".")[0]
 
-        output_directory = os.path.join(self.output_dir.get(), self.input_file.get().split("/")[-1].split(".")[0], self.model.get())
+        if self.model.get() == 'equal':
+            model_name = 'equal-' + str(round(self.randomized_value.get(), 2))
+        else:
+            model_name = 'random'
+
+        output_directory = os.path.join(self.output_dir.get(), model.data_set_name, model_name)
 
         event_handler = Observable(model_ref=model, output_directory=output_directory)
         event_handler.log(message="Start calculation at {0}".format(start_time))
