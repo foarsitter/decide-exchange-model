@@ -1,4 +1,5 @@
 import os
+import uuid
 from typing import List
 
 from .. import base
@@ -34,9 +35,12 @@ class ExchangesWriter(observer.Observer):
 
         self.model_ref.sort_exchanges()
 
+        salt = self._get_salt
+
         writer = csvwriter.CsvWriter()
-        writer.write('{0}/exchanges/{2}/initial/before.{1}.csv'.format(self.output_directory, iteration, repetition),
-                     self.model_ref.exchanges)
+        writer.write(
+            '{0}/exchanges/{2}/initial/before.{1}.{2}.csv'.format(self.output_directory, iteration, repetition, salt),
+            self.model_ref.exchanges)
 
     def after_loop(self, realized: List[base.AbstractExchange], iteration: int, repetition: int):
         """
@@ -45,6 +49,21 @@ class ExchangesWriter(observer.Observer):
         :param realized: 
         :param iteration:
         """
+
+        salt = self._get_salt
+
         writer = csvwriter.CsvWriter()
-        writer.write("{0}/exchanges/{2}/round.{1}.csv".format(self.output_directory, iteration + 1, repetition),
-                     realized)
+        writer.write(
+            "{0}/exchanges/{2}/round.{1}.{3}.csv".format(self.output_directory, iteration + 1, repetition, salt),
+            realized)
+
+    @property
+    def _get_salt(self):
+        model_name = 'random'
+        from model.equalgain import EqualGainModel
+        if isinstance(self.model_ref, EqualGainModel):
+            model_name = 'equal'
+            if self.model_ref.randomized_value is not None:
+                model_name += '-' + str(round(self.model_ref.randomized_value, 2))
+
+        return model_name

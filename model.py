@@ -16,25 +16,28 @@ if __name__ == "__main__":
     input_file = args.input
     output_dir = args.output
 
-    output_directory = output_dir + "/" + input_file.split("/")[-1].split(".")[0]
-    output_directory = output_directory + "/" + args.model
-
-    if not os.path.isdir(output_directory):
-        os.makedirs(output_directory)
-
     if args.model == "equal":
         import model.equalgain as Model
 
         if args.p != 'None':
             p = decimal.Decimal(args.p)
+            model_name = 'equal-' + round(p, 2)
         else:
             p = None
+            model_name = 'equal'
 
         model = Model.EqualGainModel(randomized_value=p)
     else:
         import model.randomrate as Model
-
+        model_name = 'random'
         model = Model.RandomRateModel()
+
+    model.data_set_name = input_file.split("/")[-1].split(".")[0]
+    output_directory = output_dir + "/" + model.data_set_name
+    output_directory = output_directory + "/" + model_name
+
+    if not os.path.isdir(output_directory):
+        os.makedirs(output_directory)
 
     startTime = datetime.now()
 
