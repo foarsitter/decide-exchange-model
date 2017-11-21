@@ -21,7 +21,7 @@ if __name__ == "__main__":
 
         if args.p != 'None':
             p = decimal.Decimal(args.p)
-            model_name = 'equal-' + round(p, 2)
+            model_name = 'equal-' + str(round(p, 2))
         else:
             p = None
             model_name = 'equal'

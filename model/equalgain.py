@@ -21,6 +21,7 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
         self.z = '-'
         self.u = '-'
         self.v = '-'
+        self.eu_max = '-'
 
     def randomized_gain(self, u, v, z, exchange_ratio):
 
@@ -31,13 +32,14 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
         self.z = z
         self.u = u
         self.v = v
+
         self.opposite_actor.u = '-'
         self.opposite_actor.v = '-'
         self.opposite_actor.z = '-'
 
         eui_max = None
 
-        if v > 0.5:  # V < 0.5:
+        if v < 0.5:  # V < 0.5:
             exchange_ratio_zero_i = calculations.exchange_ratio_by_expected_utility(exchange_ratio,
                                                                                     self.supply.salience,
                                                                                     self.demand.salience)
@@ -45,6 +47,10 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
             eui_max = abs(calculations.expected_utility(self, exchange_ratio_zero_i, exchange_ratio))
 
             eui = p * z * (eui_max - eu) + eu
+
+            self.eu_max = eui_max
+            self.opposite_actor.eu_max = '-'
+
         else:
             eui = eu - p * z * eu
 
@@ -339,8 +345,9 @@ class EqualGainExchange(base.AbstractExchange):
                 "u",
                 "v",
                 "z",
+                "max eu",
                 "eu",
-                "gain",
+                "gain p=0",
                 "nbs 0",
                 "nbs 1",
                 "delta nbs",
@@ -360,8 +367,9 @@ class EqualGainExchange(base.AbstractExchange):
                 "u",
                 "v",
                 "z",
+                "max eu",
                 "eu",
-                "gain",
+                "gain p=0",
                 "nbs 0",
                 "nbs 1",
                 "delta nbs",
@@ -395,6 +403,7 @@ class EqualGainExchange(base.AbstractExchange):
             exchange.i.u,
             exchange.i.v,
             exchange.i.z,
+            exchange.i.eu_max,
             exchange.i.eu,
             exchange.gain,
             exchange.i.nbs_0,
@@ -416,6 +425,7 @@ class EqualGainExchange(base.AbstractExchange):
             exchange.j.u,
             exchange.j.v,
             exchange.j.z,
+            exchange.j.eu_max,
             exchange.j.eu,
             exchange.gain,
             exchange.j.nbs_0,
