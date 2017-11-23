@@ -135,6 +135,7 @@ class CsvParser:
         actor_id = create_key(row[self.rActor])
         issue_id = create_key(row[self.rIssue])
 
-        self.model_ref.add_actor_issue(actor=actor_id, issue=issue_id, power=row[self.rPower].replace(",", "."),
+        if str(row[self.rSalience]) != '0':
+            self.model_ref.add_actor_issue(actor=actor_id, issue=issue_id, power=row[self.rPower].replace(",", "."),
                                        salience=row[self.rSalience].replace(",", "."),
                                        position=row[self.rPosition].replace(",", "."))

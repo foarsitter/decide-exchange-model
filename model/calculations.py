@@ -239,7 +239,7 @@ def expected_utility(actor, demand_exchange_ratio, supply_exchange_ratio):
     return abs(demand_exchange_ratio * actor.supply.salience - supply_exchange_ratio * actor.demand.salience)
 
 
-def is_gain_equal(eui, euj, threshold=1e-25):
+def is_gain_equal(eui, euj, threshold=1e-20):
     """
 
     :param eui: The utility gain of actor i

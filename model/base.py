@@ -759,7 +759,7 @@ class AbstractModel:
             elif hash(actor) in self.actors:
                 actor = self.actors[hash(actor)]
             else:
-                raise ValueError('Actor not found')
+                raise ValueError('Actor not found: {0}'.format(actor))
 
         if not isinstance(issue, Issue):
             if issue in self.issues:
