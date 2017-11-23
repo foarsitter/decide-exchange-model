@@ -2,7 +2,7 @@ import copy
 import csv
 import math
 import os
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 from typing import List
 
 from .. import base
@@ -211,16 +211,20 @@ class IssueDevelopment(observer.Observer):
                 if matplotlib_loaded:
                     plt.plot(nbs_values, label='nbs')
 
-                for key, value in self.preference_history[issue].items():
+                od = OrderedDict(sorted(self.preference_history[issue].items()))
+
+                for key, value in od.items():
                     values = self._number_list_value(value)
                     writer.writerow([key] + values)
                     if matplotlib_loaded:
                         plt.plot(values, label=self.model_ref.actors[key].name)
 
                 if matplotlib_loaded:
-                    plt.legend(loc='upper left')
+                    lgd = plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
                     plt.title(self.issue_obj)
-                    plt.savefig('{0}/issues/{2}/{1}.png'.format(self.output_directory, self.issue_obj.name, repetition))
+                    plt.savefig('{0}/issues/{2}/{1}.png'.format(self.output_directory, self.issue_obj.name, repetition),
+                                bbox_extra_artists=(lgd, ),
+                                bbox_inches='tight')
 
                 if self.write_voting_position:
                     writer.writerow([])
@@ -229,7 +233,9 @@ class IssueDevelopment(observer.Observer):
 
                     writer.writerow(["nbs"] + self._number_list_value(voting_nbs))
 
-                    for key, value in self.voting_history[issue].items():
+                    od = OrderedDict(sorted(self.voting_history[issue].items()))
+
+                    for key, value in od.items():
                         writer.writerow([key] + self._number_list_value(value))
 
                 writer.writerow([])
@@ -237,7 +243,9 @@ class IssueDevelopment(observer.Observer):
 
                 writer.writerow(["nbs-var"] + preference_nbs_var)
 
-                for key, value in self.preference_loss[issue].items():
+                od = OrderedDict(sorted(self.preference_loss[issue].items()))
+
+                for key, value in od.items():
                     writer.writerow([key] + value)
 
                 if self.write_voting_position:
@@ -247,7 +255,9 @@ class IssueDevelopment(observer.Observer):
 
                     writer.writerow(["nbs-var"] + voting_nbs_var)
 
-                    for key, value in self.voting_loss[issue].items():
+                    od = OrderedDict(sorted(self.voting_loss[issue].items()))
+
+                    for key, value in od.items():
                         writer.writerow([key] + value)
 
     def after_repetitions(self):
@@ -328,7 +338,7 @@ class IssueDevelopment(observer.Observer):
 
                 var_rows = []
 
-                for actor, value in self.preference_history_sum[issue].items():
+                for actor, value in sorted(self.preference_history_sum[issue].items()):
 
                     row = [actor]
                     var_row = [actor]
@@ -339,7 +349,7 @@ class IssueDevelopment(observer.Observer):
                         var_row.append(math.sqrt(var))
 
                     if matplotlib_loaded:
-                        plt.plot(avg_row, label=actor)
+                        plt.plot(avg_row, label=actor.name)
 
                     writer.writerow([actor] + avg_row)
                     var_rows.append(var_row)
@@ -352,6 +362,10 @@ class IssueDevelopment(observer.Observer):
                     writer.writerow(row)
 
                 if matplotlib_loaded:
-                    plt.legend(loc='upper left')
+                    lgd = plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
                     plt.title(self.issue_obj)
-                    plt.savefig('{0}/issues/{2}/{1}.png'.format(self.output_directory, self.issue_obj.issue_id, 'summary'))
+                    plt.savefig('{0}/issues/{2}/{1}.png'.format(self.output_directory,
+                                                                self.issue_obj.issue_id,
+                                                                'summary'),
+                                bbox_extra_artists=(lgd, ),
+                                bbox_inches='tight')

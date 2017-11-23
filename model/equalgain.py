@@ -21,8 +21,9 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
         self.z = '-'
         self.u = '-'
         self.v = '-'
+        self.eu_max = '-'
 
-    def randomized_gain(self, u, v, z, exchange_ratio):
+    def randomized_gain(self, u, v, z, exchange_ratio, exchange_ratio_j):
 
         p = self.exchange.model.randomized_value
 
@@ -31,20 +32,25 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
         self.z = z
         self.u = u
         self.v = v
-        self.opposite_actor.u = '-'
-        self.opposite_actor.v = '-'
-        self.opposite_actor.z = '-'
 
-        eui_max = None
+        self.opposite_actor.u = u
+        self.opposite_actor.v = v
+        self.opposite_actor.z = z
 
-        if v > 0.5:  # V < 0.5:
-            exchange_ratio_zero_i = calculations.exchange_ratio_by_expected_utility(exchange_ratio,
-                                                                                    self.supply.salience,
-                                                                                    self.demand.salience)
+        exchange_ratio_zero_i = calculations.exchange_ratio_by_expected_utility(exchange_ratio,
+                                                                                self.supply.salience,
+                                                                                self.demand.salience)
 
-            eui_max = abs(calculations.expected_utility(self, exchange_ratio_zero_i, exchange_ratio))
+        self.eu_max = abs(calculations.expected_utility(self, exchange_ratio_zero_i, exchange_ratio))
 
-            eui = p * z * (eui_max - eu) + eu
+        exchange_ratio_zero_j = calculations.exchange_ratio_by_expected_utility(exchange_ratio_j,
+                                                                               self.opposite_actor.supply.salience,
+                                                                               self.opposite_actor.demand.salience)
+
+        self.opposite_actor.eu_max = abs(calculations.expected_utility(self, exchange_ratio_zero_j, exchange_ratio_j))
+
+        if v < 0.5:  # V < 0.5:
+            eui = p * z * (self.eu_max - eu) + eu
         else:
             eui = eu - p * z * eu
 
@@ -137,8 +143,12 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
                     self.opposite_actor.is_adjusted_by_nbs = True
 
             else:
-                raise Exception('Fail: when the shift for j is to large by a maximum shift of i, '
-                                'the maximum shift of j has to result in a lower shift for i.')
+                print('check should not hit')
+                self.exchange.is_valid = False
+                return
+                # raise Exception('Fail: when the shift for j is to large by a maximum shift of i, '
+                #                 'the maximum shift of j has to result in a lower shift for i. data=' + str(self.exchange))
+
         else:
             # check if the shift does not exceed the NBS.
             if self.supply.position > self.opposite_actor.demand.position:
@@ -191,12 +201,13 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
                 self.is_adjusted_by_nbs = True
 
         if abs(eui - eui_check) > 1e-10:
-            raise Exception('Fail: the expected utility of the check ({0})'
-                            ' does not match the expected utility ({1}), {2}.'
-                            .format(eui_check, eui,
-                                    self.opposite_actor.is_adjusted_by_nbs))
+            print('check does not fit')
+            # raise Exception('Fail: the expected utility of the check ({0})'
+            #                 ' does not match the expected utility ({1}), {2}.'
+            #                 .format(eui_check, eui,
+            #                         self.opposite_actor.is_adjusted_by_nbs))
 
-        if eui_max is None:
+        if self.eu_max is None:
             # if they are not equal (occurs by p=0.0)
             if not abs(euj - eui) < 1e-10:
                 if (euj - eui) < 1e-10:
@@ -315,10 +326,10 @@ class EqualGainExchange(base.AbstractExchange):
 
             z = decimal.Decimal(random.uniform(0, 1))
 
-            if u > 0.5:
-                self.i.randomized_gain(u, v, z, self.dp)
+            if u < 0.5:
+                self.i.randomized_gain(u, v, z, self.dp, self.dq)
             else:
-                self.j.randomized_gain(u, v, z, self.dq)
+                self.j.randomized_gain(u, v, z, self.dq, self.dp)
 
     def csv_row(self, head=False):
 
@@ -339,8 +350,9 @@ class EqualGainExchange(base.AbstractExchange):
                 "u",
                 "v",
                 "z",
+                "max eu",
                 "eu",
-                "gain",
+                "gain p=0",
                 "nbs 0",
                 "nbs 1",
                 "delta nbs",
@@ -360,8 +372,9 @@ class EqualGainExchange(base.AbstractExchange):
                 "u",
                 "v",
                 "z",
+                "max eu",
                 "eu",
-                "gain",
+                "gain p=0",
                 "nbs 0",
                 "nbs 1",
                 "delta nbs",
@@ -395,6 +408,7 @@ class EqualGainExchange(base.AbstractExchange):
             exchange.i.u,
             exchange.i.v,
             exchange.i.z,
+            exchange.i.eu_max,
             exchange.i.eu,
             exchange.gain,
             exchange.i.nbs_0,
@@ -416,6 +430,7 @@ class EqualGainExchange(base.AbstractExchange):
             exchange.j.u,
             exchange.j.v,
             exchange.j.z,
+            exchange.j.eu_max,
             exchange.j.eu,
             exchange.gain,
             exchange.j.nbs_0,
