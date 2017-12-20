@@ -10,6 +10,16 @@
           integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
 </head>
 <body>
+
+<div id="wrap">
+    <h1>HTML5 and Javascript CSV Parser</h1>
+    <form action="javascript:void(0);" id="the_form">
+        <input type="file" id="the_file" required="required" accept=".csv"/>
+        <input type="submit" value="Go" class="btn"/>
+    </form>
+    <div id="file_info"></div>
+    <div id="list"></div>
+</div>
 <div class="container-fluid">
     <!-- Content here -->
 
@@ -17,20 +27,23 @@
         <div class="col">
             <div class="jumbotron">
                 <h1 class="display-3"><span class="badge badge-primary">1.</span> Actors</h1>
-                <p class="lead">Add the actors. One actor on each line. If you need a static power for each actor, add square brackets with the value of the power after the actor name (ex Actor 1 [0.75] or USA[0.9]</p>
+                <p class="lead">Add the actors. One actor on each line. If you need a static power for each actor, add
+                    square brackets with the value of the power after the actor name (ex Actor 1 [0.75] or USA[0.9]</p>
             </div>
         </div>
         <div class="col h-100 d-inline-block">
             <div class="jumbotron">
                 <h1 class="display-3"><span class="badge badge-danger">2.</span> Issues</h1>
                 <p class="lead">Add the issues. The default range of an issues is between 0
-                and 100. If you need an other range, you can specify your range between square brackets separated with a comma, in example [0,100] or [2,6].</p>
+                    and 100. If you need an other range, you can specify your range between square brackets separated
+                    with a comma, in example [0,100] or [2,6].</p>
             </div>
         </div>
         <div class="col  h-100 d-inline-block">
             <div class="jumbotron">
                 <h1 class="display-3"><span class="badge badge-warning">3.</span> Data</h1>
-                <p class="lead">Specify for each issue the position, salience and power of the actor.</p> The <u>Salience</u> and <u>Power</u> are ranged between 0 and 1. The <u>position</u> between the range of the issues.
+                <p class="lead">Specify for each issue the position, salience and power of the actor.</p> The <u>Salience</u>
+                and <u>Power</u> are ranged between 0 and 1. The <u>position</u> between the range of the issues.
             </div>
         </div>
 
@@ -70,6 +83,7 @@
     </div>
 </div>
 
+
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
@@ -82,5 +96,7 @@
         integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1"
         crossorigin="anonymous"></script>
 <script src="script.js"></script>
+
+
 </body>
 </html>

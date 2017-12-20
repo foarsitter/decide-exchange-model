@@ -312,6 +312,10 @@ def position_by_nbs(actor_issues, exchange_actor, nbs, denominator):
 
 def average_and_variance(values: list):
     count = len(values)
+
+    if count == 0:
+        return 0, 0
+
     average = sum(values) / count
 
     variance = sum([(x - average) ** 2 for x in values]) / count
