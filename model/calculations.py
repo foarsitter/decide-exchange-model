@@ -239,7 +239,7 @@ def expected_utility(actor, demand_exchange_ratio, supply_exchange_ratio):
     return abs(demand_exchange_ratio * actor.supply.salience - supply_exchange_ratio * actor.demand.salience)
 
 
-def is_gain_equal(eui, euj, threshold=1e-25):
+def is_gain_equal(eui, euj, threshold=1e-20):
     """
 
     :param eui: The utility gain of actor i
@@ -312,6 +312,10 @@ def position_by_nbs(actor_issues, exchange_actor, nbs, denominator):
 
 def average_and_variance(values: list):
     count = len(values)
+
+    if count == 0:
+        return 0, 0
+
     average = sum(values) / count
 
     variance = sum([(x - average) ** 2 for x in values]) / count
