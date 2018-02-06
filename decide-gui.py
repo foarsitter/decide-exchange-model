@@ -405,7 +405,7 @@ class MainApplication(tk.Frame):
 
         event_handler.log(message="Parsed file {0}".format(self.input_file.get()))
 
-        event_handler.before_repetitions()
+        event_handler.before_repetitions()  # TODO FIX ARGS argument
 
         for repetition in range(int(self.repetitions.get())):
 

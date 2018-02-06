@@ -79,7 +79,7 @@ class IssueDevelopment(observer.Observer):
         if not os.path.exists('{0}/issues/{1}'.format(self.output_directory, repetition)):
             os.makedirs('{0}/issues/{1}'.format(self.output_directory, repetition))
 
-    def before_repetitions(self):
+    def before_repetitions(self, args):
         pass
 
     def before_iterations(self, repetition):

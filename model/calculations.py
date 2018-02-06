@@ -16,9 +16,6 @@ The calculations are only on numbers, or list of numbers.
 
 
 def calc_nbs_new_2(actors: List[Tuple[decimal.Decimal, decimal.Decimal, decimal.Decimal]]):
-
-    for x in actors:
-        x
     pass
 
 
@@ -40,7 +37,7 @@ def calc_nbs_new(power: List[decimal.Decimal], salience: List[decimal.Decimal], 
     return numerator / denominator
 
 
-def calc_nbs(actor_issues, denominator):
+def nash_bargaining_solution(actor_issues, denominator):
     """
     TODO: the signature of this function should be different. List/dict salience, power, position
     Calculate the Nash bargaining solution.
@@ -66,7 +63,18 @@ def calc_nbs(actor_issues, denominator):
 
 
 def nbs_variance(actor_issues, nbs):
+    """
+    Calculate the distance between the position of the actor and the current Nash bargaining solution
+
+    :math:`O_var = \\frac{\\sum_{i=1}^n C_{id} S_{id} X_{id} }{\\sum_{i=1}^n C_{id} S_{id} }`
+
+    :param actor_issues: all the actors on this issue
+    :param nbs: the current value of the Nash bargaining solution
+    :return: the variance of positions
+    """
+
     t = (1 / len(actor_issues))
+
     t2 = sum([(ai.position - nbs) ** 2 for ai in actor_issues])
 
     return t * t2
@@ -110,7 +118,7 @@ def adjusted_nbs(actor_issues, updates, actor, new_position, denominator):
 
     copy_ai[actor].position = new_position
 
-    return calc_nbs(copy_ai, denominator)
+    return nash_bargaining_solution(copy_ai, denominator)
 
 
 def adjusted_nbs_by_position(actor_issues, updates, actor, x_pos, new_nbs, denominator):
@@ -153,10 +161,11 @@ def adjusted_nbs_by_position(actor_issues, updates, actor, x_pos, new_nbs, denom
 
 def reverse_move(actor_issues, actor: AbstractExchangeActor, c_exchange_ratio):
     """
-
+    TODO: better function name
+    TODO: testing
     :param actor_issues:
     :param actor:
-    :param exchange_ratio:
+    :param c_exchange_ratio:
     :return:
     """
     si = actor.supply.salience
@@ -165,23 +174,25 @@ def reverse_move(actor_issues, actor: AbstractExchangeActor, c_exchange_ratio):
     return (c_exchange_ratio * sum_salience_power(actor_issues)) / (ci * si)
 
 
-def by_exchange_ratio(supply_actor: AbstractExchangeActor, exchange_ratio):
+def by_exchange_ratio(supply_actor: AbstractExchangeActor, supply_exchange_ratio):
     """
-
+    Calculate the position by exchange ratio
+    TODO: better function name
+    TODO: testing
     :param supply_actor: ExchangeActor
-    :param exchange_ratio: Decimal
+    :param supply_exchange_ratio: Decimal
     :return: Decimal
     """
 
     d_actor = supply_actor.opposite_actor
 
-    sip = supply_actor.demand.salience  # model.get(s_actor.actor, s_actor.demand, "s")
-    sjp = d_actor.supply.salience  # model.get(d_actor.actor, s_actor.demand, "s")
+    sip = supply_actor.demand.salience
+    sjp = d_actor.supply.salience
 
-    sj_supply = d_actor.demand.salience  # model.get(d_actor.actor, s_actor.supply, "s")
-    si_supply = supply_actor.supply.salience  # model.get(s_actor.actor, s_actor.supply, "s")
+    sj_supply = d_actor.demand.salience
+    si_supply = supply_actor.supply.salience
 
-    return ((si_supply + sj_supply) / (sip + sjp)) * exchange_ratio
+    return ((si_supply + sj_supply) / (sip + sjp)) * supply_exchange_ratio
 
 
 def by_absolute_move(actor_issues, s_actor: AbstractExchangeActor):
@@ -258,7 +269,7 @@ def actor_externalities(actor: Actor, model_ref: AbstractModel, realized: Abstra
     """
     Calculate the externalities from an exchange
 
-    :param actor_name: current actor
+    :param actor: current actor
     :param model_ref: model
     :param realized: realized exchanges
     :return: the Decimal value of the externality
@@ -283,10 +294,8 @@ def actor_externalities(actor: Actor, model_ref: AbstractModel, realized: Abstra
 
         return ext
 
-    return 0
-    #
-    # raise Exception(
-    #     'Actor is not in collection. Calculation of the externalities is therefore not possible. Is your data correct?')
+    raise Exception('Actor is not in collection. Calculation of the externalities is therefore not possible. '
+                    'Is your data correct?')
 
 
 def position_by_nbs(actor_issues, exchange_actor, nbs, denominator):

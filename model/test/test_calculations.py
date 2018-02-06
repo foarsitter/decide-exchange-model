@@ -2,7 +2,7 @@ from decimal import *
 from unittest import TestCase
 
 from model.base import ActorIssue, Actor, Issue
-from model.calculations import calc_nbs_denominator, calc_nbs, adjusted_nbs, by_absolute_move, by_exchange_ratio, \
+from model.calculations import calc_nbs_denominator, nash_bargaining_solution, adjusted_nbs, by_absolute_move, by_exchange_ratio, \
     reverse_move, sum_salience_power
 from model.equalgain import EqualGainExchange, EqualGainModel
 from model.helpers import csvparser
@@ -28,8 +28,8 @@ class TestNBSCalculations(TestCase):
     def test_calc_nbs(self):
         denominator = calc_nbs_denominator({"a": self.a, "b": self.b})
 
-        self.assertEqual(calc_nbs({"a": self.a, "b": self.b}, denominator), 50)
-        self.assertEqual(calc_nbs(self.actor_issues, self.denominator), Decimal(200) / Decimal(3))
+        self.assertEqual(nash_bargaining_solution({"a": self.a, "b": self.b}, denominator), 50)
+        self.assertEqual(nash_bargaining_solution(self.actor_issues, self.denominator), Decimal(200) / Decimal(3))
 
     def test_calc_adjusted_nbs(self):
         a1 = "a"

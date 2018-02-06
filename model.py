@@ -1,5 +1,7 @@
 import decimal
 
+from model.observers.sqliteobserver import SQLiteObserver
+
 if __name__ == "__main__":
 
     import os
@@ -46,18 +48,20 @@ if __name__ == "__main__":
     eventHandler.log(message="Start calculation at {0}".format(startTime))
 
     csvParser = csvparser.CsvParser(model)
+    csvParser.read(input_file)
 
+    SQLiteObserver(eventHandler)
     Externalities(eventHandler)
     ExchangesWriter(eventHandler)
     IssueDevelopment(eventHandler)
 
     eventHandler.log(message="Parsed file".format(input_file))
 
-    eventHandler.before_repetitions()
+    eventHandler.before_repetitions(args)
 
     for repetition in range(args.repetitions):
 
-        model = csvParser.read(input_file)
+        csvParser.read(input_file)
 
         model_loop = ModelLoop(model, eventHandler, repetition)
 

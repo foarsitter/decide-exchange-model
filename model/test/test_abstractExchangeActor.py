@@ -42,14 +42,23 @@ class TestAbstractExchangeActor(TestCase):
         ai3 = model.add_actor_issue("test1", "test", 100, 1, 1)
         ai4 = model.add_actor_issue("test1", "test1", 100, 1, 1)
 
-        exchange_actor0 = AbstractExchangeActor(model=model, actor=test_actor, demand_issue=test_issue,
-                                                supply_issue=test1_issue, exchange=None)
+        exchange_actor0 = AbstractExchangeActor(model=model,
+                                                actor=test_actor,
+                                                demand_issue=test_issue,
+                                                supply_issue=test1_issue,
+                                                exchange=None)
 
-        exchange_actor1 = AbstractExchangeActor(model=model, actor=test1_actor, demand_issue=test1_issue,
-                                                supply_issue=test_issue, exchange=None)
+        exchange_actor1 = AbstractExchangeActor(model=model,
+                                                actor=test1_actor,
+                                                demand_issue=test1_issue,
+                                                supply_issue=test_issue,
+                                                exchange=None)
 
-        exchange_actor4 = AbstractExchangeActor(model=model, actor=test_actor, demand_issue=test_issue,
-                                                supply_issue=test1_issue, exchange=None)
+        exchange_actor4 = AbstractExchangeActor(model=model,
+                                                actor=test_actor,
+                                                demand_issue=test_issue,
+                                                supply_issue=test1_issue,
+                                                exchange=None)
 
         self.assertTrue(exchange_actor0 == exchange_actor0)
         self.assertTrue(exchange_actor0 == exchange_actor4)

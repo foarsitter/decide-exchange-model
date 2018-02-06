@@ -73,6 +73,9 @@ class Issue:
             b = h == other
             return b
 
+        if not other:
+            return False
+
         raise NotImplementedError()
 
     def __hash__(self):
@@ -96,7 +99,8 @@ class Actor:
             return self.__hash__() == other
         if isinstance(other, Actor):
             return self.actor_id == other.actor_id
-
+        if not other:
+            return False
         raise NotImplementedError()
 
     def __lt__(self, other):
@@ -796,7 +800,7 @@ class AbstractModel:
         for issue, actor_issues in self.actor_issues.items():
             self.nbs_denominators[issue] = calculations.calc_nbs_denominator(actor_issues)
 
-            nbs = calculations.calc_nbs(actor_issues, self.nbs_denominators[issue])
+            nbs = calculations.nash_bargaining_solution(actor_issues, self.nbs_denominators[issue])
             self.nbs[issue] = nbs
 
     def determine_positions(self):

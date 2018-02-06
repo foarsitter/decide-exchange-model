@@ -7,7 +7,18 @@ from .. import randomrate
 
 class Observer(object):
     """
-    The main event Object containing all the event methods. 
+    The main event Object containing all the event methods.
+
+    Order of events:
+
+    before_repetitions()
+    before_iterations()
+    before_loop()
+    after_loop()
+    end_loop()
+    after_iterations()
+    after_repetitions()
+
     """
 
     def __init__(self, observable: 'Observable'):
@@ -25,31 +36,56 @@ class Observer(object):
 
     def before_loop(self, iteration: int, repetition: int):
         """
-        The start event.
+        Before the start of a single round.
+        The actors are still on there starting position.
+        Next event: after_loop
         :param iteration: int the current iteration number
         :param repetition: int only used in the RandRate model, represents the current number of repetition.
         """
         pass
 
-    def finish_round(self, realized: List[base.AbstractExchange], iteration: int, repetition: int):
-        pass
-
     def after_loop(self, realized: List[base.AbstractExchange], iteration: int, repetition: int):
+        """
+        After all exchanges are executed. There are no potential exchanges left, but the model reference to actor
+        issues is still on there starting position.
+        Next event: end_loop
+        :param realized:
+        :param iteration:
+        :param repetition:
+        :return:
+        """
         pass
 
     def end_loop(self, iteration: int, repetition: int):
+        """
+        At the end of a loop with the final positions of the actors, but before the new_start_position()'s are calculated.
+        The next event: before_loop.
+        """
         pass
 
     def before_iterations(self, repetition):
+        """
+        Before a set of loops starts
+        """
         pass
 
     def after_iterations(self, repetition):
+        """
+        After a set of loops are finished
+        """
         pass
 
-    def before_repetitions(self):
+    def before_repetitions(self, args):
+        """
+        First event
+        :return:
+        """
         pass
 
     def after_repetitions(self):
+        """
+        Last event
+        """
         pass
 
     @staticmethod
@@ -85,6 +121,14 @@ class Observable(Observer):
     def register(self, observer):
         self.__observers.append(observer)
 
+    def before_repetitions(self, args):
+        for observer in self.__observers:
+            observer.before_repetitions(args)
+
+    def before_iterations(self, repetition):
+        for observer in self.__observers:
+            observer.before_iterations(repetition)
+
     def before_loop(self, iteration: int, repetition: int = None):
         for observer in self.__observers:
             observer.before_loop(iteration, repetition)
@@ -101,10 +145,6 @@ class Observable(Observer):
         for observer in self.__observers:
             observer.end_loop(iteration, repetition)
 
-    def before_iterations(self, repetition):
-        for observer in self.__observers:
-            observer.before_iterations(repetition)
-
     def after_iterations(self, repetition):
         for observer in self.__observers:
             observer.after_iterations(repetition)
@@ -112,7 +152,3 @@ class Observable(Observer):
     def after_repetitions(self):
         for observer in self.__observers:
             observer.after_repetitions()
-
-    def before_repetitions(self):
-        for observer in self.__observers:
-            observer.before_repetitions()
