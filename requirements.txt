@@ -1,0 +1,5 @@
+peewee
+matplotlib
+numpy
+pandas
+jupyter

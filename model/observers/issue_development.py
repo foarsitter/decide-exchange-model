@@ -18,10 +18,10 @@ except:
 
 
 class IssueDevelopment(observer.Observer):
-    '''
+    """
     There are three stages of externalities
     By exchange, by issue set and by actor
-    '''
+    """
 
     def __init__(self, observable: observer.Observable, write_voting_position=False):
         super().__init__(observable=observable)
@@ -41,9 +41,9 @@ class IssueDevelopment(observer.Observer):
         self.denominator = 0
 
     def _setup(self):
-        '''
-        Setup method.          
-        '''
+        """
+        Setup method.
+        """
         for issue in self.model_ref.actor_issues:
             issue_list = {}
 
@@ -71,22 +71,22 @@ class IssueDevelopment(observer.Observer):
         return values
 
     def _create_directories(self, repetition):
-        '''
+        """
         Create the directories
-        :param repetition: 
-        :return: 
-        '''
+        :param repetition:
+        :return:
+        """
         if not os.path.exists('{0}/issues/{1}'.format(self.output_directory, repetition)):
             os.makedirs('{0}/issues/{1}'.format(self.output_directory, repetition))
 
-    def before_repetitions(self, args):
+    def before_repetitions(self, repetitions, iterations):
         pass
 
     def before_iterations(self, repetition):
-        '''
-        :param repetition: 
-        :return: 
-        '''
+        """
+        :param repetition:
+        :return:
+        """
         self._setup()
         self._create_directories(repetition)
 
@@ -94,14 +94,13 @@ class IssueDevelopment(observer.Observer):
         pass
 
     def after_loop(self, realized: List[base.AbstractExchange], iteration: int, repetition: int):
-
-        '''
+        """
         After each round we calculate the variance
-        :param repetition: 
-        :param realized:         
-        :param iteration: 
-        :return: 
-        '''
+        :param repetition:
+        :param realized:
+        :param iteration:
+        :return:
+        """
         model = self.model_ref
 
         for issue in model.actor_issues:
@@ -135,12 +134,12 @@ class IssueDevelopment(observer.Observer):
         self.preference_loss_sum[issue]['nbs'][iteration].append(nbs_var)
 
     def end_loop(self, iteration: int, repetition: int):
-        '''
+        """
         Before each round we calculate the voting position
-        :param repetition: 
+        :param repetition:
         :param iteration:1
-        :return: 
-        '''
+        :return:
+        """
 
         for issue in self.model_ref.actor_issues:
 
@@ -159,12 +158,12 @@ class IssueDevelopment(observer.Observer):
             self.voting_loss[issue]['nbs'].append(nbs_var)
 
     def after_iterations(self, repetition):
-        '''
+        """
         Write all the data of this repetition to the filesystem
-        '''
+        """
 
         for issue in self.preference_history:
-            with open('{0}/issues/{2}/{1}.csv'.format(self.output_directory, issue, repetition), 'w') as csv_file:
+            with open('{0}/issues/{2}/{1}.{3}.csv'.format(self.output_directory, issue, repetition, self._get_salt), 'w') as csv_file:
                 writer = csv.writer(csv_file, delimiter=';', lineterminator='\n')
 
                 self.issue_obj = self.model_ref.issues[issue]  # type: Issue
@@ -334,15 +333,15 @@ class IssueDevelopment(observer.Observer):
                         writer.writerow([actor_id] + value)
 
     def after_repetitions(self):
-        '''
+        """
         Write all the results to a summary with the averages for all repetitions
-        :return: 
-        '''
+        :return:
+        """
 
         self._create_directories('summary')
 
         for issue in self.preference_history_sum:
-            with open('{0}/issues/{2}/{1}.{2}.csv'.format(self.output_directory, issue, 'summary'), 'w') as csv_file:
+            with open('{0}/issues/{2}/{1}.{3}.{2}.csv'.format(self.output_directory, issue, 'summary', self._get_salt), 'w') as csv_file:
                 writer = csv.writer(csv_file, delimiter=';', lineterminator='\n')
 
                 self.issue_obj = self.model_ref.issues[issue]  # type: Issue
@@ -478,9 +477,8 @@ class IssueDevelopment(observer.Observer):
                         position_delta,
                         nbs_distance_start,
                         nbs_distance_end,
-                        nbs_distance_delta,
+                        # nbs_distance_delta,
                         # percentage,
-
                     ])
 
                 writer.writerow([])
@@ -523,3 +521,14 @@ class IssueDevelopment(observer.Observer):
                                                                 'summary'),
                                 bbox_extra_artists=(lgd,),
                                 bbox_inches='tight')
+
+    @property
+    def _get_salt(self):
+        model_name = 'random'
+        from model.equalgain import EqualGainModel
+        if isinstance(self.model_ref, EqualGainModel):
+            model_name = 'equal'
+            if self.model_ref.randomized_value is not None:
+                model_name += '-' + str(round(self.model_ref.randomized_value, 2))
+
+        return model_name

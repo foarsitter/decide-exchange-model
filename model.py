@@ -51,13 +51,15 @@ if __name__ == "__main__":
     csvParser.read(input_file)
 
     SQLiteObserver(eventHandler)
+
+    # csv handlers
     Externalities(eventHandler)
     ExchangesWriter(eventHandler)
     IssueDevelopment(eventHandler)
 
     eventHandler.log(message="Parsed file".format(input_file))
 
-    eventHandler.before_repetitions(args)
+    eventHandler.before_repetitions(repetitions=args.repetitions, iterations=args.rounds)
 
     for repetition in range(args.repetitions):
 

@@ -207,16 +207,16 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
             #                 .format(eui_check, eui,
             #                         self.opposite_actor.is_adjusted_by_nbs))
 
-        if self.eu_max is None:
-            # if they are not equal (occurs by p=0.0)
-            if not abs(euj - eui) < 1e-10:
-                if (euj - eui) < 1e-10:
-                    print('Fail: when eui_max is none (v=False), euj should be larger in this case. {0}'.format(
-                        self.opposite_actor.is_adjusted_by_nbs))
-
-        if p == 0 and abs(eui - euj) > 1e-10:
-            print('Fail: Equal Gain not equal with p=0.0 and nbs_adjusted={0}'.format(
-                self.opposite_actor.is_adjusted_by_nbs))
+        # if self.eu_max is None:
+        #     # if they are not equal (occurs by p=0.0)
+        #     if not abs(euj - eui) < 1e-10:
+        #         if (euj - eui) < 1e-10:
+        #             print('Fail: when eui_max is none (v=False), euj should be larger in this case. {0}'.format(
+        #                 self.opposite_actor.is_adjusted_by_nbs))
+        #
+        # if p == 0 and abs(eui - euj) > 1e-10:
+        #     print('Fail: Equal Gain not equal with p=0.0 and nbs_adjusted={0}'.format(
+        #         self.opposite_actor.is_adjusted_by_nbs))
 
         self.eu = eui
         self.opposite_actor.eu = euj

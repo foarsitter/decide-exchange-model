@@ -151,7 +151,7 @@ class Externalities(observer.Observer):
              exchange_set["ip"],
              exchange_set["in"], exchange_set["op"], exchange_set["on"], exchange_set["own"]])
 
-    def before_repetitions(self, args):
+    def before_repetitions(self, repetitions, iterations):
         """
         create storage units for each repetition and each iteration
         :return:

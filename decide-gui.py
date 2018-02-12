@@ -376,7 +376,8 @@ class MainApplication(tk.Frame):
             try:
                 model = Model(randomized_value=decimal.Decimal(self.randomized_value.get()))
             except tk.TclError:
-                model = Model(randomized_value=None)
+                model = Model(randomized_value=decimal.Decimal(0.0))
+                self.randomized_value.set(0.0)
         else:
             from model.randomrate import RandomRateModel as Model
             model = Model()
@@ -385,7 +386,7 @@ class MainApplication(tk.Frame):
         model.data_set_name = self.input_file.get().split("/")[-1].split(".")[0]
 
         if self.model.get() == 'equal':
-            model_name = 'equal-' + str(round(self.randomized_value.get(), 2))
+            model_name = 'equal-' + str(round(model.randomized_value, 2))
         else:
             model_name = 'random'
 
@@ -405,7 +406,10 @@ class MainApplication(tk.Frame):
 
         event_handler.log(message="Parsed file {0}".format(self.input_file.get()))
 
-        event_handler.before_repetitions()  # TODO FIX ARGS argument
+        iterations = int(self.iterations.get())
+        repetitions = int(self.repetitions.get())
+
+        event_handler.before_repetitions(iterations=iterations, repetitions=repetitions)  # TODO FIX ARGS argument
 
         for repetition in range(int(self.repetitions.get())):
 

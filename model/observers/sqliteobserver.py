@@ -24,7 +24,7 @@ class SQLiteObserver(Observer):
 
         db.Manager().create_tables()
 
-    def before_repetitions(self, args):
+    def before_repetitions(self, repetitions, iterations):
         """
         Create a new data set when needed and add all the actors
 
@@ -39,8 +39,8 @@ class SQLiteObserver(Observer):
 
         self.model_run = db.ModelRun.create(
             p=self.model_ref.randomized_value,
-            iterations=args.rounds,
-            repetitions=args.repetitions,
+            iterations=iterations,
+            repetitions=repetitions,
             data_set=data_set
         )
 
@@ -109,6 +109,7 @@ class SQLiteObserver(Observer):
 
         exchange_actor = db.ExchangeActor()
         exchange_actor.actor = self.actors[i.actor]
+        exchange_actor.other_actor = self.actors[i.opposite_actor.actor]
         exchange_actor.supply_issue = self.issues[i.supply.issue]
         exchange_actor.demand_issue = self.issues[i.demand.issue]
         exchange_actor.eu = i.eu

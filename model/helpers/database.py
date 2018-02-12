@@ -23,6 +23,9 @@ class DictionaryIndexMixin:
         if self.get_hash_field() == other:
             return True
 
+        if other is None:
+            return False
+
         raise NotImplementedError()
 
     def get_hash_field(self):
@@ -126,7 +129,7 @@ class ExchangeActor(BaseModel):
     demand_position = peewee.DecimalField(max_digits=20, decimal_places=15)
 
     # shortcut
-    other_actor = peewee.ForeignKeyField('self', null=True)
+    other_actor = peewee.ForeignKeyField('self')
 
     @property
     def move(self):

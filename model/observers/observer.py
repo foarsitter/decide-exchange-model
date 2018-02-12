@@ -75,7 +75,7 @@ class Observer(object):
         """
         pass
 
-    def before_repetitions(self, args):
+    def before_repetitions(self, repetitions, iterations):
         """
         First event
         :return:
@@ -121,9 +121,9 @@ class Observable(Observer):
     def register(self, observer):
         self.__observers.append(observer)
 
-    def before_repetitions(self, args):
+    def before_repetitions(self, repetitions, iterations):
         for observer in self.__observers:
-            observer.before_repetitions(args)
+            observer.before_repetitions(repetitions, iterations)
 
     def before_iterations(self, repetition):
         for observer in self.__observers:

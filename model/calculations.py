@@ -293,7 +293,7 @@ def actor_externalities(actor: Actor, model_ref: AbstractModel, realized: Abstra
         ext = l * sp + r * sq
 
         return ext
-
+    return 0
     raise Exception('Actor is not in collection. Calculation of the externalities is therefore not possible. '
                     'Is your data correct?')
 
