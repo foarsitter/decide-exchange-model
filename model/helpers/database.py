@@ -140,6 +140,10 @@ class Exchange(BaseModel):
     iteration = peewee.ForeignKeyField(Iteration)
 
 
+class Externality(BaseModel):
+    pass
+
+
 class Manager:
     """
     Helper for manage the state of the database.

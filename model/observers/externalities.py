@@ -121,7 +121,7 @@ class Externalities(observer.Observer):
 
     def execute_exchange(self, exchange: base.AbstractExchange):
         """
-        Calculations of the externalities performed each round after an exchange is exectued
+        Calculations of the externalities performed each round after an exchange is executed
         :param exchange: AbstractExchange        
         """
 
@@ -162,7 +162,7 @@ class Externalities(observer.Observer):
         self._setup()
         self._create_directories(repetition)
 
-    def end_loop(self, iteration: int, repetition: int):
+    def end_loop(self, iteration: int, repetition: int, insert_db=True):
         """
         Write the data to the filesystem and append the storage for the summary
         :param repetition:
@@ -202,6 +202,14 @@ class Externalities(observer.Observer):
 
             for realizations in self.exchanges:
                 writer.writerow(realizations)
+
+                if insert_db:
+                    with db.connection.atomic():
+                        from ..helpers import database as db
+
+                        db.Externality.create()
+
+
 
     def after_repetitions(self):
         """
