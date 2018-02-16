@@ -31,6 +31,7 @@ if __name__ == "__main__":
         model = Model.EqualGainModel(randomized_value=p)
     else:
         import model.randomrate as Model
+
         model_name = 'random'
         model = Model.RandomRateModel()
 

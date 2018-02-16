@@ -457,7 +457,7 @@ class MainApplication(tk.Frame):
         self.progress_dialog.destroy()
 
 
-if __name__ == "__main__":
+def main():
     root = tk.Tk()
     app = MainApplication(root)
 
@@ -466,3 +466,6 @@ if __name__ == "__main__":
     root.title("Decide Exchange Model (Equal Exchange Rate)")
 
     root.mainloop()
+
+if __name__ == "__main__":
+    main()
