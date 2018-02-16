@@ -319,7 +319,7 @@ class EqualGainExchange(base.AbstractExchange):
         else:
             return  # stop if its not valid
 
-        if self.model.randomized_value is not None:
+        if self.model.randomized_value is not None and self.model.randomized_value > 0.0:
 
             u = random.uniform(0, 1)
             v = random.uniform(0, 1)

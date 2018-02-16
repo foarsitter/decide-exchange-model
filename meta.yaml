@@ -1,0 +1,16 @@
+package:
+  name: decide-exchange-model
+  version: "1.0-RC1.3"
+source:
+  git_rev: v1.0-RC1.3
+  git_url: https://github.com/foarsitter/decide-exchange-model.git
+
+about:
+  home: https://github.com/foarsitter/decide-exchange-model
+  license: GPL-3.0
+  license_file: LICENSE
+
+app:
+  entry: python decide-gui.py
+  summary: "The decide exchange model for collective decision-making"
+  icon: logo.png
