@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='decide-exchange-model',
-    version='1.0rc5',
+    version='1.0rc6',
     packages=['model', 'model.test', 'model.helpers',
               'model.helpers.test', 'model.observers'],
     url='https://github.com/foarsitter/decide-exchange-model',
