@@ -230,6 +230,11 @@ class RandomRateModel(base.AbstractModel):
     The Random Rate implementation
     """
 
+    def __init__(self):
+        super().__init__()
+        self.model_name = 'random'
+
+
     def _get_sorted_exchange_actor_list(self):
         all_exchange_actors = []
         for exchange in self.exchanges:  # type: RandomRateExchange

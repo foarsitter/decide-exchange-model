@@ -454,6 +454,11 @@ class EqualGainModel(base.AbstractModel):
 
         self.randomized_value = randomized_value
 
+        self.model_name = 'equal'
+
+        if randomized_value:
+            self.model_name += '-' + str(round(randomized_value, 2))
+
     def sort_exchanges(self):
         """
         The exchanges are sorted by there (equal) gain, highest first

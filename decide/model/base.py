@@ -692,6 +692,7 @@ class AbstractModel:
         self.moves = {}  # dict with issue,actor[move_1,move_2,move_3]
         self.nbs_denominators = {}
         self.data_set_name = ""
+        self.model_name = 'abstract'
 
     def get_actor_issue(self, actor: Actor, issue: Issue):
         """

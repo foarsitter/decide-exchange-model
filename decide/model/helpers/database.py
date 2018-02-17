@@ -4,10 +4,10 @@ import sqlite3
 
 import peewee
 
-try:
-    connection = peewee.SqliteDatabase(os.path.join(os.path.dirname(__file__), '../../data/', 'database.db'))
-except sqlite3.OperationalError:
-    connection = peewee.SqliteDatabase(':memory:')
+
+path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..','..', '..', 'data', 'database.db'))
+connection = peewee.SqliteDatabase(path)
+
 
 
 class DictionaryIndexMixin:

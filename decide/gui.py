@@ -9,13 +9,16 @@ from tkinter import filedialog
 from tkinter import messagebox
 from tkinter import ttk
 
+from decide.cli import init_model, init_output_directory, init_event_handlers
 from decide.model.base import AbstractModel
+from decide.model.equalgain import EqualGainModel
 from decide.model.helpers import csvparser
 from decide.model.helpers.helpers import ModelLoop
 from decide.model.observers.exchanges_writer import ExchangesWriter
 from decide.model.observers.externalities import Externalities
 from decide.model.observers.issue_development import IssueDevelopment
 from decide.model.observers.observer import Observable, Observer
+from decide.model.randomrate import RandomRateModel
 
 
 def center(toplevel):
@@ -154,7 +157,7 @@ class CSVFrame(tk.Frame):
         for key, actor_issues in model.actor_issues.items():
             for actor_issue in actor_issues.values():
                 self.create_row(
-                    [actor_issue.actor_name, actor_issue.issue_name, int(actor_issue.position), actor_issue.salience,
+                    [actor_issue.actor.name, actor_issue.issue.name, int(actor_issue.position), actor_issue.salience,
                      actor_issue.power])
 
     def create_row(self, values):
@@ -364,53 +367,30 @@ class MainApplication(tk.Frame):
         t.start()
         self.periodic_call()
 
-        self.progress_bar(int(self.iterations.get()))
+        self.progress_bar(int(self.iterations.get()) * int(self.repetitions.get()))
 
     def run(self):
 
         start_time = datetime.now()
 
-        if self.model.get() == "equal":
-            from decide.model import EqualGainModel as Model
-            try:
-                model = Model(randomized_value=decimal.Decimal(self.randomized_value.get()))
-            except tk.TclError:
-                model = Model(randomized_value=decimal.Decimal(0.0))
-                self.randomized_value.set(0.0)
-        else:
-            from decide.model import RandomRateModel as Model
-            model = Model()
+        model = init_model(model_type=self.model.get(), input_file=self.input_file.get(), p=self.randomized_value.get())
 
-        # The event handlers for logging and writing the results to the disk.
-        model.data_set_name = self.input_file.get().split("/")[-1].split(".")[0]
+        output_directory = init_output_directory(model, self.output_dir.get())
 
-        if self.model.get() == 'equal':
-            model_name = 'equal-' + str(round(model.randomized_value, 2))
-        else:
-            model_name = 'random'
-
-        output_directory = os.path.join(self.output_dir.get(), model.data_set_name, model_name)
-
-        event_handler = Observable(model_ref=model, output_directory=output_directory)
+        event_handler = init_event_handlers(model, output_directory)
         event_handler.log(message="Start calculation at {0}".format(start_time))
 
         csv_parser = csvparser.CsvParser(model_ref=model)
-
-        if not os.path.isdir(output_directory):
-            os.makedirs(output_directory)
-
-        Externalities(event_handler)
-        ExchangesWriter(event_handler)
-        IssueDevelopment(event_handler)
+        csv_parser.read(self.input_file.get())
 
         event_handler.log(message="Parsed file {0}".format(self.input_file.get()))
 
         iterations = int(self.iterations.get())
         repetitions = int(self.repetitions.get())
 
-        event_handler.before_repetitions(iterations=iterations, repetitions=repetitions)  # TODO FIX ARGS argument
+        event_handler.before_repetitions(iterations=iterations, repetitions=repetitions)
 
-        for repetition in range(int(self.repetitions.get())):
+        for repetition in range(repetitions):
 
             model = csv_parser.read(self.input_file.get())
 
@@ -418,11 +398,11 @@ class MainApplication(tk.Frame):
 
             event_handler.before_iterations(repetition)
 
-            for iteration_number in range(int(self.iterations.get())):
+            for iteration_number in range(iterations):
 
                 if not self.interrupt:
                     model_loop.loop()
-                    self.queue.put(iteration_number)
+                    self.queue.put(iteration_number + (repetition * iterations))
                 else:
                     print("interrupted")
                     break

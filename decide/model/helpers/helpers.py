@@ -23,9 +23,9 @@ def parse_arguments():
     parser.add_argument('--iterations', '-i', help='The number of round the model needs to be executed', default=10,
                         type=int)
     parser.add_argument('--repetitions', '-r', help='How many times it has te be repeated?', default=1, type=int)
-    parser.add_argument('--input', help='The location of the csv input file. ', default="data/input/sample_data.txt",
+    parser.add_argument('--input_file', help='The location of the csv input file. ', default="../data/input/sample_data.txt",
                         type=str)
-    parser.add_argument('--output', help='Output directory ', default="data/output/", type=str)
+    parser.add_argument('--output_dir', help='Output directory ', default="../data/output/", type=str)
 
     return parser.parse_args()
 

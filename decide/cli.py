@@ -12,18 +12,18 @@ from decide.model.observers.sqliteobserver import SQLiteObserver
 from decide.model.randomrate import RandomRateModel
 
 
-def init_model(args):
+def init_model(model_type, input_file, p=None):
     """
     Initial the right model from the given arguments
     """
 
-    if args.model == "equal":
-        p = decimal.Decimal(args.p) if args.p != 'None' else None
+    if model_type == "equal":
+        p = decimal.Decimal(p) if p else 0.0
         model = EqualGainModel(randomized_value=p)
     else:
         model = RandomRateModel()
 
-    model.data_set_name = args.input_file.split("/")[-1].split(".")[0]
+    model.data_set_name = input_file.split("/")[-1].split(".")[0]
 
     return model
 
@@ -41,9 +41,9 @@ def init_event_handlers(model, output_directory):
     return event_handler
 
 
-def init_output_directory(model, args):
+def init_output_directory(model, output_dir):
 
-    output_directory = os.path.join(args.output, model.data_set_name, model.model_name)
+    output_directory = os.path.join(output_dir, model.data_set_name, model.model_name)
 
     if not os.path.isdir(output_directory):
         os.makedirs(output_directory)
@@ -56,9 +56,9 @@ def main():
 
     args = helpers.parse_arguments()
 
-    model = init_model(args)
+    model = init_model(args.model, args.input_file)
 
-    output_directory = init_output_directory(model, args)
+    output_directory = init_output_directory(model, args.output_dir)
 
     # The event handlers for logging and writing the results to the disk.
     event_handler = init_event_handlers(model, output_directory=output_directory)
@@ -67,7 +67,7 @@ def main():
     csv_parser = csvparser.CsvParser(model)
     csv_parser.read(args.input_file)
 
-    event_handler.log(message="Parsed file".format(args.input))
+    event_handler.log(message="Parsed file".format(args.input_file))
 
     event_handler.before_repetitions(repetitions=args.repetitions, iterations=args.iterations)
 
