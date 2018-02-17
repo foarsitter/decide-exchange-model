@@ -4,7 +4,7 @@ python:
   - "3.6"
 # command to run tests
 install:
-  - pip install codecov 'coverage==4.4' codeclimate-test-reporter nose-exclude
+  - pip install codecov 'coverage==4.3' codeclimate-test-reporter nose-exclude
   - pip install -r requirements.txt
 script: nosetests --with-coverage --cover-erase --exclude-test=decide.model.helpers.test.test_database.TestHashFunctions --cover-package=decide --cover-inclusive
 after_success:
