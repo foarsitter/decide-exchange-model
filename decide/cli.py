@@ -2,82 +2,92 @@ import decimal
 import os
 from datetime import datetime
 
+from decide.model.equalgain import EqualGainModel
 from decide.model.helpers import helpers, csvparser
 from decide.model.observers.exchanges_writer import ExchangesWriter
 from decide.model.observers.externalities import Externalities
 from decide.model.observers.issue_development import IssueDevelopment
 from decide.model.observers.observer import Observable
 from decide.model.observers.sqliteobserver import SQLiteObserver
+from decide.model.randomrate import RandomRateModel
 
 
-def main():
-
-    args = helpers.parse_arguments()
-    input_file = args.input
-    output_dir = args.output
+def init_model(args):
+    """
+    Initial the right model from the given arguments
+    """
 
     if args.model == "equal":
-
-        if args.p != 'None':
-            p = decimal.Decimal(args.p)
-            model_name = 'equal-' + str(round(p, 2))
-        else:
-            p = None
-            model_name = 'equal'
-
-        from decide.model.equalgain import EqualGainModel
-
+        p = decimal.Decimal(args.p) if args.p != 'None' else None
         model = EqualGainModel(randomized_value=p)
     else:
-        from decide.model.randomrate import RandomRateModel
-
-        model_name = 'random'
         model = RandomRateModel()
 
-    model.data_set_name = input_file.split("/")[-1].split(".")[0]
-    output_directory = output_dir + "/" + model.data_set_name
-    output_directory = output_directory + "/" + model_name
+    model.data_set_name = args.input_file.split("/")[-1].split(".")[0]
+
+    return model
+
+
+def init_event_handlers(model, output_directory):
+    event_handler = Observable(model_ref=model, output_directory=output_directory)
+
+    SQLiteObserver(event_handler)
+
+    # csv handlers
+    Externalities(event_handler)
+    ExchangesWriter(event_handler)
+    IssueDevelopment(event_handler)
+
+    return event_handler
+
+
+def init_output_directory(model, args):
+
+    output_directory = os.path.join(args.output, model.data_set_name, model.model_name)
 
     if not os.path.isdir(output_directory):
         os.makedirs(output_directory)
 
-    startTime = datetime.now()
+    return output_directory
+
+
+def main():
+    start_time = datetime.now()  # for timing operations
+
+    args = helpers.parse_arguments()
+
+    model = init_model(args)
+
+    output_directory = init_output_directory(model, args)
 
     # The event handlers for logging and writing the results to the disk.
-    eventHandler = Observable(model_ref=model, output_directory=output_directory)
-    eventHandler.log(message="Start calculation at {0}".format(startTime))
+    event_handler = init_event_handlers(model, output_directory=output_directory)
+    event_handler.log(message="Start calculation at {0}".format(start_time))
 
-    csvParser = csvparser.CsvParser(model)
-    csvParser.read(input_file)
+    csv_parser = csvparser.CsvParser(model)
+    csv_parser.read(args.input_file)
 
-    SQLiteObserver(eventHandler)
+    event_handler.log(message="Parsed file".format(args.input))
 
-    # csv handlers
-    Externalities(eventHandler)
-    ExchangesWriter(eventHandler)
-    IssueDevelopment(eventHandler)
-
-    eventHandler.log(message="Parsed file".format(input_file))
-
-    eventHandler.before_repetitions(repetitions=args.repetitions, iterations=args.iterations)
+    event_handler.before_repetitions(repetitions=args.repetitions, iterations=args.iterations)
 
     for repetition in range(args.repetitions):
 
-        csvParser.read(input_file)
+        csv_parser.read(args.input_file)
 
-        model_loop = helpers.ModelLoop(model, eventHandler, repetition)
+        model_loop = helpers.ModelLoop(model, event_handler, repetition)
 
-        eventHandler.before_iterations(repetition)
+        event_handler.before_iterations(repetition)
 
         for iteration_number in range(args.iterations):
             print("round {0}.{1}".format(repetition, iteration_number))
             model_loop.loop()
 
-        eventHandler.after_iterations(repetition)
+        event_handler.after_iterations(repetition)
 
-    eventHandler.after_repetitions()
+    event_handler.after_repetitions()
 
-    eventHandler.log(message="Finished in {0}".format(datetime.now() - startTime))
+    event_handler.log(message="Finished in {0}".format(datetime.now() - start_time))
 
 
 if __name__ == "__main__":
