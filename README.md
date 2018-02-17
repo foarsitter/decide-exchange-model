@@ -14,7 +14,7 @@ Run 'python model.py --help' for instructions
 The documentation can be found on https://foarsitter.github.io/decide-exchange-model/build/html/
 
 # Installation
-Make sure you have Python (3.5 or higher is recommend) installed.
+Make sure you have Python (3.5 or higher) installed.
 
 Windows users need to add the python executable to their PATH variable. 
 
@@ -56,14 +56,34 @@ Some papers to read about this type of model.
 
 
 # Build cycles
-
-pypi:
+Guide to release a new build
+## On PyPI
 ```
 python setup.py sdist
 twine upload dist/*
 ```
 
-anaconda
+## For Anaconda
+The current build cycle uses git as source. So make sure the latest changes are present on master.
 ```
-conda build meta.yaml -c conda-forge --prefix-length
+conda build meta.yaml -c conda-forge --prefix-length 128 # prefix-length cannot be 255 on systems with full disk encryption (fde)
+```
+
+
+# Installation 
+
+## PyPI
+```bash
+pip install decide-exchange-model
+```
+After installation,```decide-gui``` and ```decide-cli``` are available on the commandline 
+
+## anaconda
+Add ```decide``` and ```conda-forge``` to your channels. Explanation to manage your channels through the anaconda-navigator can be found here: https://conda.io/docs/user-guide/tutorials/build-apps.html#configuring-navigator
+ 
+The urls for the channels are
+
+```bash
+https://anaconda.org/decide
+https://anaconda.org/conda-forge
 ```
