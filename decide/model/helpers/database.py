@@ -1,9 +1,13 @@
 import datetime
 import os
+import sqlite3
 
 import peewee
 
-connection = peewee.SqliteDatabase(os.path.join(os.path.dirname(__file__), '../../data/', 'database.db'))
+try:
+    connection = peewee.SqliteDatabase(os.path.join(os.path.dirname(__file__), '../../data/', 'database.db'))
+except sqlite3.OperationalError:
+    connection = peewee.SqliteDatabase(':memory:')
 
 
 class DictionaryIndexMixin:

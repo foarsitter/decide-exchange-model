@@ -1,4 +1,4 @@
-data/
+data/output
 .idea/
 model-settings.xml
 *.pyc
