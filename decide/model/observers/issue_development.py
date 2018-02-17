@@ -525,7 +525,7 @@ class IssueDevelopment(observer.Observer):
     @property
     def _get_salt(self):
         model_name = 'random'
-        from decide.model import EqualGainModel
+        from decide.model.equalgain import EqualGainModel
         if isinstance(self.model_ref, EqualGainModel):
             model_name = 'equal'
             if self.model_ref.randomized_value is not None:

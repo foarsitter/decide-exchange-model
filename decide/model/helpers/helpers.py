@@ -14,14 +14,15 @@ def parse_arguments():
         csvparser.CsvParser.cA,
         csvparser.CsvParser.cP,
         csvparser.CsvParser.cD))
-    parser.add_argument('--model',
+    parser.add_argument('--model', '-m',
                         help='The type of the model. The options are "equal" for the Equal Gain model and '
                              '"random" for the RandomRate model ',
                         default='equal', type=str)
 
-    parser.add_argument('--p', help='Randomized Equal Gain', default=None, type=str)
-    parser.add_argument('--rounds', help='The number of round the model needs to be executed', default=10, type=int)
-    parser.add_argument('--repetitions', help='How many times it has te be repeated?', default=1, type=int)
+    parser.add_argument('--p', '-p', help='Randomized Equal Gain', default=None, type=str)
+    parser.add_argument('--iterations', '-i', help='The number of round the model needs to be executed', default=10,
+                        type=int)
+    parser.add_argument('--repetitions', '-r', help='How many times it has te be repeated?', default=1, type=int)
     parser.add_argument('--input', help='The location of the csv input file. ', default="data/input/sample_data.txt",
                         type=str)
     parser.add_argument('--output', help='Output directory ', default="data/output/", type=str)

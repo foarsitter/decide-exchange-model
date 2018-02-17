@@ -54,3 +54,16 @@ There are a view input data files where you can play with. The unit tests are ba
 # Readings
 Some papers to read about this type of model.
 
+
+# Build cycles
+
+pypi:
+```
+python setup.py sdist
+twine upload dist/*
+```
+
+anaconda
+```
+conda build meta.yaml -c conda-forge --prefix-length
+```

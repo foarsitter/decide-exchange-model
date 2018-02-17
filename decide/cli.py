@@ -2,14 +2,15 @@ import decimal
 import os
 from datetime import datetime
 
-from .model.helpers import helpers, csvparser
-from .model.observers.exchanges_writer import ExchangesWriter
-from .model.observers.externalities import Externalities
-from .model.observers.issue_development import IssueDevelopment
-from .model.observers.observer import Observable
-from .model.observers.sqliteobserver import SQLiteObserver
+from decide.model.helpers import helpers, csvparser
+from decide.model.observers.exchanges_writer import ExchangesWriter
+from decide.model.observers.externalities import Externalities
+from decide.model.observers.issue_development import IssueDevelopment
+from decide.model.observers.observer import Observable
+from decide.model.observers.sqliteobserver import SQLiteObserver
 
-if __name__ == "__main__":
+
+def main():
 
     args = helpers.parse_arguments()
     input_file = args.input
@@ -24,11 +25,11 @@ if __name__ == "__main__":
             p = None
             model_name = 'equal'
 
-        from .model.equalgain import EqualGainModel
+        from decide.model.equalgain import EqualGainModel
 
         model = EqualGainModel(randomized_value=p)
     else:
-        from .model.randomrate import RandomRateModel
+        from decide.model.randomrate import RandomRateModel
 
         model_name = 'random'
         model = RandomRateModel()
@@ -58,7 +59,7 @@ if __name__ == "__main__":
 
     eventHandler.log(message="Parsed file".format(input_file))
 
-    eventHandler.before_repetitions(repetitions=args.repetitions, iterations=args.rounds)
+    eventHandler.before_repetitions(repetitions=args.repetitions, iterations=args.iterations)
 
     for repetition in range(args.repetitions):
 
@@ -68,7 +69,7 @@ if __name__ == "__main__":
 
         eventHandler.before_iterations(repetition)
 
-        for iteration_number in range(args.rounds):
+        for iteration_number in range(args.iterations):
             print("round {0}.{1}".format(repetition, iteration_number))
             model_loop.loop()
 
@@ -77,3 +78,7 @@ if __name__ == "__main__":
     eventHandler.after_repetitions()
 
     eventHandler.log(message="Finished in {0}".format(datetime.now() - startTime))
+
+
+if __name__ == "__main__":
+    main()

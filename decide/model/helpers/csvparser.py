@@ -75,7 +75,7 @@ class CsvParser:
         Parse the actor row
         :param row:
         """
-        from decide.model import create_key
+        from decide.model.helpers.helpers import create_key
         self.model_ref.add_actor(create_key(row[1]))
 
     def parse_row_issue(self, row):
@@ -90,7 +90,7 @@ class CsvParser:
         Parse the #M row containing the dimensions of the issues
         :param row:
         """
-        from decide.model import create_key
+        from decide.model.helpers.helpers import create_key
         issue_id = create_key(row[1])
 
         issue = None
@@ -131,7 +131,7 @@ class CsvParser:
         The #D row contains the ... TODO
         :param row:
         """
-        from decide.model import create_key
+        from decide.model.helpers.helpers import create_key
         actor_id = create_key(row[self.rActor])
         issue_id = create_key(row[self.rIssue])
 
