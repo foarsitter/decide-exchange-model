@@ -28,6 +28,8 @@ class TestHashFunctions(TestCase):
         iteration3 = db.Iteration()
         iteration3.pointer = 1
 
+        store[iteration3] = iteration3
+
         self.assertNotEqual(iteration2, iteration)
 
         self.assertEqual(iteration3, iteration)
@@ -53,13 +55,13 @@ class TestHashFunctions(TestCase):
 
         csv = csvparser.CsvParser(EqualGainModel())
 
-        path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../../data/input/sample_data.txt')
+        path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../../../data/input/sample_data.txt')
         model = csv.read(path)
         model.randomized_value = 0.10
 
         event_handler = Observable(model_ref=model, output_directory='')
         observer = SQLiteObserver(event_handler)
-        observer.before_repetitions()  # TODO FIX
+        observer.before_repetitions(repetitions=1, iterations=1)  # TODO FIX
         observer.before_iterations(1)
         observer.before_loop(0, 1)
 

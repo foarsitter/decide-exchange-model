@@ -1,4 +1,5 @@
 import math
+import os
 from decimal import *
 from unittest import TestCase
 
@@ -9,7 +10,8 @@ from decide.model.helpers import csvparser
 class TestModel(TestCase):
     def setUp(self):
         csv = csvparser.CsvParser(EqualGainModel())
-        self.model = csv.read("data/input/sample_data.txt")
+        file = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../../data/input/sample_data.txt')
+        self.model = csv.read(file)
         # self.model = csv.read("data\\CoP21.csv")
 
     def test_addActor(self):

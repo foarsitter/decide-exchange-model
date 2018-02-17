@@ -1,3 +1,4 @@
+import os
 from decimal import *
 from unittest import TestCase
 
@@ -49,7 +50,8 @@ class TestNBSCalculations(TestCase):
     def test_by_absolute_move(self):
         csv = csvparser.CsvParser(self.model)
 
-        model = csv.read("data/input/sample_data.txt")
+        file = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../../data/input/sample_data.txt')
+        model = csv.read(file)
 
         # /	actor	issue	position	salience	power
         # D	China	financevol	100	0.5	1
@@ -91,7 +93,8 @@ class TestNBSCalculations(TestCase):
     def test_externalities(self):
         csv = csvparser.CsvParser(self.model)
 
-        model = csv.read("data/input/sample_data.txt")
+        file = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../../data/input/sample_data.txt')
+        model = csv.read(file)
 
         model.calc_nbs()
         model.determine_positions()

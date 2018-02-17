@@ -2,6 +2,8 @@ import decimal
 import random
 from unittest import TestCase
 
+from scipy import stats
+
 from decide.model import calculations
 from decide.model.equalgain import EqualGainModel, EqualGainExchange
 
@@ -158,7 +160,6 @@ class TestRandomizedEqualGain(TestCase):
 
     def test_random_distribution(self):
 
-        from scipy import stats
         from random import uniform
         import numpy as np
         n = 1000
