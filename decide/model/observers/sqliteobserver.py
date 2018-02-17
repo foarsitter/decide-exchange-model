@@ -1,11 +1,11 @@
 import datetime
 from collections import defaultdict
-
-from model.observers.observer import Observer, Observable
-
-from ..helpers import database as db
-from .. import base
 from typing import List
+
+from decide.model.observers.observer import Observer, Observable
+from .. import base
+from ..helpers import database as db
+
 
 class SQLiteObserver(Observer):
     """

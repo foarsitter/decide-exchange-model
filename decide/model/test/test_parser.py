@@ -1,7 +1,7 @@
 from unittest import TestCase
 
-from model.helpers import csvparser
-from model import equalgain
+from decide.model import equalgain
+from decide.model.helpers import csvparser
 
 
 class TestParser(TestCase):

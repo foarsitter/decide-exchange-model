@@ -2,8 +2,8 @@ import math
 from decimal import *
 from unittest import TestCase
 
-from model.equalgain import EqualGainModel
-from model.helpers import csvparser
+from decide.model.equalgain import EqualGainModel
+from decide.model.helpers import csvparser
 
 
 class TestModel(TestCase):

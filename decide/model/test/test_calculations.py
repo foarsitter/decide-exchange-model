@@ -1,11 +1,12 @@
 from decimal import *
 from unittest import TestCase
 
-from model.base import ActorIssue, Actor, Issue
-from model.calculations import calc_nbs_denominator, nash_bargaining_solution, adjusted_nbs, by_absolute_move, by_exchange_ratio, \
+from decide.model.base import ActorIssue, Actor, Issue
+from decide.model.calculations import calc_nbs_denominator, nash_bargaining_solution, adjusted_nbs, by_absolute_move, \
+    by_exchange_ratio, \
     reverse_move, sum_salience_power
-from model.equalgain import EqualGainExchange, EqualGainModel
-from model.helpers import csvparser
+from decide.model.equalgain import EqualGainExchange, EqualGainModel
+from decide.model.helpers import csvparser
 
 
 class TestNBSCalculations(TestCase):

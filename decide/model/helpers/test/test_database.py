@@ -1,11 +1,11 @@
 import os
 from unittest import TestCase
 
-from model.equalgain import EqualGainModel
-from model.helpers import csvparser
-from model.observers.observer import Observable
-from model.observers.sqliteobserver import SQLiteObserver
-from .. import database as db
+from decide.model.equalgain import EqualGainModel
+from decide.model.helpers import csvparser
+from decide.model.helpers import database as db
+from decide.model.observers.observer import Observable
+from decide.model.observers.sqliteobserver import SQLiteObserver
 
 
 class TestHashFunctions(TestCase):
@@ -37,7 +37,6 @@ class TestHashFunctions(TestCase):
         self.assertEqual(store[1], iteration)
 
     def test_database(self):
-
         db.Manager().create_tables()
 
         created = db.DataSet.create(name='test123')
@@ -49,8 +48,8 @@ class TestHashFunctions(TestCase):
         db.Manager().delete_tables()
 
     def test_data_model(self):
-        db.Manager().delete_tables() # clean tables
-        db.Manager().create_tables() # create empty database
+        db.Manager().delete_tables()  # clean tables
+        db.Manager().create_tables()  # create empty database
 
         csv = csvparser.CsvParser(EqualGainModel())
 
@@ -70,7 +69,7 @@ class TestHashFunctions(TestCase):
 
         # the after_loop events captures again all the actor issues, so the amount of actorIssues is 2 times that high
         observer.end_loop(0, 1)
-        self.assertEqual(db.ActorIssue.select().count(), actor_issue_count*2)
+        self.assertEqual(db.ActorIssue.select().count(), actor_issue_count * 2)
 
     def test_exchange_database(self):
         db.connection.drop_tables([db.ExchangeActor, db.Exchange])

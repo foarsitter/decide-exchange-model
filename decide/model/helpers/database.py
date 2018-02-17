@@ -3,13 +3,10 @@ import os
 
 import peewee
 
-from model import base
-
 connection = peewee.SqliteDatabase(os.path.join(os.path.dirname(__file__), '../../data/', 'database.db'))
 
 
 class DictionaryIndexMixin:
-
     hash_field = 'id'
 
     def __hash__(self):
@@ -35,8 +32,8 @@ class DictionaryIndexMixin:
 class BaseModel(peewee.Model):
     class Meta:
         database = connection
-        
-        
+
+
 class DataSet(DictionaryIndexMixin, BaseModel):
     name = peewee.CharField()
     hash_field = 'name'
@@ -111,7 +108,7 @@ class ActorIssue(BaseModel):
     type = peewee.CharField(choices=('before', 'after'), default='before')
 
     def __str__(self):
-        return '{issue} {actor} {position}'\
+        return '{issue} {actor} {position}' \
             .format(issue=self.issue.name,
                     actor=self.actor.name,
                     position=self.position)

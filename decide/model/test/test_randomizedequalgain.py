@@ -2,8 +2,8 @@ import decimal
 import random
 from unittest import TestCase
 
-from model import calculations
-from model.equalgain import EqualGainModel, EqualGainExchange
+from decide.model import calculations
+from decide.model.equalgain import EqualGainModel, EqualGainExchange
 
 
 class TestRandomizedEqualGain(TestCase):

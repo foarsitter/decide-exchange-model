@@ -1,25 +1,21 @@
 import decimal
+import os
+from datetime import datetime
 
-from model.observers.sqliteobserver import SQLiteObserver
+from .model.helpers import helpers, csvparser
+from .model.observers.exchanges_writer import ExchangesWriter
+from .model.observers.externalities import Externalities
+from .model.observers.issue_development import IssueDevelopment
+from .model.observers.observer import Observable
+from .model.observers.sqliteobserver import SQLiteObserver
 
 if __name__ == "__main__":
-
-    import os
-    from datetime import datetime
-
-    from model.helpers import helpers, csvparser
-    from model.helpers.helpers import ModelLoop
-    from model.observers.exchanges_writer import ExchangesWriter
-    from model.observers.externalities import Externalities
-    from model.observers.issue_development import IssueDevelopment
-    from model.observers.observer import Observable
 
     args = helpers.parse_arguments()
     input_file = args.input
     output_dir = args.output
 
     if args.model == "equal":
-        import model.equalgain as Model
 
         if args.p != 'None':
             p = decimal.Decimal(args.p)
@@ -28,12 +24,14 @@ if __name__ == "__main__":
             p = None
             model_name = 'equal'
 
-        model = Model.EqualGainModel(randomized_value=p)
+        from .model.equalgain import EqualGainModel
+
+        model = EqualGainModel(randomized_value=p)
     else:
-        import model.randomrate as Model
+        from .model.randomrate import RandomRateModel
 
         model_name = 'random'
-        model = Model.RandomRateModel()
+        model = RandomRateModel()
 
     model.data_set_name = input_file.split("/")[-1].split(".")[0]
     output_directory = output_dir + "/" + model.data_set_name
@@ -66,7 +64,7 @@ if __name__ == "__main__":
 
         csvParser.read(input_file)
 
-        model_loop = ModelLoop(model, eventHandler, repetition)
+        model_loop = helpers.ModelLoop(model, eventHandler, repetition)
 
         eventHandler.before_iterations(repetition)
 

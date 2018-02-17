@@ -428,10 +428,10 @@ class AbstractExchangeActor:
             # new_pos = self.adjusted_nbs_by_position(self.opposite_actor.demand.position)
 
             new_pos = calculations.adjusted_nbs_by_position(self.actor_issues(),
-                                                              self.exchange.updates[self.supply.issue],
-                                                              self.actor, self.supply.position,
-                                                              self.opposite_actor.demand.position,
-                                                              self.model.nbs_denominators[self.supply.issue])
+                                                            self.exchange.updates[self.supply.issue],
+                                                            self.actor, self.supply.position,
+                                                            self.opposite_actor.demand.position,
+                                                            self.model.nbs_denominators[self.supply.issue])
 
             # TODO why don't we use the calculations functions here?
 

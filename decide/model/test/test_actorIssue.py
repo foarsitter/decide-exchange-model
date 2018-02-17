@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from model.base import ActorIssue, Actor, Issue
+from decide.model.base import ActorIssue, Actor, Issue
 
 
 class TestActorIssue(TestCase):

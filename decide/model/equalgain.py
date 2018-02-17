@@ -1,9 +1,7 @@
+import decimal
 import random
 from operator import attrgetter
 
-import decimal
-
-from model.base import Actor, Issue
 from . import base
 from . import calculations
 
@@ -13,7 +11,7 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
     AbstractExchangeActor is the same actor...
     """
 
-    def __init__(self, model: 'EqualGainModel', actor: Actor, demand_issue: Issue, supply_issue: Issue,
+    def __init__(self, model: 'EqualGainModel', actor: base.Actor, demand_issue: base.Issue, supply_issue: base.Issue,
                  exchange: 'EqualGainExchange'):
         super().__init__(model, actor, demand_issue, supply_issue, exchange)
 
@@ -44,8 +42,8 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
         self.eu_max = abs(calculations.expected_utility(self, exchange_ratio_zero_i, exchange_ratio))
 
         exchange_ratio_zero_j = calculations.exchange_ratio_by_expected_utility(exchange_ratio_j,
-                                                                               self.opposite_actor.supply.salience,
-                                                                               self.opposite_actor.demand.salience)
+                                                                                self.opposite_actor.supply.salience,
+                                                                                self.opposite_actor.demand.salience)
 
         self.opposite_actor.eu_max = abs(calculations.expected_utility(self, exchange_ratio_zero_j, exchange_ratio_j))
 

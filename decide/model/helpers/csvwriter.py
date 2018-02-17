@@ -1,11 +1,16 @@
 import csv
 
-from ..equalgain import EqualGainExchange
-
 
 class CsvWriter:
+    """
+    Helper functions to write an exchange to a .csv file
+    """
+
     @staticmethod
     def write(filename, realized):
+        """
+        Write all realized exchanges to the given file
+        """
         with open(filename, 'w') as csvfile:
             writer = csv.writer(csvfile, delimiter=';', lineterminator='\n')
 

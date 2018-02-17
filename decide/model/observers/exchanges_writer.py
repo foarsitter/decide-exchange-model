@@ -1,5 +1,4 @@
 import os
-import uuid
 from typing import List
 
 from .. import base
@@ -60,7 +59,7 @@ class ExchangesWriter(observer.Observer):
     @property
     def _get_salt(self):
         model_name = 'random'
-        from model.equalgain import EqualGainModel
+        from decide.model import EqualGainModel
         if isinstance(self.model_ref, EqualGainModel):
             model_name = 'equal'
             if self.model_ref.randomized_value is not None:

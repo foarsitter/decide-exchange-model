@@ -10,9 +10,10 @@ def parse_arguments():
                                                  "{1} for an issue,\n"
                                                  "{2} for actor values for each issue.\n"
                                                  "We expect for {2} the following order in values: "
-                                                 "actor, issue, position, salience, power".format(csvparser.CsvParser.cA,
-                                                                                                  csvparser.CsvParser.cP,
-                                                                                                  csvparser.CsvParser.cD))
+                                                 "actor, issue, position, salience, power".format(
+        csvparser.CsvParser.cA,
+        csvparser.CsvParser.cP,
+        csvparser.CsvParser.cD))
     parser.add_argument('--model',
                         help='The type of the model. The options are "equal" for the Equal Gain model and '
                              '"random" for the RandomRate model ',

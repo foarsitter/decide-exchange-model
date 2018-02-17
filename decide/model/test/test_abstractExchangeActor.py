@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from model.base import AbstractExchangeActor, AbstractModel, Issue
+from decide.model.base import AbstractExchangeActor, AbstractModel, Issue
 
 
 class TestAbstractExchangeActor(TestCase):

@@ -1,7 +1,7 @@
 import decimal
 from typing import List, Tuple
 
-from .base import ActorIssue, SupplyActorIssue, AbstractExchangeActor, AbstractModel, Actor, AbstractExchange
+from .base import ActorIssue, AbstractExchangeActor, AbstractModel, Actor, AbstractExchange
 
 """
 TODO: This package should be rewritten
