@@ -24,8 +24,6 @@ class SQLiteObserver(Observer):
         self.issues = {}
         self.model_run = None
 
-        self.externality_batch = []
-
         if not output_directory.endswith('.db') and output_directory != ':memory:':
             output_directory += '/decide-data.db'
 
@@ -104,19 +102,31 @@ class SQLiteObserver(Observer):
             externality = db.Externality()
             externality.actor = actor
             externality.exchange = db_exchange
+            externality.supply = db_exchange.i.supply_issue
+            externality.demand = db_exchange.i.demand_issue
+            externality.iteration = db_exchange.iteration
 
-            size = calculations.actor_externalities(str(actor.key), self.model_ref, exchange)
+            externality_size = calculations.actor_externalities(str(actor.key), self.model_ref, exchange)
 
             is_inner = self.model_ref.is_inner_group_member(str(actor.key), inner, issue_set_key)
 
-            if size < 0:
-                # negative
-                externality.inner_negative = size
+            if actor.key == exchange.i.actor.actor_id:
+                externality.own = exchange.i.eu
+            elif actor.key == exchange.j.actor.actor_id:
+                exchange.own = exchange.j.eu
             else:
-                # positive
-                externality.outer_positive = size
+                if externality_size < 0:
+                    if is_inner:
+                        externality.inner_negative = externality_size
+                    else:
+                        externality.outer_negative = externality_size
+                else:
+                    if is_inner:
+                        externality.inner_positive = externality_size
+                    else:
+                        externality.outer_positive = externality_size
 
-            self.externality_batch.append(externality)
+            externality.save()
 
     def _write_actor_issues(self, iteration: int, repetition: int, _type='before'):
 

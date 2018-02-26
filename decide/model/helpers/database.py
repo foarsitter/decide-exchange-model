@@ -147,11 +147,11 @@ class Externality(BaseModel):
     supply = peewee.ForeignKeyField(Issue)
     demand = peewee.ForeignKeyField(Issue)
 
-    own = peewee.DecimalField()
-    inner_positive = peewee.DecimalField(max_digits=20, decimal_places=15)
-    inner_negative = peewee.DecimalField(max_digits=20, decimal_places=15)
-    outer_positive = peewee.DecimalField(max_digits=20, decimal_places=15)
-    outer_negative = peewee.DecimalField(max_digits=20, decimal_places=15)
+    own = peewee.DecimalField(max_digits=20, decimal_places=15, null=True)
+    inner_positive = peewee.DecimalField(max_digits=20, decimal_places=15, null=True)
+    inner_negative = peewee.DecimalField(max_digits=20, decimal_places=15, null=True)
+    outer_positive = peewee.DecimalField(max_digits=20, decimal_places=15, null=True)
+    outer_negative = peewee.DecimalField(max_digits=20, decimal_places=15, null=True)
 
     iteration = peewee.ForeignKeyField(Iteration)
 

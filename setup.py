@@ -1,8 +1,10 @@
 from setuptools import setup
 
+from decide import __version__
+
 setup(
     name='decide-exchange-model',
-    version='1.0rc10',
+    version=__version__,
     packages=['decide', 'decide.model', 'decide.model.test', 'decide.model.helpers', 'decide.model.helpers.test',
               'decide.model.observers'],
     url='https://github.com/foarsitter/decide-exchange-model',

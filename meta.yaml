@@ -1,6 +1,9 @@
+{% set data = load_setup_py_data() %}
+
+
 package:
   name: 'decide-exchange-model'
-  version: '1.0rc8'
+  version: {{ data.get('version') }}
 
 source:
   git_rev: master
