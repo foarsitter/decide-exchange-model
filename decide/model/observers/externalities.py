@@ -3,6 +3,7 @@ import csv
 import os
 from collections import defaultdict
 
+from decide.model.helpers.database import Externality
 from .. import base
 from .. import calculations
 from ..observers import observer
@@ -26,9 +27,11 @@ class Externalities(observer.Observer):
         self.actors = defaultdict(lambda: defaultdict(int))
         self.exchanges = []
 
-    def _add_exchange_set(self, externalities, realized, model, inner, issue_set_key):
+        self.database_objects = []
+
+    def _add_exchange_set(self, externalities, realized, model, inner, issue_set_key, database=True):
         """
-        Checks if an externalitie is own, inner or outer and positive or negative. This method alse updates the actor  
+        Checks if an externality is own, inner or outer and positive or negative. This method also updates the actor
         externalities but returns the exchange as an set.         
         """
 
@@ -36,22 +39,36 @@ class Externalities(observer.Observer):
 
         for actor, value in externalities.items():
 
-            if actor == realized.i.actor:  # own, always positive
+            if database:
+                ext = Externality()
+                self.database_objects.append(ext)
+                ext.actor = actor
+
+            if actor == realized.i.actor or actor == realized.j.actor:  # own, always positive
                 key = "own"
+                value = realized.gain  # TODO hotfix, should not be needed.
             else:
                 is_inner = actor in model.groups[issue_set_key][inner[0]] or actor in \
-                                                                                  model.groups[issue_set_key][inner[1]]
+                           model.groups[issue_set_key][inner[1]]
 
                 if value > 0:  # positive
                     if is_inner:  # inner
                         key = "ip"
+                        if database:
+                            ext.inner_positive = value
                     else:  # outer
                         key = "op"
+                        if database:
+                            ext.outer_positive = value
                 else:  # negative
                     if is_inner:  # inner
                         key = "in"
+                        if database:
+                            ext.inner_negative = value
                     else:  # outer
                         key = "on"
+                        if database:
+                            ext.outer_negative = value
 
             self.actors[actor][key] += value
             exchange_set[key] += value
@@ -146,10 +163,22 @@ class Externalities(observer.Observer):
 
         self._add_or_update_issue_set(issue_set_key, exchange, exchange_set)
 
-        self.exchanges.append(
-            [exchange.i.actor, exchange.i.supply.issue, exchange.j.actor, exchange.j.supply.issue,
-             exchange_set["ip"],
-             exchange_set["in"], exchange_set["op"], exchange_set["on"], exchange_set["own"]])
+        self.exchanges.append([
+            exchange.i.actor,
+            exchange.i.supply.issue,
+            exchange.j.actor,
+            exchange.j.supply.issue,
+            exchange_set["ip"],
+            exchange_set["in"],
+            exchange_set["op"],
+            exchange_set["on"],
+            exchange_set["own"]
+        ])
+
+        #
+        # with connection.atomic():
+        #     for obj in self.database_objects:
+        #         obj.save()
 
     def before_repetitions(self, repetitions, iterations):
         """
@@ -216,7 +245,6 @@ class Externalities(observer.Observer):
         for actor, iterations in collections.OrderedDict(sorted(self.actor_totals.items())).items():
 
             for iteration, externalities in iterations.items():
-
                 row = [actor]
 
                 _in = self._sum_var(externalities['ip'])
@@ -244,7 +272,8 @@ class Externalities(observer.Observer):
 
                 # headings
                 writer.writerow(
-                    ["Actor", "Inner Positive", "", "Inner Negative", "", "Outer Positive", "", "Outer Negative", "", "Own" "",])
+                    ["Actor", "Inner Positive", "", "Inner Negative", "", "Outer Positive", "", "Outer Negative", "",
+                     "Own" "", ])
 
                 for row in value:
                     writer.writerow(row)
@@ -263,4 +292,3 @@ class Externalities(observer.Observer):
         variance = sum([pow(x - avg, 2) for x in items]) / len(items)
 
         return str(avg), str(variance)
-

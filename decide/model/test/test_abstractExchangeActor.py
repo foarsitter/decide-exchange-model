@@ -67,10 +67,5 @@ class TestAbstractExchangeActor(TestCase):
         self.assertTrue(exchange_actor0.equals_supply_issue(exchange_actor4))
         self.assertTrue(exchange_actor0.equals_demand_issue(exchange_actor4))
 
-        # self.assertTrue(exchange_actor0.equals_demand_issue_str(actor_name=exchange_actor4.actor.name,
-        #                                                         demand_issue=exchange_actor4.demand.issue.name))
-        # self.assertTrue(exchange_actor0.equals_supply_issue_str(actor_name=exchange_actor4.actor.name,
-        #                                                         supply_issue=exchange_actor4.supply.issue.name))
-
         self.assertFalse(exchange_actor0.equals_supply_issue(exchange_actor1))
         self.assertFalse(exchange_actor4.equals_supply_issue(exchange_actor1))
