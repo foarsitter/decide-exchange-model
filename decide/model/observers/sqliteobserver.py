@@ -12,7 +12,7 @@ class SQLiteObserver(Observer):
     Observer to store all the data in a sqlite database
     """
 
-    def __init__(self, observable: 'Observable'):
+    def __init__(self, observable: 'Observable', output_directory: str):
         super().__init__(observable)
 
         self.data_set = None
@@ -22,7 +22,9 @@ class SQLiteObserver(Observer):
         self.issues = {}
         self.model_run = None
 
-        db.Manager().create_tables()
+        self.manager = db.Manager(output_directory + '/decide-data.db')
+        self.manager.init_database()
+        self.manager.create_tables()
 
     def before_repetitions(self, repetitions, iterations):
         """

@@ -72,7 +72,8 @@ class ModelLoop(object):
                 self.event_handler.removed_exchanges(removed_exchanges)
                 self.event_handler.execute_exchange(realize_exchange)
             else:
-                print(realize_exchange)
+                if self.model.VERBOSE:
+                    print(realize_exchange)
 
         # call the event for ending the loop
         self.event_handler.after_loop(realized=realized, iteration=self.iteration_number,

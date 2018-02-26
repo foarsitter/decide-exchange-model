@@ -30,7 +30,7 @@ def init_model(model_type, input_file, p=None):
 def init_event_handlers(model, output_directory):
     event_handler = Observable(model_ref=model, output_directory=output_directory)
 
-    SQLiteObserver(event_handler)
+    SQLiteObserver(event_handler, output_directory)
 
     # csv handlers
     Externalities(event_handler)

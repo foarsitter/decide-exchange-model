@@ -2,7 +2,7 @@ import datetime
 
 import peewee
 
-connection = peewee.SqliteDatabase('database.db')
+connection = peewee.SqliteDatabase(None)  # let some(thing) else initiate the database
 
 
 class DictionaryIndexMixin:
@@ -162,6 +162,12 @@ class Manager:
     """
     tables = [DataSet, Actor, Issue, ModelRun, ActorIssue, Repetition, Iteration, Exchange, ExchangeActor, Externality]
 
+    def __init__(self, database_path):
+        self.database_path = database_path
+
+    def init_database(self):
+        connection.init(self.database_path)
+
     def create_tables(self):
         with connection:
             connection.create_tables(self.tables)
@@ -169,3 +175,9 @@ class Manager:
     def delete_tables(self):
         with connection:
             connection.drop_tables(self.tables)
+
+    def __call__(self):
+        """
+        Single instance only
+        """
+        return self

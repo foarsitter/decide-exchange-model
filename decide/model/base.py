@@ -639,6 +639,7 @@ class AbstractExchange:
 class AbstractModel:
     SALIENCE_WEIGHT = 0.4
     FIXED_WEIGHT = 0.1
+    VERBOSE = True  # verbose messages for debugging
 
     def __init__(self):
         self.issues = {}
