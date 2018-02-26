@@ -1,45 +1,11 @@
+import copy
 import decimal
-from typing import List, Tuple
 
-from .base import ActorIssue, AbstractExchangeActor, AbstractModel, Actor, AbstractExchange
-
-"""
-TODO: This package should be rewritten
-
-It contains references with .base and .equalgain while this is a calculation package
-
-An abstraction layer needs to be provided by the model (abstract, equal or random) with the correct paramters
-
-The calculations are only on numbers, or list of numbers.
- 
-"""
-
-
-def calc_nbs_new_2(actors: List[Tuple[decimal.Decimal, decimal.Decimal, decimal.Decimal]]):
-    pass
-
-
-def calc_nbs_new(power: List[decimal.Decimal], salience: List[decimal.Decimal], position: List[decimal.Decimal],
-                 denominator=None):
-    """
-    Denominator is for caching
-    :param power:
-    :param salience:
-    :param position:
-    :param denominator:
-    :return:
-    """
-    if denominator is None:
-        denominator = 1
-
-    numerator = sum([power * salience * position for power, salience, position in zip(power, salience, position)])
-
-    return numerator / denominator
+from decide.model import base
 
 
 def nash_bargaining_solution(actor_issues, denominator):
     """
-    TODO: the signature of this function should be different. List/dict salience, power, position
     Calculate the Nash bargaining solution.
 
     This is calculate in the following way:
@@ -110,7 +76,8 @@ def adjusted_nbs(actor_issues, updates, actor, new_position, denominator):
     copy_ai = {}
 
     for k, v in actor_issues.items():
-        copy_ai[v.actor.name] = ActorIssue(v.actor, v.issue, position=v.position, power=v.power, salience=v.salience)
+        copy_ai[v.actor.name] = base.ActorIssue(v.actor, v.issue, position=v.position, power=v.power,
+                                                salience=v.salience)
 
     for key, value in updates.items():
         if key in copy_ai:  # TODO: this should not be possible
@@ -124,7 +91,6 @@ def adjusted_nbs(actor_issues, updates, actor, new_position, denominator):
 def adjusted_nbs_by_position(actor_issues, updates, actor, x_pos, new_nbs, denominator):
     """
     Calculate the new position (delta) of the given actor when the NBS is adjusted
-    TODO: fix this! the delta is calculated
     :param actor_issues:
     :param updates:
     :param actor:
@@ -133,12 +99,8 @@ def adjusted_nbs_by_position(actor_issues, updates, actor, x_pos, new_nbs, denom
     :param denominator:
     :return:
     """
-    # TODO: add the math formula in the docstring
 
-    copy_ai = {}
-
-    for k, v in actor_issues.items():
-        copy_ai[v.actor] = ActorIssue(v.actor, v.issue, position=v.position, power=v.power, salience=v.salience)
+    copy_ai = copy.deepcopy(actor_issues)
 
     # to be calculate:
     copy_ai[actor].position = x_pos
@@ -159,22 +121,22 @@ def adjusted_nbs_by_position(actor_issues, updates, actor, x_pos, new_nbs, denom
     return right
 
 
-def reverse_move(actor_issues, actor: AbstractExchangeActor, c_exchange_ratio):
+def reverse_move(actor_issues, actor: base.AbstractExchangeActor, exchange_ratio):
     """
-    TODO: better function name
-    TODO: testing
+    The move/shift is unknown and calculated by this method.
+    It results the absolute delta/move.
+
+    exchange_ratio * SUM[c * s] /(c * s)
+
     :param actor_issues:
     :param actor:
-    :param c_exchange_ratio:
+    :param exchange_ratio:
     :return:
     """
-    si = actor.supply.salience
-    ci = actor.supply.power
-
-    return (c_exchange_ratio * sum_salience_power(actor_issues)) / (ci * si)
+    return (exchange_ratio * sum_salience_power(actor_issues)) / (actor.supply.power * actor.supply.salience)
 
 
-def by_exchange_ratio(supply_actor: AbstractExchangeActor, supply_exchange_ratio):
+def by_exchange_ratio(supply_actor: base.AbstractExchangeActor, supply_exchange_ratio):
     """
     Calculate the position by exchange ratio
     TODO: better function name
@@ -195,7 +157,7 @@ def by_exchange_ratio(supply_actor: AbstractExchangeActor, supply_exchange_ratio
     return ((si_supply + sj_supply) / (sip + sjp)) * supply_exchange_ratio
 
 
-def by_absolute_move(actor_issues, s_actor: AbstractExchangeActor):
+def by_absolute_move(actor_issues, s_actor: base.AbstractExchangeActor):
     """
 
     :param actor_issues:
@@ -217,26 +179,26 @@ def by_absolute_move(actor_issues, s_actor: AbstractExchangeActor):
     return dp
 
 
-def exchange_ratio(delta_x, salience, power, dominator):
+def exchange_ratio(delta_x, salience, power, denominator):
     """
     Calculate the exchange ratio
 
     :param delta_x: the absolute distance between the old position and the new position
-    :param salience: the actor salicen
+    :param salience: the actor salience
     :param power:  the actor power
-    :param dominator: sum(c*s) for all actors on this issue
+    :param denominator: sum(c*s) for all actors on this issue
     :return: the exchange ratio
     """
-    return (delta_x * salience * power) / dominator
+    return (delta_x * salience * power) / denominator
 
 
 def sum_salience_power(actor_issues):
     """
-
+    Helper method to calculate the sum of the power * salience of all the ActorIssues
     :param actor_issues:
     :return:
     """
-    return sum(c.power * c.salience for k, c in actor_issues.items())
+    return sum(actor.power * actor.salience for actor in actor_issues.values())
 
 
 def expected_utility(actor, demand_exchange_ratio, supply_exchange_ratio):
@@ -265,7 +227,7 @@ def is_gain_equal(eui, euj, threshold=1e-20):
     return True
 
 
-def actor_externalities(actor: Actor, model_ref: AbstractModel, realized: AbstractExchange):
+def actor_externalities(actor: base.Actor, model_ref: base.AbstractModel, realized: base.AbstractExchange):
     """
     Calculate the externalities from an exchange
 
@@ -294,8 +256,6 @@ def actor_externalities(actor: Actor, model_ref: AbstractModel, realized: Abstra
 
         return ext
     return 0
-    raise Exception('Actor is not in collection. Calculation of the externalities is therefore not possible. '
-                    'Is your data correct?')
 
 
 def position_by_nbs(actor_issues, exchange_actor, nbs, denominator):
@@ -343,3 +303,13 @@ def exchange_ratio_by_expected_utility(delta_q, sq, sp, utility=0):
     :return:
     """
     return (utility + (delta_q * sq)) / sp
+
+
+def new_start_position(salience, x, y, salience_weight=0.4, fixed_weight=0.1):
+    sw = decimal.Decimal(salience_weight)
+    fw = decimal.Decimal(fixed_weight)
+    swv = (1 - salience) * sw * y
+    fwv = fw * y
+    pv = (1 - (1 - salience) * sw - fw) * x
+
+    return swv + fwv + pv

@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from decide.model.base import ActorIssue, Actor, Issue
+from decide.model import base
 
 
 class TestActorIssue(TestCase):
@@ -9,10 +9,10 @@ class TestActorIssue(TestCase):
         salience = 0.25
         power = 0.10
 
-        actor = Actor("Test")
-        issue = Issue("Test")
+        actor = base.Actor("Test")
+        issue = base.Issue("Test")
 
-        actorIssue = ActorIssue(actor=actor, issue=issue, position=position, power=power, salience=salience)
+        actorIssue = base.ActorIssue(actor=actor, issue=issue, position=position, power=power, salience=salience)
 
         self.assertEqual(actorIssue.power, power)
         self.assertEqual(actorIssue.salience, salience)

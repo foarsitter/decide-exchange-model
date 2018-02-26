@@ -1,13 +1,8 @@
 import datetime
-import os
-import sqlite3
 
 import peewee
 
-
-path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..','..', '..', 'data', 'database.db'))
-connection = peewee.SqliteDatabase(path)
-
+connection = peewee.SqliteDatabase('database.db')
 
 
 class DictionaryIndexMixin:
@@ -144,11 +139,28 @@ class Exchange(BaseModel):
     iteration = peewee.ForeignKeyField(Iteration)
 
 
+class Externality(BaseModel):
+    actor = peewee.ForeignKeyField(Actor)
+
+    exchange = peewee.ForeignKeyField(Exchange)
+
+    supply = peewee.ForeignKeyField(Issue)
+    demand = peewee.ForeignKeyField(Issue)
+
+    own = peewee.DecimalField()
+    inner_positive = peewee.DecimalField(max_digits=20, decimal_places=15)
+    inner_negative = peewee.DecimalField(max_digits=20, decimal_places=15)
+    outer_positive = peewee.DecimalField(max_digits=20, decimal_places=15)
+    outer_negative = peewee.DecimalField(max_digits=20, decimal_places=15)
+
+    iteration = peewee.ForeignKeyField(Iteration)
+
+
 class Manager:
     """
     Helper for manage the state of the database.
     """
-    tables = [DataSet, Actor, Issue, ModelRun, ActorIssue, Repetition, Iteration, Exchange, ExchangeActor]
+    tables = [DataSet, Actor, Issue, ModelRun, ActorIssue, Repetition, Iteration, Exchange, ExchangeActor, Externality]
 
     def create_tables(self):
         with connection:

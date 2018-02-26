@@ -21,6 +21,7 @@ class TestModel(TestCase):
         a2 = model.add_actor("TestActor2")
 
         self.assertEqual(len(model.actors), 2)
+        self.assertNotEqual(a1, a2)
 
     def test_first_phase(self):
         model = self.model

@@ -2,14 +2,13 @@ import decimal
 import os
 from datetime import datetime
 
-from decide.model.equalgain import EqualGainModel
+from decide.model import randomrate, equalgain
 from decide.model.helpers import helpers, csvparser
 from decide.model.observers.exchanges_writer import ExchangesWriter
 from decide.model.observers.externalities import Externalities
 from decide.model.observers.issue_development import IssueDevelopment
 from decide.model.observers.observer import Observable
 from decide.model.observers.sqliteobserver import SQLiteObserver
-from decide.model.randomrate import RandomRateModel
 
 
 def init_model(model_type, input_file, p=None):
@@ -19,9 +18,9 @@ def init_model(model_type, input_file, p=None):
 
     if model_type == "equal":
         p = decimal.Decimal(p) if p else 0.0
-        model = EqualGainModel(randomized_value=p)
+        model = equalgain.EqualGainModel(randomized_value=p)
     else:
-        model = RandomRateModel()
+        model = randomrate.RandomRateModel()
 
     model.data_set_name = input_file.split("/")[-1].split(".")[0]
 
@@ -36,7 +35,7 @@ def init_event_handlers(model, output_directory):
     # csv handlers
     Externalities(event_handler)
     ExchangesWriter(event_handler)
-    IssueDevelopment(event_handler)
+    IssueDevelopment(event_handler)    
 
     return event_handler
 
@@ -56,7 +55,7 @@ def main():
 
     args = helpers.parse_arguments()
 
-    model = init_model(args.model, args.input_file)
+    model = init_model(args.model, args.input_file, args.p)
 
     output_directory = init_output_directory(model, args.output_dir)
 

@@ -1,9 +1,8 @@
-import decimal
 from collections import defaultdict
 from decimal import Decimal
 from itertools import combinations
 
-from .helpers import helpers
+from decide.model.helpers import helpers
 
 
 class Issue:
@@ -126,14 +125,7 @@ class Actor:
         Human representation of this object
         :return:
         """
-        return self.name + ' (actor)'
-
-    def __repr__(self):
-        """
-        Human representation of this object
-        :return:
-        """
-        return self.__str__()
+        return self.name
 
 
 class ActorIssue:
@@ -208,54 +200,6 @@ class SupplyActorIssue(ActorIssue):
 
         self.y = y
         self.actor_issue = actor_issue
-
-
-class ExchangeRatio:
-    """
-    TODO: use or remove this object
-    """
-
-    def __init__(self, supply_issue: SupplyActorIssue, demand_issue: DemandActorIssue, value=None):
-        self.supply_issue = supply_issue
-        self.demand_issue = demand_issue
-        self.value = value
-
-    def by_absolute_move(self, demand_issue: DemandActorIssue, nbs_denominator: decimal.Decimal()):
-        delta_position = abs(self.supply_issue.position - demand_issue.position)
-
-        numerator = delta_position * self.supply_issue.salience * self.supply_issue.power
-
-        self.value = numerator / nbs_denominator
-
-        return self.value
-
-    def by_exchange_ratio(self, exchange_ratio: 'ExchangeRatio'):
-        p = self.supply_issue.salience + exchange_ratio.demand_issue.salience
-        q = self.demand_issue.salience + exchange_ratio.demand_issue.salience
-
-        self.value = (p / q) * exchange_ratio.value
-
-        return self.value
-
-
-class ExpectedUtility:
-    """
-    TODO: use or remove this object
-    """
-
-    def __init__(self, supply_issue: SupplyActorIssue, demand_issue: DemandActorIssue,
-                 supply_exchange_ratio: ExchangeRatio, demand_exchange_ratio: ExchangeRatio):
-        self.supply_issue = supply_issue
-        self.demand_issue = demand_issue
-        self.supply_exchange_ratio = supply_exchange_ratio
-        self.demand_exchange_ratio = demand_exchange_ratio
-
-    @property
-    def value(self):
-        demand = self.demand_issue.salience * self.demand_exchange_ratio.value
-        supply = self.supply_issue.salience * self.supply_exchange_ratio.value
-
-        return demand - supply
 
 
 class AbstractExchangeActor:
@@ -334,14 +278,24 @@ class AbstractExchangeActor:
         Calculate the new starting postion for the next round
         :return:
         """
-        sw = Decimal(self.model.SALIENCE_WEIGHT)
-        fw = Decimal(self.model.FIXED_WEIGHT)
-        swv = (1 - self.supply.salience) * sw * self.y
-        fwv = fw * self.y
-        pv = (1 - (1 - self.supply.salience) * sw - fw) * self.start_position
-        x_t1 = swv + fwv + pv
+        # sw = Decimal(self.model.SALIENCE_WEIGHT)
+        # fw = Decimal(self.model.FIXED_WEIGHT)
+        # swv = (1 - self.supply.salience) * sw * self.y
+        # fwv = fw * self.y
+        # pv = (1 - (1 - self.supply.salience) * sw - fw) * self.start_position
+        # x_t1 = swv + fwv + pv
+        #
+        # return x_t1
 
-        return x_t1
+        from decide.model import calculations
+
+        return calculations.new_start_position(
+            salience=self.supply.salience,
+            x=self.start_position,
+            y=self.y,
+            salience_weight=self.model.SALIENCE_WEIGHT,
+            fixed_weight=self.model.FIXED_WEIGHT
+        )
 
     def actor_issues(self):
         """ shortcut, demand ActorIssues should never not be needed """
@@ -425,27 +379,29 @@ class AbstractExchangeActor:
         elif self.opposite_actor.demand.position <= self.nbs_0 and self.opposite_actor.demand.position <= self.nbs_1:
             pass
         else:
-            # new_pos = self.adjusted_nbs_by_position(self.opposite_actor.demand.position)
+            delta = abs(calculations.adjusted_nbs_by_position(
+                actor_issues=self.actor_issues(),
+                updates=self.exchange.updates[self.supply.issue],
+                actor=self.actor,
+                x_pos=self.supply.position,
+                new_nbs=self.opposite_actor.demand.position,
+                denominator=self.model.nbs_denominators[self.supply.issue]
+            ))
 
-            new_pos = calculations.adjusted_nbs_by_position(self.actor_issues(),
-                                                            self.exchange.updates[self.supply.issue],
-                                                            self.actor, self.supply.position,
-                                                            self.opposite_actor.demand.position,
-                                                            self.model.nbs_denominators[self.supply.issue])
-
-            # TODO why don't we use the calculations functions here?
-
-            delta = abs(new_pos - self.supply.position)
-
-            self.exchange.dp = calculations.exchange_ratio(delta,
-                                                           self.supply.salience,
-                                                           self.supply.power,
-                                                           self.model.nbs_denominators[self.supply.issue])
+            self.exchange.dp = calculations.exchange_ratio(
+                delta_x=delta,
+                salience=self.supply.salience,
+                power=self.supply.power,
+                denominator=self.model.nbs_denominators[self.supply.issue])
 
             self.exchange.dq = calculations.by_exchange_ratio(self, self.exchange.dp)
 
-            self.opposite_actor.move = calculations.reverse_move(
-                self.model.actor_issues[self.opposite_actor.supply.issue], self.opposite_actor, self.exchange.dq)
+            self.opposite_actor.move = abs(calculations.reverse_move(
+                actor_issues=self.opposite_actor.actor_issues(),
+                actor=self.opposite_actor,
+                exchange_ratio=self.exchange.dq
+            ))
+
             self.move = delta
 
             if self.opposite_actor.supply.position > self.demand.position:
@@ -474,6 +430,9 @@ class AbstractExchangeActor:
             b2 = self.is_move_valid(self.move)
 
             self.nbs_1 = self.adjust_nbs(self.y)
+
+            if abs(self.nbs_1 - self.y) == 0:
+                raise Exception('Errorrrrr')
 
             self.exchange.is_valid = b1 and b2
 
