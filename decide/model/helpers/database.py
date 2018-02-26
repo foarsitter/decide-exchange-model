@@ -169,12 +169,10 @@ class Manager:
         connection.init(self.database_path)
 
     def create_tables(self):
-        with connection:
-            connection.create_tables(self.tables)
+        connection.create_tables(self.tables)
 
     def delete_tables(self):
-        with connection:
-            connection.drop_tables(self.tables)
+        connection.drop_tables(self.tables)
 
     def __call__(self):
         """

@@ -278,15 +278,6 @@ class AbstractExchangeActor:
         Calculate the new starting postion for the next round
         :return:
         """
-        # sw = Decimal(self.model.SALIENCE_WEIGHT)
-        # fw = Decimal(self.model.FIXED_WEIGHT)
-        # swv = (1 - self.supply.salience) * sw * self.y
-        # fwv = fw * self.y
-        # pv = (1 - (1 - self.supply.salience) * sw - fw) * self.start_position
-        # x_t1 = swv + fwv + pv
-        #
-        # return x_t1
-
         from decide.model import calculations
 
         return calculations.new_start_position(
@@ -626,6 +617,24 @@ class AbstractExchange:
         else:
             raise Exception("invalid group combination [%,%]".format(self.groups[0], self.groups[1]))
 
+    def get_inner_groups(self):
+        """
+        When groups[0] is not a and not d, the b&c group is inner.
+        If groups[0] == a, then groups[1] has to be D
+        """
+
+        if len(self.groups) != 2:
+            raise ValueError('Too much groups given!')
+
+        if 'a' in self.groups and 'd' in self.groups:
+            return ['a', 'd']
+
+        if 'b' in self.groups and 'c' in self.groups:
+            return ['b', 'c']
+
+        raise ValueError('Actors should only exchange with their inner group.'
+                         ' The given groups are {0}'.format(self.groups))
+
     def __str__(self):
         return "{0}: {1}, {2}".format(round(self.gain, 9), str(self.i), str(self.j))
 
@@ -860,6 +869,31 @@ class AbstractModel:
         :return:
         """
         raise NotImplementedError
+
+    def create_existing_issue_set_key(self, p, q):
+        """
+        Create a combination of issue so it can be used as key
+        """
+        issue_set_key = "{0}-{1}".format(p, q)
+        # an combination only exists once, so it can happen that we have to change the sequence of the keys
+        if issue_set_key not in self.groups:
+            issue_set_key = "{0}-{1}".format(q, p)
+
+        return issue_set_key
+
+    def is_inner_group_member(self, actor, inner, issue_set_key):
+        """
+        When an actor is in the same [A] or opposing group [D], return true
+        False, When in [B] or [C]
+        :param actor:
+        :param issue_set_key:
+        :param inner:
+        :return:
+        """
+
+        is_inner = actor in self.groups[issue_set_key][inner[0]] or actor in self.groups[issue_set_key][inner[1]]
+
+        return is_inner
 
     @staticmethod
     def new_exchange_factory(i, j, p, q, model_ref, groups):

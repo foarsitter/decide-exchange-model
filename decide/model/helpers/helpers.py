@@ -28,6 +28,7 @@ def parse_arguments():
                         default="../data/input/sample_data.txt",
                         type=str)
     parser.add_argument('--output_dir', help='Output directory ', default="../data/output/", type=str)
+    parser.add_argument('--database', help='The SQLite database', default="../data/output/decide-data.db", type=str)
 
     return parser.parse_args()
 

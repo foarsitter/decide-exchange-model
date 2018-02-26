@@ -2,6 +2,8 @@ import datetime
 from collections import defaultdict
 from typing import List
 
+from decide.model import calculations
+from decide.model.base import AbstractExchange
 from decide.model.observers.observer import Observer, Observable
 from .. import base
 from ..helpers import database as db
@@ -22,7 +24,12 @@ class SQLiteObserver(Observer):
         self.issues = {}
         self.model_run = None
 
-        self.manager = db.Manager(output_directory + '/decide-data.db')
+        self.externality_batch = []
+
+        if not output_directory.endswith('.db') and output_directory != ':memory:':
+            output_directory += '/decide-data.db'
+
+        self.manager = db.Manager(output_directory)
         self.manager.init_database()
         self.manager.create_tables()
 
@@ -71,7 +78,6 @@ class SQLiteObserver(Observer):
         iteration = self.iterations[repetition][iteration]
 
         with db.connection.atomic():
-
             for exchange in realized:
                 db_exchange = db.Exchange()
                 db_exchange.i = self._create_exchange_actor(exchange.i)
@@ -79,12 +85,38 @@ class SQLiteObserver(Observer):
                 db_exchange.iteration = iteration
                 db_exchange.save()
 
+                self._write_externalities(exchange, db_exchange)
+
     def end_loop(self, iteration: int, repetition: int):
         self._write_actor_issues(iteration, repetition, 'after')
 
     def after_repetitions(self):
         self.model_run.finished_at = datetime.datetime.now()
         self.model_run.save()
+
+    def _write_externalities(self, exchange: AbstractExchange, db_exchange: db.Exchange):
+
+        issue_set_key = self.model_ref.create_existing_issue_set_key(exchange.p, exchange.q)
+        inner = exchange.get_inner_groups()
+
+        for actor in self.actors:
+
+            externality = db.Externality()
+            externality.actor = actor
+            externality.exchange = db_exchange
+
+            size = calculations.actor_externalities(str(actor.key), self.model_ref, exchange)
+
+            is_inner = self.model_ref.is_inner_group_member(str(actor.key), inner, issue_set_key)
+
+            if size < 0:
+                # negative
+                externality.inner_negative = size
+            else:
+                # positive
+                externality.outer_positive = size
+
+            self.externality_batch.append(externality)
 
     def _write_actor_issues(self, iteration: int, repetition: int, _type='before'):
 

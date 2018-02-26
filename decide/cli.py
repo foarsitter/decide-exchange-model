@@ -27,15 +27,15 @@ def init_model(model_type, input_file, p=None):
     return model
 
 
-def init_event_handlers(model, output_directory):
+def init_event_handlers(model, output_directory, database_file):
     event_handler = Observable(model_ref=model, output_directory=output_directory)
 
-    SQLiteObserver(event_handler, output_directory)
+    SQLiteObserver(event_handler, database_file)
 
     # csv handlers
     Externalities(event_handler)
     ExchangesWriter(event_handler)
-    IssueDevelopment(event_handler)    
+    IssueDevelopment(event_handler)
 
     return event_handler
 
@@ -60,7 +60,12 @@ def main():
     output_directory = init_output_directory(model, args.output_dir)
 
     # The event handlers for logging and writing the results to the disk.
-    event_handler = init_event_handlers(model, output_directory=output_directory)
+    event_handler = init_event_handlers(
+        model=model,
+        output_directory=output_directory,
+        database_file=args.database
+    )
+
     event_handler.log(message="Start calculation at {0}".format(start_time))
 
     csv_parser = csvparser.CsvParser(model)

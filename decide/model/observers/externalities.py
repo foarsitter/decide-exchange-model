@@ -28,7 +28,7 @@ class Externalities(observer.Observer):
 
         self.database_objects = []
 
-    def _add_exchange_set(self, externalities, realized, model, inner, issue_set_key, database=True):
+    def _add_exchange_set(self, externalities, realized, model, inner, issue_set_key):
         """
         Checks if an externality is own, inner or outer and positive or negative. This method also updates the actor
         externalities but returns the exchange as an set.         
@@ -42,8 +42,7 @@ class Externalities(observer.Observer):
                 key = "own"
                 value = realized.gain  # TODO hotfix, should not be needed.
             else:
-                is_inner = actor in model.groups[issue_set_key][inner[0]] or actor in \
-                           model.groups[issue_set_key][inner[1]]
+                is_inner = self.model_ref.is_inner_group_member(actor, inner, issue_set_key)
 
                 if value > 0:  # positive
                     if is_inner:  # inner
@@ -128,20 +127,9 @@ class Externalities(observer.Observer):
         :param exchange: AbstractExchange        
         """
 
-        issue_set_key = "{0}-{1}".format(exchange.p, exchange.q)
+        issue_set_key = self.model_ref.create_existing_issue_set_key(exchange.p, exchange.q)
 
-        # an combination only exists once, so it can happen that we have to change the sequence of the keys
-        if issue_set_key not in self.model_ref.groups:
-            issue_set_key = "{0}-{1}".format(exchange.q, exchange.p)
-        # end if
-
-        inner = ['a', 'd']
-        outer = ['b', 'c']
-
-        # switch the inner and outer if this is not the case
-        if exchange.groups[0] != "a" and exchange.groups[0] != "d":
-            inner, outer = outer, inner
-        # end if
+        inner = exchange.get_inner_groups()
 
         externalities = self._calculate_externalities(self.model_ref, exchange)
 
@@ -160,11 +148,6 @@ class Externalities(observer.Observer):
             exchange_set["on"],
             exchange_set["own"]
         ])
-
-        #
-        # with connection.atomic():
-        #     for obj in self.database_objects:
-        #         obj.save()
 
     def before_repetitions(self, repetitions, iterations):
         """

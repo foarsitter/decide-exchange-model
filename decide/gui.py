@@ -1,4 +1,3 @@
-import decimal
 import os
 import threading
 import tkinter as tk
@@ -11,14 +10,9 @@ from tkinter import ttk
 
 from decide.cli import init_model, init_output_directory, init_event_handlers
 from decide.model.base import AbstractModel
-from decide.model.equalgain import EqualGainModel
 from decide.model.helpers import csvparser
 from decide.model.helpers.helpers import ModelLoop
-from decide.model.observers.exchanges_writer import ExchangesWriter
-from decide.model.observers.externalities import Externalities
-from decide.model.observers.issue_development import IssueDevelopment
 from decide.model.observers.observer import Observable, Observer
-from decide.model.randomrate import RandomRateModel
 
 
 def center(toplevel):
@@ -377,7 +371,7 @@ class MainApplication(tk.Frame):
 
         output_directory = init_output_directory(model, self.output_dir.get())
 
-        event_handler = init_event_handlers(model, output_directory)
+        event_handler = init_event_handlers(model, output_directory, self.output_dir.get())
         event_handler.log(message="Start calculation at {0}".format(start_time))
 
         csv_parser = csvparser.CsvParser(model_ref=model)

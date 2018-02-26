@@ -239,6 +239,7 @@ def actor_externalities(actor: base.Actor, model_ref: base.AbstractModel, realiz
 
     if actor in model_ref.actor_issues[realized.j.supply.issue] \
             and actor in model_ref.actor_issues[realized.i.supply.issue]:
+
         xp = model_ref.actor_issues[realized.j.supply.issue][actor].position
         sp = model_ref.actor_issues[realized.j.supply.issue][actor].salience
 
