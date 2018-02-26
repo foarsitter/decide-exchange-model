@@ -35,7 +35,7 @@ def init_event_handlers(model, output_directory):
     # csv handlers
     Externalities(event_handler)
     ExchangesWriter(event_handler)
-    IssueDevelopment(event_handler)
+    IssueDevelopment(event_handler)    
 
     return event_handler
 

@@ -1,10 +1,8 @@
 import datetime
-import os
 
 import peewee
 
-path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..','..', '..', 'data', 'database.db'))
-connection = peewee.SqliteDatabase(path)
+connection = peewee.SqliteDatabase('database.db')
 
 
 class DictionaryIndexMixin:

@@ -3,7 +3,6 @@ import csv
 import os
 from collections import defaultdict
 
-from decide.model.helpers.database import Externality
 from .. import base
 from .. import calculations
 from ..observers import observer
@@ -39,11 +38,6 @@ class Externalities(observer.Observer):
 
         for actor, value in externalities.items():
 
-            if database:
-                ext = Externality()
-                self.database_objects.append(ext)
-                ext.actor = actor
-
             if actor == realized.i.actor or actor == realized.j.actor:  # own, always positive
                 key = "own"
                 value = realized.gain  # TODO hotfix, should not be needed.
@@ -54,21 +48,13 @@ class Externalities(observer.Observer):
                 if value > 0:  # positive
                     if is_inner:  # inner
                         key = "ip"
-                        if database:
-                            ext.inner_positive = value
                     else:  # outer
                         key = "op"
-                        if database:
-                            ext.outer_positive = value
                 else:  # negative
                     if is_inner:  # inner
                         key = "in"
-                        if database:
-                            ext.inner_negative = value
                     else:  # outer
                         key = "on"
-                        if database:
-                            ext.outer_negative = value
 
             self.actors[actor][key] += value
             exchange_set[key] += value

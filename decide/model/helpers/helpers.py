@@ -1,7 +1,7 @@
 import argparse
 import re
 
-from decide.model.base import AbstractExchange
+from decide.model import base
 from . import csvparser
 
 
@@ -61,7 +61,7 @@ class ModelLoop(object):
 
         while len(self.model.exchanges) > 0:
 
-            realize_exchange = self.model.highest_gain()  # type: AbstractExchange
+            realize_exchange = self.model.highest_gain()  # type: base.AbstractExchange
 
             if realize_exchange and realize_exchange.is_valid:
 
