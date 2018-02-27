@@ -10,7 +10,7 @@ source:
   git_url: https://github.com/foarsitter/decide-exchange-model.git
 
 build:
-  number: 0
+  number: 3
   entry_points:
     - decide-cli=decide.cli:main
     - decide-gui=decide.gui:main
@@ -23,6 +23,7 @@ requirements:
   run:
     - python
     - matplotlib
+    - peewee==2.10.2
 
 test:
   imports:
