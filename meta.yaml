@@ -23,9 +23,6 @@ requirements:
   run:
     - python
     - matplotlib
-    - numpy
-    - pandas
-    - tk
 
 test:
   imports:

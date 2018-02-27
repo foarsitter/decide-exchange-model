@@ -1,2 +1,2 @@
-peewee==3.0.17
+peewee==2.10.2
 matplotlib==2.1.2

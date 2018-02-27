@@ -21,5 +21,5 @@ setup(
         ]
     },
     python_requires='>=3.5',
-    install_requires=['peewee>=3.0', 'matplotlib']
+    install_requires=['peewee==2.10.2', 'matplotlib']
 )

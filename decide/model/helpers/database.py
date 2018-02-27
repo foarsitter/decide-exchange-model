@@ -115,8 +115,8 @@ class ActorIssue(BaseModel):
 
 class ExchangeActor(BaseModel):
     actor = peewee.ForeignKeyField(Actor)
-    supply_issue = peewee.ForeignKeyField(Issue)
-    demand_issue = peewee.ForeignKeyField(Issue)
+    supply_issue = peewee.ForeignKeyField(Issue, related_name='supply_issues')
+    demand_issue = peewee.ForeignKeyField(Issue, related_name='demand_issues')
 
     x = peewee.DecimalField(max_digits=20, decimal_places=15)  # begin position
     y = peewee.DecimalField(max_digits=20, decimal_places=15)  # end position
@@ -133,8 +133,8 @@ class ExchangeActor(BaseModel):
 
 
 class Exchange(BaseModel):
-    i = peewee.ForeignKeyField(ExchangeActor)
-    j = peewee.ForeignKeyField(ExchangeActor)
+    i = peewee.ForeignKeyField(ExchangeActor, related_name='actor_i')
+    j = peewee.ForeignKeyField(ExchangeActor, related_name='actor_j')
 
     iteration = peewee.ForeignKeyField(Iteration)
 
@@ -144,8 +144,8 @@ class Externality(BaseModel):
 
     exchange = peewee.ForeignKeyField(Exchange)
 
-    supply = peewee.ForeignKeyField(Issue)
-    demand = peewee.ForeignKeyField(Issue)
+    supply = peewee.ForeignKeyField(Issue, related_name='supply_ext_issues')
+    demand = peewee.ForeignKeyField(Issue, related_name='demand_ext_issues')
 
     own = peewee.DecimalField(max_digits=20, decimal_places=15, null=True)
     inner_positive = peewee.DecimalField(max_digits=20, decimal_places=15, null=True)
@@ -169,7 +169,7 @@ class Manager:
         connection.init(self.database_path)
 
     def create_tables(self):
-        connection.create_tables(self.tables)
+        connection.create_tables(self.tables, safe=True)
 
     def delete_tables(self):
         connection.drop_tables(self.tables)
