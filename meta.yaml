@@ -23,7 +23,7 @@ requirements:
   run:
     - python
     - matplotlib
-    - peewee==2.10.2
+    - peewee >=2.10.2
 
 test:
   imports:
