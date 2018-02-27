@@ -3,7 +3,7 @@
 [![Test Coverage](https://codeclimate.com/github/foarsitter/decide-exchange-model/badges/coverage.svg)](https://codeclimate.com/github/foarsitter/decide-exchange-model/coverage)
 [![Issue Count](https://codeclimate.com/github/foarsitter/decide-exchange-model/badges/issue_count.svg)](https://codeclimate.com/github/foarsitter/decide-exchange-model)
 
-[![Issue Count](https://anaconda.org/jelmert/decide-exchange-model/badges/version.svg)](https://codeclimate.com/github/foarsitter/decide-exchange-model)
+[![Anaconda-Server Badge](https://anaconda.org/jelmert/decide-exchange-model/badges/version.svg)](https://anaconda.org/jelmert/decide-exchange-model)
 
 
 # Decide Exchange Model
@@ -12,7 +12,9 @@ Equal Gain Model implementation in Python.
 # Installation
 The recommend way for un-experienced Python users is to use Anaconda for downloading and installation.
 
-## Anaconda
+## Anaconda 
+[![Anaconda-Server Badge](https://anaconda.org/jelmert/decide-exchange-model/badges/installer/conda.svg)](https://conda.anaconda.org/jelmert)
+
 First, download and install Anaconda: https://docs.anaconda.com/anaconda/, then open the Anaconda navigator and add ```decide``` and ```conda-forge``` to your channels. 
 Explanation to manage your channels through the anaconda-navigator can be found here: https://conda.io/docs/user-guide/tutorials/build-apps.html#configuring-navigator
  
@@ -23,7 +25,7 @@ https://anaconda.org/decide
 https://anaconda.org/conda-forge
 ```
 
-The 'decide-exchange-model' is now avaiable for installation on your Home screen of the Anaconda Navigator.
+The 'decide-exchange-model' is now available for installation on your Home screen of the Anaconda Navigator.
 
 ## PyPi
 There is also an package available on pypi.org: https://pypi.org/project/decide-exchange-model/
@@ -42,7 +44,7 @@ twine upload dist/*
 ## On Anaconda Cloud
 The current build cycle uses git as source. So make sure the latest changes are present on master.
 ```
-conda build meta.yaml -c conda-forge --prefix-length 128 # prefix-length cannot be 255 on systems with full disk encryption (fde)
+conda build meta.yaml --no-include-recipe -c conda-forge --prefix-length 128 # prefix-length cannot be 255 on systems with full disk encryption (fde)
 
 cd ~/anaconda3/conda-bld
 
