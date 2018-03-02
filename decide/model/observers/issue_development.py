@@ -5,16 +5,16 @@ import os
 from collections import defaultdict, OrderedDict
 from typing import List
 
+import matplotlib
+
+from decide.model.base import Issue
 from .. import base
 from .. import calculations
 from ..observers import observer
 
-matplotlib_loaded = True
+matplotlib.use('TkAgg')
 
-try:
-    import matplotlib.pyplot as plt
-except:
-    matplotlib_loaded = False
+import matplotlib.pyplot as plt
 
 
 class IssueDevelopment(observer.Observer):
@@ -123,7 +123,7 @@ class IssueDevelopment(observer.Observer):
                 self.preference_loss[issue][actor_id].append(actor_loss)
                 self.preference_loss_sum[issue][actor_id][iteration].append(actor_loss)
 
-            nbs_var = variance_sum / len(model.actor_issues[issue])  # TODO: check for right variance calculation
+            nbs_var = variance_sum / len(model.actor_issues[issue])
 
             self._append_nbs_preferences(issue=issue, iteration=iteration, nbs=nbs, nbs_var=nbs_var)
 
@@ -163,7 +163,8 @@ class IssueDevelopment(observer.Observer):
         """
 
         for issue in self.preference_history:
-            with open('{0}/issues/{2}/{1}.{3}.csv'.format(self.output_directory, issue, repetition, self._get_salt), 'w') as csv_file:
+            with open('{0}/issues/{2}/{1}.{3}.csv'.format(self.output_directory, issue, repetition, self._get_salt),
+                      'w') as csv_file:
                 writer = csv.writer(csv_file, delimiter=';', lineterminator='\n')
 
                 self.issue_obj = self.model_ref.issues[issue]  # type: Issue
@@ -223,13 +224,13 @@ class IssueDevelopment(observer.Observer):
                 writer.writerow([])
                 writer.writerow(['First and last round comparison of NBS and all actors'])
                 writer.writerow(['Actor', 'Salience', 'Power',
-                                 'First round', 'Final round','Position shift',
+                                 'First round', 'Final round', 'Position shift',
                                  'Distance NBS start', 'Distance NBS end'])
 
                 nbs_start = self._de_normalize_value(preference_nbs[0])
                 nbs_end = self._de_normalize_value(preference_nbs[-1])
 
-                writer.writerow(['NBS', '-', '-', nbs_start,nbs_end, '-'])
+                writer.writerow(['NBS', '-', '-', nbs_start, nbs_end, '-'])
 
                 # to compare different issues and variances of the model, keep the output sorted
                 od = OrderedDict(sorted(self.preference_history[issue].items()))
@@ -244,12 +245,6 @@ class IssueDevelopment(observer.Observer):
                     nbs_distance_start = abs(position_start - nbs_start)
                     nbs_distance_end = abs(position_start - nbs_end)
                     nbs_distance_delta = nbs_distance_end - nbs_distance_start
-                    demanded = nbs_distance_end < nbs_distance_start
-
-                    if demanded:
-                        percentage = nbs_distance_end / nbs_distance_start
-                    else:
-                        percentage = nbs_distance_start / nbs_distance_end * -1
 
                     writer.writerow([
                         actor_issue.actor,
@@ -261,8 +256,6 @@ class IssueDevelopment(observer.Observer):
                         nbs_distance_start,
                         nbs_distance_end,
                         nbs_distance_delta,
-                       # percentage,
-
                     ])
 
                 # second table
@@ -270,32 +263,27 @@ class IssueDevelopment(observer.Observer):
                 writer.writerow(['Preference development NBS and all actors'])
                 writer.writerow(['actor', 'salience', 'power'] + heading)
 
-                if matplotlib_loaded:
-                    plt.clf()
+                plt.clf()
 
                 nbs_values = self._de_normalize_list_value(preference_nbs)
 
                 writer.writerow(['nbs', '-', '-'] + nbs_values)
 
-                if matplotlib_loaded:
-                    plt.plot(nbs_values, label='nbs')
+                plt.plot(nbs_values, label='nbs')
 
                 for actor_id, value in od.items():
-
                     actor_issue = self.model_ref.actor_issues[self.issue_obj][actor_id]
 
                     values = self._de_normalize_list_value(value)
                     writer.writerow([actor_id, actor_issue.salience, actor_issue.power] + values)
 
-                    if matplotlib_loaded:
-                        plt.plot(values, label=self.model_ref.actors[actor_id].name)
+                    plt.plot(values, label=self.model_ref.actors[actor_id].name)
 
-                if matplotlib_loaded:
-                    lgd = plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
-                    plt.title(self.issue_obj)
-                    plt.savefig('{0}/issues/{2}/{1}.png'.format(self.output_directory, self.issue_obj.name, repetition),
-                                bbox_extra_artists=(lgd,),
-                                bbox_inches='tight')
+                lgd = plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
+                plt.title(self.issue_obj)
+                plt.savefig('{0}/issues/{2}/{1}.png'.format(self.output_directory, self.issue_obj.name, repetition),
+                            bbox_extra_artists=(lgd,),
+                            bbox_inches='tight')
 
                 if self.write_voting_position:
                     writer.writerow([])
@@ -308,7 +296,8 @@ class IssueDevelopment(observer.Observer):
 
                     for actor_id, value in od.items():
                         actor_issue = self.model_ref.actor_issues[self.issue_obj][actor_id]
-                        writer.writerow([actor_id, actor_issue.salience, actor_issue.power] + self._de_normalize_list_value(value))
+                        writer.writerow(
+                            [actor_id, actor_issue.salience, actor_issue.power] + self._de_normalize_list_value(value))
 
                 writer.writerow([])
                 writer.writerow(['Preference variance and loss of all actors'])
@@ -341,7 +330,8 @@ class IssueDevelopment(observer.Observer):
         self._create_directories('summary')
 
         for issue in self.preference_history_sum:
-            with open('{0}/issues/{2}/{1}.{3}.{2}.csv'.format(self.output_directory, issue, 'summary', self._get_salt), 'w') as csv_file:
+            with open('{0}/issues/{2}/{1}.{3}.{2}.csv'.format(self.output_directory, issue, 'summary', self._get_salt),
+                      'w') as csv_file:
                 writer = csv.writer(csv_file, delimiter=';', lineterminator='\n')
 
                 self.issue_obj = self.model_ref.issues[issue]  # type: Issue
@@ -370,9 +360,8 @@ class IssueDevelopment(observer.Observer):
                 preference_nbs = self.preference_history_sum[issue]['nbs']
                 del self.preference_history_sum[issue]['nbs']
 
-                if self.write_voting_position:
-                    voting_nbs = self.voting_history_sum[issue]['nbs']
-                    del self.voting_history_sum[issue]['nbs']
+                voting_nbs = self.voting_history_sum[issue]['nbs']
+                del self.voting_history_sum[issue]['nbs']
 
                 preference_nbs_var = self.preference_loss_sum[issue]['nbs']
                 del self.preference_loss_sum[issue]['nbs']
@@ -383,8 +372,7 @@ class IssueDevelopment(observer.Observer):
                 _ = self._de_normalize_value
 
                 # NBS related data.
-                if matplotlib_loaded:
-                    plt.clf()
+                plt.clf()
 
                 p_line = []
 
@@ -420,7 +408,7 @@ class IssueDevelopment(observer.Observer):
                         pvar = calculations.average_and_variance(preference_nbs_var[x])
 
                         writer.writerow(
-                            ['rn-' + str(x), _(p[0]), p[1],'', _(pvar[0]), pvar[1]])
+                            ['rn-' + str(x), _(p[0]), p[1], '', _(pvar[0]), pvar[1]])
 
                         p_line.append(_(p[0]))
 
@@ -428,8 +416,7 @@ class IssueDevelopment(observer.Observer):
                         nbs_start = _(p[0])
                     nbs_end = _(p[0])
 
-                if matplotlib_loaded:
-                    plt.plot(p_line, label='nbs')
+                plt.plot(p_line, label='nbs')
 
                 writer.writerow([])
                 writer.writerow(['First and last round comparison of NBS and all actors'])
@@ -460,13 +447,6 @@ class IssueDevelopment(observer.Observer):
 
                     nbs_distance_start = abs(position_start - nbs_start)
                     nbs_distance_end = abs(position_start - nbs_end)
-                    nbs_distance_delta = nbs_distance_end - nbs_distance_start
-                    demanded = nbs_distance_end < nbs_distance_start
-
-                    if demanded:
-                        percentage = nbs_distance_end / nbs_distance_start
-                    else:
-                        percentage = nbs_distance_start / nbs_distance_end * -1
 
                     writer.writerow([
                         actor_issue.actor,
@@ -477,8 +457,6 @@ class IssueDevelopment(observer.Observer):
                         position_delta,
                         nbs_distance_start,
                         nbs_distance_end,
-                        # nbs_distance_delta,
-                        # percentage,
                     ])
 
                 writer.writerow([])
@@ -500,8 +478,7 @@ class IssueDevelopment(observer.Observer):
                         avg_row.append(_(avg))
                         var_row.append(math.sqrt(var))
 
-                    if matplotlib_loaded:
-                        plt.plot(avg_row, label=actor.name)
+                    plt.plot(avg_row, label=actor.name)
 
                     writer.writerow(row + avg_row)
                     var_rows.append(var_row)
@@ -513,14 +490,13 @@ class IssueDevelopment(observer.Observer):
                 for row in var_rows:
                     writer.writerow(row)
 
-                if matplotlib_loaded:
-                    lgd = plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
-                    plt.title(self.issue_obj)
-                    plt.savefig('{0}/issues/{2}/{1}.png'.format(self.output_directory,
-                                                                self.issue_obj.issue_id,
-                                                                'summary'),
-                                bbox_extra_artists=(lgd,),
-                                bbox_inches='tight')
+                lgd = plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
+                plt.title(self.issue_obj)
+                plt.savefig('{0}/issues/{2}/{1}.png'.format(self.output_directory,
+                                                            self.issue_obj.issue_id,
+                                                            'summary'),
+                            bbox_extra_artists=(lgd,),
+                            bbox_inches='tight')
 
     @property
     def _get_salt(self):

@@ -1,6 +1,5 @@
 {% set data = load_setup_py_data() %}
 
-
 package:
   name: 'decide-exchange-model'
   version: {{ data.get('version') }}
@@ -10,7 +9,7 @@ source:
   git_url: https://github.com/foarsitter/decide-exchange-model.git
 
 build:
-  number: 3
+  number: 0
   entry_points:
     - decide-cli=decide.cli:main
     - decide-gui=decide.gui:main
