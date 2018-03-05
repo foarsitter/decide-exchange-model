@@ -4,11 +4,18 @@ python:
   - 3.6
 
 # Setup anaconda
-before_install:
-  - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
-  - chmod +x miniconda.sh
-  - ./miniconda.sh -b
+install:
+  - sudo apt-get update
+  # We do this conditionally because it saves us some downloading if the
+  # version is the same.
+  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
+      wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
+    else
+      wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+    fi
+  - bash miniconda.sh -b -p $HOME/miniconda
   - export PATH=$HOME/miniconda2/bin:$PATH
+  - hash -r
   - conda update --yes -q conda
   - conda config --set always_yes true
   - conda config --set anaconda_upload no
@@ -17,10 +24,10 @@ before_install:
 install:
   - echo $TRAVIS_PYTHON_VERSION
   - echo $PACKAGENAME
-  - conda install -q pip requests conda-build jinja2 anaconda-client
+  - conda install -q python=$TRAVIS_PYTHON_VERSION pip requests conda-build jinja2 anaconda-client
   - pip install -r requirements.txt
   - pip install codecov 'coverage==4.3' codeclimate-test-reporter
-  - conda build meta.yaml
+  - conda build meta.yaml -c conda-forge
   - conda install --use-local $PACKAGENAME
 
 script:
