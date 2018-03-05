@@ -15,12 +15,12 @@ before_install:
 
 # Install packages
 install:
-  - pip install codecov 'coverage==4.3' codeclimate-test-reporter
-  - pip install -r requirements.txt
-  - conda install -q python=3.6 pip requests conda-build jinja2 anaconda-client
   - echo $TRAVIS_PYTHON_VERSION
-  # install additional packages with conda and pip
-  - conda build meta.yaml # this assumes that the conda recipe folder is called conda-recipe and is at the current workind dir
+  - echo $PACKAGENAME
+  - conda install -q pip requests conda-build jinja2 anaconda-client
+  - pip install -r requirements.txt
+  - pip install codecov 'coverage==4.3' codeclimate-test-reporter
+  - conda build meta.yaml
   - conda install --use-local $PACKAGENAME
 
 script:
