@@ -23,10 +23,9 @@ before_install:
 
 # Install packages
 install:
-  - conda install -q python=$TRAVIS_PYTHON_VERSION requests conda-build jinja2 anaconda-client
-  - conda install -q 'peewee>=2.10.2' matplotlib
-  #- conda install -q codecov 'coverage==4.3' codeclimate-test-reporter
-  #- pip install -r requirements.txt
+  - conda install -q python=$TRAVIS_PYTHON_VERSION pip requests conda-build jinja2 anaconda-client
+  - conda install -q nose codecov 'coverage==4.3' codeclimate-test-reporter
+  - pip install -r requirements.txt
   - conda build meta.yaml
   - conda install --use-local decide-exchange-model
 
