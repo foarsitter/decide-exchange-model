@@ -22,13 +22,11 @@ before_install:
 
 # Install packages
 install:
-  - echo $TRAVIS_PYTHON_VERSION
-  - echo $PACKAGENAME
   - conda install -q python=$TRAVIS_PYTHON_VERSION pip requests conda-build jinja2 anaconda-client
   - pip install -r requirements.txt
   - pip install codecov 'coverage==4.3' codeclimate-test-reporter
   - conda build meta.yaml -c conda-forge
-  - conda install --use-local $PACKAGENAME
+  - conda install --use-local decide-exchange-model
 
 script:
   - nosetests --with-coverage --cover-erase --cover-package=decide --cover-inclusive

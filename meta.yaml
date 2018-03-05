@@ -4,9 +4,12 @@ package:
   name: 'decide-exchange-model'
   version: {{ data.get('version') }}
 
+#source:
+#  git_rev: master
+#  git_url: https://github.com/foarsitter/decide-exchange-model.git
+
 source:
-  git_rev: master
-  git_url: https://github.com/foarsitter/decide-exchange-model.git
+  path: ./
 
 build:
   number: 0
