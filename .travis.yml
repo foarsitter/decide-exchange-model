@@ -2,12 +2,41 @@ language: python
 cache: pip
 python:
   - "3.6"
-# command to run tests
+
+
+# Setup anaconda
+before_install:
+  - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+  - chmod +x miniconda.sh
+  - ./miniconda.sh -b
+  - export PATH=$HOME/miniconda2/bin:$PATH
+  - conda update --yes -q conda
+  - conda config --set always_yes true
+  - conda config --set anaconda_upload no
+
+# Install packages
 install:
   - pip install codecov 'coverage==4.3' codeclimate-test-reporter
   - pip install -r requirements.txt
-script: nosetests --with-coverage --cover-erase --cover-package=decide --cover-inclusive
+  - conda install -q python=$TRAVIS_PYTHON_VERSION pip requests conda-build jinja2 anaconda-client
+  # install additional packages with conda and pip
+  - conda build meta.yaml # this assumes that the conda recipe folder is called conda-recipe and is at the current workind dir
+  - conda install --use-local $PACKAGENAME
+
+script:
+  - nosetests --with-coverage --cover-erase --cover-package=decide --cover-inclusive
 after_success:
   - bash <(curl -s https://codecov.io/bash)
   - CODECLIMATE_REPO_TOKEN=38338f4be02599584d9d3672ed50c25ca2b24c0a9565bfbb000e6a1389f13700 codeclimate-test-reporter
 
+after_success:
+# Change permissions for Anaconda deployment script
+  - chmod +x ./deploy_anaconda.sh
+
+deploy:
+ # Deploy to Anaconda.org
+  - provider: script
+    script: ./deploy_anaconda.sh
+    on:
+      tags: true
+    skip_cleanup: true
