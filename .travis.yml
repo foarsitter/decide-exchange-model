@@ -19,13 +19,14 @@ before_install:
   - conda update --yes -q conda
   - conda config --set always_yes true
   - conda config --set anaconda_upload no
+  - conda config --add channels conda-forge
 
 # Install packages
 install:
   - conda install -q python=$TRAVIS_PYTHON_VERSION pip requests conda-build jinja2 anaconda-client
   - pip install -r requirements.txt
   - pip install codecov 'coverage==4.3' codeclimate-test-reporter
-  - conda build meta.yaml -c conda-forge
+  - conda build meta.yaml
   - conda install --use-local decide-exchange-model
 
 script:
@@ -33,9 +34,6 @@ script:
 after_success:
   - bash <(curl -s https://codecov.io/bash)
   - CODECLIMATE_REPO_TOKEN=38338f4be02599584d9d3672ed50c25ca2b24c0a9565bfbb000e6a1389f13700 codeclimate-test-reporter
-
-after_success:
-# Change permissions for Anaconda deployment script
   - chmod +x ./deploy_anaconda.sh
 
 deploy:
