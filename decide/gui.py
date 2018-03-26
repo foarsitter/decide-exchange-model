@@ -8,11 +8,15 @@ from tkinter import filedialog
 from tkinter import messagebox
 from tkinter import ttk
 
+import matplotlib
+
 from decide.cli import init_model, init_output_directory, init_event_handlers
 from decide.model.base import AbstractModel
 from decide.model.helpers import csvparser
 from decide.model.helpers.helpers import ModelLoop
 from decide.model.observers.observer import Observable, Observer
+
+matplotlib.use('TkAgg')
 
 
 def center(toplevel):

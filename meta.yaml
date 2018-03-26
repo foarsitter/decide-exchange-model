@@ -26,6 +26,7 @@ requirements:
     - python
     - matplotlib
     - peewee >=2.10.2
+    - pyqt
 
 test:
   imports:

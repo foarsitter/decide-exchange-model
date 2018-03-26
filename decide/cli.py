@@ -1,3 +1,7 @@
+import matplotlib
+
+matplotlib.use('TkAgg')
+
 import decimal
 import os
 from datetime import datetime
@@ -27,15 +31,16 @@ def init_model(model_type, input_file, p=None):
     return model
 
 
-def init_event_handlers(model, output_directory, database_file):
+def init_event_handlers(model, output_directory, database_file, write_csv=False):
     event_handler = Observable(model_ref=model, output_directory=output_directory)
 
     SQLiteObserver(event_handler, database_file)
 
-    # csv handlers
-    Externalities(event_handler)
-    ExchangesWriter(event_handler)
-    IssueDevelopment(event_handler)
+    if write_csv:
+        # csv handlers
+        Externalities(event_handler)
+        ExchangesWriter(event_handler)
+        IssueDevelopment(event_handler)
 
     return event_handler
 
@@ -63,7 +68,8 @@ def main():
     event_handler = init_event_handlers(
         model=model,
         output_directory=output_directory,
-        database_file=args.database
+        database_file=args.database,
+        write_csv=True
     )
 
     event_handler.log(message="Start calculation at {0}".format(start_time))

@@ -55,6 +55,9 @@ class Issue:
         elif value > self.upper:
             self.upper = value
 
+    def __str__(self):
+        return self.__repr__()
+
     def __repr__(self):
         return "{0} [{1} - {2}]".format(self.name, self.lower, self.upper)
 
@@ -365,10 +368,19 @@ class AbstractExchangeActor:
 
         self.nbs_1 = self.adjust_nbs(self.y)
 
-        if self.opposite_actor.demand.position >= self.nbs_0 and self.opposite_actor.demand.position >= self.nbs_1:
-            pass
-        elif self.opposite_actor.demand.position <= self.nbs_0 and self.opposite_actor.demand.position <= self.nbs_1:
-            pass
+        x = self.opposite_actor.demand.position
+
+        check = round(self.opposite_actor.demand.position, 3) >= round(self.nbs_0, 3) and round(
+            self.opposite_actor.demand.position, 3) >= round(self.nbs_1, 3)
+        check_2 = round(self.opposite_actor.demand.position, 3) <= round(self.nbs_0, 3) and round(
+            self.opposite_actor.demand.position, 3) <= round(self.nbs_1, 3)
+
+        if (x - self.nbs_0) >= 0 and (x - self.nbs_1) >= 0:
+            if not check:
+                raise Exception('test')
+        elif (x - self.nbs_0) <= 0 and (x - self.nbs_1) <= 0:
+            if not check_2:
+                raise Exception('test123')
         else:
             delta = abs(calculations.adjusted_nbs_by_position(
                 actor_issues=self.actor_issues(),
@@ -741,7 +753,8 @@ class AbstractModel:
             elif hash(issue) in self.issues:
                 issue = self.issues[hash(issue)]
             else:
-                raise ValueError('Issue {0} not found'.format(issue))
+                raise ValueError('The issue \'{0}\' is missing in your input file. '
+                                 'Define \'#P\' with \'{0}\' and add a description'.format(issue))
 
         self.actor_issues[issue][actor] = ActorIssue(actor, issue, position, salience, power)
 

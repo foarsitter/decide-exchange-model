@@ -5,16 +5,12 @@ import os
 from collections import defaultdict, OrderedDict
 from typing import List
 
-import matplotlib
+import matplotlib.pyplot as plt
 
 from decide.model.base import Issue
 from .. import base
 from .. import calculations
 from ..observers import observer
-
-matplotlib.use('TkAgg')
-
-import matplotlib.pyplot as plt
 
 
 class IssueDevelopment(observer.Observer):
