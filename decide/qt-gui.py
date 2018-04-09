@@ -80,6 +80,9 @@ class Example(QtWidgets.QMainWindow):
 
     def init_model(self):
 
+        self.model = EqualGainModel()
+        self.csv_parser = csvparser.CsvParser(self.model)
+
         try:
             self.csv_parser.read(self.input_filename)
         except Exception as e:
@@ -118,7 +121,8 @@ class Example(QtWidgets.QMainWindow):
     def show_actors(self):
         # clear the layout
         for i in reversed(range(self.actors.count())):
-            self.actors.itemAt(i).widget().deleteLater()
+            self.actors.itemAt(i).widget().setParent(None)
+            # self.actors.itemAt(i).widget().
 
         row = 0
         self.actor_checkboxes = []
