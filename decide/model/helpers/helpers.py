@@ -1,4 +1,5 @@
 import argparse
+import logging
 import re
 
 from decide.model import base
@@ -74,7 +75,7 @@ class ModelLoop(object):
                 self.event_handler.execute_exchange(realize_exchange)
             else:
                 if self.model.VERBOSE:
-                    print(realize_exchange)
+                    logging.info(realize_exchange)
 
         # call the event for ending the loop
         self.event_handler.after_loop(realized=realized, iteration=self.iteration_number,

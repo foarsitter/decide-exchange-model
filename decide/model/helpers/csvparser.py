@@ -27,12 +27,15 @@ class CsvParser:
     def __init__(self, model_ref: 'base.AbstractModel'):
         self.model_ref = model_ref
 
-    def read(self, filename):
+    def read(self, filename, actor_whitelist=list(), issue_whitelist=list()):
         """
         The file to read
+        :param issue_whitelist:
+        :param actor_whitelist:
         :param filename:
         :return:
         """
+
         with open(filename, 'rt', encoding='utf-8') as csv_file:
 
             # guess the document format
@@ -44,11 +47,11 @@ class CsvParser:
             for row in reader:
 
                 if row[0] == self.cA:
-                    self.parse_row_actor(row)
+                    self.parse_row_actor(row, actor_whitelist)
                 elif row[0] == self.cP:
-                    self.parse_row_issue(row)
+                    self.parse_row_issue(row, issue_whitelist)
                 elif row[0] == self.cD:
-                    self.parse_row_d(row)
+                    self.parse_row_d(row, actor_whitelist, issue_whitelist)
                 elif row[0] == self.cM:
                     self.parse_row_m(row)
                     pass
@@ -66,20 +69,31 @@ class CsvParser:
 
         return self.model_ref
 
-    def parse_row_actor(self, row):
+    def parse_row_actor(self, row, whitelist=list()):
         """
         Parse the actor row
+        :param whitelist: list of actors to parse, or empty list to accept all
         :param row:
         """
         from decide.model.helpers.helpers import create_key
-        self.model_ref.add_actor(create_key(row[1]))
 
-    def parse_row_issue(self, row):
+        actor_id = create_key(row[1])
+
+        if len(whitelist) == 0 or actor_id in whitelist:
+            self.model_ref.add_actor(row[1], actor_id)
+
+    def parse_row_issue(self, row, whitelist=list()):
         """
         The csv row
+        :param whitelist:
         :param row:
         """
-        self.model_ref.add_issue(row[1])
+        from decide.model.helpers.helpers import create_key
+
+        issue_id = create_key(row[1])
+
+        if len(whitelist) == 0 or issue_id in whitelist:
+            self.model_ref.add_issue(row[1], issue_id=issue_id)
 
     def parse_row_m(self, row):
         """
@@ -119,19 +133,23 @@ class CsvParser:
 
                 self.model_ref.issues[issue_id].calculate_delta()
                 self.model_ref.issues[issue_id].calculate_step_size()
-            else:
-                raise Exception('fix this!')
+            # else:
+            #     raise Exception('fix this!')
 
-    def parse_row_d(self, row):
+    def parse_row_d(self, row, actor_whitelist=list(), issue_whitelist=list()):
         """
-        The #D row contains the ... TODO
+        The #D row contains the data for each actor on each issue
         :param row:
         """
         from decide.model.helpers.helpers import create_key
+
         actor_id = create_key(row[self.rActor])
         issue_id = create_key(row[self.rIssue])
 
-        if str(row[self.rSalience]) != '0':
-            self.model_ref.add_actor_issue(actor=actor_id, issue=issue_id, power=row[self.rPower].replace(",", "."),
-                                           salience=row[self.rSalience].replace(",", "."),
-                                           position=row[self.rPosition].replace(",", "."))
+        if (len(actor_whitelist) == 0 or actor_id in actor_whitelist) and (
+                len(issue_whitelist) == 0 or issue_id in issue_whitelist):
+
+            if str(row[self.rSalience]) != '0':
+                self.model_ref.add_actor_issue(actor=actor_id, issue=issue_id, power=row[self.rPower].replace(",", "."),
+                                               salience=row[self.rSalience].replace(",", "."),
+                                               position=row[self.rPosition].replace(",", "."))

@@ -1,4 +1,5 @@
 import decimal
+import logging
 import random
 from operator import attrgetter
 
@@ -141,13 +142,7 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
                     self.opposite_actor.is_adjusted_by_nbs = True
 
             else:
-                #
-                # print(abs(move_i))
-                # print(abs(self.supply.position - self.opposite_actor.demand.position))
-                # print(self.supply.position)
-                # print(self.opposite_actor.demand.position)
-
-                print('SoftFail: when the shift for j is to large by a maximum shift of i, '
+                logging.info('SoftFail: when the shift for j is to large by a maximum shift of i, '
                       'the maximum shift of j has to result in a lower shift for i. data=' + str(
                     self.exchange))
 
@@ -215,7 +210,7 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
                 self.is_adjusted_by_nbs = True
 
         if abs(eui - eui_check) > 1e-10:
-            print('fail')
+            logging.info('fail')
             # raise Exception('Fail: the expected utility of the check ({0})'
             #                 ' does not match the expected utility ({1}), {2}.'
             #                 .format(eui_check, eui,

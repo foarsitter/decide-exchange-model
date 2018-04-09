@@ -76,8 +76,8 @@ def adjusted_nbs(actor_issues, updates, actor, new_position, denominator):
     copy_ai = {}
 
     for k, v in actor_issues.items():
-        copy_ai[v.actor.name] = base.ActorIssue(v.actor, v.issue, position=v.position, power=v.power,
-                                                salience=v.salience)
+        copy_ai[v.actor] = base.ActorIssue(v.actor, v.issue, position=v.position, power=v.power,
+                                           salience=v.salience)
 
     for key, value in updates.items():
         if key in copy_ai:  # TODO: this should not be possible

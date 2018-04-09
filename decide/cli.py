@@ -1,3 +1,5 @@
+import logging
+
 import matplotlib
 
 matplotlib.use('TkAgg')
@@ -31,10 +33,10 @@ def init_model(model_type, input_file, p=None):
     return model
 
 
-def init_event_handlers(model, output_directory, database_file, write_csv=False):
+def init_event_handlers(model, output_directory, database_file, write_csv=True):
     event_handler = Observable(model_ref=model, output_directory=output_directory)
 
-    SQLiteObserver(event_handler, database_file)
+    # SQLiteObserver(event_handler, database_file)
 
     if write_csv:
         # csv handlers
@@ -45,9 +47,10 @@ def init_event_handlers(model, output_directory, database_file, write_csv=False)
     return event_handler
 
 
-def init_output_directory(model, output_dir):
+def init_output_directory(model, output_dir, selected_actors=list()):
+    actor_unique = '-'.join(selected_actors)
 
-    output_directory = os.path.join(output_dir, model.data_set_name, model.model_name)
+    output_directory = os.path.join(output_dir, model.data_set_name, model.model_name, actor_unique)
 
     if not os.path.isdir(output_directory):
         os.makedirs(output_directory)
@@ -90,7 +93,7 @@ def main():
         event_handler.before_iterations(repetition)
 
         for iteration_number in range(args.iterations):
-            print("round {0}.{1}".format(repetition, iteration_number))
+            logging.info("round {0}.{1}".format(repetition, iteration_number))
             model_loop.loop()
 
         event_handler.after_iterations(repetition)

@@ -44,7 +44,7 @@ class IssueDevelopment(observer.Observer):
             issue_list = {}
 
             for key, actor_issue in self.model_ref.actor_issues[issue].items():
-                issue_list[actor_issue.actor.name] = []
+                issue_list[actor_issue.actor] = []
 
             issue_list['nbs'] = []
 

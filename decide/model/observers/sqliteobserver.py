@@ -1,4 +1,5 @@
 import datetime
+import logging
 from collections import defaultdict
 from typing import List
 
@@ -26,6 +27,7 @@ class SQLiteObserver(Observer):
 
         if not output_directory.endswith('.db') and output_directory != ':memory:':
             output_directory += '/decide-data.db'
+            print('logging to database {}'.format(output_directory))
 
         self.manager = db.Manager(output_directory)
         self.manager.init_database()
