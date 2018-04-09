@@ -1,3 +1,4 @@
+import logging
 import os
 from unittest import TestCase
 
@@ -13,7 +14,7 @@ from decide.model.observers.sqliteobserver import SQLiteObserver
 
 class BaseDatabaseTestCase(TestCase):
     def setUp(self):
-        print('setup')
+        logging.info('setup')
         # Bind model classes to test db. Since we have a complete list of
         # all models, we do not need to recursively bind dependencies.
 

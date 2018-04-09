@@ -1,3 +1,4 @@
+import logging
 import os
 import threading
 import tkinter as tk
@@ -311,9 +312,6 @@ class MainApplication(tk.Frame):
     def label(self, text, row, column=0):
         tk.Label(self.parent, text=text).grid(row=row, column=column, sticky=tk.W, padx=20, pady=20)
 
-    def serialize(self):
-        return ET.tostring(self.to_xml())
-
     def save_settings(self):
         tree = ET.ElementTree(self.to_xml())
         tree.write("model-settings.xml")
@@ -327,7 +325,7 @@ class MainApplication(tk.Frame):
                     if elm.tag in self.__dict__:
                         self.__dict__[elm.tag].set(elm.text)
             except ET.ParseError:
-                print('Invalid xml')
+                logging.info('Invalid xml')
 
     def entry_row(self, label, text_variable):
 
@@ -402,7 +400,7 @@ class MainApplication(tk.Frame):
                     model_loop.loop()
                     self.queue.put(iteration_number + (repetition * iterations))
                 else:
-                    print("interrupted")
+                    logging.info("interrupted")
                     break
 
             event_handler.after_iterations(repetition)

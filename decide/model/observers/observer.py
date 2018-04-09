@@ -1,3 +1,4 @@
+import logging
 from typing import List
 
 from .. import base
@@ -90,7 +91,7 @@ class Observer(object):
 
     @staticmethod
     def log(message: str):
-        print(message)
+        logging.info(message)
 
     def execute_exchange(self, exchange: base.AbstractExchange):
         if isinstance(exchange, equalgain.EqualGainExchange):

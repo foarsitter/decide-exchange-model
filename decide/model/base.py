@@ -709,22 +709,24 @@ class AbstractModel:
 
         raise ValueError('ActorIssue not found')
 
-    def add_actor(self, actor_name) -> Actor:
+    def add_actor(self, actor_name, actor_id=None) -> Actor:
         """
         Add an actor to the model
+        :param actor_id:
         :param actor_name:
         :return:
         """
-        actor = Actor(actor_name)
+        actor = Actor(actor_name, actor_id)
         self.actors[actor] = actor
         return actor
 
-    def add_issue(self, issue_name) -> Issue:
+    def add_issue(self, issue_name, issue_id=None) -> Issue:
         """
         Add an issue to the model
+        :param issue_id:
         :param issue_name:
         """
-        issue = Issue(issue_name)
+        issue = Issue(issue_name, issue_id=issue_id)
         self.issues[issue] = issue
         return issue
 

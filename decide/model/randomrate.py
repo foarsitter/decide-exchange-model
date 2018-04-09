@@ -1,3 +1,4 @@
+import logging
 import random
 import uuid
 from collections import defaultdict
@@ -279,10 +280,10 @@ class RandomRateModel(base.AbstractModel):
 
             if deadlock[len(self.exchanges)] > 1024:
                 # this should never happen?
-                print('deadlock')
+                logging.info('deadlock')
 
                 for ex in self.exchanges:
-                    print(ex)
+                    logging.info(ex)
 
                 self.exchanges.clear()
                 return None
