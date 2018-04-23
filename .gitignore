@@ -2,7 +2,6 @@ data/output
 .idea/
 model-settings.xml
 *.pyc
-model/__pycache__/
-model/helpers/__pycache__/
-model/observers/__pycache__/
-sample_data/
+venv/
+*.csv
+*.log

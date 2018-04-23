@@ -19,7 +19,7 @@ class IssueDevelopment(observer.Observer):
     By exchange, by issue set and by actor
     """
 
-    def __init__(self, observable: observer.Observable, write_voting_position=False):
+    def __init__(self, observable: observer.Observable, write_voting_position=False, summary_only=False):
         super().__init__(observable=observable)
 
         self.preference_history = {}
@@ -35,6 +35,8 @@ class IssueDevelopment(observer.Observer):
         self.preference_loss_sum = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
 
         self.denominator = 0
+
+        self.summary_only = summary_only
 
     def _setup(self):
         """
@@ -73,7 +75,8 @@ class IssueDevelopment(observer.Observer):
         :return:
         """
         if not os.path.exists('{0}/issues/{1}'.format(self.output_directory, repetition)):
-            os.makedirs('{0}/issues/{1}'.format(self.output_directory, repetition))
+            os.makedirs('{0}/issues/{1}/csv'.format(self.output_directory, repetition))
+            os.makedirs('{0}/issues/{1}/charts'.format(self.output_directory, repetition))
 
     def before_repetitions(self, repetitions, iterations):
         pass
@@ -84,7 +87,9 @@ class IssueDevelopment(observer.Observer):
         :return:
         """
         self._setup()
-        self._create_directories(repetition)
+
+        if not self.summary_only:
+            self._create_directories(repetition)
 
     def before_loop(self, iteration: int, repetition: int):
         pass
@@ -158,8 +163,11 @@ class IssueDevelopment(observer.Observer):
         Write all the data of this repetition to the filesystem
         """
 
+        if self.summary_only:
+            return
+
         for issue in self.preference_history:
-            with open('{0}/issues/{2}/{1}.{3}.csv'.format(self.output_directory, issue, repetition, self._get_salt),
+            with open('{0}/issues/{2}/csv/{1}.{3}.csv'.format(self.output_directory, issue, repetition, self._get_salt),
                       'w') as csv_file:
                 writer = csv.writer(csv_file, delimiter=';', lineterminator='\n')
 
@@ -277,9 +285,10 @@ class IssueDevelopment(observer.Observer):
 
                 lgd = plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
                 plt.title(self.issue_obj)
-                plt.savefig('{0}/issues/{2}/{1}.png'.format(self.output_directory, self.issue_obj.name, repetition),
-                            bbox_extra_artists=(lgd,),
-                            bbox_inches='tight')
+                plt.savefig(
+                    '{0}/issues/{2}/charts/{1}.png'.format(self.output_directory, self.issue_obj.name, repetition),
+                    bbox_extra_artists=(lgd,),
+                    bbox_inches='tight')
 
                 if self.write_voting_position:
                     writer.writerow([])
@@ -326,7 +335,8 @@ class IssueDevelopment(observer.Observer):
         self._create_directories('summary')
 
         for issue in self.preference_history_sum:
-            with open('{0}/issues/{2}/{1}.{3}.{2}.csv'.format(self.output_directory, issue, 'summary', self._get_salt),
+            with open('{0}/issues/{2}/csv/{1}.{3}.{2}.csv'.format(self.output_directory, issue, 'summary',
+                                                                  self._get_salt),
                       'w') as csv_file:
                 writer = csv.writer(csv_file, delimiter=';', lineterminator='\n')
 
@@ -488,8 +498,8 @@ class IssueDevelopment(observer.Observer):
 
                 lgd = plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
                 plt.title(self.issue_obj)
-                plt.savefig('{0}/issues/{2}/{1}.png'.format(self.output_directory,
-                                                            self.issue_obj.issue_id,
+                plt.savefig('{0}/issues/{2}/charts/{1}.png'.format(self.output_directory,
+                                                                   self.issue_obj.issue_id,
                                                             'summary'),
                             bbox_extra_artists=(lgd,),
                             bbox_inches='tight')

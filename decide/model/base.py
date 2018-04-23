@@ -1,3 +1,4 @@
+import logging
 from collections import defaultdict
 from decimal import Decimal
 from itertools import combinations
@@ -82,6 +83,14 @@ class Issue:
 
     def __hash__(self):
         return hash(self.issue_id)
+
+    def __lt__(self, other):
+        """
+        Needed for sorting
+        :param other:
+        :return:
+        """
+        return self.issue_id < other.issue_id
 
 
 class Actor:
@@ -178,6 +187,9 @@ class ActorIssue:
             return self.actor == other.actor and self.issue == other.issue
 
         return NotImplemented
+
+    def __lt__(self, other):
+        return self.actor < other.actor
 
 
 class DemandActorIssue(ActorIssue):
@@ -434,8 +446,10 @@ class AbstractExchangeActor:
 
             self.nbs_1 = self.adjust_nbs(self.y)
 
-            if abs(self.nbs_1 - self.y) == 0:
-                raise Exception('Errorrrrr')
+            if abs(self.nbs_1 - self.y) > 1e-10:
+                logging.debug(
+                    'The new calculated NBS is not exactly the same as the new position of the actor (nbs 0 {} nbs 1: {} y: {})'.format(
+                        self.nbs_0, self.nbs_1, self.y))
 
             self.exchange.is_valid = b1 and b2
 

@@ -14,9 +14,10 @@ class Externalities(observer.Observer):
     end of each loop the externalities to the filesystem. 
     """
 
-    def __init__(self, observable: observer.Observable):
+    def __init__(self, observable: observer.Observable, summary_only=False):
         super().__init__(observable)
         self.actor_totals = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
+        self.summary_only = summary_only
 
     def _setup(self):
         """
@@ -167,10 +168,12 @@ class Externalities(observer.Observer):
         :param iteration: int the current iteration round
         :return: 
         """
-
         ordered_actors = self._ordered_actors()
 
         self._sum(ordered_actors, iteration, repetition)
+
+        if self.summary_only:
+            return
 
         with open(
                 "{0}/externalities/{2}/externalities.{1}.csv".format(self.output_directory, iteration + 1, repetition),

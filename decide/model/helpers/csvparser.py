@@ -53,7 +53,7 @@ class CsvParser:
                 elif row[0] == self.cD:
                     self.parse_row_d(row, actor_whitelist, issue_whitelist)
                 elif row[0] == self.cM:
-                    self.parse_row_m(row)
+                    self.parse_row_m(row, issue_whitelist)
                     pass
 
         self.create_issues()
@@ -95,27 +95,30 @@ class CsvParser:
         if len(whitelist) == 0 or issue_id in whitelist:
             self.model_ref.add_issue(row[1], issue_id=issue_id)
 
-    def parse_row_m(self, row):
+    def parse_row_m(self, row, whitelist=list()):
         """
         Parse the #M row containing the dimensions of the issues
         :param row:
         """
+
         from decide.model.helpers.helpers import create_key
         issue_id = create_key(row[1])
 
-        issue = None
+        if len(whitelist) == 0 or issue_id in whitelist:
 
-        for obj in self.model_ref.issues.values():
-            if obj.issue_id == issue_id:
-                issue = obj
+            issue = None
 
-        if not isinstance(issue, base.Issue):
-            raise Exception('The issue variable it not the correct type')
+            for obj in self.model_ref.issues.values():
+                if obj.issue_id == issue_id:
+                    issue = obj
 
-        value = Decimal(row[2].replace(",", "."))
+            if not isinstance(issue, base.Issue):
+                raise Exception('The issue variable it not the correct type')
 
-        issue.expand_lower(value)
-        issue.expand_upper(value)
+            value = Decimal(row[2].replace(",", "."))
+
+            issue.expand_lower(value)
+            issue.expand_upper(value)
 
     def create_issues(self):
         """

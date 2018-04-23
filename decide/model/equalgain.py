@@ -493,7 +493,8 @@ class EqualGainModel(base.AbstractModel):
 
                 next_exchange = self.exchanges[0]
 
-                if abs(realize.gain - next_exchange.gain) < 1e-10:
+                if abs(realize.gain - next_exchange.gain) < 1e-20:
+                    print('tie')
                     if random.random() >= 0.5:
                         self.exchanges.append(realize)
                         realize = self.exchanges.pop(0)

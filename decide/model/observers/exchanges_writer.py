@@ -12,14 +12,16 @@ class ExchangesWriter(observer.Observer):
     By exchange, by issue set and by actor
     """
 
-    def __init__(self, observable: observer.Observable):
+    def __init__(self, observable: observer.Observable, summary_only=False, before=False):
         super().__init__(observable)
+        self.summary_only = summary_only
+        self.before = before
 
     def _create_directory(self, repetition: int):
         if not os.path.exists("{0}/exchanges/{1}".format(self.output_directory, repetition)):
             os.makedirs("{0}/exchanges/{1}".format(self.output_directory, repetition))
 
-        if not os.path.exists("{0}/exchanges/{1}/initial".format(self.output_directory, repetition)):
+        if not os.path.exists("{0}/exchanges/{1}/initial".format(self.output_directory, repetition)) and self.before:
             os.makedirs("{0}/exchanges/{1}/initial".format(self.output_directory, repetition))
 
     def before_iterations(self, repetition):
@@ -31,6 +33,9 @@ class ExchangesWriter(observer.Observer):
         :param iteration: 
         :param repetition:`
         """
+
+        if not self.before:
+            return
 
         self.model_ref.sort_exchanges()
 

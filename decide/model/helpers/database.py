@@ -1,8 +1,15 @@
 import datetime
 
 import peewee
+from playhouse.sqlite_ext import CSqliteExtDatabase
 
-connection = peewee.SqliteDatabase(None)  # let some(thing) else initiate the database
+connection = CSqliteExtDatabase(None, c_extensions=True, pragmas=(
+    ('cache_size', -1024 * 1024),  # 64MB page-cache.
+    ('journal_mode', 'wal'),  # Use WAL-mode (you should always use this!).
+))
+
+
+# connection = peewee.MySQLDatabase('decide')
 
 
 class DictionaryIndexMixin:
@@ -86,7 +93,7 @@ class Iteration(DictionaryIndexMixin, BaseModel):
     A iteration inside a repetition
     """
     pointer = peewee.IntegerField()
-    repetition = peewee.ForeignKeyField(Repetition, related_name='iterations')
+    repetition = peewee.ForeignKeyField(Repetition)
 
     hash_field = 'pointer'
 
@@ -98,11 +105,11 @@ class ActorIssue(BaseModel):
     issue = peewee.ForeignKeyField(Issue)
     actor = peewee.ForeignKeyField(Actor)
 
-    power = peewee.DecimalField(max_digits=5, decimal_places=15)
-    position = peewee.DecimalField(max_digits=5, decimal_places=15)
-    salience = peewee.DecimalField(max_digits=5, decimal_places=15)
+    power = peewee.DecimalField(max_digits=20, decimal_places=15)
+    position = peewee.DecimalField(max_digits=20, decimal_places=15)
+    salience = peewee.DecimalField(max_digits=20, decimal_places=15)
 
-    iteration = peewee.ForeignKeyField(Iteration, related_name='actor_issues')
+    iteration = peewee.ForeignKeyField(Iteration)
 
     type = peewee.CharField(choices=('before', 'after'), default='before')
 
@@ -115,8 +122,8 @@ class ActorIssue(BaseModel):
 
 class ExchangeActor(BaseModel):
     actor = peewee.ForeignKeyField(Actor)
-    supply_issue = peewee.ForeignKeyField(Issue, related_name='supply_issues')
-    demand_issue = peewee.ForeignKeyField(Issue, related_name='demand_issues')
+    supply_issue = peewee.ForeignKeyField(Issue)
+    demand_issue = peewee.ForeignKeyField(Issue)
 
     x = peewee.DecimalField(max_digits=20, decimal_places=15)  # begin position
     y = peewee.DecimalField(max_digits=20, decimal_places=15)  # end position
@@ -125,7 +132,7 @@ class ExchangeActor(BaseModel):
     demand_position = peewee.DecimalField(max_digits=20, decimal_places=15)
 
     # shortcut
-    other_actor = peewee.ForeignKeyField('self')
+    other_actor = peewee.ForeignKeyField('self', null=True)
 
     @property
     def move(self):
@@ -133,8 +140,8 @@ class ExchangeActor(BaseModel):
 
 
 class Exchange(BaseModel):
-    i = peewee.ForeignKeyField(ExchangeActor, related_name='actor_i')
-    j = peewee.ForeignKeyField(ExchangeActor, related_name='actor_j')
+    i = peewee.ForeignKeyField(ExchangeActor)
+    j = peewee.ForeignKeyField(ExchangeActor)
 
     iteration = peewee.ForeignKeyField(Iteration)
 
@@ -144,8 +151,8 @@ class Externality(BaseModel):
 
     exchange = peewee.ForeignKeyField(Exchange)
 
-    supply = peewee.ForeignKeyField(Issue, related_name='supply_ext_issues')
-    demand = peewee.ForeignKeyField(Issue, related_name='demand_ext_issues')
+    supply = peewee.ForeignKeyField(Issue)
+    demand = peewee.ForeignKeyField(Issue)
 
     own = peewee.DecimalField(max_digits=20, decimal_places=15, null=True)
     inner_positive = peewee.DecimalField(max_digits=20, decimal_places=15, null=True)
