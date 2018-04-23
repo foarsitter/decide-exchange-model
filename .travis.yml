@@ -20,12 +20,13 @@ before_install:
   - hash -r
   - conda update --yes -q conda
   - conda config --set always_yes true
-  - conda config --set anaconda_upload no
+  - conda config --set anaconda_upload nosudo apt-get install build-essential
   - conda config --add channels conda-forge
 
 # Install packages
 install:
-  - conda install -q python=$TRAVIS_PYTHON_VERSION pip requests conda-build jinja2 anaconda-client nose cython
+  - conda install -q python=$TRAVIS_PYTHON_VERSION pip requests conda-build jinja2 anaconda-client nose Cython
+  - pip install Cython
   - pip install -r requirements.txt
   - pip install codecov 'coverage==4.3' codeclimate-test-reporter
 
