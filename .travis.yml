@@ -25,8 +25,9 @@ before_install:
 
 # Install packages
 install:
-  - conda install -q python=$TRAVIS_PYTHON_VERSION pip requests conda-build jinja2 anaconda-client nose Cython
+  - conda install -q python=$TRAVIS_PYTHON_VERSION pip requests conda-build jinja2 anaconda-client nose Cython peewee
   - pip install Cython
+  - pip install 'peewee>=3.0'
   - pip install -r requirements.txt
   - pip install codecov 'coverage==4.3' codeclimate-test-reporter
 
