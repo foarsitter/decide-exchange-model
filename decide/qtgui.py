@@ -1,5 +1,3 @@
-import decimal
-import json
 import logging
 import os
 import sys
@@ -7,12 +5,15 @@ import xml.etree.cElementTree as ET
 from datetime import datetime
 from typing import List
 
+import matplotlib
+
+matplotlib.use('Qt5Agg')
+
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 
 from decide.cli import init_model, init_output_directory
 from decide.model import base
-from decide.model.base import Issue, ActorIssue
 from decide.model.equalgain import EqualGainModel
 from decide.model.helpers import csvparser, helpers
 from decide.model.observers.exchanges_writer import ExchangesWriter
@@ -20,6 +21,7 @@ from decide.model.observers.externalities import Externalities
 from decide.model.observers.issue_development import IssueDevelopment
 from decide.model.observers.observer import Observable
 from decide.model.observers.sqliteobserver import SQLiteObserver
+
 
 logging.basicConfig(filename='decide.log', filemode='w', level=logging.INFO,
                     format=' %(asctime)s - %(levelname)s - %(message)s')
@@ -186,6 +188,7 @@ class IssueWidget(DynamicFormLayout):
             upper = QtWidgets.QLabel(str(round(issue.upper, 3)))
 
             checkbox.setObjectName(issue.issue_id)
+            checkbox.stateChanged.connect(self.state_changed)
 
             info = QtWidgets.QPushButton('values')
             info.setObjectName(issue.issue_id)
@@ -193,6 +196,9 @@ class IssueWidget(DynamicFormLayout):
 
             self.checkboxes.append(checkbox)
             self.add_row(checkbox, lower, upper, info)
+
+    def state_changed(self):
+        self.main_window.overview_widget.update_widget()
 
 
 class ActorWidget(DynamicFormLayout):
@@ -206,8 +212,14 @@ class ActorWidget(DynamicFormLayout):
         for actor in actors:
             checkbox = QtWidgets.QCheckBox(str(actor))
             checkbox.setObjectName(actor.actor_id)
+
+            checkbox.stateChanged.connect(self.state_changed)
+
             self.checkboxes.append(checkbox)
             self.add_row(checkbox)
+
+    def state_changed(self):
+        self.main_window.overview_widget.update_widget()
 
 
 class ActorIssueWidget(DynamicFormLayout):
@@ -296,6 +308,53 @@ class SettingsFormWidget(QtWidgets.QFormLayout):
         for key, value in settings:
             if hasattr(self.settings, key):
                 setattr(self.settings, key, value.value())
+
+
+class SummaryWidget(DynamicFormLayout):
+
+    def __init__(self, main_window, settings, data, actor_widget, issue_widget, *args, **kwargs):
+        """
+
+        :type settings: ProgramSettings
+        :type data: ProgramData
+        :type actor_widget: ActorWidget
+        :type issue_widget: IssueWidget
+        """
+        super(SummaryWidget, self).__init__(main_window, *args, **kwargs)
+
+        self.settings = settings
+        self.data = data
+        self.actor_widget = actor_widget
+        self.issue_widget = issue_widget
+
+    def update_widget(self):
+        self.clear()
+
+        actors = self.actor_widget.get_selected()
+        issues = self.issue_widget.get_selected()
+
+        print('update')
+        print(actors)
+        print(issues)
+
+        self.add_text_row('Actors', ', '.join(actors))
+        self.add_text_row('Issues', ', '.join(issues))
+
+        self.add_text_row('Input', self.settings.input_filename, self.test_callback)
+        self.add_text_row('Output directory', self.settings.output_directory, self.test_callback)
+
+    def add_text_row(self, label, value, callback=None):
+
+        if callback:
+            value_label = QtWidgets.QLabel('<a href="{}">{}/</a>'.format(value, value))
+            value_label.linkActivated.connect(callback)
+        else:
+            value_label = QtWidgets.QLabel(value)
+
+        self.add_row(QtWidgets.QLabel(label), value_label)
+
+    def test_callback(self, link):
+        self.main_window.open_file(link)
 
 
 class MenuBar(QtWidgets.QMenuBar):
@@ -396,6 +455,8 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         self.actor_issue_widget = ActorIssueWidget(self)
         self.settings_widget = SettingsFormWidget(self.settings)
 
+        self.overview_widget = SummaryWidget(self, self.settings, self.data, self.actor_widget, self.issue_widget)
+
         self.init_ui()
 
         self.load_settings()
@@ -417,6 +478,8 @@ class DecideMainWindow(QtWidgets.QMainWindow):
             actor_issues = list(self.data.actor_issues[issue].values())
             self.actor_issue_widget.set_actor_issues(issue.name, actor_issues)
 
+        self.overview_widget.update_widget()
+
     def update_actor_issue_widget(self):
         """
         Button event to update the ActorIssueWidget
@@ -425,6 +488,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         actor_issues = list(self.data.actor_issues[issue].values())
 
         self.actor_issue_widget.set_actor_issues(issue, actor_issues)
+        self.overview_widget.update_widget()
 
     def open_input_data(self):
         """
@@ -439,12 +503,26 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
             self.init_ui_data()
 
+        self.overview_widget.update_widget()
+
     def select_output_dir(self):
         """
         Output directory
         """
         self.settings.output_directory = str(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory"))
         self.statusBar().showMessage('Output directory set to: {} '.format(self.settings.output_directory))
+
+        self.overview_widget.update_widget()
+
+    def open_file(self, path):
+
+        import subprocess, os
+        if sys.platform.startswith('darwin'):
+            subprocess.call(('open', path))
+        elif os.name == 'nt':
+            os.startfile(path)
+        elif os.name == 'posix':
+            subprocess.call(('xdg-open', path))
 
     def init_ui(self):
         self.statusBar().showMessage('Ready')
@@ -479,8 +557,14 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         settings_box = QtWidgets.QGroupBox('Model parameters')
         settings_box.setLayout(self.settings_widget)
 
+        overview_box = QtWidgets.QGroupBox('Overview')
+        overview_box.setLayout(self.overview_widget)
+        self.overview_widget.setAlignment(QtCore.Qt.AlignTop)
+
+
         right = QtWidgets.QVBoxLayout()
-        right.addWidget(settings_box)
+        right.addWidget(settings_box, 1)
+        right.addWidget(overview_box, 1)
         right.addWidget(start)
 
         main.addLayout(left, 1)
