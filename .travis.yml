@@ -1,12 +1,44 @@
 language: python
+cache: pip
 python:
-  - "3.5"
-# command to run tests
-install:
-  - pip install codecov coverage codeclimate-test-reporter scipy
-script: nosetests --with-coverage --cover-erase
-after_success:
-  - coverage
-  - bash <(curl -s https://codecov.io/bash)
-  - CODECLIMATE_REPO_TOKEN=a31fdc6d118fc38068ae49f3bd34ef64b76323064955180ac8a5be01599075b5 codeclimate-test-reporter
+  - 3.6
 
+# Setup anaconda
+before_install:
+  - sudo apt-get update
+  # We do this conditionally because it saves us some downloading if the
+  # version is the same.
+  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
+      wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
+    else
+      wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+    fi
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - hash -r
+  - conda update --yes -q conda
+  - conda config --set always_yes true
+  - conda config --set anaconda_upload no
+  - conda config --add channels conda-forge
+
+# Install packages
+install:
+  - conda install -q python=$TRAVIS_PYTHON_VERSION pip requests conda-build jinja2 anaconda-client nose
+  - pip install -r requirements.txt
+  - pip install codecov 'coverage==4.3' codeclimate-test-reporter
+
+script:
+  - nosetests --with-coverage --cover-erase --cover-package=decide --cover-inclusive
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+  - CODECLIMATE_REPO_TOKEN=38338f4be02599584d9d3672ed50c25ca2b24c0a9565bfbb000e6a1389f13700 codeclimate-test-reporter
+  - chmod +x ./deploy_anaconda.sh
+
+deploy:
+ # Deploy to Anaconda.org
+  provider: script
+  script: ./deploy_anaconda.sh
+  on:
+    branch: master
+  skip_cleanup: true
