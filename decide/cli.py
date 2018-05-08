@@ -1,9 +1,4 @@
 import logging
-
-import matplotlib
-
-matplotlib.use('TkAgg')
-
 import decimal
 import os
 from datetime import datetime
