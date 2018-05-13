@@ -55,23 +55,29 @@ class DecideLogDialog(QtWidgets.QDialog):
         self.setLayout(layout)
 
 
-class ProgramData:
+class ProgramData(QObject):
     """
     The data used for displaying
     """
 
-    def __init__(self):
+    changed = pyqtSignal()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.issues = {}
         self.actors = {}
         self.actor_issues = {}
 
 
-class ProgramSettings:
+class ProgramSettings(QObject):
     """
     The settings for the model parameters
     """
 
-    def __init__(self):
+    changed = pyqtSignal()
+
+    def __init__(self, *args, **kwargs):
+        super(ProgramSettings, self).__init__(*args, **kwargs)
 
         self.input_filename = ''
         self.output_directory = ''
@@ -95,6 +101,9 @@ class ProgramSettings:
         self.exchanges_csv = False
         self.voting_positions = False
         self.summary_only = True
+
+        self.selected_actors = []
+        self.selected_issues = []
 
     def save(self):
         if self.settings_type == 'xml':
@@ -171,6 +180,9 @@ class DynamicFormLayout(QtWidgets.QGridLayout):
                 selected.append(checkbox.objectName())
 
         return selected
+
+    def save(self):
+        return self.get_selected()
 
 
 class IssueWidget(DynamicFormLayout):
@@ -296,6 +308,8 @@ class SettingsFormWidget(QtWidgets.QFormLayout):
 
                 if isinstance(value, bool):  # type: QtWidgets.QAction
                     attr.setChecked(value)
+                if isinstance(value, list):
+                    self.settings.__dict__[attr] = value
                 else:
                     attr.setValue(value)
 
@@ -308,6 +322,76 @@ class SettingsFormWidget(QtWidgets.QFormLayout):
         for key, value in settings:
             if hasattr(self.settings, key):
                 setattr(self.settings, key, value.value())
+
+
+class Worker(QtCore.QObject):
+    finished = QtCore.pyqtSignal()
+    update = QtCore.pyqtSignal(int, int)
+
+    def __init__(self, settings):
+        super(Worker, self).__init__()
+
+        self.settings = settings
+        self._break = False
+
+    @QtCore.pyqtSlot(str, str, int, int, list, name='run_model')
+    def run_model(self):
+        """
+        :type settings: ProgramSettings
+        """
+        settings = self.settings
+
+        selected_actors = settings.selected_actors
+        selected_issues = settings.selected_issues
+
+        repetitions = settings.repetitions
+        iterations = settings.iterations
+
+        input_filename = settings.input_filename
+
+        model = init_model('equal', settings.input_filename, p=settings.randomized_value)
+
+        output_directory = init_output_directory(
+            model=model,
+            output_dir=settings.output_directory,
+            selected_actors=settings.selected_actors
+        )
+
+        csv_parser = csvparser.CsvParser(model)
+        csv_parser.read(input_filename, actor_whitelist=selected_actors, issue_whitelist=selected_issues)
+
+        event_handler = self.init_event_handlers(model, output_directory, self.menuBar().summary_only.isChecked())
+        event_handler.before_repetitions(repetitions=repetitions, iterations=iterations)
+
+        for repetition in range(repetitions):
+
+            csv_parser.read(input_filename, actor_whitelist=selected_actors)
+
+            model_loop = helpers.ModelLoop(model, event_handler, repetition)
+
+            event_handler.before_iterations(repetition)
+
+            for iteration_number in range(iterations):
+
+                if self._break:
+                    break
+
+                logging.info("round {0}.{1}".format(repetition, iteration_number))
+                self.update.emit(repetition, iteration_number)
+
+                model_loop.loop()
+
+            event_handler.after_iterations(repetition)
+
+            if self._break:
+                break
+
+        event_handler.after_repetitions()
+
+        self.finished.emit()
+
+    def stop(self):
+        self._break = True
 
 
 class SummaryWidget(DynamicFormLayout):
@@ -600,6 +684,16 @@ class DecideMainWindow(QtWidgets.QMainWindow):
             QtWidgets.QMessageBox.about(self, 'Input data invalid', str(e))
             logging.error(e)
 
+    def run_safe(self):
+
+        thread = QtCore.QThread()
+
+        obj = Worker()
+        obj.finished.connect(self.finished)
+        obj.moveToThread(thread)
+
+        thread.start()
+
     def run(self):
         # store the current state of the app
         self.save_settings()
@@ -612,53 +706,22 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         selected_issues = self.issue_widget.get_selected()
         selected_issues.sort()
 
-        self.setWindowTitle('Decide Exchange Model {}'.format('-'.join(selected_actors)))
+        actors_subset = '-'.join(selected_actors)
 
-        start_time = datetime.now()  # for timing operations
+        self.setWindowTitle('Decide Exchange Model {}'.format(actors_subset))
+        self.show_progress_dialog(actors_subset)
 
-        input_filename = self.settings.input_filename
-        repetitions = self.settings.repetitions
-        iterations = self.settings.iterations
+    def show_progress_dialog(self, title):
 
-        model = init_model('equal', input_filename, p=self.settings.randomized_value)
-
-        output_directory = init_output_directory(
-            model=model,
-            output_dir=self.settings.output_directory,
-            selected_actors=selected_actors
+        dialog = QtWidgets.QProgressDialog(
+            'Task in progress',
+            'Cancel',
+            0,
+            self.settings.repetitions * self.settings.iterations
         )
 
-        csv_parser = csvparser.CsvParser(model)
-        csv_parser.read(input_filename, actor_whitelist=selected_actors, issue_whitelist=selected_issues)
-
-        event_handler = self.init_event_handlers(model, output_directory, self.menuBar().summary_only.isChecked())
-        event_handler.before_repetitions(repetitions=repetitions, iterations=iterations)
-
-        dialog = QtWidgets.QProgressDialog('Task in progress', 'Cancel', 0,
-                                           repetitions * iterations)
-
-        dialog.setWindowTitle('-'.join(selected_actors))
+        dialog.setWindowTitle(title)
         dialog.show()
-
-        for repetition in range(repetitions):
-
-            csv_parser.read(input_filename, actor_whitelist=selected_actors)
-
-            model_loop = helpers.ModelLoop(model, event_handler, repetition)
-
-            event_handler.before_iterations(repetition)
-
-            for iteration_number in range(iterations):
-                logging.info("round {0}.{1}".format(repetition, iteration_number))
-                dialog.setValue((repetition * iterations) + iteration_number)
-                QtWidgets.qApp.processEvents()
-                model_loop.loop()
-
-            event_handler.after_iterations(repetition)
-
-        event_handler.after_repetitions()
-
-        print("Finished in {0}".format(datetime.now() - start_time))
 
     def init_event_handlers(self, model, output_directory, summary_only=False):
 

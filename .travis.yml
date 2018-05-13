@@ -6,6 +6,8 @@ python:
 # Setup anaconda
 before_install:
   - sudo apt-get update
+  - sudo apt-get install libsqlite3-dev
+  - sudo apt-get install build-essential
   # We do this conditionally because it saves us some downloading if the
   # version is the same.
   - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
@@ -23,7 +25,9 @@ before_install:
 
 # Install packages
 install:
-  - conda install -q python=$TRAVIS_PYTHON_VERSION pip requests conda-build jinja2 anaconda-client nose
+  - conda install -q python=$TRAVIS_PYTHON_VERSION pip requests conda-build jinja2 anaconda-client nose Cython peewee
+  - pip install Cython
+  - pip install 'peewee>=3.0'
   - pip install -r requirements.txt
   - pip install codecov 'coverage==4.3' codeclimate-test-reporter
 
