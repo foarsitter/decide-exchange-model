@@ -2,7 +2,6 @@ import logging
 import os
 import sys
 import xml.etree.cElementTree as ET
-from datetime import datetime
 from typing import List
 
 import matplotlib
@@ -55,12 +54,12 @@ class DecideLogDialog(QtWidgets.QDialog):
         self.setLayout(layout)
 
 
-class ProgramData(QObject):
+class ProgramData(QtCore.QObject):
     """
     The data used for displaying
     """
 
-    changed = pyqtSignal()
+    changed = QtCore.pyqtSignal()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -69,12 +68,12 @@ class ProgramData(QObject):
         self.actor_issues = {}
 
 
-class ProgramSettings(QObject):
+class ProgramSettings(QtCore.QObject):
     """
     The settings for the model parameters
     """
 
-    changed = pyqtSignal()
+    changed = QtCore.pyqtSignal()
 
     def __init__(self, *args, **kwargs):
         super(ProgramSettings, self).__init__(*args, **kwargs)
