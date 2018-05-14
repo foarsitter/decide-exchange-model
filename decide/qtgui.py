@@ -4,10 +4,6 @@ import sys
 import xml.etree.cElementTree as ET
 from typing import List
 
-import matplotlib
-
-matplotlib.use('TkAgg')
-
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 
@@ -23,36 +19,6 @@ from decide.model.observers.sqliteobserver import SQLiteObserver
 
 logging.basicConfig(filename='decide.log', filemode='w', level=logging.INFO,
                     format=' %(asctime)s - %(levelname)s - %(message)s')
-
-
-class QPlainTextEditLogger(logging.Handler):
-    def __init__(self):
-        super().__init__()
-        self.widget = QtWidgets.QPlainTextEdit()
-        self.widget.setReadOnly(True)
-
-    def emit(self, record):
-        msg = self.format(record)
-        self.widget.appendPlainText(msg)
-
-
-#
-#
-# class DecideLogDialog(QtWidgets.QDialog):
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#
-#         logTextBox = QPlainTextEditLogger()
-#         # You can format what is printed to text box
-#         logTextBox.setFormatter(logging.Formatter('%(message)s'))
-#         logging.getLogger().addHandler(logTextBox)
-#         # You can control the logging level
-#         logging.getLogger().setLevel(logging.INFO)
-#
-#         layout = QtWidgets.QVBoxLayout()
-#         # Add the new logging box widget to the layout
-#         layout.addWidget(logTextBox.widget)
-#         self.setLayout(layout)
 
 
 class ProgramData(QtCore.QObject):
