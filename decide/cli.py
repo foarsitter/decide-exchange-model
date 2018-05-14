@@ -1,10 +1,5 @@
-import logging
-
-import matplotlib
-
-matplotlib.use('TkAgg')
-
 import decimal
+import logging
 import os
 from datetime import datetime
 
@@ -14,7 +9,6 @@ from decide.model.observers.exchanges_writer import ExchangesWriter
 from decide.model.observers.externalities import Externalities
 from decide.model.observers.issue_development import IssueDevelopment
 from decide.model.observers.observer import Observable
-from decide.model.observers.sqliteobserver import SQLiteObserver
 
 
 def init_model(model_type, input_file, p=None):
