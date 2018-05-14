@@ -6,7 +6,7 @@ from typing import List
 
 import matplotlib
 
-matplotlib.use('Qt5Agg')
+matplotlib.use('TkAgg')
 
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
