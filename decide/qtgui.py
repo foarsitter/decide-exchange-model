@@ -1,3 +1,4 @@
+import copy
 import logging
 import os
 import sys
@@ -346,6 +347,8 @@ class Worker(QtCore.QObject):
         csv_parser = csvparser.CsvParser(model)
         csv_parser.read(input_filename, actor_whitelist=selected_actors, issue_whitelist=selected_issues)
 
+        actor_issues = copy.deepcopy(model.actor_issues)
+
         event_handler = init_event_handlers(model, output_directory, settings)
         event_handler.before_repetitions(repetitions=repetitions, iterations=iterations)
 
@@ -353,7 +356,7 @@ class Worker(QtCore.QObject):
 
         for repetition in range(repetitions):
 
-            csv_parser.read(input_filename, actor_whitelist=selected_actors, issue_whitelist=selected_issues)
+            model.actor_issues = copy.deepcopy(actor_issues)
 
             model_loop = helpers.ModelLoop(model, event_handler, repetition)
 
@@ -370,11 +373,6 @@ class Worker(QtCore.QObject):
                 model_loop.loop()
 
             event_handler.after_iterations(repetition)
-
-            repetition_time = time.time() - start_time
-            if repetitions > 100 and repetition % 10 == 0 and repetition > 0:
-                # print(repetition_time / repetition)
-                print((repetition_time / repetition) * repetitions)
 
             if self._break:
                 break
