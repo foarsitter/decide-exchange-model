@@ -5,6 +5,10 @@ import os
 from collections import defaultdict, OrderedDict
 from typing import List
 
+import matplotlib
+
+matplotlib.use('Qt5Agg')
+
 import matplotlib.pyplot as plt
 
 from decide.model.base import Issue

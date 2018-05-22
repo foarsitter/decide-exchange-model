@@ -17,7 +17,7 @@ setup(
             'decide-cli=decide.cli:main',
         ],
         'gui_scripts': [
-            'decide-gui=decide.gui:main',
+            'decide-gui=decide.qtgui:main',
         ]
     },
     python_requires='>=3.5',

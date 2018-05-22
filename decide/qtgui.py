@@ -1,14 +1,8 @@
 import logging
 import os
 import sys
-import time
 import xml.etree.cElementTree as ET
-from datetime import datetime
 from typing import List
-
-import matplotlib
-
-matplotlib.use('Qt5Agg')
 
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
@@ -25,34 +19,6 @@ from decide.model.observers.sqliteobserver import SQLiteObserver
 
 logging.basicConfig(filename='decide.log', filemode='w', level=logging.INFO,
                     format=' %(asctime)s - %(levelname)s - %(message)s')
-
-
-class QPlainTextEditLogger(logging.Handler):
-    def __init__(self):
-        super().__init__()
-        self.widget = QtWidgets.QPlainTextEdit()
-        self.widget.setReadOnly(True)
-
-    def emit(self, record):
-        msg = self.format(record)
-        self.widget.appendPlainText(msg)
-
-
-class DecideLogDialog(QtWidgets.QDialog):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        logTextBox = QPlainTextEditLogger()
-        # You can format what is printed to text box
-        logTextBox.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
-        logging.getLogger().addHandler(logTextBox)
-        # You can control the logging level
-        logging.getLogger().setLevel(logging.INFO)
-
-        layout = QtWidgets.QVBoxLayout()
-        # Add the new logging box widget to the layout
-        layout.addWidget(logTextBox.widget)
-        self.setLayout(layout)
 
 
 class ProgramData(QtCore.QObject):
@@ -343,7 +309,7 @@ class SettingsFormWidget(QtWidgets.QFormLayout):
 
 
 class Worker(QtCore.QObject):
-    finished = QtCore.pyqtSignal()
+    finished = QtCore.pyqtSignal(str, int)
     update = QtCore.pyqtSignal(int, int)
 
     def __init__(self, settings):
@@ -357,8 +323,6 @@ class Worker(QtCore.QObject):
         """
         :type settings: ProgramSettings
         """
-
-        print('hello')
 
         settings = self.settings
 
@@ -378,40 +342,38 @@ class Worker(QtCore.QObject):
             selected_actors=settings.selected_actors
         )
 
-        print('hi')
-
         csv_parser = csvparser.CsvParser(model)
         csv_parser.read(input_filename, actor_whitelist=selected_actors, issue_whitelist=selected_issues)
 
         event_handler = init_event_handlers(model, output_directory, settings)
         event_handler.before_repetitions(repetitions=repetitions, iterations=iterations)
-        #
-        # for repetition in range(repetitions):
-        #
-        #     csv_parser.read(input_filename, actor_whitelist=selected_actors)
-        #
-        #     model_loop = helpers.ModelLoop(model, event_handler, repetition)
-        #
-        #     event_handler.before_iterations(repetition)
-        #
-        #     for iteration_number in range(iterations):
-        #
-        #         if self._break:
-        #             break
-        #
-        #         logging.info("round {0}.{1}".format(repetition, iteration_number))
-        #         self.update.emit(repetition, iteration_number)
-        #
-        #         model_loop.loop()
-        #
-        #     event_handler.after_iterations(repetition)
-        #
-        #     if self._break:
-        #         break
-        #
-        # event_handler.after_repetitions()
-        #
-        self.finished.emit()
+
+        for repetition in range(repetitions):
+
+            csv_parser.read(input_filename, actor_whitelist=selected_actors)
+
+            model_loop = helpers.ModelLoop(model, event_handler, repetition)
+
+            event_handler.before_iterations(repetition)
+
+            for iteration_number in range(iterations):
+
+                if self._break:
+                    break
+
+                logging.info("round {0}.{1}".format(repetition, iteration_number))
+                self.update.emit(repetition, iteration_number)
+
+                model_loop.loop()
+
+            event_handler.after_iterations(repetition)
+
+            if self._break:
+                break
+
+        event_handler.after_repetitions()
+
+        self.finished.emit(output_directory, model.tie_count)
 
     def stop(self):
         self._break = True
@@ -446,6 +408,33 @@ class SummaryWidget(DynamicFormLayout):
         self.add_text_row('Input', self.settings.input_filename, self.test_callback)
         self.add_text_row('Output directory', self.settings.output_directory, self.test_callback)
 
+        settings = self.main_window.settings  # type: ProgramSettings
+
+        output_selection = []
+
+        if settings.issue_development_csv:
+            output_selection.append('Issue development values [.csv]')
+
+        if settings.summary_only:
+            output_selection.append('Summary only [.csv]')
+
+        if settings.output_sqlite:
+            output_selection.append('Sqlite [database]')
+
+        if settings.exchanges_csv:
+            output_selection.append('Exchange values [.csv]')
+
+        if settings.externalities_csv:
+            output_selection.append('Externalities [.csv]')
+
+        if settings.voting_positions:
+            output_selection.append('Show Voting positions [.csv]')
+
+        self.add_text_row('Output settings', output_selection[0])
+
+        for setting in output_selection[-1:]:
+            self.add_text_row('', setting)
+
         self.main_window.set_start_button_state()
 
     def add_text_row(self, label, value, callback=None):
@@ -459,7 +448,7 @@ class SummaryWidget(DynamicFormLayout):
         self.add_row(QtWidgets.QLabel(label), value_label)
 
     def test_callback(self, link):
-        self.main_window.open_file(link)
+        open_file(link)
 
 
 class MenuBar(QtWidgets.QMenuBar):
@@ -593,13 +582,16 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         self.settings = ProgramSettings()
 
         self.start = QtWidgets.QPushButton('Start')
+
         self.issue_widget = IssueWidget(self)
         self.actor_widget = ActorWidget(self)
         self.actor_issue_widget = ActorIssueWidget(self)
         self.settings_widget = SettingsFormWidget(self.settings)
 
+        self.progress_dialog = None
+
         self.thread = QtCore.QThread()
-        self.woker = Worker(self.settings)
+        self.worker = Worker(self.settings)
 
         self.overview_widget = SummaryWidget(self, self.settings, self.data, self.actor_widget, self.issue_widget)
 
@@ -610,9 +602,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         self.init_ui_data()
 
     def show_debug_dialog(self):
-        dlg = DecideLogDialog(self)
-        dlg.setWindowTitle('Log window')
-        dlg.show()
+        open_file('decide.log')
 
     def update_data_widgets(self):
 
@@ -683,7 +673,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
         left_top = QtWidgets.QHBoxLayout()
 
-        left_top.setAlignment(QtCore.Qt.AlignTop)
+        # left_top.setAlignment(QtCore.Qt.AlignTop)
 
         actor_box = QtWidgets.QGroupBox('Actors')
         issue_box = QtWidgets.QGroupBox('Issues')
@@ -709,7 +699,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         right = QtWidgets.QVBoxLayout()
         right.addWidget(settings_box, 1)
         right.addWidget(overview_box, 1)
-        right.addWidget(self.start)
+        right.addWidget(self.start, 1)
 
         main.addLayout(left, 1)
         main.addLayout(right, 1)
@@ -750,14 +740,38 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         self.worker.finished.connect(self.finished)
         self.worker.moveToThread(self.thread)
         self.worker.finished.connect(self.thread.quit)
-
+        self.worker.update.connect(self.update_progress)
         self.thread.started.connect(self.worker.run_model)
         self.thread.start()
 
         print('thread started')
 
-    def finished(self):
-        print('doei!')
+    def update_progress(self, repetition, iteration):
+
+        value = repetition * (self.settings.iterations) + iteration
+
+        self.progress_dialog.setValue(value)
+
+    def finished(self, output_directory, tie_count):
+
+        self._clean_progress_dialog()
+
+        if not self.worker._break:
+            buttonReply = QtWidgets.QMessageBox.question(
+                self,
+                'Done', "Done executing. Found {} ties. Open the result directory?".format(tie_count),
+                QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No, QtWidgets.QMessageBox.No
+            )
+
+            if buttonReply == QtWidgets.QMessageBox.Yes:
+                if self.settings.summary_only and self.settings.issue_development_csv:
+                    open_file(os.path.join(output_directory, 'issues', 'summary'))
+                else:
+                    open_file(output_directory)
+
+    def _clean_progress_dialog(self):
+        self.progress_dialog.setValue(self.settings.iterations * self.settings.repetitions)
+        self.progress_dialog.hide()
 
     def run(self):
         # store the current state of the app
@@ -771,21 +785,26 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         actors_subset = '-'.join(selected_actors)
 
         self.setWindowTitle('Decide Exchange Model {}'.format(actors_subset))
+
         self.show_progress_dialog(actors_subset)
 
         self.run_safe()
 
     def show_progress_dialog(self, title):
 
-        progress_dialog = QtWidgets.QProgressDialog(
+        self.progress_dialog = QtWidgets.QProgressDialog(
             'Task in progress',
             'Cancel',
             0,
-            self.settings.repetitions * self.settings.iterations
+            self.settings.repetitions * self.settings.iterations,
+            self
         )
 
-        progress_dialog.setWindowTitle(title)
-        progress_dialog.show()
+        self.progress_dialog.setWindowTitle(title)
+
+        self.progress_dialog.canceled.connect(self.cancel)
+
+        self.progress_dialog.show()
 
     def load_settings(self):
 
@@ -804,6 +823,9 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         self.actor_widget.save()
         self.menuBar().save()
         self.settings.save()
+
+    def cancel(self):
+        self.worker.stop()
 
 
 def main():

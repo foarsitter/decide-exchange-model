@@ -688,6 +688,7 @@ class AbstractModel:
         self.nbs_denominators = {}
         self.data_set_name = ""
         self.model_name = 'abstract'
+        self.tie_count = 0
 
     def get_actor_issue(self, actor: Actor, issue: Issue):
         """
