@@ -347,7 +347,7 @@ class Worker(QtCore.QObject):
 
         event_handler = init_event_handlers(model, output_directory, settings)
         event_handler.before_repetitions(repetitions=repetitions, iterations=iterations)
-        #
+
         for repetition in range(repetitions):
 
             csv_parser.read(input_filename, actor_whitelist=selected_actors)
@@ -372,7 +372,7 @@ class Worker(QtCore.QObject):
                 break
 
         event_handler.after_repetitions()
-        #
+
         self.finished.emit(output_directory, model.tie_count)
 
     def stop(self):
@@ -407,6 +407,33 @@ class SummaryWidget(DynamicFormLayout):
 
         self.add_text_row('Input', self.settings.input_filename, self.test_callback)
         self.add_text_row('Output directory', self.settings.output_directory, self.test_callback)
+
+        settings = self.main_window.settings  # type: ProgramSettings
+
+        output_selection = []
+
+        if settings.issue_development_csv:
+            output_selection.append('Issue development values [.csv]')
+
+        if settings.summary_only:
+            output_selection.append('Summary only [.csv]')
+
+        if settings.output_sqlite:
+            output_selection.append('Sqlite [database]')
+
+        if settings.exchanges_csv:
+            output_selection.append('Exchange values [.csv]')
+
+        if settings.externalities_csv:
+            output_selection.append('Externalities [.csv]')
+
+        if settings.voting_positions:
+            output_selection.append('Show Voting positions [.csv]')
+
+        self.add_text_row('Output settings', output_selection[0])
+
+        for setting in output_selection[-1:]:
+            self.add_text_row('', setting)
 
         self.main_window.set_start_button_state()
 
@@ -720,26 +747,31 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         print('thread started')
 
     def update_progress(self, repetition, iteration):
-        self.progress_dialog.setValue(repetition * self.settings.iterations + iteration)
+
+        value = repetition * (self.settings.iterations) + iteration
+
+        self.progress_dialog.setValue(value)
 
     def finished(self, output_directory, tie_count):
+
         self._clean_progress_dialog()
 
-        buttonReply = QtWidgets.QMessageBox.question(
-            self,
-            'PyQt5 message', "Done executing. Found {} ties. Open the result directory?".format(tie_count),
-            QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No, QtWidgets.QMessageBox.No
-        )
+        if not self.worker._break:
+            buttonReply = QtWidgets.QMessageBox.question(
+                self,
+                'Done', "Done executing. Found {} ties. Open the result directory?".format(tie_count),
+                QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No, QtWidgets.QMessageBox.No
+            )
 
-        if buttonReply == QtWidgets.QMessageBox.Yes:
-            if self.settings.summary_only and self.settings.issue_development_csv:
-                open_file(os.path.join(output_directory, 'issues', 'summary'))
-            else:
-                open_file(output_directory)
+            if buttonReply == QtWidgets.QMessageBox.Yes:
+                if self.settings.summary_only and self.settings.issue_development_csv:
+                    open_file(os.path.join(output_directory, 'issues', 'summary'))
+                else:
+                    open_file(output_directory)
 
     def _clean_progress_dialog(self):
+        self.progress_dialog.setValue(self.settings.iterations * self.settings.repetitions)
         self.progress_dialog.hide()
-        self.progress_dialog = None
 
     def run(self):
         # store the current state of the app
@@ -793,7 +825,6 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         self.settings.save()
 
     def cancel(self):
-        print('stop')
         self.worker.stop()
 
 

@@ -7,7 +7,7 @@ from typing import List
 
 import matplotlib
 
-matplotlib.use('TkAgg')
+matplotlib.use('Qt5Agg')
 
 import matplotlib.pyplot as plt
 

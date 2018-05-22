@@ -9,6 +9,7 @@ from decide.model.observers.exchanges_writer import ExchangesWriter
 from decide.model.observers.externalities import Externalities
 from decide.model.observers.issue_development import IssueDevelopment
 from decide.model.observers.observer import Observable
+from decide.model.observers.sqliteobserver import SQLiteObserver
 
 
 def init_model(model_type, input_file, p=None):
@@ -30,7 +31,7 @@ def init_model(model_type, input_file, p=None):
 def init_event_handlers(model, output_directory, database_file, write_csv=True):
     event_handler = Observable(model_ref=model, output_directory=output_directory)
 
-    # SQLiteObserver(event_handler, database_file)
+    SQLiteObserver(event_handler, database_file)
 
     if write_csv:
         # csv handlers
