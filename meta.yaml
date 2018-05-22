@@ -51,4 +51,4 @@ about:
   dev_url: 'https://github.com/foarsitter/decide-exchange-model'
 
 app:
-  entry: decide-qt5
+  entry: decide-gui
