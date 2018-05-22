@@ -1,6 +1,7 @@
 import logging
 import os
 import sys
+import time
 import xml.etree.cElementTree as ET
 from typing import List
 
@@ -310,7 +311,7 @@ class SettingsFormWidget(QtWidgets.QFormLayout):
 
 class Worker(QtCore.QObject):
     finished = QtCore.pyqtSignal(str, int)
-    update = QtCore.pyqtSignal(int, int)
+    update = QtCore.pyqtSignal(int, int, float)
 
     def __init__(self, settings):
         super(Worker, self).__init__()
@@ -348,9 +349,11 @@ class Worker(QtCore.QObject):
         event_handler = init_event_handlers(model, output_directory, settings)
         event_handler.before_repetitions(repetitions=repetitions, iterations=iterations)
 
+        start_time = time.time()
+
         for repetition in range(repetitions):
 
-            csv_parser.read(input_filename, actor_whitelist=selected_actors)
+            csv_parser.read(input_filename, actor_whitelist=selected_actors, issue_whitelist=selected_issues)
 
             model_loop = helpers.ModelLoop(model, event_handler, repetition)
 
@@ -362,11 +365,16 @@ class Worker(QtCore.QObject):
                     break
 
                 logging.info("round {0}.{1}".format(repetition, iteration_number))
-                self.update.emit(repetition, iteration_number)
+                self.update.emit(repetition, iteration_number, start_time)
 
                 model_loop.loop()
 
             event_handler.after_iterations(repetition)
+
+            repetition_time = time.time() - start_time
+            if repetitions > 100 and repetition % 10 == 0 and repetition > 0:
+                # print(repetition_time / repetition)
+                print((repetition_time / repetition) * repetitions)
 
             if self._break:
                 break
@@ -591,7 +599,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         self.progress_dialog = None
 
         self.thread = QtCore.QThread()
-        self.worker = Worker(self.settings)
+        self.worker = None
 
         self.overview_widget = SummaryWidget(self, self.settings, self.data, self.actor_widget, self.issue_widget)
 
@@ -746,11 +754,23 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
         print('thread started')
 
-    def update_progress(self, repetition, iteration):
+    def update_progress(self, repetition, iteration, start_time):
 
         value = repetition * (self.settings.iterations) + iteration
 
         self.progress_dialog.setValue(value)
+        repetitions = self.settings.repetitions
+
+        if repetition > 0 and repetitions > 100 and repetition % 20 == 0:
+            time_expired = time.time() - start_time
+
+            avg_time_per_repetition = time_expired / repetition
+
+            estimated_time_needed_seconds = avg_time_per_repetition * repetitions
+
+            estimated_time_left = estimated_time_needed_seconds - (repetition * avg_time_per_repetition)
+
+            self.statusBar().showMessage('{:.0f} minutes left '.format(estimated_time_left / 60))
 
     def finished(self, output_directory, tie_count):
 
@@ -800,6 +820,12 @@ class DecideMainWindow(QtWidgets.QMainWindow):
             self
         )
 
+        bar = QtWidgets.QProgressBar(self.progress_dialog)
+        bar.setTextVisible(True)
+        bar.setFormat("%v/%m (%p%)")
+        bar.setMinimum(0)
+        bar.setMaximum(self.settings.iterations * self.settings.repetitions)
+        self.progress_dialog.setBar(bar)
         self.progress_dialog.setWindowTitle(title)
 
         self.progress_dialog.canceled.connect(self.cancel)
