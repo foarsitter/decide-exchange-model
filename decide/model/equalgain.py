@@ -309,6 +309,8 @@ class EqualGainExchange(base.AbstractExchange):
         # since this is the Equal Gain model, the gains should be equal
         if calculations.is_gain_equal(eui, euj):
             self.gain = abs(eui)
+            self.i.eu = self.gain
+            self.j.eu = self.gain
 
         b1 = self.i.is_move_valid(self.i.move)
         b2 = self.j.is_move_valid(self.j.move)

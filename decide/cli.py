@@ -1,3 +1,4 @@
+import copy
 import decimal
 import logging
 import os
@@ -8,6 +9,7 @@ from decide.model.helpers import helpers, csvparser
 from decide.model.observers.exchanges_writer import ExchangesWriter
 from decide.model.observers.externalities import Externalities
 from decide.model.observers.issue_development import IssueDevelopment
+from decide.model.observers.logger import Logger
 from decide.model.observers.observer import Observable
 from decide.model.observers.sqliteobserver import SQLiteObserver
 
@@ -33,6 +35,8 @@ def init_event_handlers(model, output_directory, database_file, write_csv=True):
 
     SQLiteObserver(event_handler, database_file)
 
+    Logger(event_handler)
+
     if write_csv:
         # csv handlers
         Externalities(event_handler)
@@ -53,49 +57,78 @@ def init_output_directory(model, output_dir, selected_actors=list()):
     return output_directory
 
 
-def main():
-    start_time = datetime.now()  # for timing operations
+def float_range(start=0.0, stop=1.0, step=0.05):
+    i = start
+    while i < stop:
+        yield i
+        i += step
 
+
+def main():
     args = helpers.parse_arguments()
 
-    model = init_model(args.model, args.input_file, args.p)
+    if not args.p and (args.start and args.step and args.stop):
+        p_values = [str(round(p, 2)) for p in float_range(stop=0.50)] + ['1.00']
 
-    output_directory = init_output_directory(model, args.output_dir)
+    if args.p:
+        p_values = [args.p]
 
-    # The event handlers for logging and writing the results to the disk.
-    event_handler = init_event_handlers(
-        model=model,
-        output_directory=output_directory,
-        database_file=args.database,
-        write_csv=True
-    )
+    issues = None
+    if args.issues:
+        issues = args.issues.split(';')  # 'commitments;control;devlopc2020;domestred;extra'.split(';')
 
-    event_handler.log(message="Start calculation at {0}".format(start_time))
+    actors = None
+    if args.actors:
+        actors = args.actors.split(';')  # 'australia;brazil;canada;euinclnorway;japan;russia;usa'.split(';')
 
-    csv_parser = csvparser.CsvParser(model)
-    csv_parser.read(args.input_file)
+    for p in p_values:
 
-    event_handler.log(message="Parsed file".format(args.input_file))
+        print(p)
 
-    event_handler.before_repetitions(repetitions=args.repetitions, iterations=args.iterations)
+        start_time = datetime.now()  # for timing operations
 
-    for repetition in range(args.repetitions):
+        model = init_model(args.model, args.input_file, p)
 
-        csv_parser.read(args.input_file)
+        output_directory = init_output_directory(model, args.output_dir)
 
-        model_loop = helpers.ModelLoop(model, event_handler, repetition)
+        # The event handlers for logging and writing the results to the disk.
+        event_handler = init_event_handlers(
+            model=model,
+            output_directory=output_directory,
+            database_file=args.database,
+            write_csv=False
+        )
 
-        event_handler.before_iterations(repetition)
+        event_handler.log(message="Start calculation at {0}".format(start_time))
 
-        for iteration_number in range(args.iterations):
-            logging.info("round {0}.{1}".format(repetition, iteration_number))
-            model_loop.loop()
+        csv_parser = csvparser.CsvParser(model)
+        csv_parser.read(args.input_file, actor_whitelist=actors, issue_whitelist=issues)
 
-        event_handler.after_iterations(repetition)
+        actor_issues = copy.deepcopy(model.actor_issues)
 
-    event_handler.after_repetitions()
+        event_handler.log(message="Parsed file".format(args.input_file))
 
-    event_handler.log(message="Finished in {0}".format(datetime.now() - start_time))
+        event_handler.before_repetitions(repetitions=args.repetitions, iterations=args.iterations)
+
+        for repetition in range(args.repetitions):
+
+            model.actor_issues = copy.deepcopy(actor_issues)
+
+            model_loop = helpers.ModelLoop(model, event_handler, repetition)
+
+            event_handler.before_iterations(repetition)
+
+            for iteration_number in range(args.iterations):
+                logging.info("round {0}.{1}".format(repetition, iteration_number))
+                model_loop.loop()
+
+            event_handler.after_iterations(repetition)
+
+            print('{}/{}'.format(repetition, args.repetitions))
+
+        event_handler.after_repetitions()
+
+        event_handler.log(message="Finished in {0}".format(datetime.now() - start_time))
 
 
 if __name__ == "__main__":

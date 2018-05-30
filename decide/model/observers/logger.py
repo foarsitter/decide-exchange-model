@@ -5,7 +5,7 @@ from ..observers.observer import Observer, Observable
 
 
 class Logger(Observer):
-    LOG_LEVEL = 2
+    LOG_LEVEL = 1
 
     def update(self, observable, notification_type, **kwargs):
         if notification_type == Observable.LOG and Logger.LOG_LEVEL > 1:

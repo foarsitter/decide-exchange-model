@@ -322,10 +322,6 @@ class Worker(QtCore.QObject):
 
     @QtCore.pyqtSlot()
     def run_model(self):
-        """
-        :type settings: ProgramSettings
-        """
-
         settings = self.settings
 
         selected_actors = settings.selected_actors
@@ -768,7 +764,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
             estimated_time_left = estimated_time_needed_seconds - (repetition * avg_time_per_repetition)
 
-            self.statusBar().showMessage('{:.0f} minutes left '.format(estimated_time_left / 60))
+            self.statusBar().showMessage('{:.0f} minutes remaining '.format(estimated_time_left / 60))
 
     def finished(self, output_directory, tie_count):
 

@@ -1,5 +1,4 @@
 import datetime
-import logging
 from collections import defaultdict
 from typing import List
 
@@ -26,7 +25,7 @@ class SQLiteObserver(Observer):
         self.model_run = None
 
         if not output_directory.endswith('.db') and output_directory != ':memory:':
-            output_directory += '/decide-data.db'
+            output_directory += '/decide-data_1.db'
             print('logging to database {}'.format(output_directory))
 
         self.manager = db.Manager(output_directory)
@@ -84,6 +83,13 @@ class SQLiteObserver(Observer):
                 db_exchange = db.Exchange()
                 db_exchange.i = self._create_exchange_actor(exchange.i)
                 db_exchange.j = self._create_exchange_actor(exchange.j)
+
+                if db_exchange.i.eu < 1e-10:
+                    pass
+
+                if db_exchange.j.eu < 1e-10:
+                    pass
+
                 db_exchange.iteration = iteration
                 db_exchange.save()
 

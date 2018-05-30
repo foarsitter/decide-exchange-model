@@ -29,7 +29,13 @@ def parse_arguments():
                         default="../data/input/sample_data.txt",
                         type=str)
     parser.add_argument('--output_dir', help='Output directory ', default="../data/output/", type=str)
-    parser.add_argument('--database', help='The SQLite database', default="../data/output/decide-data.db", type=str)
+    parser.add_argument('--database', help='The SQLite database', default="../data/output/decide-data_1.db", type=str)
+
+    parser.add_argument('--step', default=None, type=str)
+    parser.add_argument('--stop', default=None, type=str)
+    parser.add_argument('--start', default=None, type=str)
+    parser.add_argument('--actors', default=None, type=str)
+    parser.add_argument('--issues', default=None, type=str)
 
     return parser.parse_args()
 
@@ -66,7 +72,6 @@ class ModelLoop(object):
             realize_exchange = self.model.highest_gain()  # type: base.AbstractExchange
 
             if realize_exchange and realize_exchange.is_valid:
-
                 removed_exchanges = self.model.remove_invalid_exchanges(realize_exchange)
 
                 realized.append(realize_exchange)
