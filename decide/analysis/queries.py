@@ -92,15 +92,15 @@ WHERE ai.type = 'before' and i2.pointer = 9 ORDER BY m.p;
 
 def externalities():
     pass
-
-
-if __name__ == "__main__":
-    # average_per_issue()
-    import matplotlib.pyplot as plt
-
-    fig = plt.figure()
-    fig.suptitle('No axes on this figure')
-
-    fig, ax_lst = plt.subplots(2, 2)
-
-    plt.show()
+#
+#
+# if __name__ == "__main__":
+#     # average_per_issue()
+#     import matplotlib.pyplot as plt
+#
+#     fig = plt.figure()
+#     fig.suptitle('No axes on this figure')
+#
+#     fig, ax_lst = plt.subplots(2, 2)
+#
+#     plt.show()

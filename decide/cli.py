@@ -67,19 +67,31 @@ def float_range(start=0.0, stop=1.0, step=0.05):
 def main():
     args = helpers.parse_arguments()
 
-    if not args.p and (args.start and args.step and args.stop):
-        p_values = [str(round(p, 2)) for p in float_range(stop=0.50)] + ['1.00']
+    p_values = []
+
+    if args.start and args.step and args.stop:
+        p_values = [str(round(p, 2)) for p in
+                    float_range(start=float(args.start), step=float(args.step), stop=float(args.stop))]
 
     if args.p:
-        p_values = [args.p]
+
+        if ';' in args.p:
+            p_values += args.p.split(';')
+        else:
+            p_values.append(args.p)
 
     issues = None
+
     if args.issues:
         issues = args.issues.split(';')  # 'commitments;control;devlopc2020;domestred;extra'.split(';')
 
     actors = None
     if args.actors:
         actors = args.actors.split(';')  # 'australia;brazil;canada;euinclnorway;japan;russia;usa'.split(';')
+
+    print(p_values)
+    print(issues)
+    print(actors)
 
     for p in p_values:
 
