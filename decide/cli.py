@@ -142,6 +142,7 @@ def main():
 
         event_handler.log(message="Finished in {0}".format(datetime.now() - start_time))
 
+    print('done')
 
 if __name__ == "__main__":
     main()

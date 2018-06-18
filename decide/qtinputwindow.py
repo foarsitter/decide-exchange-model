@@ -1,9 +1,18 @@
+import os
 import sys
-import uuid
+from collections import defaultdict
 
-from PyQt5 import QtWidgets
-from PyQt5.QtCore import pyqtSignal, pyqtSlot
+from PyQt5 import QtWidgets, QtCore
 
+
+def open_file(path):
+    import subprocess, os
+    if sys.platform.startswith('darwin'):
+        subprocess.call(('open', path))
+    elif os.name == 'nt':
+        os.startfile(path)
+    elif os.name == 'posix':
+        subprocess.call(('xdg-open', path))
 
 def clear_layout(layout):
     if layout is not None:
@@ -16,216 +25,353 @@ def clear_layout(layout):
                 clear_layout(item.layout())
 
 
-class BaseInputControl(QtWidgets.QHBoxLayout):
+class Observer:
+    key = 'AbstractObserver'
 
-    def __init__(self, *args, **kwargs):
-        super(BaseInputControl, self).__init__(*args, **kwargs)
-
-        self.uuid = uuid.uuid4()
-
-    def attach(self):
+    def notify_add(self, observer, value):
         raise NotImplementedError
 
-    def connect(self, obj):
-        raise NotImplementedError
-
-    def values(self):
+    def notify_delete(self, observer, row):
         raise NotImplementedError
 
 
-class ActorInputControl(BaseInputControl):
+class Observable:
 
     def __init__(self):
-        super(ActorInputControl, self).__init__()
-        self.name_input = QtWidgets.QLineEdit()
 
-    def attach(self):
-        self.addWidget(self.name_input)
+        self.observers = []
 
-    def connect(self, obj):
-        self.name_input.editingFinished.connect(obj)
+    def notify_add(self, value):
 
-    def values(self):
-        name = self.name_input.text()
-        return {'name': name, 'uuid': self.uuid}
+        for observer in self.observers:
+            observer.notify_add(self, value)
 
-    @staticmethod
-    def heading():
-        return ['Name']
+    def notify_delete(self, row):
 
-
-class IssueInputControl(BaseInputControl):
-
-    def __init__(self):
-        super(IssueInputControl, self).__init__()
-
-        self.name_input = QtWidgets.QLineEdit()
-        self.lower_input = QtWidgets.QLineEdit()
-        self.upper_input = QtWidgets.QLineEdit()
-
-        self.lower_input.setText(str(0))
-        self.upper_input.setText(str(100))
-
-    def connect(self, obj):
-        self.name_input.editingFinished.connect(obj)
-        self.lower_input.editingFinished.connect(obj)
-        self.upper_input.editingFinished.connect(obj)
-
-    def attach(self):
-        self.addWidget(self.name_input)
-        self.addWidget(self.lower_input)
-        self.addWidget(self.upper_input)
-
-    @staticmethod
-    def heading():
-        return ['Name', 'Lower (min)', 'Upper (max)']
-
-    def values(self):
-        return {
-            'name': self.name_input.text(),
-            'lower': self.lower_input.text(),
-            'upper': self.upper_input.text(),
-            'uuid': self.uuid
-        }
-
-
-class ActorIssueInputControl(BaseInputControl):
-
-    def connect(self, obj):
-        pass
-
-    def values(self):
-        pass
-
-    def __init__(self):
-        super(ActorIssueInputControl, self).__init__()
-        self.actor_input_control = None
-        self.issue_input_control = None
-
-        self.layout = QtWidgets.QGridLayout()
-
-        self.actor_issues = {}
+        for observer in self.observers:
+            observer.notify_delete(self, row)
 
     def register(self, obj):
-        self.linked_input_controls.append(obj)
-
-    def attach(self):
-        self.addLayout(self.layout)
-
-    @staticmethod
-    def heading():
-        return ['Actor', 'Issue', 'Position', 'Salience', 'Power']
-
-    @pyqtSlot()
-    def update_layout(self):
-
-        clear_layout(self.layout)
-
-        issues = self.issue_input_control.values()
-        actors = self.actor_input_control.values()
-
-        row = 0
-
-        for issue in issues:
-            for actor in actors:
-                self.layout.addWidget(QtWidgets.QLabel(actor['name']), row, 0)
-                self.layout.addWidget(QtWidgets.QLabel(issue['name']), row, 1)
-                self.layout.addWidget(QtWidgets.QDoubleSpinBox(), row, 2)
-                self.layout.addWidget(QtWidgets.QDoubleSpinBox(), row, 3)
-                self.layout.addWidget(QtWidgets.QDoubleSpinBox(), row, 4)
-                row += 1
+        self.observers.append(obj)
 
 
-class DynamicInputControlList(QtWidgets.QVBoxLayout):
-    """
-    A plus button
-    rows with a certain widget
-    A delete button per row
-    """
+class ActorInput(Observable):
 
-    updated = pyqtSignal()
+    def __init__(self, name):
+        super().__init__()
+        self.id = None
+        self._name = name
+        self.key = 'actor_input'
 
-    def __init__(self, input_control_class, actor_issues_input_control: ActorIssueInputControl):
-        super(DynamicInputControlList, self).__init__()
+    @property
+    def name(self):
+        return self._name
 
-        self.add_button = QtWidgets.QPushButton('add')
-        self.add_button.clicked.connect(self.add_action)
+    @name.setter
+    def name(self, value):
+        self._name = value
+        print('actor name to ' + self._name)
+        self.notify_add(value)
 
-        self.input_control_class = input_control_class
-        self.rows = {}
-        self.input_controls = {}
-        self.row_container = QtWidgets.QVBoxLayout()
-        self.actor_issues_input_control = actor_issues_input_control
+    def set_name(self, value):
+        self.name = value
 
-    def attach(self):
-        self.add_heading()
-        self.addLayout(self.row_container)
-        self.addWidget(self.add_button)
 
-        self.updated.connect(self.actor_issues_input_control.update_layout)
+class IssueInput(Observable):
+
+    def __init__(self, name, lower, upper):
+        super().__init__()
+        self.id = None
+        self._name = name
+        self._lower = lower
+        self._upper = upper
+        self.key = 'issue_input'
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def lower(self):
+        return self._lower
+
+    @property
+    def upper(self):
+        return self._upper
+
+    @name.setter
+    def name(self, value):
+        self._name = value
+        print('issue name to ' + self._name)
+        self.notify_add(value)
+
+    def set_name(self, value):
+        self.name = value
+
+
+class ActorIssueInput(Observer):
+
+    def notify_add(self, key=None, value=None):
+        print('notify')
+
+        print(self.actor.name)
+        print(self.issue.name)
+
+        self.actor_input.setText(self.actor.name)
+        self.issue_input.setText(self.issue.name)
+
+    def __init__(self, layout, actor: ActorInput, issue: IssueInput, position, salience, power):
+        super().__init__()
+        self.id = None
+        self.layout = layout
+
+        self.actor = actor
+        self.issue = issue
+
+        self.actor.register(self)
+        self.issue.register(self)
+
+        self.position = position
+        self.salience = salience
+        self.power = power
+
+        self.actor_input = QtWidgets.QLabel(actor.name)
+        self.issue_input = QtWidgets.QLabel(issue.name)
+
+        self.position_input = QtWidgets.QDoubleSpinBox()
+        self.salience_input = QtWidgets.QDoubleSpinBox()
+        self.power_input = QtWidgets.QDoubleSpinBox()
+
+
+class BoxLayout(QtWidgets.QGroupBox):
+
+    def __init__(self, title, btn=True):
+        super(BoxLayout, self).__init__(title)
+
+        self.scroll_area = QtWidgets.QScrollArea(self)
+        self.scroll_area.setWidgetResizable(True)
+
+        self.scroll_area_widget = QtWidgets.QWidget()
+        self.scroll_area.setWidget(self.scroll_area_widget)
+
+        self.grid_layout = QtWidgets.QGridLayout(self.scroll_area_widget)
+        self.grid_layout.setAlignment(QtCore.Qt.AlignTop)
+
+        self.layout_container = QtWidgets.QVBoxLayout()
+        self.layout_container.addWidget(self.scroll_area)
+
+        if btn:
+            self.add_button = QtWidgets.QPushButton('Add')
+            self.layout_container.addWidget(self.add_button)
+
+        self.setLayout(self.layout_container)
+
+        self.items = {}
+
+        self._row_pointer = 0
 
     def add_heading(self):
+        raise NotImplementedError
 
-        heading = self.input_control_class.heading()
-        labels = QtWidgets.QHBoxLayout()
+    def add_row(self, *args, pointer=None):
 
-        for x in heading:
-            labels.addWidget(QtWidgets.QLabel(x))
+        if pointer:
+            row = pointer
+        else:
+            row = self._row_pointer
 
-        self.addLayout(labels)
+        for column, arg in enumerate(args):
+            if isinstance(arg, str):
+                arg = QtWidgets.QLabel(arg)
+
+            self.grid_layout.addWidget(arg, row, column)
+
+        self._row_pointer += 1
+
+    def delete_row(self):
+
+        sending_button = self.sender()  # type: QtWidgets.QPushButton
+
+        print(sending_button.objectName())
+
+        row = int(sending_button.objectName().split('-')[-1])
+
+        obj = self.items[row]
+        del self.items[row]
+
+        for column in range(self.grid_layout.count()):
+
+            item = self.grid_layout.itemAtPosition(row, column)
+            if item:
+                item.widget().deleteLater()
+            self.grid_layout.removeItem(item)
+
+        return obj
+
+
+class ActorBox(BoxLayout, Observable):
+    key = 'actor_box'
+
+    def __init__(self):
+        super(ActorBox, self).__init__('Actors')
+
+        self.add_button.clicked.connect(self.add_action)
+
+    def add_heading(self):
+        self.add_row('Actor')
+
+    def add_actor(self):
+        actor_input = ActorInput('')
+        actor_input.id = self._row_pointer
+
+        name = QtWidgets.QLineEdit()
+        # call the setter on a change
+        name.textChanged.connect(actor_input.set_name)
+
+        delete_button = QtWidgets.QPushButton('Delete')
+        delete_button.clicked.connect(self.delete_row)
+        delete_button.setObjectName('actor-' + str(self._row_pointer))
+
+        self.items[actor_input.id] = actor_input
+
+        self.add_row(name, delete_button)
+
+        return actor_input
 
     def add_action(self):
-        self.add_row()
-        self.updated.emit()
+        a = self.add_actor()
 
-    def add_row(self):
+        self.notify_add(a)
 
-        layout = QtWidgets.QHBoxLayout()
+    def delete_row(self):
+        row = super().delete_row()
+        self.notify_delete(row)
 
-        input_control = self.input_control_class()
-        input_control.attach()
-        input_control.connect(self.actor_issues_input_control.update_layout)
 
-        id = str(uuid.uuid4())
+class IssueBox(BoxLayout, Observable):
+    key = 'issue_box'
 
-        self.input_controls[id] = input_control
+    def __init__(self):
+        super(IssueBox, self).__init__('Issues')
 
-        layout.addLayout(input_control)
-        layout.setObjectName('layout_{}'.format(id))
-        layout.addWidget(self.delete_button(id))
+        self.add_button.clicked.connect(self.add_action)
 
-        self.rows[id] = layout
+    def add_heading(self):
+        self.add_row('Issue', 'Lower', 'Upper')
 
-        self.row_container.addLayout(layout)
+    def add_issue(self):
+        issue_input = IssueInput('', '0.00', '100.00')
+        issue_input.id = self._row_pointer
+        lower = QtWidgets.QDoubleSpinBox()
+        upper = QtWidgets.QDoubleSpinBox()
 
-    def delete_button(self, object_name):
+        name = QtWidgets.QLineEdit()
+        # call the setter on a change
+        name.textChanged.connect(issue_input.set_name)
 
-        button = QtWidgets.QPushButton('delete')
-        button.clicked.connect(self.delete_action)
-        button.setObjectName(object_name)
+        delete_button = QtWidgets.QPushButton('Delete')
+        delete_button.clicked.connect(self.delete_row)
+        delete_button.setObjectName('issue-' + str(self._row_pointer))
 
-        return button
+        self.items[issue_input.id] = issue_input
 
-    def delete_action(self):
+        self.add_row(name, lower, upper, delete_button)
 
-        obj = self.sender()
+        return issue_input
 
-        self.delete_row(obj.objectName())
+    def add_action(self):
+        issue = self.add_issue()
 
-    def delete_row(self, object_name):
+        self.notify_add(issue)
 
-        if object_name in self.rows:
-            layout = self.rows[object_name]
-            clear_layout(layout)
-            self.row_container.removeItem(layout)
-            del self.rows[object_name]
+    def delete_row(self):
+        row = super().delete_row()
 
-    def values(self):
-        values = []
-        for key, value in self.input_controls.items():
-            values.append(value.values())
+        self.notify_delete(row)
 
-        return values
+
+class ActorIssueBox(BoxLayout, Observer):
+
+    def notify_delete(self, observer, row):
+
+        if observer.key == IssueBox.key:
+            for actor in self.actor_box.items.values():
+                item = self.items[actor.id][row.id]
+                self.delete_row(item.id)
+                del self.items[actor.id][row.id]
+
+        if observer.key == ActorBox.key:
+            for issue in self.issue_box.items.values():
+                item = self.items[row.id][issue.id]
+                self.delete_row(item.id)
+                del self.items[row.id][issue.id]
+
+    def notify_add(self, observer: Observer, value):
+
+        if observer.key == IssueBox.key:
+
+            for actor in self.actor_box.items.values():
+                self.add_actor_issue(actor, value)
+
+        if observer.key == ActorBox.key:
+            for issue in self.issue_box.items.values():
+                self.add_actor_issue(value, issue)
+
+    def __init__(self, actor_box: ActorBox, issue_box: IssueBox):
+        super(ActorIssueBox, self).__init__('Actor issues')
+        self.add_button.setText('Save')
+        self.add_button.clicked.connect(self.add_action)
+        self.actor_box = actor_box
+        self.issue_box = issue_box
+
+        self.actor_box.register(self)
+        self.issue_box.register(self)
+        self.issue_box.register(self)
+
+        self.items = defaultdict(lambda: dict())
+
+    def add_action(self):
+
+        with open("test.csv", 'w') as file:
+
+            for actor in self.actor_box.items.values():
+                file.write(';'.join(['#A', actor.name, os.linesep]))
+
+            for issue in self.issue_box.items.values():
+                file.write(';'.join(['#P', issue.name, issue.lower, issue.upper, os.linesep]))
+
+            for actor_id, actor_issues in self.items.items():
+
+                for issue_id, actor_issue in actor_issues.items():
+                    actor_issue = actor_issue  # type: ActorIssueInput
+
+                    file.write(';'.join(
+                        ['#M', actor_issue.actor.name, actor_issue.issue.name, str(actor_issue.position_input.value()),
+                         str(actor_issue.salience_input.value()), str(actor_issue.power_input.value()), os.linesep]))
+
+        open_file('test.csv')
+
+    def add_heading(self):
+        self.add_row('Actor', 'Issue', 'Power', 'Salience', 'Position')
+
+    def add_actor_issue(self, actor: ActorInput, issue: IssueInput):
+
+        actor_issue = ActorIssueInput(self, actor, issue, 0, 0, 0)
+        actor_issue.id = self._row_pointer
+
+        self.items[actor.id][issue.id] = actor_issue
+
+        self.add_row(actor_issue.actor_input, actor_issue.issue_input, actor_issue.position_input,
+                     actor_issue.salience_input, actor_issue.power_input)
+
+    def delete_row(self, row):
+        for column in range(self.grid_layout.count()):
+
+            item = self.grid_layout.itemAtPosition(row, column)
+
+            if item:
+                item.widget().deleteLater()
+            self.grid_layout.removeItem(item)
 
 
 class InputWindow(QtWidgets.QMainWindow):
@@ -235,23 +381,24 @@ class InputWindow(QtWidgets.QMainWindow):
 
         main = QtWidgets.QHBoxLayout()
         left = QtWidgets.QVBoxLayout()
-        right = ActorIssueInputControl()
-        right.attach()
+        right = QtWidgets.QVBoxLayout()
+
+        actor_input_control = ActorBox()
+        actor_input_control.add_heading()
+
+        issue_input_control = IssueBox()
+        issue_input_control.add_heading()
+
+        actor_issue_control = ActorIssueBox(actor_input_control, issue_input_control)
+        actor_issue_control.add_heading()
+
+        left.addWidget(actor_input_control)
+        left.addWidget(issue_input_control)
+
+        right.addWidget(actor_issue_control)
 
         main.addLayout(left)
         main.addLayout(right)
-
-        actor_layout = DynamicInputControlList(ActorInputControl, right)
-        actor_layout.attach()
-
-        issue_layout = DynamicInputControlList(IssueInputControl, right)
-        issue_layout.attach()
-
-        right.actor_input_control = actor_layout
-        right.issue_input_control = issue_layout
-
-        left.addLayout(actor_layout)
-        left.addLayout(issue_layout)
 
         q = QtWidgets.QWidget()
         q.setLayout(main)
