@@ -59,7 +59,8 @@ def init_output_directory(model, output_dir, selected_actors=list()):
 
 def float_range(start=0.0, stop=1.0, step=0.05):
     i = start
-    while i < stop:
+    while i < (
+            stop + step / 10):  # add a 10th step to stop for floating point rounding differences 0.500001 vs 0.499999
         yield i
         i += step
 

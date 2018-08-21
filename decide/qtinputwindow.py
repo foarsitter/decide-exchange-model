@@ -57,10 +57,11 @@ class Observable:
 
 class ActorInput(Observable):
 
-    def __init__(self, name):
+    def __init__(self, name, power):
         super().__init__()
         self.id = None
         self._name = name
+        self._power = power
         self.key = 'actor_input'
 
     @property
@@ -75,6 +76,19 @@ class ActorInput(Observable):
 
     def set_name(self, value):
         self.name = value
+
+    @property
+    def power(self):
+        return self._power
+
+    @power.setter
+    def power(self, value):
+        self._power = value
+        print('actor name to ' + self._name)
+        self.notify_add(value)
+
+    def set_power(self, value):
+        self._power = value
 
 
 class IssueInput(Observable):
@@ -112,11 +126,6 @@ class IssueInput(Observable):
 class ActorIssueInput(Observer):
 
     def notify_add(self, key=None, value=None):
-        print('notify')
-
-        print(self.actor.name)
-        print(self.issue.name)
-
         self.actor_input.setText(self.actor.name)
         self.issue_input.setText(self.issue.name)
 
@@ -162,6 +171,7 @@ class BoxLayout(QtWidgets.QGroupBox):
 
         if btn:
             self.add_button = QtWidgets.QPushButton('Add')
+            self.layout_container.addWidget(QtWidgets.QTextEdit())
             self.layout_container.addWidget(self.add_button)
 
         self.setLayout(self.layout_container)
@@ -221,12 +231,15 @@ class ActorBox(BoxLayout, Observable):
         self.add_row('Actor')
 
     def add_actor(self):
-        actor_input = ActorInput('')
+        actor_input = ActorInput('', 0.50)
         actor_input.id = self._row_pointer
 
         name = QtWidgets.QLineEdit()
         # call the setter on a change
         name.textChanged.connect(actor_input.set_name)
+
+        power = QtWidgets.QDoubleSpinBox()
+
 
         delete_button = QtWidgets.QPushButton('Delete')
         delete_button.clicked.connect(self.delete_row)
@@ -234,7 +247,7 @@ class ActorBox(BoxLayout, Observable):
 
         self.items[actor_input.id] = actor_input
 
-        self.add_row(name, delete_button)
+        self.add_row(name, power, delete_button)
 
         return actor_input
 
@@ -318,7 +331,7 @@ class ActorIssueBox(BoxLayout, Observer):
                 self.add_actor_issue(value, issue)
 
     def __init__(self, actor_box: ActorBox, issue_box: IssueBox):
-        super(ActorIssueBox, self).__init__('Actor issues')
+        super(ActorIssueBox, self).__init__('Positions')
         self.add_button.setText('Save')
         self.add_button.clicked.connect(self.add_action)
         self.actor_box = actor_box
@@ -374,6 +387,90 @@ class ActorIssueBox(BoxLayout, Observer):
             self.grid_layout.removeItem(item)
 
 
+class ActorIssueBox2(BoxLayout, Observer):
+
+    def notify_delete(self, observer, row):
+
+        if observer.key == IssueBox.key:
+            for actor in self.actor_box.items.values():
+                item = self.items[actor.id][row.id]
+                self.delete_row(item.id)
+                del self.items[actor.id][row.id]
+
+        if observer.key == ActorBox.key:
+            for issue in self.issue_box.items.values():
+                item = self.items[row.id][issue.id]
+                self.delete_row(item.id)
+                del self.items[row.id][issue.id]
+
+    def notify_add(self, observer: Observer, value):
+
+        if observer.key == IssueBox.key:
+
+            for actor in self.actor_box.items.values():
+                self.add_actor_issue(actor, value)
+
+        if observer.key == ActorBox.key:
+            for issue in self.issue_box.items.values():
+                self.add_actor_issue(value, issue)
+
+    def __init__(self, actor_box: ActorBox, issue_box: IssueBox):
+        super(ActorIssueBox2, self).__init__('Salience')
+        self.add_button.setText('Save')
+        self.add_button.clicked.connect(self.add_action)
+        self.actor_box = actor_box
+        self.issue_box = issue_box
+
+        self.actor_box.register(self)
+        self.issue_box.register(self)
+        self.issue_box.register(self)
+
+        self.items = defaultdict(lambda: dict())
+
+    def add_action(self):
+
+        with open("test.csv", 'w') as file:
+
+            for actor in self.actor_box.items.values():
+                file.write(';'.join(['#A', actor.name, os.linesep]))
+
+            for issue in self.issue_box.items.values():
+                file.write(';'.join(['#P', issue.name, issue.lower, issue.upper, os.linesep]))
+
+            for actor_id, actor_issues in self.items.items():
+
+                for issue_id, actor_issue in actor_issues.items():
+                    actor_issue = actor_issue  # type: ActorIssueInput
+
+                    file.write(';'.join(
+                        ['#M', actor_issue.actor.name, actor_issue.issue.name, str(actor_issue.position_input.value()),
+                         str(actor_issue.salience_input.value()), str(actor_issue.power_input.value()), os.linesep]))
+
+        open_file('test.csv')
+
+    def add_heading(self):
+        self.add_row('Issue', 'Actor', 'Power', 'Position')
+
+    def add_actor_issue(self, actor: ActorInput, issue: IssueInput):
+
+        actor_issue = ActorIssueInput(self, actor, issue, 0, 0, 0)
+        actor_issue.id = self._row_pointer
+
+        self.items[actor.id][issue.id] = actor_issue
+
+        self.add_row(actor_issue.issue_input, actor_issue.actor_input, actor_issue.power_input,
+                     actor_issue.position_input)
+
+    def delete_row(self, row):
+        for column in range(self.grid_layout.count()):
+
+            item = self.grid_layout.itemAtPosition(row, column)
+
+            if item:
+                item.widget().deleteLater()
+            self.grid_layout.removeItem(item)
+
+
 class InputWindow(QtWidgets.QMainWindow):
 
     def __init__(self):
@@ -381,7 +478,8 @@ class InputWindow(QtWidgets.QMainWindow):
 
         main = QtWidgets.QHBoxLayout()
         left = QtWidgets.QVBoxLayout()
-        right = QtWidgets.QVBoxLayout()
+
+        tabs = QtWidgets.QTabWidget()
 
         actor_input_control = ActorBox()
         actor_input_control.add_heading()
@@ -392,13 +490,17 @@ class InputWindow(QtWidgets.QMainWindow):
         actor_issue_control = ActorIssueBox(actor_input_control, issue_input_control)
         actor_issue_control.add_heading()
 
+        actor_issue_control_2 = ActorIssueBox2(actor_input_control, issue_input_control)
+        actor_issue_control_2.add_heading()
+
         left.addWidget(actor_input_control)
         left.addWidget(issue_input_control)
 
-        right.addWidget(actor_issue_control)
+        tabs.addTab(actor_issue_control_2, 'Position')
+        tabs.addTab(actor_issue_control, 'Salience')
 
         main.addLayout(left)
-        main.addLayout(right)
+        main.addWidget(tabs)
 
         q = QtWidgets.QWidget()
         q.setLayout(main)

@@ -9,7 +9,7 @@ from typing import List
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 
-from decide.cli import init_model, init_output_directory
+from decide.cli import init_model, init_output_directory, float_range
 from decide.model import base
 from decide.model.equalgain import EqualGainModel
 from decide.model.helpers import csvparser, helpers
@@ -54,6 +54,9 @@ class ProgramSettings(QtCore.QObject):
         self.fixed_weight = 0.1
 
         self.randomized_value = 0.00
+        self.start = 0.00
+        self.step = 0.05
+        self.stop = 0.50
 
         self.repetitions = 10
         self.iterations = 10
@@ -265,6 +268,15 @@ class SettingsFormWidget(QtWidgets.QFormLayout):
         self.randomized_value = QtWidgets.QDoubleSpinBox()
         self.randomized_value.setSingleStep(0.05)
 
+        self.start = QtWidgets.QDoubleSpinBox()
+        self.start.setSingleStep(0.05)
+
+        self.step = QtWidgets.QDoubleSpinBox()
+        self.step.setSingleStep(0.05)
+
+        self.stop = QtWidgets.QDoubleSpinBox()
+        self.stop.setSingleStep(0.05)
+
         self.iterations = QtWidgets.QSpinBox()
         self.iterations.setMinimum(1)
         self.iterations.setValue(10)
@@ -277,9 +289,17 @@ class SettingsFormWidget(QtWidgets.QFormLayout):
 
         self.addRow(QtWidgets.QLabel('Fixed weight'), self.fixed_weight)
         self.addRow(QtWidgets.QLabel('Salience weight'), self.salience_weight)
-        self.addRow(QtWidgets.QLabel('Randomize value'), self.randomized_value)
+        self.addRow(QtWidgets.QLabel(''))
         self.addRow(QtWidgets.QLabel('Negotiation rounds'), self.iterations)
         self.addRow(QtWidgets.QLabel('Simulation repetitions'), self.repetitions)
+        self.addRow(QtWidgets.QLabel(''))
+
+        self.addRow(QtWidgets.QLabel('p-value'))
+        self.addRow(QtWidgets.QLabel('Start'), self.start)
+        self.addRow(QtWidgets.QLabel('Step'), self.step)
+        self.addRow(QtWidgets.QLabel('Stop'), self.stop)
+
+        # self.addRow(QtWidgets.QLabel('Extra value'), self.randomized_value)
 
     def load(self):
         """
@@ -399,6 +419,7 @@ class SummaryWidget(DynamicFormLayout):
         self.issue_widget = issue_widget
 
     def update_widget(self):
+
         self.clear()
 
         actors = self.actor_widget.get_selected()
@@ -411,6 +432,13 @@ class SummaryWidget(DynamicFormLayout):
         self.add_text_row('Output directory', self.settings.output_directory, self.test_callback)
 
         settings = self.main_window.settings  # type: ProgramSettings
+        settings_widget = self.main_window.settings_widget  # type: SettingsFormWidget
+
+        p_values = [str(round(p, 2)) for p in
+                    float_range(start=float(settings_widget.start.value()), step=float(settings_widget.step.value()),
+                                stop=float(settings_widget.stop.value()))]
+
+        self.add_text_row('p-values', ', '.join(p_values))
 
         output_selection = []
 
