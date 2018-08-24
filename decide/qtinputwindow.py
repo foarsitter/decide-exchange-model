@@ -1,8 +1,13 @@
-import os
 import sys
+import sys
+import uuid
 from collections import defaultdict
 
 from PyQt5 import QtWidgets, QtCore
+
+from decide.cli import init_model
+from decide.model.base import ActorIssue
+from decide.model.helpers import csvparser
 
 
 def open_file(path):
@@ -13,6 +18,7 @@ def open_file(path):
         os.startfile(path)
     elif os.name == 'posix':
         subprocess.call(('xdg-open', path))
+
 
 def clear_layout(layout):
     if layout is not None:
@@ -25,37 +31,85 @@ def clear_layout(layout):
                 clear_layout(item.layout())
 
 
+class DoubleInput(QtWidgets.QDoubleSpinBox):
+
+    def __init__(self):
+        super(DoubleInput, self).__init__()
+
+        self.setMinimum(-10000)
+        self.setMaximum(100000)
+
+
 class Observer:
+    """
+    Listener
+    """
     key = 'AbstractObserver'
 
-    def notify_add(self, observer, value):
+    def add(self, observer, value):
         raise NotImplementedError
 
-    def notify_delete(self, observer, row):
+    def delete(self, observer, row):
+        raise NotImplementedError
+
+    def change(self, observer, key, value):
         raise NotImplementedError
 
 
 class Observable:
+    """
+    Event
+    """
 
     def __init__(self):
-
         self.observers = []
 
     def notify_add(self, value):
-
         for observer in self.observers:
-            observer.notify_add(self, value)
+            observer.add(self, value)
 
     def notify_delete(self, row):
 
         for observer in self.observers:
-            observer.notify_delete(self, row)
+            observer.delete(self, row)
+
+    def notify_change(self, key, value):
+        for observer in self.observers:
+            observer.change(self, key, value)
 
     def register(self, obj):
         self.observers.append(obj)
 
 
+class PrintObserver(Observer):
+    """
+    For debugging
+    """
+
+    def add(self, observer, value):
+        pass
+        # print('add')
+        # print(observer)
+        # print(value)
+
+    def delete(self, observer, row):
+        pass
+        # print('delete')
+        # print(observer)
+        # print(row)
+
+    def change(self, observer, key, value):
+        pass
+        # print('change')
+        # print(observer)
+        # print(key)
+        # print(value)
+
+
 class ActorInput(Observable):
+    """
+    Object containing a name and power
+    """
 
     def __init__(self, name, power):
         super().__init__()
@@ -64,18 +118,17 @@ class ActorInput(Observable):
         self._power = power
         self.key = 'actor_input'
 
+        self.register(PrintObserver())
+
+        self.uuid = uuid.uuid4()
+
     @property
     def name(self):
         return self._name
 
     @name.setter
     def name(self, value):
-        self._name = value
-        print('actor name to ' + self._name)
-        self.notify_add(value)
-
-    def set_name(self, value):
-        self.name = value
+        self.set_name(value)
 
     @property
     def power(self):
@@ -83,15 +136,26 @@ class ActorInput(Observable):
 
     @power.setter
     def power(self, value):
-        self._power = value
-        print('actor name to ' + self._name)
-        self.notify_add(value)
+        self.set_power(value)
 
-    def set_power(self, value):
+    def set_name(self, value, silence=False):
+        self._name = value
+
+        if not silence:
+            self.notify_change('name', value)
+
+    def set_power(self, value, silence=False):
+
         self._power = value
+
+        if not silence:
+            self.notify_change('power', value)
 
 
 class IssueInput(Observable):
+    """
+    Object containing a name, lower and upper bounds
+    """
 
     def __init__(self, name, lower, upper):
         super().__init__()
@@ -100,6 +164,10 @@ class IssueInput(Observable):
         self._lower = lower
         self._upper = upper
         self.key = 'issue_input'
+
+        self.register(PrintObserver())
+
+        self.uuid = uuid.uuid4()
 
     @property
     def name(self):
@@ -115,24 +183,71 @@ class IssueInput(Observable):
 
     @name.setter
     def name(self, value):
-        self._name = value
-        print('issue name to ' + self._name)
-        self.notify_add(value)
+        self.set_name(value)
+
+    @lower.setter
+    def lower(self, value):
+        self.set_lower(value)
+
+    @upper.setter
+    def upper(self, value):
+        self.set_upper(value)
 
     def set_name(self, value):
-        self.name = value
+        self._name = value
+        self.notify_change('name', value)
+
+    def set_lower(self, value):
+        self._lower = value
+        self.notify_change('lower', value)
+
+    def set_upper(self, value):
+        self._upper = value
+        self.notify_change('upper', value)
 
 
-class ActorIssueInput(Observer):
+class ActorIssueInput(Observer, Observable):
 
-    def notify_add(self, key=None, value=None):
+    def add(self, key=None, value=None):
         self.actor_input.setText(self.actor.name)
         self.issue_input.setText(self.issue.name)
+        self.power_input.setText(self.actor.power)
 
-    def __init__(self, layout, actor: ActorInput, issue: IssueInput, position, salience, power):
+    def delete(self, observer, row):
+        """
+        Remove ... this row when the actor or issue is deleted
+        """
+        print('delete this actor issue')
+
+    def change(self, observer, key, value):
+
+        if isinstance(observer, ActorInput):
+            if key == 'name':
+                self.actor_input.setText(value)
+                self.notify_change('choices', True)
+            if key == 'power':
+                self.power_input.setText(str(value))
+
+        if isinstance(observer, IssueInput):
+            if key == 'name':
+                self.issue_input.setText(value)
+                self.notify_change('choices', True)
+            if key == 'upper':
+                print(value)
+            if key == 'lower':
+                print(value)
+
+        if key == 'position':
+            self.set_position(value)
+
+        if key == 'power':
+            self.set_power(value)
+
+        self.notify_change('redraw', True)
+
+    def __init__(self, actor: ActorInput, issue: IssueInput):
         super().__init__()
         self.id = None
-        self.layout = layout
 
         self.actor = actor
         self.issue = issue
@@ -140,16 +255,68 @@ class ActorIssueInput(Observer):
         self.actor.register(self)
         self.issue.register(self)
 
-        self.position = position
-        self.salience = salience
-        self.power = power
-
         self.actor_input = QtWidgets.QLabel(actor.name)
         self.issue_input = QtWidgets.QLabel(issue.name)
 
-        self.position_input = QtWidgets.QDoubleSpinBox()
-        self.salience_input = QtWidgets.QDoubleSpinBox()
-        self.power_input = QtWidgets.QDoubleSpinBox()
+        self.power_input = QtWidgets.QLabel(str(actor.power))
+
+        self.position_input = DoubleInput()
+        self.position_input.valueChanged.connect(self.set_position)
+
+        self.salience_input = DoubleInput()
+
+        self.meta = dict()
+
+        self.uuid = uuid.uuid4()
+
+        self._power = 0.0
+        self._position = 0.0
+        self._salience = 0.0
+
+    @property
+    def position(self):
+        return self._position
+
+    @property
+    def salience(self):
+        return self._salience
+
+    @property
+    def power(self):
+        return self._power
+
+    def set_position(self, value, silence=False):
+        self._position = value
+        if not silence:
+            self.notify_change('position', value)
+
+    def set_power(self, value, silence=False):
+        self._power = value
+        if not silence:
+            self.notify_change('power', value)
+
+    def set_salience(self, value, silence=False):
+        self._salience = value
+        if not silence:
+            self.notify_change('salience', value)
+
+
+class PositionInput(ActorIssueInput):
+    """
+    For editing the position
+    """
+
+    def __init__(self, actor_issue: ActorIssueInput):
+        super().__init__(actor_issue.actor, actor_issue.issue)
+
+        actor_issue.register(self)
+
+
+class SalienceInput(ActorIssueInput):
+    def __init__(self, actor_issue: ActorIssueInput):
+        super().__init__(actor_issue.actor, actor_issue.issue)
+
+        actor_issue.register(self)
 
 
 class BoxLayout(QtWidgets.QGroupBox):
@@ -171,7 +338,7 @@ class BoxLayout(QtWidgets.QGroupBox):
 
         if btn:
             self.add_button = QtWidgets.QPushButton('Add')
-            self.layout_container.addWidget(QtWidgets.QTextEdit())
+            # self.layout_container.addWidget(QtWidgets.QTextEdit())
             self.layout_container.addWidget(self.add_button)
 
         self.setLayout(self.layout_container)
@@ -198,6 +365,8 @@ class BoxLayout(QtWidgets.QGroupBox):
 
         self._row_pointer += 1
 
+        return row
+
     def delete_row(self):
 
         sending_button = self.sender()  # type: QtWidgets.QPushButton
@@ -207,6 +376,7 @@ class BoxLayout(QtWidgets.QGroupBox):
         row = int(sending_button.objectName().split('-')[-1])
 
         obj = self.items[row]
+
         del self.items[row]
 
         for column in range(self.grid_layout.count()):
@@ -227,19 +397,23 @@ class ActorBox(BoxLayout, Observable):
 
         self.add_button.clicked.connect(self.add_action)
 
+        self.register(PrintObserver())
+
     def add_heading(self):
         self.add_row('Actor')
 
-    def add_actor(self):
-        actor_input = ActorInput('', 0.50)
+    def add_actor(self, name='', power=0.0):
+        actor_input = ActorInput(name, str(power))
         actor_input.id = self._row_pointer
 
-        name = QtWidgets.QLineEdit()
+        name_input = QtWidgets.QLineEdit()
+        name_input.setText(name)
         # call the setter on a change
-        name.textChanged.connect(actor_input.set_name)
+        name_input.textChanged.connect(actor_input.set_name)
 
-        power = QtWidgets.QDoubleSpinBox()
-
+        power_input = DoubleInput()
+        power_input.setValue(power)
+        power_input.valueChanged.connect(actor_input.set_power)
 
         delete_button = QtWidgets.QPushButton('Delete')
         delete_button.clicked.connect(self.delete_row)
@@ -247,13 +421,12 @@ class ActorBox(BoxLayout, Observable):
 
         self.items[actor_input.id] = actor_input
 
-        self.add_row(name, power, delete_button)
+        self.add_row(name_input, power_input, delete_button)
 
         return actor_input
 
     def add_action(self):
         a = self.add_actor()
-
         self.notify_add(a)
 
     def delete_row(self):
@@ -269,18 +442,29 @@ class IssueBox(BoxLayout, Observable):
 
         self.add_button.clicked.connect(self.add_action)
 
+        self.register(PrintObserver())
+
     def add_heading(self):
         self.add_row('Issue', 'Lower', 'Upper')
 
-    def add_issue(self):
-        issue_input = IssueInput('', '0.00', '100.00')
+    def add_issue(self, name='', lower=0, upper=100.0):
+        issue_input = IssueInput(name, lower, upper)
         issue_input.id = self._row_pointer
-        lower = QtWidgets.QDoubleSpinBox()
-        upper = QtWidgets.QDoubleSpinBox()
 
-        name = QtWidgets.QLineEdit()
+        lower_input = DoubleInput()
+        lower_input.setValue(lower)
+
+        upper_input = DoubleInput()
+        upper_input.setValue(upper)
+
+        name_input = QtWidgets.QLineEdit()
+        name_input.setText(name)
         # call the setter on a change
-        name.textChanged.connect(issue_input.set_name)
+        name_input.textChanged.connect(issue_input.set_name)
+
+        lower_input.valueChanged.connect(issue_input.set_lower)
+
+        upper_input.valueChanged.connect(issue_input.set_upper)
 
         delete_button = QtWidgets.QPushButton('Delete')
         delete_button.clicked.connect(self.delete_row)
@@ -288,13 +472,12 @@ class IssueBox(BoxLayout, Observable):
 
         self.items[issue_input.id] = issue_input
 
-        self.add_row(name, lower, upper, delete_button)
+        self.add_row(name_input, lower_input, upper_input, delete_button)
 
         return issue_input
 
     def add_action(self):
         issue = self.add_issue()
-
         self.notify_add(issue)
 
     def delete_row(self):
@@ -303,172 +486,205 @@ class IssueBox(BoxLayout, Observable):
         self.notify_delete(row)
 
 
-class ActorIssueBox(BoxLayout, Observer):
+class ActorIssueBox(BoxLayout, Observer, Observable):
+    """
+    The ActorIssueBox is an hidden box behind the scenes, so there is a single point of truth
+    """
 
-    def notify_delete(self, observer, row):
-
-        if observer.key == IssueBox.key:
-            for actor in self.actor_box.items.values():
-                item = self.items[actor.id][row.id]
-                self.delete_row(item.id)
-                del self.items[actor.id][row.id]
-
-        if observer.key == ActorBox.key:
-            for issue in self.issue_box.items.values():
-                item = self.items[row.id][issue.id]
-                self.delete_row(item.id)
-                del self.items[row.id][issue.id]
-
-    def notify_add(self, observer: Observer, value):
-
-        if observer.key == IssueBox.key:
-
-            for actor in self.actor_box.items.values():
-                self.add_actor_issue(actor, value)
-
-        if observer.key == ActorBox.key:
-            for issue in self.issue_box.items.values():
-                self.add_actor_issue(value, issue)
+    def add_heading(self):
+        pass
 
     def __init__(self, actor_box: ActorBox, issue_box: IssueBox):
-        super(ActorIssueBox, self).__init__('Positions')
-        self.add_button.setText('Save')
-        self.add_button.clicked.connect(self.add_action)
+        super(ActorIssueBox, self).__init__('Hidden Box')
+        Observable.__init__(self)
+
         self.actor_box = actor_box
         self.issue_box = issue_box
 
         self.actor_box.register(self)
         self.issue_box.register(self)
-        self.issue_box.register(self)
 
         self.items = defaultdict(lambda: dict())
 
-    def add_action(self):
+        self.actors = set()
+        self.issues = set()
 
-        with open("test.csv", 'w') as file:
-
-            for actor in self.actor_box.items.values():
-                file.write(';'.join(['#A', actor.name, os.linesep]))
-
-            for issue in self.issue_box.items.values():
-                file.write(';'.join(['#P', issue.name, issue.lower, issue.upper, os.linesep]))
-
-            for actor_id, actor_issues in self.items.items():
-
-                for issue_id, actor_issue in actor_issues.items():
-                    actor_issue = actor_issue  # type: ActorIssueInput
-
-                    file.write(';'.join(
-                        ['#M', actor_issue.actor.name, actor_issue.issue.name, str(actor_issue.position_input.value()),
-                         str(actor_issue.salience_input.value()), str(actor_issue.power_input.value()), os.linesep]))
-
-        open_file('test.csv')
-
-    def add_heading(self):
-        self.add_row('Actor', 'Issue', 'Power', 'Salience', 'Position')
-
-    def add_actor_issue(self, actor: ActorInput, issue: IssueInput):
-
-        actor_issue = ActorIssueInput(self, actor, issue, 0, 0, 0)
-        actor_issue.id = self._row_pointer
-
-        self.items[actor.id][issue.id] = actor_issue
-
-        self.add_row(actor_issue.actor_input, actor_issue.issue_input, actor_issue.position_input,
-                     actor_issue.salience_input, actor_issue.power_input)
-
-    def delete_row(self, row):
-        for column in range(self.grid_layout.count()):
-
-            item = self.grid_layout.itemAtPosition(row, column)
-
-            if item:
-                item.widget().deleteLater()
-            self.grid_layout.removeItem(item)
-
-
-class ActorIssueBox2(BoxLayout, Observer):
-
-    def notify_delete(self, observer, row):
-
+    def delete(self, observer, row):
         if observer.key == IssueBox.key:
+            self.issues.remove(row)
             for actor in self.actor_box.items.values():
                 item = self.items[actor.id][row.id]
-                self.delete_row(item.id)
+                self.notify_delete(item)
                 del self.items[actor.id][row.id]
 
         if observer.key == ActorBox.key:
+            self.actors.remove(row)
             for issue in self.issue_box.items.values():
                 item = self.items[row.id][issue.id]
-                self.delete_row(item.id)
+                self.notify_delete(item)
                 del self.items[row.id][issue.id]
 
-    def notify_add(self, observer: Observer, value):
-
+    def add(self, observer, value):
+        # if an issue is added, we need to add all the existing actors for the issue
         if observer.key == IssueBox.key:
-
+            self.issues.add(value)
             for actor in self.actor_box.items.values():
                 self.add_actor_issue(actor, value)
 
+        # if an actor is added, we need to add all the existing issues for the actor
         if observer.key == ActorBox.key:
+            self.actors.add(value)
             for issue in self.issue_box.items.values():
                 self.add_actor_issue(value, issue)
 
-    def __init__(self, actor_box: ActorBox, issue_box: IssueBox):
-        super(ActorIssueBox2, self).__init__('Salience')
-        self.add_button.setText('Save')
-        self.add_button.clicked.connect(self.add_action)
-        self.actor_box = actor_box
-        self.issue_box = issue_box
-
-        self.actor_box.register(self)
-        self.issue_box.register(self)
-        self.issue_box.register(self)
-
-        self.items = defaultdict(lambda: dict())
-
-    def add_action(self):
-
-        with open("test.csv", 'w') as file:
-
-            for actor in self.actor_box.items.values():
-                file.write(';'.join(['#A', actor.name, os.linesep]))
-
-            for issue in self.issue_box.items.values():
-                file.write(';'.join(['#P', issue.name, issue.lower, issue.upper, os.linesep]))
-
-            for actor_id, actor_issues in self.items.items():
-
-                for issue_id, actor_issue in actor_issues.items():
-                    actor_issue = actor_issue  # type: ActorIssueInput
-
-                    file.write(';'.join(
-                        ['#M', actor_issue.actor.name, actor_issue.issue.name, str(actor_issue.position_input.value()),
-                         str(actor_issue.salience_input.value()), str(actor_issue.power_input.value()), os.linesep]))
-
-        open_file('test.csv')
-
-    def add_heading(self):
-        self.add_row('Issue', 'Actor', 'Power', 'Position')
+        self.notify_change('redraw', True)
 
     def add_actor_issue(self, actor: ActorInput, issue: IssueInput):
 
-        actor_issue = ActorIssueInput(self, actor, issue, 0, 0, 0)
+        actor_issue = ActorIssueInput(actor, issue)
         actor_issue.id = self._row_pointer
 
         self.items[actor.id][issue.id] = actor_issue
 
-        self.add_row(actor_issue.issue_input, actor_issue.actor_input, actor_issue.power_input,
-                     actor_issue.position_input)
+        self._row_pointer += 1
 
-    def delete_row(self, row):
-        for column in range(self.grid_layout.count()):
+        self.notify_add(actor_issue)
 
-            item = self.grid_layout.itemAtPosition(row, column)
+    def change(self, observer, key, value):
+        print('change ActorIssueBox')
 
-            if item:
-                item.widget().deleteLater()
-            self.grid_layout.removeItem(item)
+
+class PositionSalienceBox(QtWidgets.QWidget, Observer, Observable):
+
+    def __init__(self, actor_issue_box: ActorIssueBox):
+        super(PositionSalienceBox, self).__init__()
+
+        self.actor_issue_box = actor_issue_box
+        self.actor_issue_box.register(self)
+
+        self._row_pointer = 0
+
+        self.choices = QtWidgets.QComboBox()
+        self.choices.currentTextChanged.connect(self.redraw)
+
+        self.container = QtWidgets.QVBoxLayout(self)
+        self.container.addWidget(self.choices)
+
+        self.grid_layout = QtWidgets.QGridLayout()
+        self.grid_layout.setAlignment(QtCore.Qt.AlignTop)
+
+        self.container.addLayout(self.grid_layout)
+
+    def change(self, observer, key, value):
+        print(key)
+        if key == 'choice':
+            self.update_choices()
+
+    def delete(self, observer, actor_issue_input):
+        self.redraw()
+        self.update_choices()
+
+    def add(self, observer: Observer, value):
+        value.register(self)
+        self.redraw()
+        self.update_choices()
+
+    def add_heading(self):
+        raise NotImplementedError
+
+    def add_row(self, *args, pointer=None):
+
+        if pointer:
+            row = pointer
+        else:
+            row = self._row_pointer
+
+        for column, arg in enumerate(args):
+            if isinstance(arg, str):
+                arg = QtWidgets.QLabel(arg)
+
+            self.grid_layout.addWidget(arg, row, column)
+
+        self._row_pointer += 1
+
+        return row
+
+    def redraw(self):
+
+        clear_layout(self.grid_layout)
+
+        self.add_heading()
+
+        for actor in self.actor_issue_box.actors:
+            for issue in self.actor_issue_box.issues:
+
+                if actor.id in self.actor_issue_box.items and issue.id in self.actor_issue_box.items[actor.id]:
+                    actor_issue = self.actor_issue_box.items[actor.id][issue.id]  # type: ActorIssueInput
+
+                    self.add_actor_issue(actor_issue)
+
+    def add_actor_issue(self, actor_issue: ActorIssueInput):
+        raise NotImplementedError
+
+    def update_choices(self):
+
+        self.choices.clear()
+
+        items = [str(x.name) for x in self.actor_issue_box.issues if x != '']
+
+        items.sort()
+
+        self.choices.addItems(items)
+
+
+class PositionBox(PositionSalienceBox):
+
+    def add_heading(self):
+        self.add_row('Actor', 'Power', 'Position')
+
+    def add_actor_issue(self, actor_issue):
+        if actor_issue.issue.name == self.choices.currentText():
+            position = DoubleInput()
+            position.setValue(actor_issue.position)
+            position.valueChanged.connect(actor_issue.set_position)
+
+            self.add_row(
+                QtWidgets.QLabel(actor_issue.actor.name),
+                QtWidgets.QLabel(str(actor_issue.actor.power)),
+                position
+            )
+
+
+class SalienceBox(PositionSalienceBox):
+
+    def add_heading(self):
+        self.add_row('Issue', 'Power', 'Position', 'Salience')
+
+    def add_actor_issue(self, actor_issue: ActorIssueInput):
+        if actor_issue.actor.name == self.choices.currentText():
+            position = DoubleInput()
+            position.setValue(actor_issue.position)
+            position.valueChanged.connect(actor_issue.set_position)
+
+            salience = DoubleInput()
+            salience.setValue(actor_issue.salience)
+            salience.valueChanged.connect(actor_issue.set_salience)
+
+            self.add_row(
+                QtWidgets.QLabel(actor_issue.issue.name),
+                QtWidgets.QLabel(str(actor_issue.actor.power)),
+                position,
+                salience
+
+            )
+
+    def update_choices(self):
+        self.choices.clear()
+
+        items = [str(x.name) for x in self.actor_issue_box.actors if x != '']
+        items.sort()
+
+        self.choices.addItems(items)
 
 
 class InputWindow(QtWidgets.QMainWindow):
@@ -476,40 +692,69 @@ class InputWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super(InputWindow, self).__init__()
 
-        main = QtWidgets.QHBoxLayout()
-        left = QtWidgets.QVBoxLayout()
+        self.main = QtWidgets.QHBoxLayout()
+        self.left = QtWidgets.QVBoxLayout()
 
-        tabs = QtWidgets.QTabWidget()
+        self.tabs = QtWidgets.QTabWidget()
 
-        actor_input_control = ActorBox()
-        actor_input_control.add_heading()
+        self.actor_input_control = ActorBox()
+        self.actor_input_control.add_heading()
 
-        issue_input_control = IssueBox()
-        issue_input_control.add_heading()
+        self.issue_input_control = IssueBox()
+        self.issue_input_control.add_heading()
 
-        actor_issue_control = ActorIssueBox(actor_input_control, issue_input_control)
-        actor_issue_control.add_heading()
+        self.actor_issues = ActorIssueBox(self.actor_input_control, self.issue_input_control)
 
-        actor_issue_control_2 = ActorIssueBox2(actor_input_control, issue_input_control)
-        actor_issue_control_2.add_heading()
+        self.position_box = PositionBox(self.actor_issues)
+        self.position_box.add_heading()
 
-        left.addWidget(actor_input_control)
-        left.addWidget(issue_input_control)
+        self.left.addWidget(self.actor_input_control)
+        self.left.addWidget(self.issue_input_control)
 
-        tabs.addTab(actor_issue_control_2, 'Position')
-        tabs.addTab(actor_issue_control, 'Salience')
+        self.tabs.addTab(self.position_box, 'Positions (by Issue)')
 
-        main.addLayout(left)
-        main.addWidget(tabs)
+        self.salience_box = SalienceBox(self.actor_issues)
+        self.salience_box.add_heading()
+        self.tabs.addTab(self.salience_box, 'Saliences (by Actor)')
+
+        self.main.addLayout(self.left)
+        self.main.addWidget(self.tabs)
 
         q = QtWidgets.QWidget()
-        q.setLayout(main)
+        q.setLayout(self.main)
+
+        menubar = QtWidgets.QMenuBar()
+        self.setMenuBar(menubar)
+
+        menu = menubar.addMenu('File')
+
+        load_action = QtWidgets.QAction('&load Kopenhagen', menubar)
+        load_action.triggered.connect(self.load)
+
+        menu.addAction(load_action)
 
         self.setCentralWidget(q)
 
         self.setGeometry(300, 300, 1024, 768)
         self.setWindowTitle('Decide Exchange Model')
         self.show()
+
+    def load(self):
+
+        input_filename = '/home/jelmert/PycharmProjects/decide-exchange-model/data/input/kopenhagen.csv'
+
+        model = init_model('equal', input_filename, p=0.0)
+
+        csv_parser = csvparser.CsvParser(model)
+        csv_parser.read(input_filename)
+
+        for issue, actor_issues in model.actor_issues.items():
+            issue_input = self.issue_input_control.add_issue(issue.name, issue.lower, issue.upper)
+            for actor, actor_issue in actor_issues.items():
+                actor_issue = actor_issue  # type: ActorIssue
+                actor_input = self.actor_input_control.add_actor(actor.name, actor_issue.power)
+
+                self.actor_issues.add_actor_issue(actor_input, issue_input)
 
 
 def main():
