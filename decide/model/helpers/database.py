@@ -1,15 +1,15 @@
 import datetime
 
 import peewee
-from playhouse.sqlite_ext import CSqliteExtDatabase
+# from playhouse.sqlite_ext import CSqliteExtDatabase
+#
+# connection = CSqliteExtDatabase(None, c_extensions=True, pragmas=(
+#     ('cache_size', -1024 * 1024),  # 64MB page-cache.
+#     ('journal_mode', 'wal'),  # Use WAL-mode (you should always use this!).
+# ))
 
-connection = CSqliteExtDatabase(None, c_extensions=True, pragmas=(
-    ('cache_size', -1024 * 1024),  # 64MB page-cache.
-    ('journal_mode', 'wal'),  # Use WAL-mode (you should always use this!).
-))
 
-
-# connection = peewee.MySQLDatabase('decide')
+connection = peewee.MySQLDatabase('decide')
 
 
 class DictionaryIndexMixin:

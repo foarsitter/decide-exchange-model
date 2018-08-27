@@ -31,13 +31,20 @@ def clear_layout(layout):
                 clear_layout(item.layout())
 
 
-class DoubleInput(QtWidgets.QDoubleSpinBox):
+class DoubleInput(QtWidgets.QLineEdit):
 
     def __init__(self):
         super(DoubleInput, self).__init__()
 
-        self.setMinimum(-10000)
-        self.setMaximum(100000)
+        self.setFixedWidth(75)
+
+    def setValue(self, value):
+
+        self.setText(str(value))
+
+    @property
+    def valueChanged(self):
+        return self.textChanged
 
 
 class Observer:
@@ -539,16 +546,20 @@ class ActorIssueBox(BoxLayout, Observer, Observable):
 
         self.notify_change('redraw', True)
 
-    def add_actor_issue(self, actor: ActorInput, issue: IssueInput):
+    def add_actor_issue(self, actor: ActorInput, issue: IssueInput, actor_issue=None):
 
-        actor_issue = ActorIssueInput(actor, issue)
-        actor_issue.id = self._row_pointer
+        actor_issue_input = ActorIssueInput(actor, issue)
+        actor_issue_input.id = self._row_pointer
 
-        self.items[actor.id][issue.id] = actor_issue
+        self.items[actor.id][issue.id] = actor_issue_input
+
+        if actor_issue:
+            actor_issue_input.set_position(str(actor_issue.issue.de_normalize(actor_issue.position)), silence=True)
+            actor_issue_input.set_salience(str(actor_issue.salience), silence=True)
 
         self._row_pointer += 1
 
-        self.notify_add(actor_issue)
+        self.notify_add(actor_issue_input)
 
     def change(self, observer, key, value):
         print('change ActorIssueBox')
@@ -689,8 +700,8 @@ class SalienceBox(PositionSalienceBox):
 
 class InputWindow(QtWidgets.QMainWindow):
 
-    def __init__(self):
-        super(InputWindow, self).__init__()
+    def __init__(self, parent=None):
+        super(InputWindow, self).__init__(parent)
 
         self.main = QtWidgets.QHBoxLayout()
         self.left = QtWidgets.QVBoxLayout()
@@ -726,12 +737,19 @@ class InputWindow(QtWidgets.QMainWindow):
         menubar = QtWidgets.QMenuBar()
         self.setMenuBar(menubar)
 
-        menu = menubar.addMenu('File')
+        file_menu = menubar.addMenu('File')
+        example_menu = menubar.addMenu('Examples')
 
-        load_action = QtWidgets.QAction('&load Kopenhagen', menubar)
-        load_action.triggered.connect(self.load)
+        load_kopenhagen = QtWidgets.QAction('&load Kopenhagen', menubar)
+        load_kopenhagen.triggered.connect(self.load_kopenhagen)
 
-        menu.addAction(load_action)
+        open_action = QtWidgets.QAction('Open', menubar)
+        save_action = QtWidgets.QAction('Save', menubar)
+
+        example_menu.addAction(load_kopenhagen)
+
+        file_menu.addAction(open_action)
+        file_menu.addAction(save_action)
 
         self.setCentralWidget(q)
 
@@ -739,22 +757,42 @@ class InputWindow(QtWidgets.QMainWindow):
         self.setWindowTitle('Decide Exchange Model')
         self.show()
 
-    def load(self):
+    def load_kopenhagen(self):
+        self.load('C:\\Users\\jelme\\PycharmProjects\\decide-exchange-model\\data\\input\\kopenhagen.csv')
 
-        input_filename = '/home/jelmert/PycharmProjects/decide-exchange-model/data/input/kopenhagen.csv'
+    def open_dialog(self):
+        pass
+
+    def save_location(self):
+        pass
+
+    def load(self, input_filename):
 
         model = init_model('equal', input_filename, p=0.0)
 
         csv_parser = csvparser.CsvParser(model)
         csv_parser.read(input_filename)
 
+        actor_inputs = {}
+
         for issue, actor_issues in model.actor_issues.items():
             issue_input = self.issue_input_control.add_issue(issue.name, issue.lower, issue.upper)
-            for actor, actor_issue in actor_issues.items():
-                actor_issue = actor_issue  # type: ActorIssue
-                actor_input = self.actor_input_control.add_actor(actor.name, actor_issue.power)
 
-                self.actor_issues.add_actor_issue(actor_input, issue_input)
+            self.actor_issues.issues.add(issue_input)
+
+            for actor, actor_issue in actor_issues.items():
+                if actor not in actor_inputs:
+                    actor_issue = actor_issue  # type: ActorIssue
+                    actor_input = self.actor_input_control.add_actor(actor.name, actor_issue.power)
+                    actor_inputs[actor] = actor_input
+
+                    self.actor_issues.actors.add(actor_input)
+                else:
+                    actor_input = actor_inputs[actor]
+
+                self.actor_issues.add_actor_issue(actor_input, issue_input, actor_issue)
+
+        self.position_box.redraw()
 
 
 def main():

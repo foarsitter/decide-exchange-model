@@ -18,6 +18,7 @@ from decide.model.observers.externalities import Externalities
 from decide.model.observers.issue_development import IssueDevelopment
 from decide.model.observers.observer import Observable
 from decide.model.observers.sqliteobserver import SQLiteObserver
+from decide.qtinputwindow import InputWindow
 
 logging.basicConfig(filename='decide.log', filemode='w', level=logging.INFO,
                     format=' %(asctime)s - %(levelname)s - %(message)s')
@@ -334,7 +335,7 @@ class Worker(QtCore.QObject):
     finished = QtCore.pyqtSignal(str, int)
     update = QtCore.pyqtSignal(int, int, float)
 
-    def __init__(self, settings):
+    def __init__(self, settings: ProgramSettings):
         super(Worker, self).__init__()
 
         self.settings = settings
@@ -344,6 +345,21 @@ class Worker(QtCore.QObject):
     def run_model(self):
         settings = self.settings
 
+        print('start')
+        print(settings.start)
+
+        p_values = [
+            str(round(p, 2)) for p in
+                    float_range(
+                        start=settings.start,
+                        step=settings.step,
+                        stop=settings.stop
+                    )
+                    ]
+
+        print('P values')
+        print(p_values)
+
         selected_actors = settings.selected_actors
         selected_issues = settings.selected_issues
 
@@ -352,50 +368,51 @@ class Worker(QtCore.QObject):
 
         input_filename = settings.input_filename
 
-        model = init_model('equal', settings.input_filename, p=settings.randomized_value)
+        for p in p_values:
+            model = init_model('equal', settings.input_filename, p=p)
 
-        output_directory = init_output_directory(
-            model=model,
-            output_dir=settings.output_directory,
-            selected_actors=settings.selected_actors
-        )
+            csv_parser = csvparser.CsvParser(model)
+            csv_parser.read(input_filename, actor_whitelist=selected_actors, issue_whitelist=selected_issues)
 
-        csv_parser = csvparser.CsvParser(model)
-        csv_parser.read(input_filename, actor_whitelist=selected_actors, issue_whitelist=selected_issues)
+            output_directory = init_output_directory(
+                model=model,
+                output_dir=settings.output_directory,
+                selected_actors=settings.selected_actors
+            )
 
-        actor_issues = copy.deepcopy(model.actor_issues)
+            actor_issues = copy.deepcopy(model.actor_issues)
 
-        event_handler = init_event_handlers(model, output_directory, settings)
-        event_handler.before_repetitions(repetitions=repetitions, iterations=iterations)
+            event_handler = init_event_handlers(model, output_directory, settings)
+            event_handler.before_repetitions(repetitions=repetitions, iterations=iterations)
 
-        start_time = time.time()
+            start_time = time.time()
 
-        for repetition in range(repetitions):
+            for repetition in range(repetitions):
 
-            model.actor_issues = copy.deepcopy(actor_issues)
+                model.actor_issues = copy.deepcopy(actor_issues)
 
-            model_loop = helpers.ModelLoop(model, event_handler, repetition)
+                model_loop = helpers.ModelLoop(model, event_handler, repetition)
 
-            event_handler.before_iterations(repetition)
+                event_handler.before_iterations(repetition)
 
-            for iteration_number in range(iterations):
+                for iteration_number in range(iterations):
+
+                    if self._break:
+                        break
+
+                    logging.info("round {0}.{1}".format(repetition, iteration_number))
+                    self.update.emit(repetition, iteration_number, start_time)
+
+                    model_loop.loop()
+
+                event_handler.after_iterations(repetition)
 
                 if self._break:
                     break
 
-                logging.info("round {0}.{1}".format(repetition, iteration_number))
-                self.update.emit(repetition, iteration_number, start_time)
+            event_handler.after_repetitions()
 
-                model_loop.loop()
-
-            event_handler.after_iterations(repetition)
-
-            if self._break:
-                break
-
-        event_handler.after_repetitions()
-
-        self.finished.emit(output_directory, model.tie_count)
+            self.finished.emit(output_directory, model.tie_count)
 
     def stop(self):
         self._break = True
@@ -495,22 +512,25 @@ class MenuBar(QtWidgets.QMenuBar):
         self.output_sqlite = QtWidgets.QAction('&sqlite', self)
         self.output_sqlite.setCheckable(True)
 
-        self.issue_development_csv = QtWidgets.QAction('Issue development .csv', self)
+        self.issue_development_csv = QtWidgets.QAction('Issue development (.csv)', self)
         self.issue_development_csv.setCheckable(True)
         self.issue_development_csv.setChecked(True)
 
-        self.externalities_csv = QtWidgets.QAction('Externalities .csv', self)
+        self.externalities_csv = QtWidgets.QAction('Externalities (.csv)', self)
         self.externalities_csv.setCheckable(True)
 
-        self.exchanges_csv = QtWidgets.QAction('Exchanges .csv', self)
+        self.exchanges_csv = QtWidgets.QAction('Exchanges (.csv)', self)
         self.exchanges_csv.setCheckable(True)
 
-        self.voting_positions = QtWidgets.QAction('&voting positions', self)
+        self.voting_positions = QtWidgets.QAction('Show voting positions', self)
         self.voting_positions.setCheckable(True)
 
-        self.summary_only = QtWidgets.QAction('&summary only', self)
+        self.summary_only = QtWidgets.QAction('Summary only (.csv)', self)
         self.summary_only.setCheckable(True)
         self.summary_only.setChecked(True)
+
+        self.open_data_view = QtWidgets.QAction('Data view', self)
+        self.open_data_view.triggered.connect(self.main_window.open_data_view)
 
         open_action = QtWidgets.QAction('&Open', self)
         open_action.triggered.connect(self.main_window.open_input_data)
@@ -520,16 +540,19 @@ class MenuBar(QtWidgets.QMenuBar):
 
         file_menu.addAction(open_action)
         file_menu.addAction(save_settings)
+        file_menu.addAction(self.open_data_view)
 
         output_dir_action = QtWidgets.QAction('&Directory', self)
         output_dir_action.triggered.connect(self.main_window.select_output_dir)
 
-        output_menu.addAction(self.output_sqlite)
         output_menu.addAction(self.issue_development_csv)
         output_menu.addAction(self.externalities_csv)
         output_menu.addAction(self.exchanges_csv)
+        output_menu.addSeparator()
         output_menu.addAction(self.summary_only)
+        output_menu.addAction(self.output_sqlite)
         output_menu.addAction(self.voting_positions)
+        output_menu.addSeparator()
         output_menu.addAction(output_dir_action)
 
         debug = self.addMenu('Debug')
@@ -681,7 +704,6 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         self.overview_widget.update_widget()
 
     def set_start_button_state(self):
-
         if self.settings.input_filename and self.settings.output_directory and not self.thread.isRunning():
             self.start.setEnabled(True)
             self.start.setDisabled(False)
@@ -742,6 +764,10 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         self.setGeometry(300, 300, 1024, 768)
         self.setWindowTitle('Decide Exchange Model')
         self.show()
+
+    def open_data_view(self):
+
+        ex = InputWindow(self)
 
     def init_ui_data(self):
 

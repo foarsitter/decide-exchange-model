@@ -47,7 +47,11 @@ def init_event_handlers(model, output_directory, database_file, write_csv=True):
 
 
 def init_output_directory(model, output_dir, selected_actors=list()):
-    actor_unique = '-'.join(selected_actors)
+
+    if len(model.actors) == len(selected_actors):
+        actor_unique = 'all'
+    else:
+        actor_unique = '-'.join(selected_actors)
 
     output_directory = os.path.join(output_dir, model.data_set_name, model.model_name, actor_unique)
 
