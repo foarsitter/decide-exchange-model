@@ -27,7 +27,7 @@ requirements:
     - python
     - cython
     - matplotlib
-    - peewee >=3.0
+    - peewee ==3.3.4
     - pyqt >=5.9.2
 
 test:
