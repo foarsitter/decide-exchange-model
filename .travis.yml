@@ -25,6 +25,7 @@ before_install:
 
 # Install packages
 install:
+- conda install -q ncurses
   - conda install -q python=$TRAVIS_PYTHON_VERSION pip requests conda-build jinja2 anaconda-client nose Cython peewee
   - pip install Cython
   - pip install 'peewee>=3.0'
@@ -46,3 +47,6 @@ deploy:
   on:
     branch: master
   skip_cleanup: true
+
+
+
