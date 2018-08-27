@@ -1,4 +1,4 @@
-import sys
+import os
 import sys
 import uuid
 from collections import defaultdict
@@ -8,6 +8,7 @@ from PyQt5 import QtWidgets, QtCore
 from decide.cli import init_model
 from decide.model.base import ActorIssue
 from decide.model.helpers import csvparser
+from decide.model.helpers.helpers import data_file_path
 
 
 def open_file(path):
@@ -354,6 +355,12 @@ class BoxLayout(QtWidgets.QGroupBox):
 
         self._row_pointer = 0
 
+    def clear(self):
+        clear_layout(self.grid_layout)
+
+        self.items = {}
+        self._row_pointer = 0
+
     def add_heading(self):
         raise NotImplementedError
 
@@ -516,6 +523,13 @@ class ActorIssueBox(BoxLayout, Observer, Observable):
         self.actors = set()
         self.issues = set()
 
+    def clear(self):
+        super(ActorIssueBox, self).clear()
+        self.items = defaultdict(lambda: dict())
+
+        self.actors = set()
+        self.issues = set()
+
     def delete(self, observer, row):
         if observer.key == IssueBox.key:
             self.issues.remove(row)
@@ -585,6 +599,11 @@ class PositionSalienceBox(QtWidgets.QWidget, Observer, Observable):
         self.grid_layout.setAlignment(QtCore.Qt.AlignTop)
 
         self.container.addLayout(self.grid_layout)
+
+    def clear(self):
+
+        self._row_pointer = 0
+        clear_layout(self.grid_layout)
 
     def change(self, observer, key, value):
         print(key)
@@ -744,7 +763,10 @@ class InputWindow(QtWidgets.QMainWindow):
         load_kopenhagen.triggered.connect(self.load_kopenhagen)
 
         open_action = QtWidgets.QAction('Open', menubar)
+        open_action.triggered.connect(self.open_dialog)
+
         save_action = QtWidgets.QAction('Save', menubar)
+        save_action.triggered.connect(self.save_location)
 
         example_menu.addAction(load_kopenhagen)
 
@@ -758,13 +780,20 @@ class InputWindow(QtWidgets.QMainWindow):
         self.show()
 
     def load_kopenhagen(self):
-        self.load('C:\\Users\\jelme\\PycharmProjects\\decide-exchange-model\\data\\input\\kopenhagen.csv')
+        self.load(data_file_path('kopenhagen'))
 
     def open_dialog(self):
-        pass
+
+        file_name, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Select input data")
+
+        if file_name:
+            self.load(file_name)
 
     def save_location(self):
-        pass
+        file_name, _ = QtWidgets.QFileDialog.getSaveFileName(self, "Select input data")
+
+        if file_name:
+            self.save(file_name)
 
     def load(self, input_filename):
 
@@ -774,6 +803,12 @@ class InputWindow(QtWidgets.QMainWindow):
         csv_parser.read(input_filename)
 
         actor_inputs = {}
+
+        self.actor_input_control.clear()
+        self.issue_input_control.clear()
+        self.actor_issues.clear()
+        self.position_box.clear()
+        self.salience_box.clear()
 
         for issue, actor_issues in model.actor_issues.items():
             issue_input = self.issue_input_control.add_issue(issue.name, issue.lower, issue.upper)
@@ -794,14 +829,37 @@ class InputWindow(QtWidgets.QMainWindow):
 
         self.position_box.redraw()
 
+    def save(self, filename):
+        with open(filename, 'w') as file:
+
+            for actor in self.actor_input_control.items.values():
+                file.write(';'.join(['#A', actor.name, os.linesep]))
+
+            for issue in self.issue_input_control.items.values():
+                file.write(';'.join(['#P', issue.name, str(issue.lower), str(issue.upper), os.linesep]))
+
+            for actor_id, actor_issues in self.actor_issues.items.items():
+
+                for issue_id, actor_issue in actor_issues.items():
+                    actor_issue = actor_issue  # type: ActorIssueInput
+
+                    file.write(';'.join(
+                        ['#M', actor_issue.actor.name, actor_issue.issue.name, str(actor_issue.position),
+                         str(actor_issue.salience), str(actor_issue.power), os.linesep]))
+
+        open_file(filename)
+
 
 def main():
     app = QtWidgets.QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(True)
 
-    ex = InputWindow()
+    try:
+        ex = InputWindow()
 
-    sys.exit(app.exec_())
+        sys.exit(app.exec_())
+    except:
+        print('catch')
 
 
 if __name__ == '__main__':

@@ -1,5 +1,6 @@
 import argparse
 import logging
+import os
 import re
 
 from decide.model import base
@@ -103,3 +104,7 @@ class ModelLoop(object):
             self.model.actor_issues[exchange.j.supply.issue][exchange.j.actor].position = pj
 
         self.iteration_number += 1
+
+
+def data_file_path(filename):
+    return os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../../data/input/{}.csv'.format(filename))

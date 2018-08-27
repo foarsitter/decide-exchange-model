@@ -1,6 +1,7 @@
 import datetime
 
 import peewee
+
 # from playhouse.sqlite_ext import CSqliteExtDatabase
 #
 # connection = CSqliteExtDatabase(None, c_extensions=True, pragmas=(
@@ -9,7 +10,7 @@ import peewee
 # ))
 
 
-connection = peewee.MySQLDatabase('decide')
+connection = peewee.SqliteDatabase('decide')
 
 
 class DictionaryIndexMixin:
