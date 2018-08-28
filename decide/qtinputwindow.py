@@ -59,7 +59,7 @@ class Observer:
     def delete(self, observer, row):
         raise NotImplementedError
 
-    def change(self, observer, key, value):
+    def change(self, observer, key, value, extra):
         raise NotImplementedError
 
 
@@ -80,12 +80,12 @@ class Observable:
         for observer in self.observers:
             observer.delete(self, row)
 
-    def notify_change(self, key, value, observer=None):
-        for observer in self.observers:
+    def notify_change(self, key, value, observer=None, extra=None):
+        for _observer in self.observers:
 
             if observer is None:
                 observer = self
-            observer.change(observer, key, value)
+            _observer.change(observer, key, value, extra)
 
     def register(self, obj):
         self.observers.append(obj)
@@ -108,7 +108,7 @@ class PrintObserver(Observer):
         # print(observer)
         # print(row)
 
-    def change(self, observer, key, value):
+    def change(self, observer, key, value, extra):
         pass
         # print('change')
         # print(observer)
@@ -229,19 +229,22 @@ class ActorIssueInput(Observer, Observable):
         """
         print('delete this actor issue')
 
-    def change(self, observer, key, value):
+    def change(self, observer, key, value, extra):
+
+        if observer == self:
+            return
 
         if isinstance(observer, ActorInput):
             if key == 'name':
                 self.actor_input.setText(value)
-                self.notify_change('choices', True, observer=observer)
+                self.notify_change('choices', True, observer=observer, extra=extra)
             if key == 'power':
                 self.power_input.setText(str(value))
 
         if isinstance(observer, IssueInput):
             if key == 'name':
                 self.issue_input.setText(value)
-                self.notify_change('choices', True, observer=observer)
+                self.notify_change('choices', True, observer=observer, extra=extra)
             if key == 'upper':
                 print(value)
             if key == 'lower':
@@ -253,7 +256,7 @@ class ActorIssueInput(Observer, Observable):
         if key == 'power':
             self.set_power(value)
 
-        self.notify_change('redraw', True, observer=observer)
+        self.notify_change('redraw', True, observer=observer, extra=extra)
 
     def __init__(self, actor: ActorInput, issue: IssueInput):
         super().__init__()
@@ -295,15 +298,15 @@ class ActorIssueInput(Observer, Observable):
     def power(self):
         return self._power
 
-    def set_position(self, value, silence=False):
+    def set_position(self, value, silence=False, extra=None):
         self._position = value
         if not silence:
-            self.notify_change('position', value)
+            self.notify_change('position', value, extra=extra)
 
-    def set_power(self, value, silence=False):
+    def set_power(self, value, silence=False, extra=None):
         self._power = value
         if not silence:
-            self.notify_change('power', value)
+            self.notify_change('power', value, extra=extra)
 
     def set_salience(self, value, silence=False):
         self._salience = value
@@ -588,8 +591,8 @@ class ActorIssueBox(BoxLayout, Observer, Observable):
 
         self.notify_add(actor_issue_input)
 
-    def change(self, observer, key, value):
-        self.notify_change(observer, key, value)
+    def change(self, observer, key, value, extra):
+        self.notify_change(key, value, observer=observer, extra='ActorIssueBox')
 
 
 class PositionSalienceBox(QtWidgets.QWidget, Observer, Observable):
@@ -618,7 +621,7 @@ class PositionSalienceBox(QtWidgets.QWidget, Observer, Observable):
         self._row_pointer = 0
         clear_layout(self.grid_layout)
 
-    def change(self, observer, key, value):
+    def change(self, observer, key, value, extra):
 
         self.update_choices()
         self.redraw()
@@ -697,6 +700,10 @@ class PositionBox(PositionSalienceBox):
                 position
             )
 
+    def change(self, observer, key, value, extra):
+        if key != 'position':
+            super(PositionBox, self).change(observer, key, value, extra)
+
 
 class SalienceBox(PositionSalienceBox):
 
@@ -705,9 +712,9 @@ class SalienceBox(PositionSalienceBox):
 
     def add_actor_issue(self, actor_issue: ActorIssueInput):
         if actor_issue.actor.name == self.choices.currentText():
-            position = DoubleInput()
-            position.setValue(actor_issue.position)
-            position.valueChanged.connect(actor_issue.set_position)
+            # position = DoubleInput()
+            ## position.setValue(actor_issue.position)
+            # position.valueChanged.connect(actor_issue.set_position)
 
             salience = DoubleInput()
             salience.setValue(actor_issue.salience)
@@ -716,7 +723,7 @@ class SalienceBox(PositionSalienceBox):
             self.add_row(
                 QtWidgets.QLabel(actor_issue.issue.name),
                 QtWidgets.QLabel(str(actor_issue.actor.power)),
-                position,
+                QtWidgets.QLabel(str(actor_issue.position)),
                 salience
 
             )
@@ -729,6 +736,9 @@ class SalienceBox(PositionSalienceBox):
 
         self.choices.addItems(items)
 
+    def change(self, observer, key, value, extra):
+        if key != 'salience':
+            super(SalienceBox, self).change(observer, key, value, extra)
 
 class InputWindow(QtWidgets.QMainWindow):
 
