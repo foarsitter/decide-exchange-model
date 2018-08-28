@@ -1,0 +1,101 @@
+#O	Copenhagen negotiations				
+#/	Data collected on 27 and 28 Oct 2009. Clarisse Siebert and Richard Klein (SEI)				
+#/	ID	Full name			
+#A	USA	USA			
+#A	EU (incl Norway)	EU (incl Norway)			
+#A	Australia	Australia			
+#A	Canada	Canada			
+#A	Japan	Japan			
+#A	Russia	Russia			
+#A	China India	China India			
+#A	Brazil	Brazil			
+#A	Least Developed Countries	Least Developed Countries			
+#A	Developing Countries	Developing Countries			
+#A	Alliance of Small Island States	Alliance of Small Island States			
+#/	issue input				
+#/	ID	full name			
+#/	Migration issues				
+#P	Newtreaty	Copenhagen new treaty vs extension of Kyoto			
+#P	DevlopC2020	Reduction of CO2 emission in 2020 by developed Countries relative to 1990			
+#P	Domestred	Percentage of reductions to be realized domestically			
+#P	MRVdecrease	Decrease intensity of carbon economy in MRVs in emerging economies			
+#/	Adaptation issues				
+#P	Commitments	Binding funding commitments for adaptation in developing countries			
+#P	Control	level of control of adaptation funding			
+#P	Extra	Is it counted as aid or new and additional			
+#/	Actor	Issue ID	position	salience	power
+#D	USA	Newtreaty	10	0.9	0.26
+#D	EU (incl Norway)	Newtreaty	50	0.4	0.156
+#D	Australia	Newtreaty	20	0.4	0.026
+#D	Canada	Newtreaty	10	0.8	0.039
+#D	Japan	Newtreaty	50	0.6	0.052
+#D	Russia	Newtreaty	90	0.7	0.013
+#D	China India	Newtreaty	100	0.9	0.247
+#D	Brazil	Newtreaty	100	0.5	0.026
+#D	Least Developed Countries	Newtreaty	100	0.9	0.078
+#D	Developing Countries	Newtreaty	100	0.5	0.026
+#D	Alliance of Small Island States	Newtreaty	100	0.9	0.078
+#D	USA	DevlopC2020	10	0.8	0.26
+#D	EU (incl Norway)	DevlopC2020	70	0.9	0.156
+#D	Australia	DevlopC2020	50	0.5	0.026
+#D	Canada	DevlopC2020	30	0.8	0.039
+#D	Japan	DevlopC2020	50	0.6	0.052
+#D	Russia	DevlopC2020	60	0.6	0.013
+#D	China India	DevlopC2020	70	0.8	0.247
+#D	Brazil	DevlopC2020	70	0.8	0.026
+#D	Least Developed Countries	DevlopC2020	100	1	0.078
+#D	Developing Countries	DevlopC2020	80	0.8	0.026
+#D	Alliance of Small Island States	DevlopC2020	100	1	0.078
+#D	USA	Domestred	10	0.75	0.26
+#D	EU (incl Norway)	Domestred	50	0.8	0.156
+#D	Australia	Domestred	30	0.6	0.026
+#D	Canada	Domestred	30	0.6	0.039
+#D	Japan	Domestred	20	0.6	0.052
+#D	Russia	Domestred	0	0.9	0.013
+#D	China India	Domestred	10	0.9	0.247
+#D	Brazil	Domestred	20	0.75	0.026
+#D	Least Developed Countries	Domestred	75	0.9	0.078
+#D	Developing Countries	Domestred	50	0.8	0.026
+#D	Alliance of Small Island States	Domestred	80	0.95	0.078
+#D	USA	MRVdecrease	90	1	0.26
+#D	EU (incl Norway)	MRVdecrease	70	0.5	0.156
+#D	Australia	MRVdecrease	80	0.6	0.026
+#D	Canada	MRVdecrease	70	0.5	0.039
+#D	Japan	MRVdecrease	70	0.5	0.052
+#D	Russia	MRVdecrease	30	0.1	0.013
+#D	China India	MRVdecrease	10	1	0.247
+#D	Brazil	MRVdecrease	15	0.9	0.026
+#D	Least Developed Countries	MRVdecrease	40	0.3	0.078
+#D	Developing Countries	MRVdecrease	15	0.8	0.026
+#D	Alliance of Small Island States	MRVdecrease	50	0.3	0.078
+#D	USA	Commitments	10	0.8	0.26
+#D	EU (incl Norway)	Commitments	20	0.2	0.156
+#D	Australia	Commitments	20	0.4	0.026
+#D	Canada	Commitments	10	0.4	0.039
+#D	Japan	Commitments	20	0.2	0.052
+#D	China India	Commitments	85	0.7	0.247
+#D	Brazil	Commitments	70	0.3	0.026
+#D	Least Developed Countries	Commitments	90	0.85	0.078
+#D	Developing Countries	Commitments	70	0.3	0.026
+#D	Alliance of Small Island States	Commitments	90	0.85	0.078
+#D	USA	Control	10	0.6	0.26
+#D	EU (incl Norway)	Control	50	0.75	0.156
+#D	Australia	Control	40	0.5	0.026
+#D	Canada	Control	60	0.5	0.039
+#D	Japan	Control	20	0.4	0.052
+#D	Russia	Control	60	0.1	0.013
+#D	China India	Control	75	0.75	0.247
+#D	Brazil	Control	75	0.75	0.026
+#D	Least Developed Countries	Control	90	1	0.078
+#D	Developing Countries	Control	90	0.8	0.026
+#D	Alliance of Small Island States	Control	90	1	0.078
+#D	USA	Extra	10	0.6	0.26
+#D	EU (incl Norway)	Extra	50	0.4	0.156
+#D	Australia	Extra	25	0.4	0.026
+#D	Canada	Extra	25	0.4	0.039
+#D	Japan	Extra	40	0.4	0.052
+#D	China India	Extra	90	0.85	0.247
+#D	Brazil	Extra	70	0.6	0.026
+#D	Least Developed Countries	Extra	100	0.95	0.078
+#D	Developing Countries	Extra	80	0.8	0.026
+#D	Alliance of Small Island States	Extra	100	0.95	0.078

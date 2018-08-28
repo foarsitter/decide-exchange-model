@@ -3,5 +3,4 @@ data/output
 model-settings.xml
 *.pyc
 venv/
-*.csv
 *.log
