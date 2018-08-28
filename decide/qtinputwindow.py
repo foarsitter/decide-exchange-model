@@ -40,7 +40,6 @@ class DoubleInput(QtWidgets.QLineEdit):
         self.setFixedWidth(75)
 
     def setValue(self, value):
-
         self.setText(str(value))
 
     @property
@@ -81,9 +80,12 @@ class Observable:
         for observer in self.observers:
             observer.delete(self, row)
 
-    def notify_change(self, key, value):
+    def notify_change(self, key, value, observer=None):
         for observer in self.observers:
-            observer.change(self, key, value)
+
+            if observer is None:
+                observer = self
+            observer.change(observer, key, value)
 
     def register(self, obj):
         self.observers.append(obj)
@@ -232,14 +234,14 @@ class ActorIssueInput(Observer, Observable):
         if isinstance(observer, ActorInput):
             if key == 'name':
                 self.actor_input.setText(value)
-                self.notify_change('choices', True)
+                self.notify_change('choices', True, observer=observer)
             if key == 'power':
                 self.power_input.setText(str(value))
 
         if isinstance(observer, IssueInput):
             if key == 'name':
                 self.issue_input.setText(value)
-                self.notify_change('choices', True)
+                self.notify_change('choices', True, observer=observer)
             if key == 'upper':
                 print(value)
             if key == 'lower':
@@ -251,7 +253,7 @@ class ActorIssueInput(Observer, Observable):
         if key == 'power':
             self.set_power(value)
 
-        self.notify_change('redraw', True)
+        self.notify_change('redraw', True, observer=observer)
 
     def __init__(self, actor: ActorInput, issue: IssueInput):
         super().__init__()
@@ -345,8 +347,15 @@ class BoxLayout(QtWidgets.QGroupBox):
         self.layout_container.addWidget(self.scroll_area)
 
         if btn:
+            container = QtWidgets.QHBoxLayout()
+
+            self.refresh_button = QtWidgets.QPushButton('Refresh')
             self.add_button = QtWidgets.QPushButton('Add')
+            self.refresh_button.clicked.connect(self.refresh)
             # self.layout_container.addWidget(QtWidgets.QTextEdit())
+            container.addWidget(self.add_button)
+            container.addWidget(self.refresh_button)
+            self.layout_container.addLayout(container)
             self.layout_container.addWidget(self.add_button)
 
         self.setLayout(self.layout_container)
@@ -354,6 +363,10 @@ class BoxLayout(QtWidgets.QGroupBox):
         self.items = {}
 
         self._row_pointer = 0
+
+    def refresh(self):
+        print('Refresh')
+        self.notify_change('redraw', True)
 
     def clear(self):
         clear_layout(self.grid_layout)
@@ -558,7 +571,7 @@ class ActorIssueBox(BoxLayout, Observer, Observable):
             for issue in self.issue_box.items.values():
                 self.add_actor_issue(value, issue)
 
-        self.notify_change('redraw', True)
+        self.notify_change('redraw', True, observer=observer)
 
     def add_actor_issue(self, actor: ActorInput, issue: IssueInput, actor_issue=None):
 
@@ -576,7 +589,7 @@ class ActorIssueBox(BoxLayout, Observer, Observable):
         self.notify_add(actor_issue_input)
 
     def change(self, observer, key, value):
-        print('change ActorIssueBox')
+        self.notify_change(observer, key, value)
 
 
 class PositionSalienceBox(QtWidgets.QWidget, Observer, Observable):
@@ -606,9 +619,9 @@ class PositionSalienceBox(QtWidgets.QWidget, Observer, Observable):
         clear_layout(self.grid_layout)
 
     def change(self, observer, key, value):
-        print(key)
-        if key == 'choice':
-            self.update_choices()
+
+        self.update_choices()
+        self.redraw()
 
     def delete(self, observer, actor_issue_input):
         self.redraw()
@@ -830,22 +843,27 @@ class InputWindow(QtWidgets.QMainWindow):
         self.position_box.redraw()
 
     def save(self, filename):
+
+        escape = "'"
+
         with open(filename, 'w') as file:
 
             for actor in self.actor_input_control.items.values():
-                file.write(';'.join(['#A', actor.name, os.linesep]))
+                file.write('\t'.join([escape + '#A' + escape, escape + actor.name + escape, '\n']))
 
             for issue in self.issue_input_control.items.values():
-                file.write(';'.join(['#P', issue.name, str(issue.lower), str(issue.upper), os.linesep]))
+                file.write(
+                    '\t'.join([escape + '#P' + escape, escape + issue.name + escape, escape + issue.name + escape, str(issue.lower), str(issue.upper), '\n']))
 
             for actor_id, actor_issues in self.actor_issues.items.items():
 
                 for issue_id, actor_issue in actor_issues.items():
                     actor_issue = actor_issue  # type: ActorIssueInput
 
-                    file.write(';'.join(
-                        ['#M', actor_issue.actor.name, actor_issue.issue.name, str(actor_issue.position),
-                         str(actor_issue.salience), str(actor_issue.power), os.linesep]))
+                    file.write('\t'.join(
+                        [escape + '#D' + escape, escape + actor_issue.actor.name + escape, escape + actor_issue.issue.name + escape,
+                         str(actor_issue.position),
+                         str(actor_issue.salience), str(actor_issue.power), '\n']))
 
         open_file(filename)
 

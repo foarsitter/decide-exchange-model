@@ -540,6 +540,7 @@ class MenuBar(QtWidgets.QMenuBar):
 
         file_menu.addAction(open_action)
         file_menu.addAction(save_settings)
+        file_menu.addSeparator()
         file_menu.addAction(self.open_data_view)
 
         output_dir_action = QtWidgets.QAction('&Directory', self)

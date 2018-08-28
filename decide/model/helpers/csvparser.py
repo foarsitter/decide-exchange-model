@@ -8,10 +8,13 @@ from .. import base
 class CsvParser:
     # csv row identifiers
     cA = "#A"  # A = actor
+
     # P = issues
     cP = "#P"
+
     # D = the position, salience & power of an actor of an issue
     cD = "#D"
+
     # M = issue dimensions
     cM = "#M"
 

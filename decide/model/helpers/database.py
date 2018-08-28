@@ -2,15 +2,17 @@ import datetime
 
 import peewee
 
-# from playhouse.sqlite_ext import CSqliteExtDatabase
-#
-# connection = CSqliteExtDatabase(None, c_extensions=True, pragmas=(
-#     ('cache_size', -1024 * 1024),  # 64MB page-cache.
-#     ('journal_mode', 'wal'),  # Use WAL-mode (you should always use this!).
-# ))
 
+try:
+    # try to use the Cython version
+    from playhouse.sqlite_ext import CSqliteExtDatabase
 
-connection = peewee.SqliteDatabase('decide')
+    connection = CSqliteExtDatabase(None, c_extensions=True, pragmas=(
+        ('cache_size', -1024 * 1024),  # 64MB page-cache.
+        ('journal_mode', 'wal'),  # Use WAL-mode (you should always use this!).
+    ))
+except:
+    connection = peewee.SqliteDatabase('decide')
 
 
 class DictionaryIndexMixin:
