@@ -785,6 +785,9 @@ class InputWindow(QtWidgets.QMainWindow):
         load_kopenhagen = QtWidgets.QAction('&load Kopenhagen', menubar)
         load_kopenhagen.triggered.connect(self.load_kopenhagen)
 
+        load_cop = QtWidgets.QAction('&load Parijs', menubar)
+        load_cop.triggered.connect(self.load_parijs)
+
         open_action = QtWidgets.QAction('Open', menubar)
         open_action.triggered.connect(self.open_dialog)
 
@@ -792,6 +795,7 @@ class InputWindow(QtWidgets.QMainWindow):
         save_action.triggered.connect(self.save_location)
 
         example_menu.addAction(load_kopenhagen)
+        example_menu.addAction(load_cop)
 
         file_menu.addAction(open_action)
         file_menu.addAction(save_action)
@@ -804,6 +808,9 @@ class InputWindow(QtWidgets.QMainWindow):
 
     def load_kopenhagen(self):
         self.load(data_file_path('kopenhagen'))
+
+    def load_parijs(self):
+        self.load(data_file_path('CoP21'))
 
     def open_dialog(self):
 

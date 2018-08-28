@@ -53,7 +53,7 @@ def init_output_directory(model, output_dir, selected_actors=list()):
     else:
         actor_unique = '-'.join(selected_actors)
 
-    output_directory = os.path.join(output_dir, model.data_set_name, model.model_name, actor_unique)
+    output_directory = os.path.join(output_dir, model.data_set_name, model.model_name)
 
     if not os.path.isdir(output_directory):
         os.makedirs(output_directory)

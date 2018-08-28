@@ -348,14 +348,17 @@ class Worker(QtCore.QObject):
         print('start')
         print(settings.start)
 
-        p_values = [
-            str(round(p, 2)) for p in
-                    float_range(
-                        start=settings.start,
-                        step=settings.step,
-                        stop=settings.stop
-                    )
-                    ]
+        if settings.start == settings.stop:
+            p_values = [settings.start]
+        else:
+            p_values = [
+                str(round(p, 2)) for p in
+                float_range(
+                    start=settings.start,
+                    step=settings.step,
+                    stop=settings.stop
+                )
+            ]
 
         print('P values')
         print(p_values)
@@ -442,8 +445,8 @@ class SummaryWidget(DynamicFormLayout):
         actors = self.actor_widget.get_selected()
         issues = self.issue_widget.get_selected()
 
-        self.add_text_row('Actors', ', '.join(actors))
-        self.add_text_row('Issues', ', '.join(issues))
+        # self.add_text_row('Actors', ', '.join(actors))
+        # self.add_text_row('Issues', ', '.join(issues))
 
         self.add_text_row('Input', self.settings.input_filename, self.test_callback)
         self.add_text_row('Output directory', self.settings.output_directory, self.test_callback)
@@ -875,7 +878,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         bar.setMinimum(0)
         bar.setMaximum(self.settings.iterations * self.settings.repetitions)
         self.progress_dialog.setBar(bar)
-        self.progress_dialog.setWindowTitle(title)
+        # self.progress_dialog.setWindowTitle(title)
 
         self.progress_dialog.canceled.connect(self.cancel)
 
