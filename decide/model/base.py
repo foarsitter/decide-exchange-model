@@ -24,6 +24,8 @@ class Issue:
         self.lower = lower
         self.upper = upper
 
+        self.comment = ""
+
         if self.lower is not None or self.upper is not None:
             self.calculate_delta()
             self.calculate_step_size()
@@ -38,6 +40,9 @@ class Issue:
             self.step_size = 0
 
     def de_normalize(self, value):
+        if value == 0:
+            return self.lower
+
         return value / self.step_size + self.lower
 
     def normalize(self, value):
@@ -102,6 +107,8 @@ class Actor:
         """
         self.name = name
         self.actor_id = actor_id if actor_id else helpers.create_key(name)
+
+        self.comment = ""
 
     def __eq__(self, other):
         if isinstance(other, str):
@@ -724,24 +731,28 @@ class AbstractModel:
 
         raise ValueError('ActorIssue not found')
 
-    def add_actor(self, actor_name, actor_id=None) -> Actor:
+    def add_actor(self, actor_name, actor_id=None, comment="") -> Actor:
         """
         Add an actor to the model
+        :param comment:
         :param actor_id:
         :param actor_name:
         :return:
         """
         actor = Actor(actor_name, actor_id)
+        actor.comment = comment
         self.actors[actor] = actor
         return actor
 
-    def add_issue(self, issue_name, issue_id=None) -> Issue:
+    def add_issue(self, issue_name, issue_id=None, comment="") -> Issue:
         """
         Add an issue to the model
+        :param comment:
         :param issue_id:
         :param issue_name:
         """
         issue = Issue(issue_name, issue_id=issue_id)
+        issue.comment = comment
         self.issues[issue] = issue
         return issue
 

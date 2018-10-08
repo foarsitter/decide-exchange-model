@@ -1,9 +1,9 @@
-import os
 import sys
 import uuid
 from collections import defaultdict
 
 from PyQt5 import QtWidgets, QtCore
+from PyQt5.QtWidgets import QListWidgetItem
 
 from decide.cli import init_model
 from decide.model.base import ActorIssue
@@ -45,6 +45,10 @@ class DoubleInput(QtWidgets.QLineEdit):
     @property
     def valueChanged(self):
         return self.textChanged
+
+
+def esc(value):
+    return "'{}'".format(value)
 
 
 class Observer:
@@ -98,22 +102,12 @@ class PrintObserver(Observer):
 
     def add(self, observer, value):
         pass
-        # print('add')
-        # print(observer)
-        # print(value)
 
     def delete(self, observer, row):
         pass
-        # print('delete')
-        # print(observer)
-        # print(row)
 
     def change(self, observer, key, value, extra):
         pass
-        # print('change')
-        # print(observer)
-        # print(key)
-        # print(value)
 
 
 class ActorInput(Observable):
@@ -126,6 +120,7 @@ class ActorInput(Observable):
         self.id = None
         self._name = name
         self._power = power
+        self._comment = ""
         self.key = 'actor_input'
 
         self.register(PrintObserver())
@@ -161,6 +156,17 @@ class ActorInput(Observable):
         if not silence:
             self.notify_change('power', value)
 
+    @property
+    def comment(self):
+        return self._comment
+
+    @comment.setter
+    def comment(self, value):
+        self.set_comment(value)
+
+    def set_comment(self, value):
+        self._comment = value
+
 
 class IssueInput(Observable):
     """
@@ -173,6 +179,7 @@ class IssueInput(Observable):
         self._name = name
         self._lower = lower
         self._upper = upper
+        self._comment = ""
         self.key = 'issue_input'
 
         self.register(PrintObserver())
@@ -215,6 +222,17 @@ class IssueInput(Observable):
         self._upper = value
         self.notify_change('upper', value)
 
+    @property
+    def comment(self):
+        return self._comment
+
+    @comment.setter
+    def comment(self, value):
+        self.set_comment(value)
+
+    def set_comment(self, value):
+        self._comment = value
+
 
 class ActorIssueInput(Observer, Observable):
 
@@ -246,9 +264,9 @@ class ActorIssueInput(Observer, Observable):
                 self.issue_input.setText(value)
                 self.notify_change('choices', True, observer=observer, extra=extra)
             if key == 'upper':
-                print(value)
+                pass
             if key == 'lower':
-                print(value)
+                pass
 
         if key == 'position':
             self.set_position(value)
@@ -368,7 +386,6 @@ class BoxLayout(QtWidgets.QGroupBox):
         self._row_pointer = 0
 
     def refresh(self):
-        print('Refresh')
         self.notify_change('redraw', True)
 
     def clear(self):
@@ -400,8 +417,6 @@ class BoxLayout(QtWidgets.QGroupBox):
     def delete_row(self):
 
         sending_button = self.sender()  # type: QtWidgets.QPushButton
-
-        print(sending_button.objectName())
 
         row = int(sending_button.objectName().split('-')[-1])
 
@@ -449,9 +464,13 @@ class ActorBox(BoxLayout, Observable):
         delete_button.clicked.connect(self.delete_row)
         delete_button.setObjectName('actor-' + str(self._row_pointer))
 
+        comment_button = QtWidgets.QPushButton('Comment')
+        comment_button.clicked.connect(self.comment_window)
+        comment_button.setObjectName('actor-' + str(self._row_pointer))
+
         self.items[actor_input.id] = actor_input
 
-        self.add_row(name_input, power_input, delete_button)
+        self.add_row(name_input, power_input, comment_button, delete_button)
 
         return actor_input
 
@@ -462,6 +481,17 @@ class ActorBox(BoxLayout, Observable):
     def delete_row(self):
         row = super().delete_row()
         self.notify_delete(row)
+
+    def comment_window(self):
+        sending_button = self.sender()  # type: QtWidgets.QPushButton
+
+        row = int(sending_button.objectName().split('-')[-1])
+
+        obj = self.items[row]
+
+        text, ok_pressed = QtWidgets.QInputDialog.getMultiLineText(self, "Comment", "Comment", obj.comment)
+        if ok_pressed and text != '':
+            obj.comment = text
 
 
 class IssueBox(BoxLayout, Observable):
@@ -500,9 +530,13 @@ class IssueBox(BoxLayout, Observable):
         delete_button.clicked.connect(self.delete_row)
         delete_button.setObjectName('issue-' + str(self._row_pointer))
 
+        comment_button = QtWidgets.QPushButton('Comment')
+        comment_button.clicked.connect(self.comment_window)
+        comment_button.setObjectName('issue-' + str(self._row_pointer))
+
         self.items[issue_input.id] = issue_input
 
-        self.add_row(name_input, lower_input, upper_input, delete_button)
+        self.add_row(name_input, lower_input, upper_input, comment_button, delete_button)
 
         return issue_input
 
@@ -514,6 +548,17 @@ class IssueBox(BoxLayout, Observable):
         row = super().delete_row()
 
         self.notify_delete(row)
+
+    def comment_window(self):
+        sending_button = self.sender()  # type: QtWidgets.QPushButton
+
+        row = int(sending_button.objectName().split('-')[-1])
+
+        obj = self.items[row]
+
+        text, ok_pressed = QtWidgets.QInputDialog.getMultiLineText(self, "Comment", "Comment", obj.comment)
+        if ok_pressed and text != '':
+            obj.comment = text
 
 
 class ActorIssueBox(BoxLayout, Observer, Observable):
@@ -576,7 +621,7 @@ class ActorIssueBox(BoxLayout, Observer, Observable):
 
         self.notify_change('redraw', True, observer=observer)
 
-    def add_actor_issue(self, actor: ActorInput, issue: IssueInput, actor_issue=None):
+    def add_actor_issue(self, actor: ActorInput, issue: IssueInput, actor_issue=None, silence=False):
 
         actor_issue_input = ActorIssueInput(actor, issue)
         actor_issue_input.id = self._row_pointer
@@ -589,7 +634,8 @@ class ActorIssueBox(BoxLayout, Observer, Observable):
 
         self._row_pointer += 1
 
-        self.notify_add(actor_issue_input)
+        if not silence:
+            self.notify_add(actor_issue_input)
 
     def change(self, observer, key, value, extra):
         self.notify_change(key, value, observer=observer, extra='ActorIssueBox')
@@ -605,16 +651,24 @@ class PositionSalienceBox(QtWidgets.QWidget, Observer, Observable):
 
         self._row_pointer = 0
 
-        self.choices = QtWidgets.QComboBox()
-        self.choices.currentTextChanged.connect(self.redraw)
+        self.choices = QtWidgets.QListWidget(self)
+        self.choices.setMaximumHeight(100)
+        self.choices.setSelectionMode(QtWidgets.QListWidget.MultiSelection)
+        self.choices.itemSelectionChanged.connect(self.redraw)
 
         self.container = QtWidgets.QVBoxLayout(self)
         self.container.addWidget(self.choices)
 
-        self.grid_layout = QtWidgets.QGridLayout()
+        self.scroll_area = QtWidgets.QScrollArea(self)
+        self.scroll_area.setWidgetResizable(True)
+
+        self.scroll_area_widget = QtWidgets.QWidget()
+        self.scroll_area.setWidget(self.scroll_area_widget)
+
+        self.grid_layout = QtWidgets.QGridLayout(self.scroll_area_widget)
         self.grid_layout.setAlignment(QtCore.Qt.AlignTop)
 
-        self.container.addLayout(self.grid_layout)
+        self.container.addWidget(self.scroll_area)
 
     def clear(self):
 
@@ -661,8 +715,8 @@ class PositionSalienceBox(QtWidgets.QWidget, Observer, Observable):
 
         self.add_heading()
 
-        for actor in self.actor_issue_box.actors:
-            for issue in self.actor_issue_box.issues:
+        for issue in self.actor_issue_box.issues:
+            for actor in self.actor_issue_box.actors:
 
                 if actor.id in self.actor_issue_box.items and issue.id in self.actor_issue_box.items[actor.id]:
                     actor_issue = self.actor_issue_box.items[actor.id][issue.id]  # type: ActorIssueInput
@@ -676,27 +730,43 @@ class PositionSalienceBox(QtWidgets.QWidget, Observer, Observable):
 
         self.choices.clear()
 
-        items = [str(x.name) for x in self.actor_issue_box.issues if x != '']
+        for issue in self.actor_issue_box.issues:
+            if issue.name != '':
+                item = QListWidgetItem(self.choices)
+                item.setText(issue.name)
+                self.choices.addItem(item)
 
-        items.sort()
+        self.choices.sortItems()
 
-        self.choices.addItems(items)
+    def is_selected(self, value):
+
+        items = self.choices.selectedItems()
+
+        if len(items) == 0:
+            return True
+
+        for item in items:
+            if item.text() == value:
+                return True
+
+        return False
 
 
 class PositionBox(PositionSalienceBox):
 
     def add_heading(self):
-        self.add_row('Actor', 'Power', 'Position')
+        self.add_row('Issue', 'Actor', 'Power', 'Position')
 
     def add_actor_issue(self, actor_issue):
-        if actor_issue.issue.name == self.choices.currentText():
+        if self.is_selected(actor_issue.issue.name):
             position = DoubleInput()
             position.setValue(actor_issue.position)
             position.valueChanged.connect(actor_issue.set_position)
 
             self.add_row(
+                QtWidgets.QLabel(actor_issue.issue.name),
                 QtWidgets.QLabel(actor_issue.actor.name),
-                QtWidgets.QLabel(str(actor_issue.actor.power)),
+                QtWidgets.QLabel(str(round(float(actor_issue.actor.power), 3))),
                 position
             )
 
@@ -708,19 +778,16 @@ class PositionBox(PositionSalienceBox):
 class SalienceBox(PositionSalienceBox):
 
     def add_heading(self):
-        self.add_row('Issue', 'Power', 'Position', 'Salience')
+        self.add_row("Actor", 'Issue', 'Power', 'Position', 'Salience')
 
     def add_actor_issue(self, actor_issue: ActorIssueInput):
-        if actor_issue.actor.name == self.choices.currentText():
-            # position = DoubleInput()
-            ## position.setValue(actor_issue.position)
-            # position.valueChanged.connect(actor_issue.set_position)
-
+        if self.is_selected(actor_issue.actor.name):
             salience = DoubleInput()
             salience.setValue(actor_issue.salience)
             salience.valueChanged.connect(actor_issue.set_salience)
 
             self.add_row(
+                QtWidgets.QLabel(actor_issue.actor.name),
                 QtWidgets.QLabel(actor_issue.issue.name),
                 QtWidgets.QLabel(str(actor_issue.actor.power)),
                 QtWidgets.QLabel(str(actor_issue.position)),
@@ -729,16 +796,23 @@ class SalienceBox(PositionSalienceBox):
             )
 
     def update_choices(self):
+
         self.choices.clear()
 
         items = [str(x.name) for x in self.actor_issue_box.actors if x != '']
         items.sort()
 
-        self.choices.addItems(items)
+        for x in items:
+            if x != '':
+                item = QtWidgets.QListWidgetItem(self.choices)
+                item.setText(x)
+
+                self.choices.addItem(item)
 
     def change(self, observer, key, value, extra):
         if key != 'salience':
             super(SalienceBox, self).change(observer, key, value, extra)
+
 
 class InputWindow(QtWidgets.QMainWindow):
 
@@ -817,7 +891,11 @@ class InputWindow(QtWidgets.QMainWindow):
         file_name, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Select input data")
 
         if file_name:
-            self.load(file_name)
+            try:
+                self.load(file_name)
+            except Exception as ex:
+                error_dialog = QtWidgets.QErrorMessage(self)
+                error_dialog.showMessage(str(ex))
 
     def save_location(self):
         file_name, _ = QtWidgets.QFileDialog.getSaveFileName(self, "Select input data")
@@ -830,6 +908,7 @@ class InputWindow(QtWidgets.QMainWindow):
         model = init_model('equal', input_filename, p=0.0)
 
         csv_parser = csvparser.CsvParser(model)
+
         csv_parser.read(input_filename)
 
         actor_inputs = {}
@@ -842,45 +921,58 @@ class InputWindow(QtWidgets.QMainWindow):
 
         for issue, actor_issues in model.actor_issues.items():
             issue_input = self.issue_input_control.add_issue(issue.name, issue.lower, issue.upper)
-
+            issue_input.comment = issue.comment
             self.actor_issues.issues.add(issue_input)
 
             for actor, actor_issue in actor_issues.items():
                 if actor not in actor_inputs:
                     actor_issue = actor_issue  # type: ActorIssue
                     actor_input = self.actor_input_control.add_actor(actor.name, actor_issue.power)
+                    actor_input.comment = actor.comment
                     actor_inputs[actor] = actor_input
 
                     self.actor_issues.actors.add(actor_input)
                 else:
                     actor_input = actor_inputs[actor]
 
-                self.actor_issues.add_actor_issue(actor_input, issue_input, actor_issue)
+                self.actor_issues.add_actor_issue(actor_input, issue_input, actor_issue, silence=True)
 
         self.position_box.redraw()
+        self.salience_box.redraw()
+        self.position_box.update_choices()
+        self.salience_box.update_choices()
 
     def save(self, filename):
-
-        escape = "'"
 
         with open(filename, 'w') as file:
 
             for actor in self.actor_input_control.items.values():
-                file.write('\t'.join([escape + '#A' + escape, escape + actor.name + escape, '\n']))
+                file.write('\t'.join([esc('#A'), esc(actor.name), esc(actor.comment), '\n']))
 
             for issue in self.issue_input_control.items.values():
                 file.write(
-                    '\t'.join([escape + '#P' + escape, escape + issue.name + escape, escape + issue.name + escape, str(issue.lower), str(issue.upper), '\n']))
+                    '\t'.join([esc('#P'), esc(issue.name), esc(issue.name), esc(issue.comment), '\n']))
+
+                file.write(
+                    '\t'.join([esc('#M'), esc(issue.name), str(issue.lower), '\n']))
+
+                file.write(
+                    '\t'.join([esc('#M'), esc(issue.name), str(issue.upper), '\n']))
+
 
             for actor_id, actor_issues in self.actor_issues.items.items():
 
                 for issue_id, actor_issue in actor_issues.items():
                     actor_issue = actor_issue  # type: ActorIssueInput
 
-                    file.write('\t'.join(
-                        [escape + '#D' + escape, escape + actor_issue.actor.name + escape, escape + actor_issue.issue.name + escape,
-                         str(actor_issue.position),
-                         str(actor_issue.salience), str(actor_issue.power), '\n']))
+                    file.write('\t'.join([
+                        esc('#D'),
+                        esc(actor_issue.actor.name),
+                        esc(actor_issue.issue.name),
+                        str(actor_issue.position),
+                        str(actor_issue.salience),
+                        str(actor_issue.power), '\n'
+                    ]))
 
         open_file(filename)
 
@@ -889,12 +981,9 @@ def main():
     app = QtWidgets.QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(True)
 
-    try:
-        ex = InputWindow()
+    ex = InputWindow()
 
-        sys.exit(app.exec_())
-    except:
-        print('catch')
+    sys.exit(app.exec_())
 
 
 if __name__ == '__main__':
