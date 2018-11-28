@@ -947,7 +947,7 @@ class InputWindow(QtWidgets.QMainWindow):
         with open(filename, 'w') as file:
 
             for actor in self.actor_input_control.items.values():
-                file.write('\t'.join([esc('#A'), esc(actor.name), esc(actor.comment), '\n']))
+                file.write('\t'.join([esc('#A'), esc(actor.name), esc(actor.name), esc(actor.comment), '\n']))
 
             for issue in self.issue_input_control.items.values():
                 file.write(

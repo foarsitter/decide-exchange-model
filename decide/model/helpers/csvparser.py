@@ -83,7 +83,7 @@ class CsvParser:
         actor_id = create_key(row[1])
 
         if len(whitelist) == 0 or actor_id in whitelist:
-            self.model_ref.add_actor(row[1], actor_id, comment=row[2])
+            self.model_ref.add_actor(row[1], actor_id, comment=row[3])
 
     def parse_row_issue(self, row, whitelist=list()):
         """
