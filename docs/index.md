@@ -7,3 +7,9 @@
 # Decide Exchange Model
 Equal Gain Model implementation in the Python programming language. 
 
+# Contents
+The following documents are available
+- [Installation](./installation.md) - how to install the Decide software 
+- [User interface documentation](./gui.md) -  were are what controls for
+- [Input files](./inputfiles.md) - how are input files formatted
+- [Readings](./bibliography.md) - the theory behind this model 
