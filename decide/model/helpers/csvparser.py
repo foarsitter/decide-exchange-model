@@ -105,6 +105,7 @@ class CsvParser:
     def parse_row_m(self, row, whitelist=list()):
         """
         Parse the #M row containing the dimensions of the issues
+        :param whitelist:
         :param row:
         """
 
@@ -151,12 +152,13 @@ class CsvParser:
 
                 self.model_ref.issues[issue_id].calculate_delta()
                 self.model_ref.issues[issue_id].calculate_step_size()
-            # else:
-            #     raise Exception('fix this!')
+
 
     def parse_row_d(self, row, actor_whitelist=list(), issue_whitelist=list()):
         """
         The #D row contains the data for each actor on each issue
+        :param issue_whitelist:
+        :param actor_whitelist:
         :param row:
         """
         from decide.model.helpers.helpers import create_key
