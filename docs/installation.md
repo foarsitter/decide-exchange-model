@@ -4,6 +4,8 @@ The recommend way for un-experienced Python users is to use Anaconda for downloa
 ## Anaconda 
 [![Anaconda-Server Badge](https://anaconda.org/jelmert/decide-exchange-model/badges/installer/conda.svg)](https://conda.anaconda.org/jelmert)
 
+Installation tutorial of ASONAM 2018 [Installation instructions Decide exchange model](http://stokman.org/artikel/2018%20Augustus%20Installation%20instructions%20Decide%20exchange%20model.pdf)
+
 Anaconda is a platform for managing your environment through a nice graphical interface. It makes the process of software distribution a lot easier.   
 
 - First, download and install Anaconda: https://docs.anaconda.com/anaconda/
