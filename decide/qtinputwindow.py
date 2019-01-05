@@ -1,3 +1,4 @@
+import logging
 import sys
 import uuid
 from collections import defaultdict
@@ -5,21 +6,18 @@ from collections import defaultdict
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtWidgets import QListWidgetItem
 
+from decide import log_file, open_file, exception_hook
 from decide.cli import init_model
 from decide.model.base import ActorIssue
 from decide.model.helpers import csvparser
 from decide.model.helpers.helpers import data_file_path
 
-
-def open_file(path):
-    import subprocess, os
-
-    if sys.platform.startswith("darwin"):
-        subprocess.call(("open", path))
-    elif os.name == "nt":
-        os.startfile(path)
-    elif os.name == "posix":
-        subprocess.call(("xdg-open", path))
+logging.basicConfig(
+    filename=log_file,
+    filemode="w",
+    level=logging.DEBUG,
+    format=" %(asctime)s - %(levelname)s - %(message)s",
+)
 
 
 def clear_layout(layout):
@@ -627,7 +625,7 @@ class ActorIssueBox(BoxLayout, Observer, Observable):
         self.notify_change("redraw", True, observer=observer)
 
     def add_actor_issue(
-        self, actor: ActorInput, issue: IssueInput, actor_issue=None, silence=False
+            self, actor: ActorInput, issue: IssueInput, actor_issue=None, silence=False
     ):
 
         actor_issue_input = ActorIssueInput(actor, issue)
@@ -727,8 +725,8 @@ class PositionSalienceBox(QtWidgets.QWidget, Observer, Observable):
             for actor in self.actor_issue_box.actors:
 
                 if (
-                    actor.id in self.actor_issue_box.items
-                    and issue.id in self.actor_issue_box.items[actor.id]
+                        actor.id in self.actor_issue_box.items
+                        and issue.id in self.actor_issue_box.items[actor.id]
                 ):
                     actor_issue = self.actor_issue_box.items[actor.id][
                         issue.id
@@ -1020,10 +1018,12 @@ class InputWindow(QtWidgets.QMainWindow):
 
 
 def main():
+    sys.excepthook = exception_hook
+
     app = QtWidgets.QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(True)
 
-    ex = InputWindow()
+    input_window = InputWindow()
 
     sys.exit(app.exec_())
 

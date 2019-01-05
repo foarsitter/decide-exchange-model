@@ -9,6 +9,7 @@ from typing import List
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 
+from decide import log_file, open_file, exception_hook
 from decide.cli import init_model, init_output_directory, float_range
 from decide.model import base
 from decide.model.equalgain import EqualGainModel
@@ -19,8 +20,6 @@ from decide.model.observers.issue_development import IssueDevelopment
 from decide.model.observers.observer import Observable
 from decide.model.observers.sqliteobserver import SQLiteObserver
 from decide.qtinputwindow import InputWindow
-
-log_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'decide.log')
 
 logging.basicConfig(
     filename=log_file,
@@ -620,17 +619,6 @@ class MenuBar(QtWidgets.QMenuBar):
                     setattr(self.settings, key, value.value())
 
 
-def open_file(path):
-    import subprocess, os
-
-    if sys.platform.startswith("darwin"):
-        subprocess.call(("open", path))
-    elif os.name == "nt":
-        os.startfile(path)
-    elif os.name == "posix":
-        subprocess.call(("xdg-open", path))
-
-
 def init_event_handlers(model, output_directory, settings):
     """
     :type model: decide.model.base.AbstractModel
@@ -950,30 +938,14 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         self.worker.stop()
 
 
-def log_settings():
-    """
-    Reads the settings file into a string and logs it as info
-    """
-
-    settings_file = open(ProgramSettings.settings_file)
-
-    settings_content = settings_file.read()
-
-    logging.info(settings_content)
-
-
 def main():
-    try:
-        app = QtWidgets.QApplication(sys.argv)
-        app.setQuitOnLastWindowClosed(True)
+    sys.excepthook = exception_hook
+    app = QtWidgets.QApplication(sys.argv)
+    app.setQuitOnLastWindowClosed(True)
 
-        ex = DecideMainWindow()
+    decide = DecideMainWindow()
 
-        sys.exit(app.exec_())
-    except Exception as e:
-        logging.exception(e)
-        log_settings()
-        open_file(log_file)
+    sys.exit(app.exec_())
 
 
 if __name__ == "__main__":
