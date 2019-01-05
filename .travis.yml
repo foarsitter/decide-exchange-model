@@ -2,8 +2,6 @@ language: python
 cache: pip
 python:
 - 3.6
-
-# Setup anaconda
 before_install:
 - sudo apt-get update
 - sudo apt-get install libsqlite3-dev
@@ -16,30 +14,31 @@ before_install:
 - conda config --set always_yes true
 - conda config --set anaconda_upload no
 - conda config --add channels conda-forge
-
-# Install packages
 install:
-- conda install -q python=$TRAVIS_PYTHON_VERSION ncurses pip requests conda-build jinja2 anaconda-client nose Cython peewee
+- conda install -q python=$TRAVIS_PYTHON_VERSION ncurses pip requests conda-build
+  jinja2 anaconda-client nose Cython peewee
 - pip install Cython
 - pip install 'peewee>=3.0'
 - pip install -r requirements.txt
 - pip install codecov 'coverage==4.3' codeclimate-test-reporter
-
 script:
 - nosetests --with-coverage --cover-erase --cover-package=decide --cover-inclusive
-
 after_success:
 - bash <(curl -s https://codecov.io/bash)
-- CODECLIMATE_REPO_TOKEN=38338f4be02599584d9d3672ed50c25ca2b24c0a9565bfbb000e6a1389f13700 codeclimate-test-reporter
+- CODECLIMATE_REPO_TOKEN=38338f4be02599584d9d3672ed50c25ca2b24c0a9565bfbb000e6a1389f13700
+  codeclimate-test-reporter
 - chmod +x ./deploy_anaconda.sh
-
 deploy:
-  # Deploy to Anaconda.org
-  provider: script
-  script: ./deploy_anaconda.sh
-  on:
-    branch: master
-  skip_cleanup: true
-
-
-
+  - provider: script
+    script: "./deploy_anaconda.sh"
+    on:
+      branch: master
+    skip_cleanup: true
+  - provider: pypi
+    user: jelmert
+    password:
+      secure: hp+qV5WDtwc7RxYTUo2rxo3oLlrpQMf9VoPqbVoe+BBzBXRNTHla4v5omwkPuQcx0fX/N6KDEdbbF4sPVMtUSfJpX3BIEaek0iSscbM2OfYSFGB3ZXc+j4d+b0eOfr4r29LPwvHWJvX8clTZjVzGRmKb1bgt+6QxCGtJ5/iyQ7atg1b3NE+PguYKU0PKsvnpRJ23DWFIJyQaDHpnqiiL50rxwBxSqM+1b8aI8ehikAUhFpZ5jNTwXr+tS7Yruj1TPpM/KVooAXc6NkO6sO6uBDCMef9SFQWX9fqEy11mTnf7NqUQcl8gJBfozlMWUgDu4KBiqhVX7OAlEQacq7r3wrdjjdmKgoWdxoDGzwWZn6x+5MPyEMLxdf0oJtW5B6OBTVR2JmV3A2nlwmCCdYtll2xToCwsDJWK0cpRZrXnZ8XkiR0AfuhAxm4ruQeuT6BIREu4R06pmDjJGtbre8wAFXGYTaWDenxV877X9b+/ARwQdkkn5KLPWZyAWFTFbu9/gl31jWAcLETZgwdnbRzbIbLE0Pntut+HKkLYjggrcZ6dV8MFdK/PctcbXmq3/gRI2TUdLZ5lc3yNd8/eOoiHIDzpRQUrDk9K5EyvD53Hh5zWizWuQxehYHL1cKKlzIsxpRi4rJAyYzHr4R2erpNbZPAHMS9DchVZOUohuyFRu90=
+    distributions: sdist
+    on:
+      branch: master
+    skip_cleanup: true

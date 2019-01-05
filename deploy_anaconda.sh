@@ -1,6 +1,8 @@
 #!/bin/bash
 # https://gist.github.com/yoavram/05a3c04ddcf317a517d5
-set -e
+set -o errexit
+set -o pipefail
+set -o nounset
 
 echo "Installing conda package..."
 conda build meta.yaml --no-include-recipe
@@ -13,4 +15,3 @@ echo "Deploying to Anaconda.org..."
 anaconda -t $ANACONDA_TOKEN upload $HOME/miniconda/conda-bld/**/decide-exchange-model-*.tar.bz2
 
 echo "Successfully deployed to Anaconda.org."
-exit 0
