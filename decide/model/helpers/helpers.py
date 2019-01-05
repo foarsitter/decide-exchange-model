@@ -2,7 +2,10 @@ import argparse
 import logging
 import os
 import re
+import subprocess
+import sys
 
+from decide import log_filename
 from decide.model import base
 from . import csvparser
 
@@ -149,8 +152,52 @@ class ModelLoop(object):
         self.iteration_number += 1
 
 
-def data_file_path(filename):
+def example_data_file_path(filename):
+    """
+    :param filename:
+    :type filename: str
+    :return: full path to filename.csv
+    :rtype: str
+    """
     return os.path.join(
         os.path.dirname(os.path.realpath(__file__)),
-        "../../../data/input/{}.csv".format(filename),
+        "..",
+        "..",
+        "..",
+        "data",
+        "input",
+        "{}.csv".format(filename),
     )
+
+
+
+
+def log_settings():
+    """
+    Reads the settings file into a string and logs it as info
+    """
+
+    settings_file = open("decide-settings.xml")
+
+    settings_content = settings_file.read()
+
+    logging.info(settings_content)
+
+
+def open_file(path):
+
+    if sys.platform.startswith("darwin"):
+        subprocess.call(("open", path))
+    elif os.name == "nt":
+        os.startfile(path)
+    elif os.name == "posix":
+        subprocess.call(("xdg-open", path))
+
+
+def exception_hook(exctype, value, traceback):
+    logging.exception(value)
+    log_settings()
+    open_file(log_filename)
+
+    sys._excepthook(exctype, value, traceback)
+    sys.exit(1)

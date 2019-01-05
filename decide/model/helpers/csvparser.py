@@ -153,7 +153,6 @@ class CsvParser:
                 self.model_ref.issues[issue_id].calculate_delta()
                 self.model_ref.issues[issue_id].calculate_step_size()
 
-
     def parse_row_d(self, row, actor_whitelist=list(), issue_whitelist=list()):
         """
         The #D row contains the data for each actor on each issue

@@ -19,6 +19,6 @@ def test_float_range():
 
     assert 0 == sum(float_range(0, 1, 0.0))
 
-    assert 0 == sum(float_range(0, 100, 0.00005)), 'Should trigger RuntimeError'
+    assert 0 == sum(float_range(0, 100, 0.00005)), "Should trigger RuntimeError"
 
     assert 0 == sum(float_range(0, 1, 0.0))

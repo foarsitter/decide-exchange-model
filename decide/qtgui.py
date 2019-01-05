@@ -9,7 +9,6 @@ from typing import List
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 
-from decide import log_file, open_file, exception_hook
 from decide.cli import init_model, init_output_directory, float_range
 from decide.model import base
 from decide.model.equalgain import EqualGainModel
@@ -20,13 +19,6 @@ from decide.model.observers.issue_development import IssueDevelopment
 from decide.model.observers.observer import Observable
 from decide.model.observers.sqliteobserver import SQLiteObserver
 from decide.qtinputwindow import InputWindow
-
-logging.basicConfig(
-    filename=log_file,
-    filemode="w",
-    level=logging.DEBUG,
-    format=" %(asctime)s - %(levelname)s - %(message)s",
-)
 
 
 class ProgramData(QtCore.QObject):
@@ -522,7 +514,7 @@ class SummaryWidget(DynamicFormLayout):
         self.add_row(QtWidgets.QLabel(label), value_label)
 
     def test_callback(self, link):
-        open_file(link)
+        helpers.open_file(link)
 
 
 class MenuBar(QtWidgets.QMenuBar):
@@ -673,7 +665,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         self.init_ui_data()
 
     def show_debug_dialog(self):
-        open_file("decide.log")
+        helpers.open_file("decide.log")
 
     def update_data_widgets(self):
 
@@ -867,9 +859,9 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
             if buttonReply == QtWidgets.QMessageBox.Yes:
                 if self.settings.summary_only and self.settings.issue_development_csv:
-                    open_file(os.path.join(output_directory, "issues", "summary"))
+                    helpers.open_file(os.path.join(output_directory, "issues", "summary"))
                 else:
-                    open_file(output_directory)
+                    helpers.open_file(output_directory)
 
     def _clean_progress_dialog(self):
         self.progress_dialog.setValue(
@@ -939,7 +931,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
 
 def main():
-    sys.excepthook = exception_hook
+    sys.excepthook = helpers.exception_hook
     app = QtWidgets.QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(True)
 

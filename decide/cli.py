@@ -69,13 +69,13 @@ def float_range(start=0.0, stop=1.0, step=0.05):
     else:
         # prevent locking yourself out
         if (stop - start) / step > 256:
-            raise RuntimeError('Maximum steps exceeded with step={} (256)'.format(step))
+            raise RuntimeError("Maximum steps exceeded with step={} (256)".format(step))
 
         i = start
         # add a 10th step to stop for floating point rounding differences 0.500001 vs 0.499999
         while i < (stop + step / 10):
-                yield i
-                i += step
+            yield i
+            i += step
 
 
 def main():
