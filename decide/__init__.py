@@ -3,7 +3,7 @@ import os
 import subprocess
 import sys
 
-__version__ = "2019.1.0"
+__version__ = "2019.1.1"
 
 
 def log_settings():
