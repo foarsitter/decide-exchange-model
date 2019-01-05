@@ -19,7 +19,7 @@ from decide.model.observers.externalities import Externalities
 from decide.model.observers.issue_development import IssueDevelopment
 from decide.model.observers.observer import Observable
 from decide.model.observers.sqliteobserver import SQLiteObserver
-from decide.qtinputwindow import InputWindow
+from decide.qt.inputwindow import InputWindow
 
 
 class ProgramData(QtCore.QObject):

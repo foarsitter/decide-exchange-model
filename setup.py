@@ -25,7 +25,7 @@ setup(
     long_description_content_type="text/markdown",
     entry_points={
         "console_scripts": ["decide-cli=decide.cli:main"],
-        "gui_scripts": ["decide-gui=decide.qtgui:main"],
+        "gui_scripts": ["decide-gui=decide.qt.mainwindow:main"],
     },
     python_requires=">=3.6",
     install_requires=["peewee>=3", "matplotlib"],
