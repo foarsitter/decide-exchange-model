@@ -195,6 +195,9 @@ def open_file(path):
 
 
 def exception_hook(exctype, value, traceback):
+    """
+    Setting the system exception hook so the exception will be logged and the log file displayed
+    """
     logging.exception(value)
     log_settings()
     open_file(log_filename)

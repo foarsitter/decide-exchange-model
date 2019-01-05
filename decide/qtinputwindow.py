@@ -1,3 +1,4 @@
+import logging
 import sys
 import uuid
 from collections import defaultdict
@@ -5,7 +6,7 @@ from collections import defaultdict
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtWidgets import QListWidgetItem
 
-
+from decide import log_filename
 from decide.cli import init_model
 from decide.model.base import ActorIssue
 from decide.model.helpers import csvparser
@@ -1010,6 +1011,14 @@ class InputWindow(QtWidgets.QMainWindow):
 
 
 def main():
+
+    logging.basicConfig(
+        filename=log_filename,
+        filemode="w",
+        level=logging.DEBUG,
+        format=" %(asctime)s - %(levelname)s - %(message)s",
+    )
+
     sys.excepthook = exception_hook
 
     app = QtWidgets.QApplication(sys.argv)

@@ -9,6 +9,7 @@ from typing import List
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 
+from decide import log_filename
 from decide.cli import init_model, init_output_directory, float_range
 from decide.model import base
 from decide.model.equalgain import EqualGainModel
@@ -931,6 +932,14 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
 
 def main():
+
+    logging.basicConfig(
+        filename=log_filename,
+        filemode="w",
+        level=logging.DEBUG,
+        format=" %(asctime)s - %(levelname)s - %(message)s",
+    )
+
     sys.excepthook = helpers.exception_hook
     app = QtWidgets.QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(True)
