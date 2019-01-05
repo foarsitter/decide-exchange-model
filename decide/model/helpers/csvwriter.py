@@ -15,8 +15,8 @@ class CsvWriter:
         if len(realized) <= 0:
             return
 
-        with open(filename, 'w') as csvfile:
-            writer = csv.writer(csvfile, delimiter=';', lineterminator='\n')
+        with open(filename, "w") as csvfile:
+            writer = csv.writer(csvfile, delimiter=";", lineterminator="\n")
 
             # write heading
             writer.writerow(realized[0].csv_row(head=True))

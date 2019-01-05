@@ -12,7 +12,7 @@ class TestAbstractExchangeActor(TestCase):
 
         test_actor = model.add_actor("test")
         test1_actor = model.add_actor("test1")
-        test1_issue_duplicated = model.add_issue('test')
+        test1_issue_duplicated = model.add_issue("test")
         test1_actor_duplicated = model.add_actor("test1")
 
         self.assertEqual(test_actor, test_actor)
@@ -24,8 +24,8 @@ class TestAbstractExchangeActor(TestCase):
         self.assertTrue(test_actor in model.actors)
         self.assertTrue(test_issue in model.issues)
 
-        b = Issue('test')
-        b.issue_id = 'test'
+        b = Issue("test")
+        b.issue_id = "test"
 
         self.assertEqual(b.__hash__(), test_issue.__hash__())
 
@@ -33,7 +33,7 @@ class TestAbstractExchangeActor(TestCase):
 
         self.assertEqual(test1_issue_duplicated, test_issue)
         self.assertEqual(test_issue.__hash__(), hash(test_issue.issue_id))
-        self.assertEqual(test_issue.__hash__(), hash('test'))
+        self.assertEqual(test_issue.__hash__(), hash("test"))
         self.assertEqual(test_issue.__hash__(), hash(test1_issue_duplicated.issue_id))
 
         self.assertTrue(test_actor in model.actors)
@@ -42,23 +42,29 @@ class TestAbstractExchangeActor(TestCase):
         ai3 = model.add_actor_issue("test1", "test", 100, 1, 1)
         ai4 = model.add_actor_issue("test1", "test1", 100, 1, 1)
 
-        exchange_actor0 = AbstractExchangeActor(model=model,
-                                                actor=test_actor,
-                                                demand_issue=test_issue,
-                                                supply_issue=test1_issue,
-                                                exchange=None)
+        exchange_actor0 = AbstractExchangeActor(
+            model=model,
+            actor=test_actor,
+            demand_issue=test_issue,
+            supply_issue=test1_issue,
+            exchange=None,
+        )
 
-        exchange_actor1 = AbstractExchangeActor(model=model,
-                                                actor=test1_actor,
-                                                demand_issue=test1_issue,
-                                                supply_issue=test_issue,
-                                                exchange=None)
+        exchange_actor1 = AbstractExchangeActor(
+            model=model,
+            actor=test1_actor,
+            demand_issue=test1_issue,
+            supply_issue=test_issue,
+            exchange=None,
+        )
 
-        exchange_actor4 = AbstractExchangeActor(model=model,
-                                                actor=test_actor,
-                                                demand_issue=test_issue,
-                                                supply_issue=test1_issue,
-                                                exchange=None)
+        exchange_actor4 = AbstractExchangeActor(
+            model=model,
+            actor=test_actor,
+            demand_issue=test_issue,
+            supply_issue=test1_issue,
+            exchange=None,
+        )
 
         self.assertTrue(exchange_actor0 == exchange_actor0)
         self.assertTrue(exchange_actor0 == exchange_actor4)

@@ -39,7 +39,7 @@ def nbs_variance(actor_issues, nbs):
     :return: the variance of positions
     """
 
-    t = (1 / len(actor_issues))
+    t = 1 / len(actor_issues)
 
     t2 = sum([(ai.position - nbs) ** 2 for ai in actor_issues])
 
@@ -57,7 +57,7 @@ def calc_nbs_denominator(actor_issues):
     """
     denominator = 0
     for k, v in actor_issues.items():
-        denominator += (v.salience * v.power)
+        denominator += v.salience * v.power
 
     return denominator
 
@@ -76,8 +76,9 @@ def adjusted_nbs(actor_issues, updates, actor, new_position, denominator):
     copy_ai = {}
 
     for k, v in actor_issues.items():
-        copy_ai[v.actor] = base.ActorIssue(v.actor, v.issue, position=v.position, power=v.power,
-                                           salience=v.salience)
+        copy_ai[v.actor] = base.ActorIssue(
+            v.actor, v.issue, position=v.position, power=v.power, salience=v.salience
+        )
 
     for key, value in updates.items():
         if key in copy_ai:  # TODO: this should not be possible
@@ -133,7 +134,9 @@ def reverse_move(actor_issues, actor: base.AbstractExchangeActor, exchange_ratio
     :param exchange_ratio:
     :return:
     """
-    return (exchange_ratio * sum_salience_power(actor_issues)) / (actor.supply.power * actor.supply.salience)
+    return (exchange_ratio * sum_salience_power(actor_issues)) / (
+            actor.supply.power * actor.supply.salience
+    )
 
 
 def by_exchange_ratio(supply_actor: base.AbstractExchangeActor, supply_exchange_ratio):
@@ -209,7 +212,10 @@ def expected_utility(actor, demand_exchange_ratio, supply_exchange_ratio):
     :param supply_exchange_ratio:
     :return:
     """
-    return abs(demand_exchange_ratio * actor.supply.salience - supply_exchange_ratio * actor.demand.salience)
+    return abs(
+        demand_exchange_ratio * actor.supply.salience
+        - supply_exchange_ratio * actor.demand.salience
+    )
 
 
 def is_gain_equal(eui, euj, threshold=1e-20):
@@ -221,13 +227,19 @@ def is_gain_equal(eui, euj, threshold=1e-20):
     :return: True when the gains are (approximately) equal
     """
     if abs(eui - euj) > threshold:
-        raise Exception("Expected equal gain but found {0} and {1} results in {2}. "
-                        "Adjust the above threshold to a higher value and continue.".format(eui, euj, abs(eui - euj)))
+        raise Exception(
+            "Expected equal gain but found {0} and {1} results in {2}. "
+            "Adjust the above threshold to a higher value and continue.".format(
+                eui, euj, abs(eui - euj)
+            )
+        )
 
     return True
 
 
-def actor_externalities(actor: base.Actor, model_ref: base.AbstractModel, realized: base.AbstractExchange):
+def actor_externalities(
+        actor: base.Actor, model_ref: base.AbstractModel, realized: base.AbstractExchange
+):
     """
     Calculate the externalities from an exchange
 
@@ -237,8 +249,10 @@ def actor_externalities(actor: base.Actor, model_ref: base.AbstractModel, realiz
     :return: the Decimal value of the externality
     """
 
-    if actor in model_ref.actor_issues[realized.j.supply.issue] \
-            and actor in model_ref.actor_issues[realized.i.supply.issue]:
+    if (
+            actor in model_ref.actor_issues[realized.j.supply.issue]
+            and actor in model_ref.actor_issues[realized.i.supply.issue]
+    ):
 
         xp = model_ref.actor_issues[realized.j.supply.issue][actor].position
         sp = model_ref.actor_issues[realized.j.supply.issue][actor].salience
@@ -251,8 +265,8 @@ def actor_externalities(actor: base.Actor, model_ref: base.AbstractModel, realiz
         r0 = abs(realized.i.nbs_0 - xq)
         r1 = abs(realized.i.nbs_1 - xq)
 
-        l = (l0 - l1)
-        r = (r0 - r1)
+        l = l0 - l1
+        r = r0 - r1
         ext = l * sp + r * sq
 
         return ext

@@ -20,8 +20,12 @@ from decide.model.observers.observer import Observable
 from decide.model.observers.sqliteobserver import SQLiteObserver
 from decide.qtinputwindow import InputWindow
 
-logging.basicConfig(filename='decide.log', filemode='w', level=logging.INFO,
-                    format=' %(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    filename="decide.log",
+    filemode="w",
+    level=logging.INFO,
+    format=" %(asctime)s - %(levelname)s - %(message)s",
+)
 
 
 class ProgramData(QtCore.QObject):
@@ -48,8 +52,8 @@ class ProgramSettings(QtCore.QObject):
     def __init__(self, *args, **kwargs):
         super(ProgramSettings, self).__init__(*args, **kwargs)
 
-        self.input_filename = ''
-        self.output_directory = ''
+        self.input_filename = ""
+        self.output_directory = ""
 
         self.salience_weight = 0.4
         self.fixed_weight = 0.1
@@ -62,9 +66,9 @@ class ProgramSettings(QtCore.QObject):
         self.repetitions = 10
         self.iterations = 10
 
-        self.settings_file = 'decide-settings.xml'
-        self.settings_type = 'xml'
-        self.settings_list_separator = ';'
+        self.settings_file = "decide-settings.xml"
+        self.settings_type = "xml"
+        self.settings_list_separator = ";"
 
         self.version = 1
 
@@ -79,7 +83,7 @@ class ProgramSettings(QtCore.QObject):
         self.selected_issues = []
 
     def save(self):
-        if self.settings_type == 'xml':
+        if self.settings_type == "xml":
             self._save_xml()
 
     def _save_xml(self):
@@ -87,7 +91,7 @@ class ProgramSettings(QtCore.QObject):
         element = ET.Element("decide-settings")
 
         for key, value in self.__dict__.items():
-            if not key.startswith('_') and hasattr(self, key):
+            if not key.startswith("_") and hasattr(self, key):
 
                 if isinstance(value, list):
                     value = self.settings_list_separator.join(value)
@@ -99,7 +103,7 @@ class ProgramSettings(QtCore.QObject):
         ET.ElementTree(element).write(self.settings_file)
 
     def load(self):
-        if self.settings_type == 'xml':
+        if self.settings_type == "xml":
             self._load_xml()
 
     def _load_xml(self):
@@ -110,19 +114,20 @@ class ProgramSettings(QtCore.QObject):
                 attr = getattr(self, elm.tag)
 
                 if isinstance(attr, bool):
-                    setattr(self, elm.tag, elm.text == 'True')
+                    setattr(self, elm.tag, elm.text == "True")
                 elif isinstance(attr, int):
                     setattr(self, elm.tag, int(elm.text))
                 elif isinstance(attr, float):
                     setattr(self, elm.tag, float(elm.text))
                 elif isinstance(attr, list):
-                    setattr(self, elm.tag, str(elm.text).split(self.settings_list_separator))
+                    setattr(
+                        self, elm.tag, str(elm.text).split(self.settings_list_separator)
+                    )
                 else:
                     setattr(self, elm.tag, str(elm.text))
 
 
 class DynamicFormLayout(QtWidgets.QGridLayout):
-
     def __init__(self, main_window, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -178,11 +183,13 @@ class IssueWidget(DynamicFormLayout):
             checkbox.setObjectName(issue.issue_id)
             checkbox.stateChanged.connect(self.state_changed)
 
-            if issue in self.main_window.settings.selected_issues or len(
-                    self.main_window.settings.selected_issues) == 0:
+            if (
+                    issue in self.main_window.settings.selected_issues
+                    or len(self.main_window.settings.selected_issues) == 0
+            ):
                 checkbox.setChecked(True)
 
-            info = QtWidgets.QPushButton('values')
+            info = QtWidgets.QPushButton("values")
             info.setObjectName(issue.issue_id)
             info.clicked.connect(self.main_window.update_actor_issue_widget)
 
@@ -208,8 +215,10 @@ class ActorWidget(DynamicFormLayout):
             checkbox = QtWidgets.QCheckBox(str(actor))
             checkbox.setObjectName(actor.actor_id)
 
-            if actor in self.main_window.settings.selected_actors or len(
-                    self.main_window.settings.selected_actors) == 0:
+            if (
+                    actor in self.main_window.settings.selected_actors
+                    or len(self.main_window.settings.selected_actors) == 0
+            ):
                 checkbox.setChecked(True)
 
             checkbox.stateChanged.connect(self.state_changed)
@@ -225,13 +234,12 @@ class ActorWidget(DynamicFormLayout):
 
 
 class ActorIssueWidget(DynamicFormLayout):
-
     def set_actor_issues(self, issue: base.Issue, actor_issues=List[base.ActorIssue]):
         self.set_values(actor_issues)
 
         self.add_row(QtWidgets.QLabel(str(issue)))
 
-        heading = ['Actor', 'Position', 'Salience', 'Power']
+        heading = ["Actor", "Position", "Salience", "Power"]
 
         self.add_row(*[QtWidgets.QLabel(x) for x in heading])
 
@@ -288,17 +296,17 @@ class SettingsFormWidget(QtWidgets.QFormLayout):
         self.repetitions.setValue(10)
         self.repetitions.setMaximum(10000)
 
-        self.addRow(QtWidgets.QLabel('Fixed weight'), self.fixed_weight)
-        self.addRow(QtWidgets.QLabel('Salience weight'), self.salience_weight)
-        self.addRow(QtWidgets.QLabel(''))
-        self.addRow(QtWidgets.QLabel('Negotiation rounds'), self.iterations)
-        self.addRow(QtWidgets.QLabel('Simulation repetitions'), self.repetitions)
-        self.addRow(QtWidgets.QLabel(''))
+        self.addRow(QtWidgets.QLabel("Fixed weight"), self.fixed_weight)
+        self.addRow(QtWidgets.QLabel("Salience weight"), self.salience_weight)
+        self.addRow(QtWidgets.QLabel(""))
+        self.addRow(QtWidgets.QLabel("Negotiation rounds"), self.iterations)
+        self.addRow(QtWidgets.QLabel("Simulation repetitions"), self.repetitions)
+        self.addRow(QtWidgets.QLabel(""))
 
-        self.addRow(QtWidgets.QLabel('p-value'))
-        self.addRow(QtWidgets.QLabel('Start'), self.start)
-        self.addRow(QtWidgets.QLabel('Step'), self.step)
-        self.addRow(QtWidgets.QLabel('Stop'), self.stop)
+        self.addRow(QtWidgets.QLabel("p-value"))
+        self.addRow(QtWidgets.QLabel("Start"), self.start)
+        self.addRow(QtWidgets.QLabel("Step"), self.step)
+        self.addRow(QtWidgets.QLabel("Stop"), self.stop)
 
         # self.addRow(QtWidgets.QLabel('Extra value'), self.randomized_value)
 
@@ -345,22 +353,20 @@ class Worker(QtCore.QObject):
     def run_model(self):
         settings = self.settings
 
-        print('start')
+        print("start")
         print(settings.start)
 
         if settings.start == settings.stop:
             p_values = [settings.start]
         else:
             p_values = [
-                str(round(p, 2)) for p in
-                float_range(
-                    start=settings.start,
-                    step=settings.step,
-                    stop=settings.stop
+                str(round(p, 2))
+                for p in float_range(
+                    start=settings.start, step=settings.step, stop=settings.stop
                 )
             ]
 
-        print('P values')
+        print("P values")
         print(p_values)
 
         selected_actors = settings.selected_actors
@@ -372,21 +378,27 @@ class Worker(QtCore.QObject):
         input_filename = settings.input_filename
 
         for p in p_values:
-            model = init_model('equal', settings.input_filename, p=p)
+            model = init_model("equal", settings.input_filename, p=p)
 
             csv_parser = csvparser.CsvParser(model)
-            csv_parser.read(input_filename, actor_whitelist=selected_actors, issue_whitelist=selected_issues)
+            csv_parser.read(
+                input_filename,
+                actor_whitelist=selected_actors,
+                issue_whitelist=selected_issues,
+            )
 
             output_directory = init_output_directory(
                 model=model,
                 output_dir=settings.output_directory,
-                selected_actors=settings.selected_actors
+                selected_actors=settings.selected_actors,
             )
 
             actor_issues = copy.deepcopy(model.actor_issues)
 
             event_handler = init_event_handlers(model, output_directory, settings)
-            event_handler.before_repetitions(repetitions=repetitions, iterations=iterations)
+            event_handler.before_repetitions(
+                repetitions=repetitions, iterations=iterations
+            )
 
             start_time = time.time()
 
@@ -422,8 +434,9 @@ class Worker(QtCore.QObject):
 
 
 class SummaryWidget(DynamicFormLayout):
-
-    def __init__(self, main_window, settings, data, actor_widget, issue_widget, *args, **kwargs):
+    def __init__(
+            self, main_window, settings, data, actor_widget, issue_widget, *args, **kwargs
+    ):
         """
 
         :type settings: ProgramSettings
@@ -448,49 +461,58 @@ class SummaryWidget(DynamicFormLayout):
         # self.add_text_row('Actors', ', '.join(actors))
         # self.add_text_row('Issues', ', '.join(issues))
 
-        self.add_text_row('Input', self.settings.input_filename, self.test_callback)
-        self.add_text_row('Output directory', self.settings.output_directory, self.test_callback)
+        self.add_text_row("Input", self.settings.input_filename, self.test_callback)
+        self.add_text_row(
+            "Output directory", self.settings.output_directory, self.test_callback
+        )
 
         settings = self.main_window.settings  # type: ProgramSettings
         settings_widget = self.main_window.settings_widget  # type: SettingsFormWidget
 
-        p_values = [str(round(p, 2)) for p in
-                    float_range(start=float(settings_widget.start.value()), step=float(settings_widget.step.value()),
-                                stop=float(settings_widget.stop.value()))]
+        p_values = [
+            str(round(p, 2))
+            for p in float_range(
+                start=float(settings_widget.start.value()),
+                step=float(settings_widget.step.value()),
+                stop=float(settings_widget.stop.value()),
+            )
+        ]
 
-        self.add_text_row('p-values', ', '.join(p_values))
+        self.add_text_row("p-values", ", ".join(p_values))
 
         output_selection = []
 
         if settings.issue_development_csv:
-            output_selection.append('Issue development values [.csv]')
+            output_selection.append("Issue development values [.csv]")
 
         if settings.summary_only:
-            output_selection.append('Summary only [.csv]')
+            output_selection.append("Summary only [.csv]")
 
         if settings.output_sqlite:
-            output_selection.append('Sqlite [database]')
+            output_selection.append("Sqlite [database]")
 
         if settings.exchanges_csv:
-            output_selection.append('Exchange values [.csv]')
+            output_selection.append("Exchange values [.csv]")
 
         if settings.externalities_csv:
-            output_selection.append('Externalities [.csv]')
+            output_selection.append("Externalities [.csv]")
 
         if settings.voting_positions:
-            output_selection.append('Show Voting positions [.csv]')
+            output_selection.append("Show Voting positions [.csv]")
 
-        self.add_text_row('Output settings', output_selection[0])
+        self.add_text_row("Output settings", output_selection[0])
 
         for setting in output_selection[-1:]:
-            self.add_text_row('', setting)
+            self.add_text_row("", setting)
 
         self.main_window.set_start_button_state()
 
     def add_text_row(self, label, value, callback=None):
 
         if callback:
-            value_label = QtWidgets.QLabel('<a href="{}">...{}/</a>'.format(value, value[-50:]))
+            value_label = QtWidgets.QLabel(
+                '<a href="{}">...{}/</a>'.format(value, value[-50:])
+            )
             value_label.linkActivated.connect(callback)
         else:
             value_label = QtWidgets.QLabel(value)
@@ -502,43 +524,42 @@ class SummaryWidget(DynamicFormLayout):
 
 
 class MenuBar(QtWidgets.QMenuBar):
-
     def __init__(self, main_window, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.main_window = main_window
         self.settings = main_window.settings
 
-        file_menu = self.addMenu('&File')
-        output_menu = self.addMenu('&Output')
+        file_menu = self.addMenu("&File")
+        output_menu = self.addMenu("&Output")
 
-        self.output_sqlite = QtWidgets.QAction('&sqlite', self)
+        self.output_sqlite = QtWidgets.QAction("&sqlite", self)
         self.output_sqlite.setCheckable(True)
 
-        self.issue_development_csv = QtWidgets.QAction('Issue development (.csv)', self)
+        self.issue_development_csv = QtWidgets.QAction("Issue development (.csv)", self)
         self.issue_development_csv.setCheckable(True)
         self.issue_development_csv.setChecked(True)
 
-        self.externalities_csv = QtWidgets.QAction('Externalities (.csv)', self)
+        self.externalities_csv = QtWidgets.QAction("Externalities (.csv)", self)
         self.externalities_csv.setCheckable(True)
 
-        self.exchanges_csv = QtWidgets.QAction('Exchanges (.csv)', self)
+        self.exchanges_csv = QtWidgets.QAction("Exchanges (.csv)", self)
         self.exchanges_csv.setCheckable(True)
 
-        self.voting_positions = QtWidgets.QAction('Show voting positions', self)
+        self.voting_positions = QtWidgets.QAction("Show voting positions", self)
         self.voting_positions.setCheckable(True)
 
-        self.summary_only = QtWidgets.QAction('Summary only (.csv)', self)
+        self.summary_only = QtWidgets.QAction("Summary only (.csv)", self)
         self.summary_only.setCheckable(True)
         self.summary_only.setChecked(True)
 
-        self.open_data_view = QtWidgets.QAction('Data view', self)
+        self.open_data_view = QtWidgets.QAction("Data view", self)
         self.open_data_view.triggered.connect(self.main_window.open_data_view)
 
-        open_action = QtWidgets.QAction('&Open', self)
+        open_action = QtWidgets.QAction("&Open", self)
         open_action.triggered.connect(self.main_window.open_input_data)
 
-        save_settings = QtWidgets.QAction('&Save settings', self)
+        save_settings = QtWidgets.QAction("&Save settings", self)
         save_settings.triggered.connect(self.main_window.save_settings)
 
         file_menu.addAction(open_action)
@@ -546,7 +567,7 @@ class MenuBar(QtWidgets.QMenuBar):
         file_menu.addSeparator()
         file_menu.addAction(self.open_data_view)
 
-        output_dir_action = QtWidgets.QAction('&Directory', self)
+        output_dir_action = QtWidgets.QAction("&Directory", self)
         output_dir_action.triggered.connect(self.main_window.select_output_dir)
 
         output_menu.addAction(self.issue_development_csv)
@@ -559,8 +580,8 @@ class MenuBar(QtWidgets.QMenuBar):
         output_menu.addSeparator()
         output_menu.addAction(output_dir_action)
 
-        debug = self.addMenu('Debug')
-        log_action = QtWidgets.QAction('Show log window', self)
+        debug = self.addMenu("Debug")
+        log_action = QtWidgets.QAction("Show log window", self)
         log_action.triggered.connect(self.main_window.show_debug_dialog)
         debug.addAction(log_action)
 
@@ -598,12 +619,13 @@ class MenuBar(QtWidgets.QMenuBar):
 
 def open_file(path):
     import subprocess, os
-    if sys.platform.startswith('darwin'):
-        subprocess.call(('open', path))
-    elif os.name == 'nt':
+
+    if sys.platform.startswith("darwin"):
+        subprocess.call(("open", path))
+    elif os.name == "nt":
         os.startfile(path)
-    elif os.name == 'posix':
-        subprocess.call(('xdg-open', path))
+    elif os.name == "posix":
+        subprocess.call(("xdg-open", path))
 
 
 def init_event_handlers(model, output_directory, settings):
@@ -631,14 +653,13 @@ def init_event_handlers(model, output_directory, settings):
 
 
 class DecideMainWindow(QtWidgets.QMainWindow):
-
     def __init__(self):
         super().__init__()
 
         self.data = ProgramData()
         self.settings = ProgramSettings()
 
-        self.start = QtWidgets.QPushButton('Start')
+        self.start = QtWidgets.QPushButton("Start")
 
         self.issue_widget = IssueWidget(self)
         self.actor_widget = ActorWidget(self)
@@ -650,7 +671,9 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         self.thread = QtCore.QThread()
         self.worker = None
 
-        self.overview_widget = SummaryWidget(self, self.settings, self.data, self.actor_widget, self.issue_widget)
+        self.overview_widget = SummaryWidget(
+            self, self.settings, self.data, self.actor_widget, self.issue_widget
+        )
 
         self.init_ui()
 
@@ -659,7 +682,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         self.init_ui_data()
 
     def show_debug_dialog(self):
-        open_file('decide.log')
+        open_file("decide.log")
 
     def update_data_widgets(self):
 
@@ -690,7 +713,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         file_name, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Select input data")
 
         if file_name:
-            self.statusBar().showMessage('Input file set to {} '.format(file_name))
+            self.statusBar().showMessage("Input file set to {} ".format(file_name))
 
             self.settings.input_filename = file_name
 
@@ -702,13 +725,21 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         """
         Output directory
         """
-        self.settings.output_directory = str(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory"))
-        self.statusBar().showMessage('Output directory set to: {} '.format(self.settings.output_directory))
+        self.settings.output_directory = str(
+            QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory")
+        )
+        self.statusBar().showMessage(
+            "Output directory set to: {} ".format(self.settings.output_directory)
+        )
 
         self.overview_widget.update_widget()
 
     def set_start_button_state(self):
-        if self.settings.input_filename and self.settings.output_directory and not self.thread.isRunning():
+        if (
+                self.settings.input_filename
+                and self.settings.output_directory
+                and not self.thread.isRunning()
+        ):
             self.start.setEnabled(True)
             self.start.setDisabled(False)
         else:
@@ -716,7 +747,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
             self.start.setDisabled(True)
 
     def init_ui(self):
-        self.statusBar().showMessage('Ready')
+        self.statusBar().showMessage("Ready")
 
         self.setMenuBar(MenuBar(self))
 
@@ -731,9 +762,9 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
         # left_top.setAlignment(QtCore.Qt.AlignTop)
 
-        actor_box = QtWidgets.QGroupBox('Actors')
-        issue_box = QtWidgets.QGroupBox('Issues')
-        actor_issue_box = QtWidgets.QGroupBox('Actor Issues')
+        actor_box = QtWidgets.QGroupBox("Actors")
+        issue_box = QtWidgets.QGroupBox("Issues")
+        actor_issue_box = QtWidgets.QGroupBox("Actor Issues")
 
         actor_box.setLayout(self.actor_widget)
         issue_box.setLayout(self.issue_widget)
@@ -745,10 +776,10 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         left.addLayout(left_top, 1)
         left.addWidget(actor_issue_box, 1)
 
-        settings_box = QtWidgets.QGroupBox('Model parameters')
+        settings_box = QtWidgets.QGroupBox("Model parameters")
         settings_box.setLayout(self.settings_widget)
 
-        overview_box = QtWidgets.QGroupBox('Overview')
+        overview_box = QtWidgets.QGroupBox("Overview")
         overview_box.setLayout(self.overview_widget)
         self.overview_widget.setAlignment(QtCore.Qt.AlignTop)
 
@@ -766,7 +797,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         self.setCentralWidget(q)
 
         self.setGeometry(300, 300, 1024, 768)
-        self.setWindowTitle('Decide Exchange Model')
+        self.setWindowTitle("Decide Exchange Model")
         self.show()
 
     def open_data_view(self):
@@ -791,7 +822,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
         except Exception as e:
             self.statusBar().showMessage(str(e))
-            QtWidgets.QMessageBox.about(self, 'Input data invalid', str(e))
+            QtWidgets.QMessageBox.about(self, "Input data invalid", str(e))
             logging.error(e)
 
     def run_safe(self):
@@ -804,7 +835,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         self.thread.started.connect(self.worker.run_model)
         self.thread.start()
 
-        print('thread started')
+        print("thread started")
 
     def update_progress(self, repetition, iteration, start_time):
 
@@ -820,9 +851,13 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
             estimated_time_needed_seconds = avg_time_per_repetition * repetitions
 
-            estimated_time_left = estimated_time_needed_seconds - (repetition * avg_time_per_repetition)
+            estimated_time_left = estimated_time_needed_seconds - (
+                    repetition * avg_time_per_repetition
+            )
 
-            self.statusBar().showMessage('{:.0f} minutes remaining '.format(estimated_time_left / 60))
+            self.statusBar().showMessage(
+                "{:.0f} minutes remaining ".format(estimated_time_left / 60)
+            )
 
     def finished(self, output_directory, tie_count):
 
@@ -831,18 +866,24 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         if not self.worker._break:
             buttonReply = QtWidgets.QMessageBox.question(
                 self,
-                'Done', "Done executing. Found {} ties. Open the result directory?".format(tie_count),
-                QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No, QtWidgets.QMessageBox.No
+                "Done",
+                "Done executing. Found {} ties. Open the result directory?".format(
+                    tie_count
+                ),
+                QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
+                QtWidgets.QMessageBox.No,
             )
 
             if buttonReply == QtWidgets.QMessageBox.Yes:
                 if self.settings.summary_only and self.settings.issue_development_csv:
-                    open_file(os.path.join(output_directory, 'issues', 'summary'))
+                    open_file(os.path.join(output_directory, "issues", "summary"))
                 else:
                     open_file(output_directory)
 
     def _clean_progress_dialog(self):
-        self.progress_dialog.setValue(self.settings.iterations * self.settings.repetitions)
+        self.progress_dialog.setValue(
+            self.settings.iterations * self.settings.repetitions
+        )
         self.progress_dialog.hide()
 
     def run(self):
@@ -854,9 +895,9 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         selected_actors = self.actor_widget.get_selected()
         selected_actors.sort()
 
-        actors_subset = '-'.join(selected_actors)
+        actors_subset = "-".join(selected_actors)
 
-        self.setWindowTitle('Decide Exchange Model {}'.format(actors_subset))
+        self.setWindowTitle("Decide Exchange Model {}".format(actors_subset))
 
         self.show_progress_dialog(actors_subset)
 
@@ -865,11 +906,11 @@ class DecideMainWindow(QtWidgets.QMainWindow):
     def show_progress_dialog(self, title):
 
         self.progress_dialog = QtWidgets.QProgressDialog(
-            'Task in progress',
-            'Cancel',
+            "Task in progress",
+            "Cancel",
             0,
             self.settings.repetitions * self.settings.iterations,
-            self
+            self,
         )
 
         bar = QtWidgets.QProgressBar(self.progress_dialog)
@@ -893,7 +934,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
                 self.settings_widget.load()
 
             except ET.ParseError:
-                logging.info('Invalid xml')
+                logging.info("Invalid xml")
 
     def save_settings(self):
         self.settings_widget.save()
@@ -915,5 +956,5 @@ def main():
     sys.exit(app.exec_())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

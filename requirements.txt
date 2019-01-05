@@ -3,3 +3,4 @@ nose
 peewee>=3.1.7
 matplotlib>=2.1.2
 pyqt5>=5.9.2
+black

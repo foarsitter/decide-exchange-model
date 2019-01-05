@@ -49,9 +49,9 @@ def init_event_handlers(model, output_directory, database_file, write_csv=True):
 def init_output_directory(model, output_dir, selected_actors=list()):
 
     if len(model.actors) == len(selected_actors):
-        actor_unique = 'all'
+        actor_unique = "all"
     else:
-        actor_unique = '-'.join(selected_actors)
+        actor_unique = "-".join(selected_actors)
 
     output_directory = os.path.join(output_dir, model.data_set_name, model.model_name)
 
@@ -64,7 +64,8 @@ def init_output_directory(model, output_dir, selected_actors=list()):
 def float_range(start=0.0, stop=1.0, step=0.05):
     i = start
     while i < (
-            stop + step / 10):  # add a 10th step to stop for floating point rounding differences 0.500001 vs 0.499999
+            stop + step / 10
+    ):  # add a 10th step to stop for floating point rounding differences 0.500001 vs 0.499999
         yield i
         i += step
 
@@ -75,24 +76,32 @@ def main():
     p_values = []
 
     if args.start and args.step and args.stop:
-        p_values = [str(round(p, 2)) for p in
-                    float_range(start=float(args.start), step=float(args.step), stop=float(args.stop))]
+        p_values = [
+            str(round(p, 2))
+            for p in float_range(
+                start=float(args.start), step=float(args.step), stop=float(args.stop)
+            )
+        ]
 
     if args.p:
 
-        if ';' in args.p:
-            p_values += args.p.split(';')
+        if ";" in args.p:
+            p_values += args.p.split(";")
         else:
             p_values.append(args.p)
 
     issues = None
 
     if args.issues:
-        issues = args.issues.split(';')  # 'commitments;control;devlopc2020;domestred;extra'.split(';')
+        issues = args.issues.split(
+            ";"
+        )  # 'commitments;control;devlopc2020;domestred;extra'.split(';')
 
     actors = None
     if args.actors:
-        actors = args.actors.split(';')  # 'australia;brazil;canada;euinclnorway;japan;russia;usa'.split(';')
+        actors = args.actors.split(
+            ";"
+        )  # 'australia;brazil;canada;euinclnorway;japan;russia;usa'.split(';')
 
     print(p_values)
     print(issues)
@@ -113,7 +122,7 @@ def main():
             model=model,
             output_directory=output_directory,
             database_file=args.database,
-            write_csv=False
+            write_csv=False,
         )
 
         event_handler.log(message="Start calculation at {0}".format(start_time))
@@ -125,7 +134,9 @@ def main():
 
         event_handler.log(message="Parsed file".format(args.input_file))
 
-        event_handler.before_repetitions(repetitions=args.repetitions, iterations=args.iterations)
+        event_handler.before_repetitions(
+            repetitions=args.repetitions, iterations=args.iterations
+        )
 
         for repetition in range(args.repetitions):
 
@@ -141,13 +152,14 @@ def main():
 
             event_handler.after_iterations(repetition)
 
-            print('{}/{}'.format(repetition, args.repetitions))
+            print("{}/{}".format(repetition, args.repetitions))
 
         event_handler.after_repetitions()
 
         event_handler.log(message="Finished in {0}".format(datetime.now() - start_time))
 
-    print('done')
+    print("done")
+
 
 if __name__ == "__main__":
     main()

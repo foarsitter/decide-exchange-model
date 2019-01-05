@@ -10,7 +10,10 @@ from decide.model.helpers import csvparser
 class TestModel(TestCase):
     def setUp(self):
         csv = csvparser.CsvParser(EqualGainModel())
-        file = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../../data/input/sample_data.txt')
+        file = os.path.join(
+            os.path.dirname(os.path.realpath(__file__)),
+            "../../../data/input/sample_data.txt",
+        )
         self.model = csv.read(file)
         # self.model = csv.read("data\\CoP21.csv")
 
@@ -49,7 +52,9 @@ class TestModel(TestCase):
 
         e = model.highest_gain()
 
-        self.assertAlmostEqual(e.gain, Decimal(1.973684210526315789473684214), delta=1e-8)
+        self.assertAlmostEqual(
+            e.gain, Decimal(1.973684210526315789473684214), delta=1e-8
+        )
 
         # the delta is necessary for the random component by exchanges which have an equal gain.
         # in some cases the gain of the exchanges (two exchanges with each two (unique) actors) are the same.
@@ -64,7 +69,9 @@ class TestModel(TestCase):
         model.remove_invalid_exchanges(e1)
         realized.append(e1)
 
-        self.assertAlmostEqual(e1.gain, Decimal(1.79263630876534102340553952), delta=1e-8)
+        self.assertAlmostEqual(
+            e1.gain, Decimal(1.79263630876534102340553952), delta=1e-8
+        )
 
         while len(model.exchanges) > 0:
             realize = model.highest_gain()
@@ -80,4 +87,7 @@ class TestModel(TestCase):
         n = len(self.model.issues)
         k = 2
 
-        self.assertEqual(combinations, math.factorial(n) / (math.factorial(k) * math.factorial(n - k)))
+        self.assertEqual(
+            combinations,
+            math.factorial(n) / (math.factorial(k) * math.factorial(n - k)),
+        )

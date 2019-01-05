@@ -2,28 +2,31 @@ import datetime
 
 import peewee
 
-
 try:
     # try to use the Cython version
     from playhouse.sqlite_ext import CSqliteExtDatabase
 
-    connection = CSqliteExtDatabase(None, c_extensions=True, pragmas=(
-        ('cache_size', -1024 * 1024),  # 64MB page-cache.
-        ('journal_mode', 'wal'),  # Use WAL-mode (you should always use this!).
-    ))
+    connection = CSqliteExtDatabase(
+        None,
+        c_extensions=True,
+        pragmas=(
+            ("cache_size", -1024 * 1024),  # 64MB page-cache.
+            ("journal_mode", "wal"),  # Use WAL-mode (you should always use this!).
+        ),
+    )
 except:
-    connection = peewee.SqliteDatabase('decide')
+    connection = peewee.SqliteDatabase("decide")
 
 
 class DictionaryIndexMixin:
-    hash_field = 'id'
+    hash_field = "id"
 
     def __hash__(self):
         return hash(self.get_hash_field())
 
     def __eq__(self, other):
 
-        if hasattr(other, 'get_hash_field'):
+        if hasattr(other, "get_hash_field"):
             return self.get_hash_field() == other.get_hash_field()
 
         if self.get_hash_field() == other:
@@ -45,7 +48,7 @@ class BaseModel(peewee.Model):
 
 class DataSet(DictionaryIndexMixin, BaseModel):
     name = peewee.CharField()
-    hash_field = 'name'
+    hash_field = "name"
 
 
 class Actor(DictionaryIndexMixin, BaseModel):
@@ -54,7 +57,7 @@ class Actor(DictionaryIndexMixin, BaseModel):
 
     data_set = peewee.ForeignKeyField(DataSet)
 
-    hash_field = 'key'
+    hash_field = "key"
 
 
 class Issue(DictionaryIndexMixin, BaseModel):
@@ -66,7 +69,7 @@ class Issue(DictionaryIndexMixin, BaseModel):
 
     data_set = peewee.ForeignKeyField(DataSet)
 
-    hash_field = 'key'
+    hash_field = "key"
 
 
 class ModelRun(BaseModel):
@@ -84,9 +87,10 @@ class Repetition(DictionaryIndexMixin, BaseModel):
     """
     A repetition for a data set
     """
+
     pointer = peewee.IntegerField()
 
-    hash_field = 'pointer'
+    hash_field = "pointer"
 
     model_run = peewee.ForeignKeyField(ModelRun)
 
@@ -95,16 +99,18 @@ class Iteration(DictionaryIndexMixin, BaseModel):
     """
     A iteration inside a repetition
     """
+
     pointer = peewee.IntegerField()
     repetition = peewee.ForeignKeyField(Repetition)
 
-    hash_field = 'pointer'
+    hash_field = "pointer"
 
 
 class ActorIssue(BaseModel):
     """
     Snapshot of a position of an actor on an issue
     """
+
     issue = peewee.ForeignKeyField(Issue)
     actor = peewee.ForeignKeyField(Actor)
 
@@ -114,13 +120,12 @@ class ActorIssue(BaseModel):
 
     iteration = peewee.ForeignKeyField(Iteration)
 
-    type = peewee.CharField(choices=('before', 'after'), default='before')
+    type = peewee.CharField(choices=("before", "after"), default="before")
 
     def __str__(self):
-        return '{issue} {actor} {position}' \
-            .format(issue=self.issue.name,
-                    actor=self.actor.name,
-                    position=self.position)
+        return "{issue} {actor} {position}".format(
+            issue=self.issue.name, actor=self.actor.name, position=self.position
+        )
 
 
 class ExchangeActor(BaseModel):
@@ -130,12 +135,14 @@ class ExchangeActor(BaseModel):
 
     x = peewee.DecimalField(max_digits=20, decimal_places=15)  # begin position
     y = peewee.DecimalField(max_digits=20, decimal_places=15)  # end position
-    eu = peewee.DecimalField(max_digits=20, decimal_places=15)  # expected utility or gain
+    eu = peewee.DecimalField(
+        max_digits=20, decimal_places=15
+    )  # expected utility or gain
 
     demand_position = peewee.DecimalField(max_digits=20, decimal_places=15)
 
     # shortcut
-    other_actor = peewee.ForeignKeyField('self', null=True)
+    other_actor = peewee.ForeignKeyField("self", null=True)
 
     @property
     def move(self):
@@ -170,7 +177,19 @@ class Manager:
     """
     Helper for manage the state of the database.
     """
-    tables = [DataSet, Actor, Issue, ModelRun, ActorIssue, Repetition, Iteration, Exchange, ExchangeActor, Externality]
+
+    tables = [
+        DataSet,
+        Actor,
+        Issue,
+        ModelRun,
+        ActorIssue,
+        Repetition,
+        Iteration,
+        Exchange,
+        ExchangeActor,
+        Externality,
+    ]
 
     def __init__(self, database_path):
         self.database_path = database_path

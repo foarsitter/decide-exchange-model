@@ -62,5 +62,3 @@ class TestIssue(TestCase):
         self.assertTrue(issue == issue)
         self.assertTrue(issue == issue2)
         self.assertTrue(issue != issue3)
-
-

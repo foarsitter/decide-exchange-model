@@ -8,35 +8,63 @@ from . import csvparser
 
 
 def parse_arguments():
-    parser = argparse.ArgumentParser(description="This program accepts input with a dot (.) as decimal separator. \n"
-                                                 "Parameters:\n{0} is for defining an actor,\n"
-                                                 "{1} for an issue,\n"
-                                                 "{2} for actor values for each issue.\n"
-                                                 "We expect for {2} the following order in values: "
-                                                 "actor, issue, position, salience, power".format(
-        csvparser.CsvParser.cA,
-        csvparser.CsvParser.cP,
-        csvparser.CsvParser.cD))
-    parser.add_argument('--model', '-m',
-                        help='The type of the model. The options are "equal" for the Equal Gain model and '
-                             '"random" for the RandomRate model ',
-                        default='equal', type=str)
+    parser = argparse.ArgumentParser(
+        description="This program accepts input with a dot (.) as decimal separator. \n"
+                    "Parameters:\n{0} is for defining an actor,\n"
+                    "{1} for an issue,\n"
+                    "{2} for actor values for each issue.\n"
+                    "We expect for {2} the following order in values: "
+                    "actor, issue, position, salience, power".format(
+            csvparser.CsvParser.cA, csvparser.CsvParser.cP, csvparser.CsvParser.cD
+        )
+    )
+    parser.add_argument(
+        "--model",
+        "-m",
+        help='The type of the model. The options are "equal" for the Equal Gain model and '
+             '"random" for the RandomRate model ',
+        default="equal",
+        type=str,
+    )
 
-    parser.add_argument('--p', '-p', help='Randomized Equal Gain', default=None, type=str)
-    parser.add_argument('--iterations', '-i', help='The number of round the model needs to be executed', default=10,
-                        type=int)
-    parser.add_argument('--repetitions', '-r', help='How many times it has te be repeated?', default=1, type=int)
-    parser.add_argument('--input_file', help='The location of the csv input file. ',
-                        default="../data/input/sample_data.txt",
-                        type=str)
-    parser.add_argument('--output_dir', help='Output directory ', default="../data/output/", type=str)
-    parser.add_argument('--database', help='The SQLite database', default="../data/output/decide-data_1.db", type=str)
+    parser.add_argument(
+        "--p", "-p", help="Randomized Equal Gain", default=None, type=str
+    )
+    parser.add_argument(
+        "--iterations",
+        "-i",
+        help="The number of round the model needs to be executed",
+        default=10,
+        type=int,
+    )
+    parser.add_argument(
+        "--repetitions",
+        "-r",
+        help="How many times it has te be repeated?",
+        default=1,
+        type=int,
+    )
+    parser.add_argument(
+        "--input_file",
+        help="The location of the csv input file. ",
+        default="../data/input/sample_data.txt",
+        type=str,
+    )
+    parser.add_argument(
+        "--output_dir", help="Output directory ", default="../data/output/", type=str
+    )
+    parser.add_argument(
+        "--database",
+        help="The SQLite database",
+        default="../data/output/decide-data_1.db",
+        type=str,
+    )
 
-    parser.add_argument('--step', default=None, type=str)
-    parser.add_argument('--stop', default=None, type=str)
-    parser.add_argument('--start', default=None, type=str)
-    parser.add_argument('--actors', default=None, type=str)
-    parser.add_argument('--issues', default=None, type=str)
+    parser.add_argument("--step", default=None, type=str)
+    parser.add_argument("--stop", default=None, type=str)
+    parser.add_argument("--start", default=None, type=str)
+    parser.add_argument("--actors", default=None, type=str)
+    parser.add_argument("--issues", default=None, type=str)
 
     return parser.parse_args()
 
@@ -46,12 +74,12 @@ def create_key(value):
     Create a safe for for index usage
     :type value: str
     """
-    pattern = re.compile('[\W_]+')
-    return pattern.sub('', value).lower()
+    pattern = re.compile("[\W_]+")
+    return pattern.sub("", value).lower()
 
 
 class ModelLoop(object):
-    def __init__(self, model, event_handler: 'observer.Observable', repetition: int):
+    def __init__(self, model, event_handler: "observer.Observable", repetition: int):
         self.model = model
         self.event_handler = event_handler
         self.iteration_number = 0
@@ -73,7 +101,9 @@ class ModelLoop(object):
             realize_exchange = self.model.highest_gain()  # type: base.AbstractExchange
 
             if realize_exchange and realize_exchange.is_valid:
-                removed_exchanges = self.model.remove_invalid_exchanges(realize_exchange)
+                removed_exchanges = self.model.remove_invalid_exchanges(
+                    realize_exchange
+                )
 
                 realized.append(realize_exchange)
 
@@ -84,27 +114,43 @@ class ModelLoop(object):
                     logging.info(realize_exchange)
 
         # call the event for ending the loop
-        self.event_handler.after_loop(realized=realized, iteration=self.iteration_number,
-                                      repetition=self.repetition_number)
+        self.event_handler.after_loop(
+            realized=realized,
+            iteration=self.iteration_number,
+            repetition=self.repetition_number,
+        )
 
         for exchange in realized:
-            self.model.actor_issues[exchange.i.supply.issue][exchange.i.actor].position = exchange.i.y
-            self.model.actor_issues[exchange.j.supply.issue][exchange.j.actor].position = exchange.j.y
+            self.model.actor_issues[exchange.i.supply.issue][
+                exchange.i.actor
+            ].position = exchange.i.y
+            self.model.actor_issues[exchange.j.supply.issue][
+                exchange.j.actor
+            ].position = exchange.j.y
 
         # calc the new NBS on the voting positions and fire the event for ending this loop
         self.model.calc_nbs()
-        self.event_handler.end_loop(iteration=self.iteration_number, repetition=self.repetition_number)
+        self.event_handler.end_loop(
+            iteration=self.iteration_number, repetition=self.repetition_number
+        )
 
         # calculate for each realized exchange there new start positions
         for exchange in realized:
             pi = exchange.i.new_start_position()
-            self.model.actor_issues[exchange.i.supply.issue][exchange.i.actor].position = pi
+            self.model.actor_issues[exchange.i.supply.issue][
+                exchange.i.actor
+            ].position = pi
 
             pj = exchange.j.new_start_position()
-            self.model.actor_issues[exchange.j.supply.issue][exchange.j.actor].position = pj
+            self.model.actor_issues[exchange.j.supply.issue][
+                exchange.j.actor
+            ].position = pj
 
         self.iteration_number += 1
 
 
 def data_file_path(filename):
-    return os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../../data/input/{}.csv'.format(filename))
+    return os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        "../../../data/input/{}.csv".format(filename),
+    )

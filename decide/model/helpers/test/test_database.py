@@ -2,43 +2,42 @@ import logging
 import os
 from unittest import TestCase
 
-from peewee import SqliteDatabase
-
 from decide.model.equalgain import EqualGainModel
 from decide.model.helpers import csvparser
 from decide.model.helpers import database as db
-from decide.model.helpers.database import connection
 from decide.model.observers.observer import Observable
 from decide.model.observers.sqliteobserver import SQLiteObserver
 
 
 class BaseDatabaseTestCase(TestCase):
     def setUp(self):
-        logging.info('setup')
+        logging.info("setup")
         # Bind model classes to test db. Since we have a complete list of
         # all models, we do not need to recursively bind dependencies.
 
         csv = csvparser.CsvParser(EqualGainModel())
 
-        path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../../../data/input/sample_data.txt')
+        path = os.path.join(
+            os.path.dirname(os.path.realpath(__file__)),
+            "../../../../data/input/sample_data.txt",
+        )
         self.model = csv.read(path)
         self.model.randomized_value = 0.10
 
-        self.event_handler = Observable(model_ref=self.model, output_directory='')
-        self.observer = SQLiteObserver(self.event_handler, output_directory=':memory:')
+        self.event_handler = Observable(model_ref=self.model, output_directory="")
+        self.observer = SQLiteObserver(self.event_handler, output_directory=":memory:")
 
 
 class TestHashFunctions(BaseDatabaseTestCase):
-
     def test_eq(self):
         """
         Shows the possibility of the hash/dictionary key implement
         """
         store = {}
 
-        data_set = db.DataSet(name='pizza')
+        data_set = db.DataSet(name="pizza")
         store[data_set] = data_set
-        self.assertEqual(store['pizza'], data_set)
+        self.assertEqual(store["pizza"], data_set)
 
         iteration = db.Iteration()
         iteration.pointer = 1
@@ -60,10 +59,9 @@ class TestHashFunctions(BaseDatabaseTestCase):
         self.assertEqual(store[1], iteration)
 
     def test_database(self):
+        created = db.DataSet.create(name="test123")
 
-        created = db.DataSet.create(name='test123')
-
-        data_set = db.DataSet.get(name='test123')
+        data_set = db.DataSet.get(name="test123")
 
         self.assertEqual(data_set, created)
 

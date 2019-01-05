@@ -22,7 +22,7 @@ class Observer(object):
 
     """
 
-    def __init__(self, observable: 'Observable'):
+    def __init__(self, observable: "Observable"):
         """
         Init
         :param observable: Observable reference to the main event handler
@@ -45,7 +45,9 @@ class Observer(object):
         """
         pass
 
-    def after_loop(self, realized: List[base.AbstractExchange], iteration: int, repetition: int):
+    def after_loop(
+            self, realized: List[base.AbstractExchange], iteration: int, repetition: int
+    ):
         """
         After all exchanges are executed. There are no potential exchanges left, but the model reference to actor
         issues is still on there starting position.
@@ -138,7 +140,9 @@ class Observable(Observer):
         for observer in self.__observers:
             observer.execute_exchange(exchange)
 
-    def after_loop(self, realized: List[base.AbstractExchange], iteration: int, repetition: int):
+    def after_loop(
+            self, realized: List[base.AbstractExchange], iteration: int, repetition: int
+    ):
         for observer in self.__observers:
             observer.after_loop(realized, iteration, repetition)
 

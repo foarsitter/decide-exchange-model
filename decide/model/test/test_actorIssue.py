@@ -12,11 +12,12 @@ class TestActorIssue(TestCase):
         actor = base.Actor("Test")
         issue = base.Issue("Test")
 
-        actorIssue = base.ActorIssue(actor=actor, issue=issue, position=position, power=power, salience=salience)
+        actorIssue = base.ActorIssue(
+            actor=actor, issue=issue, position=position, power=power, salience=salience
+        )
 
         self.assertEqual(actorIssue.power, power)
         self.assertEqual(actorIssue.salience, salience)
         self.assertEqual(actorIssue.position, position)
 
         self.assertTrue(actorIssue.is_left_to_nbs(51), position)
-

@@ -27,7 +27,7 @@ class CsvParser:
     rSalience = 4
     rPower = 5
 
-    def __init__(self, model_ref: 'base.AbstractModel'):
+    def __init__(self, model_ref: "base.AbstractModel"):
         self.model_ref = model_ref
 
     def read(self, filename, actor_whitelist=list(), issue_whitelist=list()):
@@ -39,7 +39,7 @@ class CsvParser:
         :return:
         """
 
-        with open(filename, 'rt', encoding='utf-8') as csv_file:
+        with open(filename, "rt", encoding="utf-8") as csv_file:
 
             # guess the document format
             dialect = csv.Sniffer().sniff(csv_file.read(1024))
@@ -66,9 +66,13 @@ class CsvParser:
             issue = self.model_ref.issues[issue_id]
 
             for actor_name, value in self.model_ref.actor_issues[issue_id].items():
-                normalized_position = issue.normalize(self.model_ref.actor_issues[issue_id][actor_name].position)
+                normalized_position = issue.normalize(
+                    self.model_ref.actor_issues[issue_id][actor_name].position
+                )
 
-                self.model_ref.actor_issues[issue_id][actor_name].position = normalized_position
+                self.model_ref.actor_issues[issue_id][
+                    actor_name
+                ].position = normalized_position
 
         return self.model_ref
 
@@ -105,6 +109,7 @@ class CsvParser:
         """
 
         from decide.model.helpers.helpers import create_key
+
         issue_id = create_key(row[1])
 
         if len(whitelist) == 0 or issue_id in whitelist:
@@ -116,7 +121,7 @@ class CsvParser:
                     issue = obj
 
             if not isinstance(issue, base.Issue):
-                raise Exception('The issue variable it not the correct type')
+                raise Exception("The issue variable it not the correct type")
 
             value = Decimal(row[2].replace(",", "."))
 
@@ -131,11 +136,18 @@ class CsvParser:
 
             if issue_id in self.model_ref.issues:
 
-                if self.model_ref.issues[issue_id].upper is None or self.model_ref.issues[issue_id].lower is None:
+                if (
+                        self.model_ref.issues[issue_id].upper is None
+                        or self.model_ref.issues[issue_id].lower is None
+                ):
 
                     for actor_name, actor_issue in actor_issues.items():
-                        self.model_ref.issues[issue_id].expand_lower(actor_issue.position)
-                        self.model_ref.issues[issue_id].expand_upper(actor_issue.position)
+                        self.model_ref.issues[issue_id].expand_lower(
+                            actor_issue.position
+                        )
+                        self.model_ref.issues[issue_id].expand_upper(
+                            actor_issue.position
+                        )
 
                 self.model_ref.issues[issue_id].calculate_delta()
                 self.model_ref.issues[issue_id].calculate_step_size()
@@ -153,9 +165,14 @@ class CsvParser:
         issue_id = create_key(row[self.rIssue])
 
         if (len(actor_whitelist) == 0 or actor_id in actor_whitelist) and (
-                len(issue_whitelist) == 0 or issue_id in issue_whitelist):
+                len(issue_whitelist) == 0 or issue_id in issue_whitelist
+        ):
 
-            if str(row[self.rSalience]) != '0':
-                self.model_ref.add_actor_issue(actor=actor_id, issue=issue_id, power=row[self.rPower].replace(",", "."),
-                                               salience=row[self.rSalience].replace(",", "."),
-                                               position=row[self.rPosition].replace(",", "."))
+            if str(row[self.rSalience]) != "0":
+                self.model_ref.add_actor_issue(
+                    actor=actor_id,
+                    issue=issue_id,
+                    power=row[self.rPower].replace(",", "."),
+                    salience=row[self.rSalience].replace(",", "."),
+                    position=row[self.rPosition].replace(",", "."),
+                )
