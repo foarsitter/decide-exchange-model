@@ -46,7 +46,7 @@ class RandomRateExchangeActor(base.AbstractExchangeActor):
 
     def adjust_position_by_outcome(self, delta_o, increase):
         new_outcome = (
-                self.nbs_1 + delta_o
+            self.nbs_1 + delta_o
         )  # we have to use nbs_1 here, because it is an incremental shift.
 
         position = calculations.position_by_nbs(
@@ -57,10 +57,10 @@ class RandomRateExchangeActor(base.AbstractExchangeActor):
         )
 
         if increase and (
-                delta_o < 0
-                and position < self.opposite_actor.demand.position
-                or delta_o > 0
-                and position > self.opposite_actor.demand.position
+            delta_o < 0
+            and position < self.opposite_actor.demand.position
+            or delta_o > 0
+            and position > self.opposite_actor.demand.position
         ):
             position = self.opposite_actor.demand.position
 
@@ -366,15 +366,15 @@ class RandomRateModel(base.AbstractModel):
                             )
 
                             if (
-                                    highest_exchange[actor_name].y
-                                    == highest_exchange[opposite_actor_name].x_demand
+                                highest_exchange[actor_name].y
+                                == highest_exchange[opposite_actor_name].x_demand
                             ):
                                 highest_exchange[opposite_actor_name].recalculate(
                                     delta_eu, increase=False
                                 )
                             elif (
-                                    highest_exchange[opposite_actor_name].y
-                                    == highest_exchange[actor_name].x_demand
+                                highest_exchange[opposite_actor_name].y
+                                == highest_exchange[actor_name].x_demand
                             ):
                                 highest_exchange[actor_name].recalculate(
                                     delta_eu, increase=True

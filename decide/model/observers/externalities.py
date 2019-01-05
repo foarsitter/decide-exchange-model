@@ -40,7 +40,7 @@ class Externalities(observer.Observer):
         for actor, value in externalities.items():
 
             if (
-                    actor == realized.i.actor or actor == realized.j.actor
+                actor == realized.i.actor or actor == realized.j.actor
             ):  # own, always positive
                 key = "own"
                 value = realized.gain  # TODO hotfix, should not be needed.
@@ -104,7 +104,7 @@ class Externalities(observer.Observer):
         Helper for creating the output directory        
         """
         if not os.path.exists(
-                "{0}/externalities/{1}".format(self.output_directory, repetition)
+            "{0}/externalities/{1}".format(self.output_directory, repetition)
         ):
             os.makedirs(
                 "{0}/externalities/{1}".format(self.output_directory, repetition)
@@ -190,10 +190,10 @@ class Externalities(observer.Observer):
             return
 
         with open(
-                "{0}/externalities/{2}/externalities.{1}.csv".format(
-                    self.output_directory, iteration + 1, repetition
-                ),
-                "w",
+            "{0}/externalities/{2}/externalities.{1}.csv".format(
+                self.output_directory, iteration + 1, repetition
+            ),
+            "w",
         ) as csv_file:
             writer = csv.writer(csv_file, delimiter=";", lineterminator="\n")
 
@@ -279,14 +279,14 @@ class Externalities(observer.Observer):
         """
 
         if not os.path.exists(
-                "{0}/externalities/summary".format(self.output_directory)
+            "{0}/externalities/summary".format(self.output_directory)
         ):
             os.makedirs("{0}/externalities/summary".format(self.output_directory))
 
         file = defaultdict(list)
 
         for actor, iterations in collections.OrderedDict(
-                sorted(self.actor_totals.items())
+            sorted(self.actor_totals.items())
         ).items():
 
             for iteration, externalities in iterations.items():
@@ -313,8 +313,8 @@ class Externalities(observer.Observer):
         for key, value in file.items():
 
             with open(
-                    "{0}/externalities/summary/{1}.csv".format(self.output_directory, key),
-                    "w",
+                "{0}/externalities/summary/{1}.csv".format(self.output_directory, key),
+                "w",
             ) as csv_file:
                 writer = csv.writer(csv_file, delimiter=";", lineterminator="\n")
 

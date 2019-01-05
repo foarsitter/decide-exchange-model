@@ -627,7 +627,7 @@ class ActorIssueBox(BoxLayout, Observer, Observable):
         self.notify_change("redraw", True, observer=observer)
 
     def add_actor_issue(
-            self, actor: ActorInput, issue: IssueInput, actor_issue=None, silence=False
+        self, actor: ActorInput, issue: IssueInput, actor_issue=None, silence=False
     ):
 
         actor_issue_input = ActorIssueInput(actor, issue)
@@ -727,8 +727,8 @@ class PositionSalienceBox(QtWidgets.QWidget, Observer, Observable):
             for actor in self.actor_issue_box.actors:
 
                 if (
-                        actor.id in self.actor_issue_box.items
-                        and issue.id in self.actor_issue_box.items[actor.id]
+                    actor.id in self.actor_issue_box.items
+                    and issue.id in self.actor_issue_box.items[actor.id]
                 ):
                     actor_issue = self.actor_issue_box.items[actor.id][
                         issue.id

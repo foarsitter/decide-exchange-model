@@ -85,7 +85,7 @@ class SQLiteObserver(Observer):
             self._write_actor_issues(iteration, repetition)
 
     def after_loop(
-            self, realized: List[base.AbstractExchange], iteration: int, repetition: int
+        self, realized: List[base.AbstractExchange], iteration: int, repetition: int
     ):
         iteration = self.iterations[repetition][iteration]
 
@@ -115,7 +115,7 @@ class SQLiteObserver(Observer):
         self.model_run.save()
 
     def _write_externalities(
-            self, exchange: AbstractExchange, db_exchange: db.Exchange
+        self, exchange: AbstractExchange, db_exchange: db.Exchange
     ):
 
         issue_set_key = self.model_ref.create_existing_issue_set_key(
@@ -170,8 +170,8 @@ class SQLiteObserver(Observer):
             self.iterations[repetition][iteration] = iteration
 
             for (
-                    issue_obj,
-                    actors,
+                issue_obj,
+                actors,
             ) in self.model_ref.actor_issues.items():  # type: base.ActorIssue
                 for actor_obj, actor_issue in actors.items():
                     db.ActorIssue.create(

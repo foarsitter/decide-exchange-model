@@ -135,7 +135,7 @@ def reverse_move(actor_issues, actor: base.AbstractExchangeActor, exchange_ratio
     :return:
     """
     return (exchange_ratio * sum_salience_power(actor_issues)) / (
-            actor.supply.power * actor.supply.salience
+        actor.supply.power * actor.supply.salience
     )
 
 
@@ -238,7 +238,7 @@ def is_gain_equal(eui, euj, threshold=1e-20):
 
 
 def actor_externalities(
-        actor: base.Actor, model_ref: base.AbstractModel, realized: base.AbstractExchange
+    actor: base.Actor, model_ref: base.AbstractModel, realized: base.AbstractExchange
 ):
     """
     Calculate the externalities from an exchange
@@ -250,8 +250,8 @@ def actor_externalities(
     """
 
     if (
-            actor in model_ref.actor_issues[realized.j.supply.issue]
-            and actor in model_ref.actor_issues[realized.i.supply.issue]
+        actor in model_ref.actor_issues[realized.j.supply.issue]
+        and actor in model_ref.actor_issues[realized.i.supply.issue]
     ):
 
         xp = model_ref.actor_issues[realized.j.supply.issue][actor].position

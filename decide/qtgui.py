@@ -184,8 +184,8 @@ class IssueWidget(DynamicFormLayout):
             checkbox.stateChanged.connect(self.state_changed)
 
             if (
-                    issue in self.main_window.settings.selected_issues
-                    or len(self.main_window.settings.selected_issues) == 0
+                issue in self.main_window.settings.selected_issues
+                or len(self.main_window.settings.selected_issues) == 0
             ):
                 checkbox.setChecked(True)
 
@@ -216,8 +216,8 @@ class ActorWidget(DynamicFormLayout):
             checkbox.setObjectName(actor.actor_id)
 
             if (
-                    actor in self.main_window.settings.selected_actors
-                    or len(self.main_window.settings.selected_actors) == 0
+                actor in self.main_window.settings.selected_actors
+                or len(self.main_window.settings.selected_actors) == 0
             ):
                 checkbox.setChecked(True)
 
@@ -435,7 +435,7 @@ class Worker(QtCore.QObject):
 
 class SummaryWidget(DynamicFormLayout):
     def __init__(
-            self, main_window, settings, data, actor_widget, issue_widget, *args, **kwargs
+        self, main_window, settings, data, actor_widget, issue_widget, *args, **kwargs
     ):
         """
 
@@ -736,9 +736,9 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
     def set_start_button_state(self):
         if (
-                self.settings.input_filename
-                and self.settings.output_directory
-                and not self.thread.isRunning()
+            self.settings.input_filename
+            and self.settings.output_directory
+            and not self.thread.isRunning()
         ):
             self.start.setEnabled(True)
             self.start.setDisabled(False)
@@ -852,7 +852,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
             estimated_time_needed_seconds = avg_time_per_repetition * repetitions
 
             estimated_time_left = estimated_time_needed_seconds - (
-                    repetition * avg_time_per_repetition
+                repetition * avg_time_per_repetition
             )
 
             self.statusBar().showMessage(

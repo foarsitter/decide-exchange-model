@@ -12,12 +12,12 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
     """
 
     def __init__(
-            self,
-            model: "EqualGainModel",
-            actor: base.Actor,
-            demand_issue: base.Issue,
-            supply_issue: base.Issue,
-            exchange: "EqualGainExchange",
+        self,
+        model: "EqualGainModel",
+        actor: base.Actor,
+        demand_issue: base.Issue,
+        supply_issue: base.Issue,
+        exchange: "EqualGainExchange",
     ):
         super().__init__(model, actor, demand_issue, supply_issue, exchange)
 
@@ -77,8 +77,8 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
 
         # supply exchange ratio for j, demand for i
         exchange_ratio_p = (
-                                   eui + exchange_ratio_q * self.supply.salience
-                           ) / self.demand.salience
+            eui + exchange_ratio_q * self.supply.salience
+        ) / self.demand.salience
 
         eui_check = abs(
             calculations.expected_utility(self, exchange_ratio_q, exchange_ratio_p)
@@ -121,7 +121,7 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
             )
 
             if abs(move_i) < abs(
-                    self.supply.position - self.opposite_actor.demand.position
+                self.supply.position - self.opposite_actor.demand.position
             ):
 
                 euj = abs(
@@ -147,13 +147,13 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
                 self.opposite_actor.nbs_0 = nbs_adjusted
 
                 if (
-                        self.demand.position >= self.opposite_actor.nbs_0
-                        and self.demand.position >= nbs_adjusted
+                    self.demand.position >= self.opposite_actor.nbs_0
+                    and self.demand.position >= nbs_adjusted
                 ):
                     pass
                 elif (
-                        self.demand.position <= self.opposite_actor.nbs_0
-                        and self.demand.position <= nbs_adjusted
+                    self.demand.position <= self.opposite_actor.nbs_0
+                    and self.demand.position <= nbs_adjusted
                 ):
                     pass
                 else:
@@ -228,13 +228,13 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
             # the nbs shifts beyond the position of the demand position
 
             if (
-                    self.opposite_actor.demand.position >= self.nbs_0
-                    and self.opposite_actor.demand.position >= nbs_adjusted
+                self.opposite_actor.demand.position >= self.nbs_0
+                and self.opposite_actor.demand.position >= nbs_adjusted
             ):
                 pass
             elif (
-                    self.opposite_actor.demand.position <= self.nbs_0
-                    and self.opposite_actor.demand.position <= nbs_adjusted
+                self.opposite_actor.demand.position <= self.nbs_0
+                and self.opposite_actor.demand.position <= nbs_adjusted
             ):
                 pass
             else:
@@ -258,8 +258,8 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
                 )
 
                 exchange_ratio_p = (
-                                           eui + exchange_ratio_q * self.supply.salience
-                                   ) / self.demand.salience
+                    eui + exchange_ratio_q * self.supply.salience
+                ) / self.demand.salience
 
                 move_j_b = calculations.reverse_move(
                     actor_issues=self.opposite_actor.actor_issues(),
@@ -335,7 +335,7 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
 
         self.y = self.supply.position + self.move
         self.opposite_actor.y = (
-                self.opposite_actor.supply.position + self.opposite_actor.move
+            self.opposite_actor.supply.position + self.opposite_actor.move
         )
 
         b1 = self.is_move_valid(self.move)
@@ -427,8 +427,8 @@ class EqualGainExchange(base.AbstractExchange):
             return  # stop if its not valid
 
         if (
-                self.model.randomized_value is not None
-                and self.model.randomized_value > 0.0
+            self.model.randomized_value is not None
+            and self.model.randomized_value > 0.0
         ):
 
             u = random.uniform(0, 1)

@@ -46,7 +46,7 @@ class Observer(object):
         pass
 
     def after_loop(
-            self, realized: List[base.AbstractExchange], iteration: int, repetition: int
+        self, realized: List[base.AbstractExchange], iteration: int, repetition: int
     ):
         """
         After all exchanges are executed. There are no potential exchanges left, but the model reference to actor
@@ -141,7 +141,7 @@ class Observable(Observer):
             observer.execute_exchange(exchange)
 
     def after_loop(
-            self, realized: List[base.AbstractExchange], iteration: int, repetition: int
+        self, realized: List[base.AbstractExchange], iteration: int, repetition: int
     ):
         for observer in self.__observers:
             observer.after_loop(realized, iteration, repetition)

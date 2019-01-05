@@ -24,10 +24,10 @@ class IssueDevelopment(observer.Observer):
     """
 
     def __init__(
-            self,
-            observable: observer.Observable,
-            write_voting_position=False,
-            summary_only=False,
+        self,
+        observable: observer.Observable,
+        write_voting_position=False,
+        summary_only=False,
     ):
         super().__init__(observable=observable)
 
@@ -92,7 +92,7 @@ class IssueDevelopment(observer.Observer):
         :return:
         """
         if not os.path.exists(
-                "{0}/issues/{1}".format(self.output_directory, repetition)
+            "{0}/issues/{1}".format(self.output_directory, repetition)
         ):
             os.makedirs("{0}/issues/{1}/csv".format(self.output_directory, repetition))
             os.makedirs(
@@ -116,7 +116,7 @@ class IssueDevelopment(observer.Observer):
         pass
 
     def after_loop(
-            self, realized: List[base.AbstractExchange], iteration: int, repetition: int
+        self, realized: List[base.AbstractExchange], iteration: int, repetition: int
     ):
         """
         After each round we calculate the variance
@@ -197,10 +197,10 @@ class IssueDevelopment(observer.Observer):
 
         for issue in self.preference_history:
             with open(
-                    "{0}/issues/{2}/csv/{1}.{3}.csv".format(
-                        self.output_directory, issue, repetition, self._get_salt
-                    ),
-                    "w",
+                "{0}/issues/{2}/csv/{1}.{3}.csv".format(
+                    self.output_directory, issue, repetition, self._get_salt
+                ),
+                "w",
             ) as csv_file:
                 writer = csv.writer(csv_file, delimiter=";", lineterminator="\n")
 
@@ -403,10 +403,10 @@ class IssueDevelopment(observer.Observer):
 
         for issue in self.preference_history_sum:
             with open(
-                    "{0}/issues/{2}/csv/{1}.{3}.{2}.csv".format(
-                        self.output_directory, issue, "summary", self._get_salt
-                    ),
-                    "w",
+                "{0}/issues/{2}/csv/{1}.{3}.{2}.csv".format(
+                    self.output_directory, issue, "summary", self._get_salt
+                ),
+                "w",
             ) as csv_file:
                 writer = csv.writer(csv_file, delimiter=";", lineterminator="\n")
 

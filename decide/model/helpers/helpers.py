@@ -10,11 +10,11 @@ from . import csvparser
 def parse_arguments():
     parser = argparse.ArgumentParser(
         description="This program accepts input with a dot (.) as decimal separator. \n"
-                    "Parameters:\n{0} is for defining an actor,\n"
-                    "{1} for an issue,\n"
-                    "{2} for actor values for each issue.\n"
-                    "We expect for {2} the following order in values: "
-                    "actor, issue, position, salience, power".format(
+        "Parameters:\n{0} is for defining an actor,\n"
+        "{1} for an issue,\n"
+        "{2} for actor values for each issue.\n"
+        "We expect for {2} the following order in values: "
+        "actor, issue, position, salience, power".format(
             csvparser.CsvParser.cA, csvparser.CsvParser.cP, csvparser.CsvParser.cD
         )
     )
@@ -22,7 +22,7 @@ def parse_arguments():
         "--model",
         "-m",
         help='The type of the model. The options are "equal" for the Equal Gain model and '
-             '"random" for the RandomRate model ',
+        '"random" for the RandomRate model ',
         default="equal",
         type=str,
     )

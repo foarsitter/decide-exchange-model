@@ -13,7 +13,7 @@ class ExchangesWriter(observer.Observer):
     """
 
     def __init__(
-            self, observable: observer.Observable, summary_only=False, before=False
+        self, observable: observer.Observable, summary_only=False, before=False
     ):
         super().__init__(observable)
         self.summary_only = summary_only
@@ -21,15 +21,15 @@ class ExchangesWriter(observer.Observer):
 
     def _create_directory(self, repetition: int):
         if not os.path.exists(
-                "{0}/exchanges/{1}".format(self.output_directory, repetition)
+            "{0}/exchanges/{1}".format(self.output_directory, repetition)
         ):
             os.makedirs("{0}/exchanges/{1}".format(self.output_directory, repetition))
 
         if (
-                not os.path.exists(
-                    "{0}/exchanges/{1}/initial".format(self.output_directory, repetition)
-                )
-                and self.before
+            not os.path.exists(
+                "{0}/exchanges/{1}/initial".format(self.output_directory, repetition)
+            )
+            and self.before
         ):
             os.makedirs(
                 "{0}/exchanges/{1}/initial".format(self.output_directory, repetition)
@@ -61,7 +61,7 @@ class ExchangesWriter(observer.Observer):
         )
 
     def after_loop(
-            self, realized: List[base.AbstractExchange], iteration: int, repetition: int
+        self, realized: List[base.AbstractExchange], iteration: int, repetition: int
     ):
         """
         Writes al the executed exchanges to the filesystem

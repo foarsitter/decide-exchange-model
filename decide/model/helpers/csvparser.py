@@ -137,8 +137,8 @@ class CsvParser:
             if issue_id in self.model_ref.issues:
 
                 if (
-                        self.model_ref.issues[issue_id].upper is None
-                        or self.model_ref.issues[issue_id].lower is None
+                    self.model_ref.issues[issue_id].upper is None
+                    or self.model_ref.issues[issue_id].lower is None
                 ):
 
                     for actor_name, actor_issue in actor_issues.items():
@@ -165,7 +165,7 @@ class CsvParser:
         issue_id = create_key(row[self.rIssue])
 
         if (len(actor_whitelist) == 0 or actor_id in actor_whitelist) and (
-                len(issue_whitelist) == 0 or issue_id in issue_whitelist
+            len(issue_whitelist) == 0 or issue_id in issue_whitelist
         ):
 
             if str(row[self.rSalience]) != "0":
