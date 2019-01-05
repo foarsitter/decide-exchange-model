@@ -1,6 +1,7 @@
 data/output
 .idea/
-model-settings.xml
+decide-settings.xml
 *.pyc
 venv/
 *.log
+.coverage
