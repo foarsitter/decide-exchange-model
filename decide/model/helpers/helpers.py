@@ -4,6 +4,7 @@ import os
 import re
 import subprocess
 import sys
+import traceback
 
 from decide import log_filename
 from decide.model import base
@@ -170,8 +171,6 @@ def example_data_file_path(filename):
     )
 
 
-
-
 def log_settings():
     """
     Reads the settings file into a string and logs it as info
@@ -194,13 +193,15 @@ def open_file(path):
         subprocess.call(("xdg-open", path))
 
 
-def exception_hook(exctype, value, traceback):
+def exception_hook(exctype, ex, _traceback):
     """
     Setting the system exception hook so the exception will be logged and the log file displayed
     """
-    logging.exception(value)
-    log_settings()
+
+    tb_lines = traceback.format_exception(ex.__class__, ex, ex.__traceback__)
+    tb_text = ''.join(tb_lines)
+    logging.exception(tb_text)
+
     open_file(log_filename)
 
-    sys._excepthook(exctype, value, traceback)
     sys.exit(1)
