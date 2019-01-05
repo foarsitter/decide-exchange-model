@@ -22,6 +22,6 @@ setup(
         "console_scripts": ["decide-cli=decide.cli:main"],
         "gui_scripts": ["decide-gui=decide.qtgui:main"],
     },
-    python_requires=">=3.5",
+    python_requires=">=3.6",
     install_requires=["peewee>=3", "matplotlib"],
 )

@@ -20,10 +20,12 @@ from decide.model.observers.observer import Observable
 from decide.model.observers.sqliteobserver import SQLiteObserver
 from decide.qtinputwindow import InputWindow
 
+log_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'decide.log')
+
 logging.basicConfig(
-    filename="decide.log",
+    filename=log_file,
     filemode="w",
-    level=logging.INFO,
+    level=logging.DEBUG,
     format=" %(asctime)s - %(levelname)s - %(message)s",
 )
 
@@ -49,6 +51,8 @@ class ProgramSettings(QtCore.QObject):
 
     changed = QtCore.pyqtSignal()
 
+    settings_file = "decide-settings.xml"
+
     def __init__(self, *args, **kwargs):
         super(ProgramSettings, self).__init__(*args, **kwargs)
 
@@ -66,7 +70,6 @@ class ProgramSettings(QtCore.QObject):
         self.repetitions = 10
         self.iterations = 10
 
-        self.settings_file = "decide-settings.xml"
         self.settings_type = "xml"
         self.settings_list_separator = ";"
 
@@ -947,13 +950,30 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         self.worker.stop()
 
 
+def log_settings():
+    """
+    Reads the settings file into a string and logs it as info
+    """
+
+    settings_file = open(ProgramSettings.settings_file)
+
+    settings_content = settings_file.read()
+
+    logging.info(settings_content)
+
+
 def main():
-    app = QtWidgets.QApplication(sys.argv)
-    app.setQuitOnLastWindowClosed(True)
+    try:
+        app = QtWidgets.QApplication(sys.argv)
+        app.setQuitOnLastWindowClosed(True)
 
-    ex = DecideMainWindow()
+        ex = DecideMainWindow()
 
-    sys.exit(app.exec_())
+        sys.exit(app.exec_())
+    except Exception as e:
+        logging.exception(e)
+        log_settings()
+        open_file(log_file)
 
 
 if __name__ == "__main__":
