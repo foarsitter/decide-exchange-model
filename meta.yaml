@@ -32,6 +32,7 @@ requirements:
 test:
   imports:
     - decide
+    - decide.qt
     - decide.model
     - decide.model.helpers
     - decide.model.helpers.test
