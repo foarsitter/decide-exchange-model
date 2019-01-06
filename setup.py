@@ -10,6 +10,7 @@ setup(
     version=__version__,
     packages=[
         "decide",
+        "decide.qt",
         "decide.model",
         "decide.model.test",
         "decide.model.helpers",
