@@ -852,16 +852,17 @@ class InputWindow(QtWidgets.QMainWindow):
         q = QtWidgets.QWidget()
         q.setLayout(self.main)
 
-        menubar = QtWidgets.QMenuBar()
-        self.setMenuBar(menubar)
+        self.menubar = QtWidgets.QMenuBar()
+        self.menubar.setNativeMenuBar(False)
+        self.setMenuBar(self.menubar)
 
-        file_menu = menubar.addMenu("File")
-        example_menu = menubar.addMenu("Examples")
+        file_menu = self.menubar.addMenu("File")
+        example_menu = self.menubar.addMenu("Examples")
 
-        load_kopenhagen = QtWidgets.QAction("&load Kopenhagen", menubar)
+        load_kopenhagen = QtWidgets.QAction("&load Kopenhagen", self.menubar)
         load_kopenhagen.triggered.connect(self.load_kopenhagen)
 
-        load_cop = QtWidgets.QAction("&load Parijs", menubar)
+        load_cop = QtWidgets.QAction("&load Parijs", self.menubar)
         load_cop.triggered.connect(self.load_parijs)
 
         open_action = QtWidgets.QAction("Open", menubar)
