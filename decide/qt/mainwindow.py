@@ -735,6 +735,8 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
         self.setMenuBar(MenuBar(self))
 
+        self.menuBar().setNativeMenuBar(False)
+
         main = QtWidgets.QHBoxLayout()
 
         self.start.clicked.connect(self.run)

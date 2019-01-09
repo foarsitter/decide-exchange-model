@@ -4,6 +4,8 @@ import logging
 import os
 from datetime import datetime
 
+from PyQt5.QtCore import QDir
+
 from decide.model import randomrate, equalgain
 from decide.model.helpers import helpers, csvparser
 from decide.model.observers.exchanges_writer import ExchangesWriter
@@ -53,7 +55,7 @@ def init_output_directory(model, output_dir, selected_actors=list()):
     else:
         actor_unique = "-".join(selected_actors)
 
-    output_directory = os.path.join(*output_dir.split('/'), model.data_set_name, model.model_name)
+    output_directory = os.path.join(output_dir, model.data_set_name, model.model_name)
 
     if not os.path.isdir(output_directory):
         os.makedirs(output_directory)
@@ -123,7 +125,7 @@ def main():
 
         model = init_model(args.model, args.input_file, p)
 
-        output_directory = init_output_directory(model, args.output_dir)
+        output_directory = QDir.toNativeSeparators(init_output_directory(model, args.output_dir))
 
         # The event handlers for logging and writing the results to the disk.
         event_handler = init_event_handlers(
