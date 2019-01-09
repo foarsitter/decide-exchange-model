@@ -666,7 +666,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         self.init_ui_data()
 
     def show_debug_dialog(self):
-        helpers.open_file("decide.log")
+        helpers.open_file(log_filename)
 
     def update_data_widgets(self):
 
@@ -733,9 +733,11 @@ class DecideMainWindow(QtWidgets.QMainWindow):
     def init_ui(self):
         self.statusBar().showMessage("Ready")
 
-        self.setMenuBar(MenuBar(self))
+        self.menu_bar = MenuBar(self, None)
 
-        self.menuBar().setNativeMenuBar(False)
+        self.setMenuBar(self.menu_bar)
+
+        self.menu_bar.setNativeMenuBar(False)
 
         main = QtWidgets.QHBoxLayout()
 
@@ -916,7 +918,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         if os.path.isfile(self.settings.settings_file):
             try:
                 self.settings.load()
-                self.menuBar().load()
+                self.menu_bar.load()
                 self.settings_widget.load()
 
             except ET.ParseError:
@@ -926,7 +928,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         self.settings_widget.save()
         self.issue_widget.save()
         self.actor_widget.save()
-        self.menuBar().save()
+        self.menu_bar.save()
         self.settings.save()
 
     def cancel(self):
