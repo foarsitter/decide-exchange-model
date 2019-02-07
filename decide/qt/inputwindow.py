@@ -865,10 +865,10 @@ class InputWindow(QtWidgets.QMainWindow):
         load_cop = QtWidgets.QAction("&load Parijs", self.menubar)
         load_cop.triggered.connect(self.load_parijs)
 
-        open_action = QtWidgets.QAction("Open", menubar)
+        open_action = QtWidgets.QAction("Open", self.menubar)
         open_action.triggered.connect(self.open_dialog)
 
-        save_action = QtWidgets.QAction("Save", menubar)
+        save_action = QtWidgets.QAction("Save", self.menubar)
         save_action.triggered.connect(self.save_location)
 
         example_menu.addAction(load_kopenhagen)
