@@ -107,6 +107,9 @@ class ProgramSettings(QtCore.QObject):
 
         file_path = os.path.join(decide_base_path, self.settings_file)
 
+        if not os.path.exists(file_path):
+            return
+
         for elm in ET.parse(file_path).getroot():
 
             if hasattr(self, elm.tag):
