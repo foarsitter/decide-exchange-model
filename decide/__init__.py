@@ -1,6 +1,9 @@
 import os
 
-__version__ = "2019.1.8"
+__version__ = "2019.1.9"
 
-log_filename = os.path.join(os.path.dirname(os.path.abspath(__file__)), "decide.log")
+decide_base_path = os.path.dirname(os.path.abspath(__file__))
+
+log_filename = os.path.join(decide_base_path, "decide.log")
+
 

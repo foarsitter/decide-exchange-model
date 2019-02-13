@@ -9,7 +9,7 @@ from typing import List
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 
-from decide import log_filename
+from decide import log_filename, decide_base_path
 from decide.cli import init_model, init_output_directory, float_range
 from decide.model import base
 from decide.model.equalgain import EqualGainModel
@@ -102,7 +102,10 @@ class ProgramSettings(QtCore.QObject):
             self._load_xml()
 
     def _load_xml(self):
-        for elm in ET.parse(self.settings_file).getroot():
+
+        file_path = os.path.join(decide_base_path, self.settings_file)
+
+        for elm in ET.parse(file_path).getroot():
 
             if hasattr(self, elm.tag):
 
@@ -578,7 +581,10 @@ class MenuBar(QtWidgets.QMenuBar):
         debug = self.addMenu("Debug")
         log_action = QtWidgets.QAction("Show log window", self)
         log_action.triggered.connect(self.main_window.show_debug_dialog)
-        debug.addAction(log_action)
+
+        error_report = QtWidgets.QAction("Send error report", self)
+        error_report.triggered.connect(self.main_window.show_error_report_dialog)
+        debug.addAction(error_report)
 
     def load(self):
         """
@@ -642,7 +648,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
         self.data = ProgramData()
         self.settings = ProgramSettings()
-
+        self.menu_bar = None
         self.start = QtWidgets.QPushButton("Start")
 
         self.issue_widget = IssueWidget(self)
@@ -667,6 +673,10 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
     def show_debug_dialog(self):
         helpers.open_file(log_filename)
+
+    def show_error_report_dialog(self):
+        from decide.qt.errordialog import ErrorDialog
+        ex = ErrorDialog(self)
 
     def update_data_widgets(self):
 
@@ -733,7 +743,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
     def init_ui(self):
         self.statusBar().showMessage("Ready")
 
-        self.menu_bar = MenuBar(self, None)
+        self.menu_bar = MenuBar(self, self)
 
         self.setMenuBar(self.menu_bar)
 

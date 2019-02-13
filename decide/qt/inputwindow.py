@@ -852,7 +852,7 @@ class InputWindow(QtWidgets.QMainWindow):
         q = QtWidgets.QWidget()
         q.setLayout(self.main)
 
-        self.menubar = QtWidgets.QMenuBar()
+        self.menubar = QtWidgets.QMenuBar(self)
         self.menubar.setNativeMenuBar(False)
         self.setMenuBar(self.menubar)
 
