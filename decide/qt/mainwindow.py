@@ -592,6 +592,13 @@ class MenuBar(QtWidgets.QMenuBar):
         error_report.triggered.connect(self.main_window.show_error_report_dialog)
         debug.addAction(error_report)
 
+        error_report_2 = QtWidgets.QAction("Trigger error", self)
+        error_report_2.triggered.connect(self.trigger_error)
+        debug.addAction(error_report_2)
+
+    def trigger_error(self):
+        raise Exception('Error triggered')
+
     def load(self):
         """
         Copy the values from the ProgramSettings object

@@ -200,7 +200,6 @@ def exception_hook(exctype, ex, _traceback):
 
     tb_text = exception_to_string(ex)
     logging.exception(tb_text)
-    sys._excepthook(exctype, ex, _traceback)
     open_file(log_filename)
 
     sys.exit(1)
