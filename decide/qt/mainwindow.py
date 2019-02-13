@@ -83,6 +83,8 @@ class ProgramSettings(QtCore.QObject):
 
     def _save_xml(self):
 
+        file_path = os.path.join(decide_base_path, self.settings_file)
+
         element = ET.Element("decide-settings")
 
         for key, value in self.__dict__.items():
@@ -95,7 +97,7 @@ class ProgramSettings(QtCore.QObject):
                 child.text = str(value)
                 element.append(child)
 
-        ET.ElementTree(element).write(self.settings_file)
+        ET.ElementTree(element).write(file_path)
 
     def load(self):
         if self.settings_type == "xml":
@@ -581,6 +583,7 @@ class MenuBar(QtWidgets.QMenuBar):
         debug = self.addMenu("Debug")
         log_action = QtWidgets.QAction("Show log window", self)
         log_action.triggered.connect(self.main_window.show_debug_dialog)
+        debug.addAction(log_action)
 
         error_report = QtWidgets.QAction("Send error report", self)
         error_report.triggered.connect(self.main_window.show_error_report_dialog)
