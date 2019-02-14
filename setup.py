@@ -29,5 +29,5 @@ setup(
         "gui_scripts": ["decide-gui=decide.qt.mainwindow:main"],
     },
     python_requires=">=3.6",
-    install_requires=["peewee>=3", "matplotlib"],
+    install_requires=["peewee>=3", "matplotlib", "request"],
 )

@@ -77,13 +77,18 @@ class ProgramSettings(QtCore.QObject):
         self.selected_actors = []
         self.selected_issues = []
 
+    def settings_file_path(self):
+        file_path = os.path.join(decide_base_path, self.settings_file)
+
+        return file_path
+
     def save(self):
         if self.settings_type == "xml":
             self._save_xml()
 
     def _save_xml(self):
 
-        file_path = os.path.join(decide_base_path, self.settings_file)
+        file_path = self.settings_file_path()
 
         element = ET.Element("decide-settings")
 
@@ -689,7 +694,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
     def show_error_report_dialog(self):
         from decide.qt.errordialog import ErrorDialog
-        ex = ErrorDialog(self)
+        ex = ErrorDialog('Error message', self)
 
     def update_data_widgets(self):
 
