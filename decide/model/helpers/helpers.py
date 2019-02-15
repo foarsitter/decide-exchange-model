@@ -201,15 +201,15 @@ def exception_hook(exctype, ex, _traceback):
 
     tb_text = exception_to_string(ex)
     logging.exception(tb_text)
-    # open_file(log_filename)
+
+    print(tb_text)
 
     app = QtWidgets.QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(True)
 
     from decide.qt.errordialog import ErrorDialog
-    error_dialog = ErrorDialog('empty message')
+    error_dialog = ErrorDialog(tb_text)
     sys.exit(error_dialog.exec_())
-
 
 
 def exception_to_string(ex):

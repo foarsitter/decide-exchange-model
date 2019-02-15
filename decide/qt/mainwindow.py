@@ -19,7 +19,6 @@ from decide.model.observers.externalities import Externalities
 from decide.model.observers.issue_development import IssueDevelopment
 from decide.model.observers.observer import Observable
 from decide.model.observers.sqliteobserver import SQLiteObserver
-from decide.qt.inputwindow import InputWindow
 
 
 class ProgramData(QtCore.QObject):
@@ -265,10 +264,11 @@ class SettingsFormWidget(QtWidgets.QFormLayout):
     FormLayout containing the different parameters for the model
     """
 
-    def __init__(self, settings, *args, **kwargs):
+    def __init__(self, settings, main_window, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.settings = settings
+        self.main_window = main_window
 
         self.fixed_weight = QtWidgets.QDoubleSpinBox()
         self.fixed_weight.setSingleStep(0.05)
@@ -287,12 +287,15 @@ class SettingsFormWidget(QtWidgets.QFormLayout):
 
         self.start = QtWidgets.QDoubleSpinBox()
         self.start.setSingleStep(0.05)
+        self.start.valueChanged.connect(self.state_changed)
 
         self.step = QtWidgets.QDoubleSpinBox()
         self.step.setSingleStep(0.05)
+        self.step.valueChanged.connect(self.state_changed)
 
         self.stop = QtWidgets.QDoubleSpinBox()
         self.stop.setSingleStep(0.05)
+        self.stop.valueChanged.connect(self.state_changed)
 
         self.iterations = QtWidgets.QSpinBox()
         self.iterations.setMinimum(1)
@@ -316,7 +319,6 @@ class SettingsFormWidget(QtWidgets.QFormLayout):
         self.addRow(QtWidgets.QLabel("Step"), self.step)
         self.addRow(QtWidgets.QLabel("Stop"), self.stop)
 
-        # self.addRow(QtWidgets.QLabel('Extra value'), self.randomized_value)
 
     def load(self):
         """
@@ -346,6 +348,8 @@ class SettingsFormWidget(QtWidgets.QFormLayout):
             if hasattr(self.settings, key):
                 setattr(self.settings, key, value.value())
 
+    def state_changed(self):
+        self.main_window.overview_widget.update_widget()
 
 class Worker(QtCore.QObject):
     finished = QtCore.pyqtSignal(str, int)
@@ -462,12 +466,6 @@ class SummaryWidget(DynamicFormLayout):
     def update_widget(self):
 
         self.clear()
-
-        actors = self.actor_widget.get_selected()
-        issues = self.issue_widget.get_selected()
-
-        # self.add_text_row('Actors', ', '.join(actors))
-        # self.add_text_row('Issues', ', '.join(issues))
 
         self.add_text_row("Input", self.settings.input_filename, self.test_callback)
         self.add_text_row(
@@ -661,8 +659,8 @@ def init_event_handlers(model, output_directory, settings):
 
 
 class DecideMainWindow(QtWidgets.QMainWindow):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
         self.data = ProgramData()
         self.settings = ProgramSettings()
@@ -672,7 +670,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         self.issue_widget = IssueWidget(self)
         self.actor_widget = ActorWidget(self)
         self.actor_issue_widget = ActorIssueWidget(self)
-        self.settings_widget = SettingsFormWidget(self.settings)
+        self.settings_widget = SettingsFormWidget(self.settings, self)
 
         self.progress_dialog = None
 
@@ -818,6 +816,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
     def open_data_view(self):
 
+        from decide.qt.inputwindow.gui import InputWindow
         ex = InputWindow(self)
 
     def init_ui_data(self):
