@@ -816,8 +816,10 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
     def open_data_view(self):
 
-        from decide.qt.inputwindow.gui import InputWindow
+        from decide.qt.inputwindow.gui import InputWindow, register_app
         ex = InputWindow(self)
+
+        register_app(ex)
 
     def init_ui_data(self):
 

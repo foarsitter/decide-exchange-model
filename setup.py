@@ -11,6 +11,7 @@ setup(
     packages=[
         "decide",
         "decide.qt",
+        "decide.qt.inputwindow",
         "decide.model",
         "decide.model.test",
         "decide.model.helpers",
@@ -28,7 +29,7 @@ setup(
         "console_scripts": ["decide-cli=decide.cli:main"],
         "gui_scripts": ["decide-gui=decide.qt.mainwindow:main"],
     },
-    data_files=[('data/input', ['kopenhagen.csv', 'CoP21.csv'])],
+    data_files=[('data/input', ['data/input/kopenhagen.csv', 'data/input/CoP21.csv'])],
     python_requires=">=3.6",
     install_requires=["peewee>=3", "matplotlib", "requests", "blinker"],
 )

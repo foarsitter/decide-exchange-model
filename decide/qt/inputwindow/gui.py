@@ -263,6 +263,11 @@ def actor_issue_box_update_issue(sender: IssueInputModel, key: str, value):
     input_window.salience_widget.redraw()
 
 
+def register_app(ex):
+    global input_window
+    input_window = ex
+
+
 if __name__ == "__main__":
     logging.basicConfig(
         filename=log_filename,
