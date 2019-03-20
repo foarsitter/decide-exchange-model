@@ -39,7 +39,7 @@ class CsvParser:
         :return:
         """
 
-        with open(filename, "rt", encoding="utf-8") as csv_file:
+        with open(filename, "rt", encoding="utf-8", errors='replace') as csv_file:
 
             # guess the document format
             dialect = csv.Sniffer().sniff(csv_file.read(1024))
