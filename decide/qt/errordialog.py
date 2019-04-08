@@ -1,16 +1,18 @@
 import logging
 import sys
 
+import requests
 from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import QMessageBox, QDialog
 
 from decide import log_filename
 from decide.model.helpers.helpers import exception_hook
 from decide.qt.mainwindow import ProgramSettings
 
 
-class ErrorDialog(QtWidgets.QMainWindow):
+class ErrorDialog(QDialog):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, message='', *args, **kwargs):
         super(ErrorDialog, self).__init__(*args, **kwargs)
 
         self.settings = ProgramSettings()
@@ -18,11 +20,11 @@ class ErrorDialog(QtWidgets.QMainWindow):
 
         self.main = QtWidgets.QVBoxLayout()
 
-        self.error_message = self.add_message_box()
+        self.error_message = self.add_message_box(message)
 
         self.add_label('Attachments:')
-        self.add_settings()
-        self.add_input_file()
+        self.settings_checkbox = self.add_settings()
+        self.input_file_checkbox = self.add_input_file()
         self.add_send_button()
 
         self.init_window()
@@ -31,7 +33,7 @@ class ErrorDialog(QtWidgets.QMainWindow):
 
         central_widget = QtWidgets.QWidget()
         central_widget.setLayout(self.main)
-        self.setCentralWidget(central_widget)
+        self.setLayout(self.main)
 
         self.setGeometry(300, 300, 400, 400)
         self.setWindowTitle("Error reporting tool")
@@ -43,34 +45,73 @@ class ErrorDialog(QtWidgets.QMainWindow):
     def add_label(self, text):
         self.add_widget(QtWidgets.QLabel(text))
 
-    def add_message_box(self):
+    def add_message_box(self, message):
 
-        self.add_widget(QtWidgets.QLabel('What happend?'))
+        self.add_widget(QtWidgets.QLabel('What happened?'))
 
         textarea = QtWidgets.QPlainTextEdit()
+        textarea.setPlainText(message)
 
         self.add_widget(textarea)
 
         return textarea
 
     def add_input_file(self):
-        self.add_label('Data:' + self.settings.input_filename)
+
+        checkbox = QtWidgets.QCheckBox(self.settings.input_filename)
+        checkbox.setChecked(True)
+        self.add_widget(checkbox)
+
+        return checkbox
 
     def add_settings(self):
 
-        self.add_label('Settings:' + self.settings.settings_file)
+        checkbox = QtWidgets.QCheckBox(self.settings.settings_file)
+        checkbox.setChecked(True)
+        self.add_widget(checkbox)
+
+        return checkbox
 
     def add_send_button(self):
 
         button = QtWidgets.QPushButton()
         button.setText('Send error report')
-
+        button.clicked.connect(self.send_error_report)
         self.add_widget(button)
 
         return button
 
     def send_error_report(self):
-        pass
+
+        confirm = QtWidgets.QMessageBox.question(self, 'Confirm sending', 'Are you sure you want to send the message with the attachments?', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+
+        settings = None
+        input_data = None
+
+        if confirm == QMessageBox.Yes:
+
+            files = {}
+
+            if self.settings_checkbox.isChecked():
+                settings = open(self.settings.settings_file_path())
+                files['settings'] = settings
+            if self.input_file_checkbox.isChecked():
+                input_data = open(self.settings.input_filename)
+                files['input_data'] = input_data
+
+            response = requests.post(
+                url='https://jelmertmail.nl/decide/',
+                data=dict(message=self.error_message.toPlainText()),
+                files=files
+            )
+
+            QtWidgets.QMessageBox.about(self, "Server response", str(response.content))
+
+            if settings:
+                settings.close()
+
+            if input_data:
+                input_data.close()
 
 
 def main():
@@ -87,7 +128,7 @@ def main():
     app = QtWidgets.QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(True)
 
-    error_dialog = ErrorDialog()
+    error_dialog = ErrorDialog('empty message')
 
     sys.exit(app.exec_())
 

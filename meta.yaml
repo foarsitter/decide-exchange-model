@@ -28,6 +28,8 @@ requirements:
     - matplotlib
     - peewee==3.3.4
     - pyqt==5.9.2
+    - blinker
+    - requests
 
 test:
   imports:
