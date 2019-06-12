@@ -2,7 +2,7 @@
 from __future__ import absolute_import
 
 import csv
-from collections import defaultdict
+
 from copy import copy
 from decimal import Decimal
 from typing import Dict, List
@@ -67,7 +67,7 @@ def squash(fields: int, data: List[str], delimiter=' ') -> List[str]:
 
     output = copy(data)
     del output[-1]
-    output[-1] = delimiter.join(data[fields - 1:])
+    output[-1] = delimiter.join(data[fields-1:])
 
     return output
 
