@@ -2,47 +2,85 @@
 from __future__ import absolute_import
 
 import csv
-
 from copy import copy
 from decimal import Decimal
-from typing import Dict, List
+from typing import List
 
 import typesystem
 
 from decide.model import base
 from .types import Actor, ActorIssue, Issue, IssuePosition, IssueDescription, Comment
 
-
-def read(filename: str) -> Dict[str, typesystem.Schema]:
-    data = {}
-    errors = {}
-
-    with open(filename, "rt", encoding="utf-8", errors='replace') as csv_file:
-        # guess the document format
-        dialect = csv.Sniffer().sniff(csv_file.read(1024))
-        csv_file.seek(0)
-
-        reader = csv.reader(csv_file, dialect=dialect)
-
-        for index, row in enumerate(reader):
-            try:
-                x = parse_row(row)
-            except typesystem.ValidationError as e:
-                errors[index] = e
-
-            data[index] = x
-
-    return data, errors
+types = {
+    Actor.starts_with: Actor,
+    ActorIssue.starts_with: ActorIssue,
+    Issue.starts_with: Issue,
+    IssuePosition.starts_with: IssuePosition,
+    IssueDescription.starts_with: IssueDescription,
+    Comment.starts_with: Comment
+}
 
 
-def parse_row(row):
+class InputDataFile:
+
+    def __init__(self):
+        self.errors = {}
+        self.rows = {}
+        self.data = {}
+
+    def add_typed_object(self, obj):
+
+        klass = obj.__class__
+
+        if klass in self.data:
+            self.data[klass][obj] = obj
+        else:
+            self.data[klass] = {obj: obj}
+
+    @classmethod
+    def open(cls, filename: str) -> 'InputDataFile':
+        """
+        Transforms a file with comma separated values to a dictionary where the key is the row number
+        """
+
+        data = cls()
+
+        with open(filename, "rt", encoding="utf-8", errors='replace') as csv_file:
+            # guess the document format
+            dialect = csv.Sniffer().sniff(csv_file.read(1024))
+            csv_file.seek(0)
+
+            reader = csv.reader(csv_file, dialect=dialect)
+
+            for index, row in enumerate(reader):
+
+                # keep the original data
+                data.rows[index] = row
+
+                try:
+                    type_obj = csv_row_to_type(row)
+                    data.add_typed_object(type_obj)
+                except typesystem.ValidationError as e:
+                    data.errors[index] = e  # collect the error for displaying purpose
+
+        return data
+
+    @property
+    def is_valid(self):
+        return len(self.errors) == 0
+
+
+def csv_row_to_type(row: List[str]):
+    """
+    Translate a list of values to the corresponding object
+    """
     key = row[0]  # the first element contains the #id field
     row = row[1:]  # the rest the row
 
-    if key not in Reader.types:
+    if key not in types:
         raise Exception(f'Add key {key} to Reader.types (row row: {row}')
 
-    row_type = Reader.types[key]
+    row_type = types[key]
 
     field_names = row_type.fields.keys()
 
@@ -55,11 +93,12 @@ def parse_row(row):
 
 def squash(fields: int, data: List[str], delimiter=' ') -> List[str]:
     """
-    Finds out how many fields there are and joins the overhead
-    :param delimiter: how to join the fields
-    :param fields: the amount of fields
-    :param data: the data to squash
-    :return:
+    Finds out how many fields there are and joins the overhead in to the lasted field
+
+    i.e:
+        The object x, y, z contains 3 field.
+        The row x,y,z,a,b has 5 values.
+        The values a & b will be squashed to z with the given delimiter
     """
 
     if fields >= len(data):
@@ -67,21 +106,11 @@ def squash(fields: int, data: List[str], delimiter=' ') -> List[str]:
 
     output = copy(data)
     del output[-1]
-    output[-1] = delimiter.join(data[fields-1:])
+    output[-1] = delimiter.join(data[fields - 1:])
 
     return output
 
-
-class Reader:
-    types = {
-        Actor.starts_with: Actor,
-        ActorIssue.starts_with: ActorIssue,
-        Issue.starts_with: Issue,
-        IssuePosition.starts_with: IssuePosition,
-        IssueDescription.starts_with: IssueDescription,
-        Comment.starts_with: Comment
-    }
-
+class X:
     def so_the_rest(self):
 
         self.create_issues()

@@ -12,6 +12,7 @@ from PyQt5 import QtWidgets
 from decide import log_filename, decide_base_path
 from decide.cli import init_model, init_output_directory, float_range
 from decide.model import base
+from decide.model.data.reader import InputDataFile
 from decide.model.equalgain import EqualGainModel
 from decide.model.helpers import csvparser, helpers
 from decide.model.observers.exchanges_writer import ExchangesWriter
@@ -19,6 +20,7 @@ from decide.model.observers.externalities import Externalities
 from decide.model.observers.issue_development import IssueDevelopment
 from decide.model.observers.observer import Observable
 from decide.model.observers.sqliteobserver import SQLiteObserver
+from decide.qt.helpers import show_user_error
 
 
 class ProgramData(QtCore.QObject):
@@ -824,23 +826,25 @@ class DecideMainWindow(QtWidgets.QMainWindow):
     def init_ui_data(self):
 
         if not os.path.isfile(self.settings.input_filename):
-            return
+            show_user_error('Selected file does not exists')
+        else:
 
-        try:
+            data_file = InputDataFile.open(self.settings.input_filename)
 
-            model = EqualGainModel()
-            csv_parser = csvparser.CsvParser(model)
-            csv_parser.read(self.settings.input_filename)
+            if data_file.is_valid:
 
-            self.data.actors = model.actors
-            self.data.issues = model.issues
-            self.data.actor_issues = model.actor_issues
-            self.update_data_widgets()
+                model = EqualGainModel()
+                csv_parser = csvparser.CsvParser(model)  # TODO remove the csv parser module
+                csv_parser.read(self.settings.input_filename)
 
-        except Exception as e:
-            self.statusBar().showMessage(str(e))
-            QtWidgets.QMessageBox.about(self, "Input data invalid", str(e))
-            logging.error(e)
+                self.data.actors = model.actors
+                self.data.issues = model.issues
+                self.data.actor_issues = model.actor_issues
+                self.update_data_widgets()
+            else:
+
+                from decide.qt.errorgrid import ErrorGrid
+                ex = ErrorGrid(data_file, self)
 
     def run_safe(self):
 
@@ -852,11 +856,9 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         self.thread.started.connect(self.worker.run_model)
         self.thread.start()
 
-        print("thread started")
-
     def update_progress(self, repetition, iteration, start_time):
 
-        value = repetition * (self.settings.iterations) + iteration
+        value = repetition * self.settings.iterations + iteration
 
         self.progress_dialog.setValue(value)
         repetitions = self.settings.repetitions
