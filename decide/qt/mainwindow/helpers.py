@@ -51,7 +51,3 @@ def normalize(value):
 
     return str(value)
 
-
-def show_user_error(message: str):
-    error_dialog = QtWidgets.QErrorMessage()
-    error_dialog.showMessage(message)

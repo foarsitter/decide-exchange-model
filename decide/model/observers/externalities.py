@@ -268,9 +268,9 @@ class Externalities(observer.Observer):
                 writer.writerow(realizations)
 
                 if insert_db:
-                    with db.connection.atomic():
-                        from ..helpers import database as db
+                    from decide.data import database as db
 
+                    with db.connection.atomic():
                         db.Externality.create()
 
     def after_repetitions(self):

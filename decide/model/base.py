@@ -3,8 +3,6 @@ from collections import defaultdict
 from decimal import Decimal
 from itertools import combinations
 
-from decide.model.helpers import helpers
-
 
 class Issue:
     def __init__(self, name, lower=None, upper=None, issue_id=None):
@@ -19,7 +17,7 @@ class Issue:
 
         self.name = name
 
-        self.issue_id = issue_id if issue_id else helpers.create_key(name)
+        self.issue_id = issue_id if issue_id else name
 
         self.lower = lower
         self.upper = upper
@@ -106,8 +104,7 @@ class Actor:
         :param actor_id:
         """
         self.name = name
-        self.actor_id = actor_id if actor_id else helpers.create_key(name)
-
+        self.actor_id = name
         self.comment = ""
 
     def __eq__(self, other):

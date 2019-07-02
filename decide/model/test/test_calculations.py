@@ -5,7 +5,6 @@ from unittest.mock import patch, MagicMock
 
 from decide.model import calculations, base
 from decide.model.equalgain import EqualGainExchange, EqualGainModel
-from decide.model.helpers import csvparser
 
 
 class BaseModelTest(TestCase):

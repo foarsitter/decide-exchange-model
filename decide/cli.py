@@ -1,3 +1,4 @@
+import argparse
 import copy
 import decimal
 import logging
@@ -7,13 +8,67 @@ from datetime import datetime
 from PyQt5.QtCore import QDir
 
 from decide.model import randomrate, equalgain
-from decide.model.helpers import helpers, csvparser
 from decide.model.observers.exchanges_writer import ExchangesWriter
 from decide.model.observers.externalities import Externalities
 from decide.model.observers.issue_development import IssueDevelopment
 from decide.model.observers.logger import Logger
 from decide.model.observers.observer import Observable
 from decide.model.observers.sqliteobserver import SQLiteObserver
+
+
+def parse_arguments():
+    parser = argparse.ArgumentParser(
+        description="Decide exchange model".format()
+    )
+    parser.add_argument(
+        "--model",
+        "-m",
+        help='The type of the model. The options are "equal" for the Equal Gain model and '
+             '"random" for the RandomRate model ',
+        default="equal",
+        type=str,
+    )
+
+    parser.add_argument(
+        "--p", "-p", help="Randomized Equal Gain", default=None, type=str
+    )
+    parser.add_argument(
+        "--iterations",
+        "-i",
+        help="The number of round the model needs to be executed",
+        default=10,
+        type=int,
+    )
+    parser.add_argument(
+        "--repetitions",
+        "-r",
+        help="How many times it has te be repeated?",
+        default=1,
+        type=int,
+    )
+    parser.add_argument(
+        "--input_file",
+        help="The location of the csv input file. ",
+        default="../data/input/sample_data.txt",
+        type=str,
+    )
+    parser.add_argument(
+        "--output_dir", help="Output directory ", default="../data/output/", type=str
+    )
+    parser.add_argument(
+        "--database",
+        help="The SQLite database",
+        default="../data/output/decide-data_1.db",
+        type=str,
+    )
+
+    parser.add_argument("--step", default=None, type=str)
+    parser.add_argument("--stop", default=None, type=str)
+    parser.add_argument("--start", default=None, type=str)
+    parser.add_argument("--actors", default=None, type=str)
+    parser.add_argument("--issues", default=None, type=str)
+
+    return parser.parse_args()
 
 
 def init_model(model_type, input_file, p=None):
@@ -48,7 +103,9 @@ def init_event_handlers(model, output_directory, database_file, write_csv=True):
     return event_handler
 
 
-def init_output_directory(model, output_dir, selected_actors=list()):
+def init_output_directory(model, output_dir, selected_actors=None):
+    if selected_actors is None:
+        selected_actors = []
 
     if len(model.actors) == len(selected_actors):
         actor_unique = "all"
@@ -125,7 +182,9 @@ def main():
 
         model = init_model(args.model, args.input_file, p)
 
-        output_directory = QDir.toNativeSeparators(init_output_directory(model, args.output_dir))
+        output_directory = QDir.toNativeSeparators(
+            init_output_directory(model, args.output_dir)
+        )
 
         # The event handlers for logging and writing the results to the disk.
         event_handler = init_event_handlers(

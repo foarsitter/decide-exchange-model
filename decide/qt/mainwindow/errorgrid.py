@@ -7,12 +7,11 @@ from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QDialog
 
 from decide import log_filename, input_folder
-from decide.model.data.reader import InputDataFile
-from decide.model.helpers.helpers import exception_hook
+from decide.data.reader import InputDataFile
+from decide.qt.utils import exception_hook
 
 
 class ErrorGrid(QDialog):
-
     def __init__(self, data_file: InputDataFile, *args, **kwargs):
         super(ErrorGrid, self).__init__(*args, **kwargs)
 
@@ -56,7 +55,7 @@ class ErrorGrid(QDialog):
             label = QtWidgets.QLabel(str(content))
 
             if row in self.data_file.errors:
-                label.setStyleSheet('color: red')
+                label.setStyleSheet("color: red")
                 error = self.data_file.errors[row]
                 print(error)
                 label.setToolTip(str(error))
@@ -78,7 +77,9 @@ def main():
     app = QtWidgets.QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(True)
 
-    data_file = InputDataFile.open(os.path.join(input_folder, 'kopenhagen_with_errors.csv'))
+    data_file = InputDataFile.open(
+        os.path.join(input_folder, "kopenhagen_with_errors.csv")
+    )
 
     error_dialog = ErrorGrid(data_file)
 

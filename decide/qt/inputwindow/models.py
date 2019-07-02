@@ -2,8 +2,8 @@ import uuid
 from decimal import Decimal
 
 from PyQt5 import QtWidgets
-
 from decide.qt.helpers import DoubleInput
+
 from decide.qt.inputwindow import signals
 
 
@@ -42,14 +42,14 @@ class ActorInputModel(object):
         self._name = value
 
         if not silence:
-            signals.actor_changed.send(self, key='name', value=value)
+            signals.actor_changed.send(self, key="name", value=value)
 
     def set_power(self, value, silence=False):
 
         self._power = value
 
         if not silence:
-            signals.actor_changed.send(self, key='power', value=value)
+            signals.actor_changed.send(self, key="power", value=value)
 
     @property
     def comment(self):
@@ -107,19 +107,19 @@ class IssueInputModel(object):
         self._name = value
 
         if not silence:
-            signals.issue_changed.send(self, key='name', value=value)
+            signals.issue_changed.send(self, key="name", value=value)
 
     def set_lower(self, value, silence=False):
         self._lower = value
 
         if not silence:
-            signals.issue_changed.send(self, key='lower', value=value)
+            signals.issue_changed.send(self, key="lower", value=value)
 
     def set_upper(self, value, silence=False):
         self._upper = value
 
         if not silence:
-            signals.issue_changed.send(self, key='upper', value=value)
+            signals.issue_changed.send(self, key="upper", value=value)
 
     @property
     def comment(self):
@@ -134,7 +134,6 @@ class IssueInputModel(object):
 
 
 class ActorIssueInputModel(object):
-
     def __init__(self, actor: ActorInputModel, issue: IssueInputModel):
         super().__init__()
         self.id = None
@@ -175,14 +174,14 @@ class ActorIssueInputModel(object):
     def set_position(self, value: Decimal, silence=False):
         self._position = value
         if not silence:
-            signals.actor_issue_changed.send(self, key='position', value=value)
+            signals.actor_issue_changed.send(self, key="position", value=value)
 
     def set_power(self, value: Decimal, silence=False):
         self._power = value
         if not silence:
-            signals.actor_issue_changed.send(self, key='power', value=value)
+            signals.actor_issue_changed.send(self, key="power", value=value)
 
     def set_salience(self, value: Decimal, silence=False):
         self._salience = value
         if not silence:
-            signals.actor_issue_changed.send(self, key='salience', value=value)
+            signals.actor_issue_changed.send(self, key="salience", value=value)

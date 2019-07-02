@@ -1,8 +1,8 @@
 import os
 from typing import List
 
+from decide.data.utils import write_exchanges
 from .. import base
-from ..helpers import csvwriter
 from ..observers import observer
 
 
@@ -52,8 +52,7 @@ class ExchangesWriter(observer.Observer):
 
         salt = self._get_salt
 
-        writer = csvwriter.CsvWriter()
-        writer.write(
+        write_exchanges(
             "{0}/exchanges/{2}/initial/before.{1}.{2}.csv".format(
                 self.output_directory, iteration, repetition, salt
             ),
@@ -72,12 +71,11 @@ class ExchangesWriter(observer.Observer):
 
         salt = self._get_salt
 
-        writer = csvwriter.CsvWriter()
-        writer.write(
-            "{0}/exchanges/{2}/round.{1}.{3}.csv".format(
+        write_exchanges(
+            filename="{0}/exchanges/{2}/round.{1}.{3}.csv".format(
                 self.output_directory, iteration + 1, repetition, salt
             ),
-            realized,
+            realized=realized,
         )
 
     @property

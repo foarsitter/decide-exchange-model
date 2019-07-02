@@ -2,11 +2,10 @@ import datetime
 from collections import defaultdict
 from typing import List
 
+from decide.data import database as db
 from decide.model import calculations
-from decide.model.base import AbstractExchange
+from decide.model.base import AbstractExchange, Actor, Issue, AbstractExchangeActor
 from decide.model.observers.observer import Observer, Observable
-from .. import base
-from ..helpers import database as db
 
 
 class SQLiteObserver(Observer):
@@ -54,13 +53,13 @@ class SQLiteObserver(Observer):
                 data_set=data_set,
             )
 
-            for actor in model.actors.values():  # type: base.Actor
+            for actor in model.actors.values():  # type: Actor
                 actor, created = db.Actor.get_or_create(
                     name=actor.name, key=actor.actor_id, data_set=data_set
                 )
                 self.actors[actor] = actor
 
-            for issue in model.issues.values():  # type: base.Issue
+            for issue in model.issues.values():  # type: Issue
                 issue, created = db.Issue.get_or_create(
                     name=issue.name,
                     key=issue.issue_id,
@@ -85,7 +84,7 @@ class SQLiteObserver(Observer):
             self._write_actor_issues(iteration, repetition)
 
     def after_loop(
-        self, realized: List[base.AbstractExchange], iteration: int, repetition: int
+            self, realized: List[AbstractExchange], iteration: int, repetition: int
     ):
         iteration = self.iterations[repetition][iteration]
 
@@ -133,7 +132,7 @@ class SQLiteObserver(Observer):
             externality.iteration = db_exchange.iteration
 
             externality_size = calculations.actor_externalities(
-                str(actor.key), self.model_ref, exchange
+                actor, self.model_ref, exchange
             )
 
             is_inner = self.model_ref.is_inner_group_member(
@@ -172,7 +171,7 @@ class SQLiteObserver(Observer):
             for (
                 issue_obj,
                 actors,
-            ) in self.model_ref.actor_issues.items():  # type: base.ActorIssue
+            ) in self.model_ref.actor_issues.items():
                 for actor_obj, actor_issue in actors.items():
                     db.ActorIssue.create(
                         issue=self.issues[issue_obj.issue_id],
@@ -184,7 +183,7 @@ class SQLiteObserver(Observer):
                         type=_type,
                     )
 
-    def _create_exchange_actor(self, i: base.AbstractExchangeActor):
+    def _create_exchange_actor(self, i: AbstractExchangeActor):
 
         exchange_actor = db.ExchangeActor()
         exchange_actor.actor = self.actors[i.actor]

@@ -2,7 +2,6 @@ import os
 from unittest import TestCase
 
 from decide.model import equalgain
-from decide.model.helpers import csvparser
 
 
 class TestParser(TestCase):

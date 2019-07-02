@@ -1,7 +1,6 @@
-from nose.tools import raises
+import pytest
 
 
-@raises(RuntimeError)
 def test_float_range():
     from decide.cli import float_range
 
@@ -19,6 +18,7 @@ def test_float_range():
 
     assert 0 == sum(float_range(0, 1, 0.0))
 
-    assert 0 == sum(float_range(0, 100, 0.00005)), "Should trigger RuntimeError"
+    with pytest.raises(RuntimeError):
+        assert 0 == sum(float_range(0, 100, 0.00005)), "Should trigger RuntimeError"
 
     assert 0 == sum(float_range(0, 1, 0.0))

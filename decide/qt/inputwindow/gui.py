@@ -1,17 +1,23 @@
 import logging
+import os
 import sys
 
 from PyQt5 import QtWidgets
+from decide.qt.helpers import esc, normalize
 
-from decide import log_filename
+from decide import log_filename, input_folder
 from decide.cli import init_model
 from decide.model.base import ActorIssue
-from decide.model.helpers import csvparser
-from decide.model.helpers.helpers import example_data_file_path, open_file, exception_hook
-from decide.qt.helpers import esc, normalize
 from decide.qt.inputwindow import signals
 from decide.qt.inputwindow.models import IssueInputModel, ActorInputModel
-from decide.qt.inputwindow.widgets import ActorWidget, IssueWidget, ActorIssueWidget, PositionWidget, SalienceWidget
+from decide.qt.inputwindow.widgets import (
+    ActorWidget,
+    IssueWidget,
+    ActorIssueWidget,
+    PositionWidget,
+    SalienceWidget,
+)
+from decide.qt.mainwindow.helpers import show_user_error
 
 
 class InputWindow(QtWidgets.QMainWindow):
@@ -26,9 +32,7 @@ class InputWindow(QtWidgets.QMainWindow):
         self.actor_widget = ActorWidget()
         self.issue_widget = IssueWidget()
 
-        self.actor_issue_widget = ActorIssueWidget(
-            self.actor_widget, self.issue_widget
-        )
+        self.actor_issue_widget = ActorIssueWidget(self.actor_widget, self.issue_widget)
 
         self.position_widget = PositionWidget(self.actor_issue_widget)
         self.salience_widget = SalienceWidget(self.actor_issue_widget)
@@ -63,10 +67,10 @@ class InputWindow(QtWidgets.QMainWindow):
         example_menu = self.menubar.addMenu("Examples")
 
         load_kopenhagen = QtWidgets.QAction("&load Kopenhagen", self.menubar)
-        load_kopenhagen.triggered.connect(self.load_kopenhagen)
+        load_kopenhagen.triggered.connect(self.load_copenhagen)
 
         load_cop = QtWidgets.QAction("&load Parijs", self.menubar)
-        load_cop.triggered.connect(self.load_parijs)
+        load_cop.triggered.connect(self.load_cop21)
 
         open_action = QtWidgets.QAction("Open", self.menubar)
         open_action.triggered.connect(self.open_dialog)
@@ -80,11 +84,23 @@ class InputWindow(QtWidgets.QMainWindow):
         file_menu.addAction(open_action)
         file_menu.addAction(save_action)
 
-    def load_kopenhagen(self):
-        self.load(example_data_file_path("kopenhagen"))
+    def load_copenhagen(self):
+        self.load_input_file("copenhagen")
 
-    def load_parijs(self):
-        self.load(example_data_file_path("CoP21"))
+    def load_sample_data(self):
+        self.load_input_file("sample_date")
+
+    def load_cop21(self):
+        self.load_input_file("cop21")
+
+    def load_input_file(self, file_path):
+
+        file = os.path.join(input_folder, file_path)
+
+        if os.path.isfile(file):
+            self.load(file)
+        else:
+            show_user_error(self, "Cannot load {}".format(file))
 
     def open_dialog(self):
 
@@ -220,7 +236,6 @@ def actor_issue_box_actor_created(sender: ActorInputModel):
     input_window.salience_widget.add_choice(sender.id, sender.name)
 
 
-
 @signals.actor_deleted.connect
 def actor_issue_box_delete_actor(sender: ActorInputModel, **kwargs):
 
@@ -230,9 +245,9 @@ def actor_issue_box_delete_actor(sender: ActorInputModel, **kwargs):
 
 @signals.actor_changed.connect
 def actor_issue_box_update_actor(sender: ActorInputModel, key: str, value):
-    if key == 'name':
+    if key == "name":
         input_window.salience_widget.update_choice(sender.id, sender.name)
-    elif key == 'power':
+    elif key == "power":
 
         for actor_issue in input_window.actor_issue_widget.items[sender.id].values():
             actor_issue.set_power(value, True)
@@ -256,7 +271,7 @@ def actor_issue_box_delete_issue(sender: IssueInputModel, **kwargs):
 
 @signals.issue_changed.connect
 def actor_issue_box_update_issue(sender: IssueInputModel, key: str, value):
-    if key == 'name':
+    if key == "name":
         input_window.position_widget.update_choice(sender.id, sender.name)
 
     input_window.position_widget.redraw()

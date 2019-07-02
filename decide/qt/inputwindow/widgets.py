@@ -3,11 +3,15 @@ from decimal import Decimal
 
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtWidgets import QListWidgetItem
+from decide.qt.helpers import DoubleInput, clear_layout, normalize
 
 from decide.model.base import ActorIssue
-from decide.qt.helpers import DoubleInput, clear_layout, normalize
 from decide.qt.inputwindow import signals
-from decide.qt.inputwindow.models import ActorInputModel, IssueInputModel, ActorIssueInputModel
+from decide.qt.inputwindow.models import (
+    ActorInputModel,
+    IssueInputModel,
+    ActorIssueInputModel,
+)
 
 
 class BoxLayout(QtWidgets.QGroupBox):
@@ -156,7 +160,7 @@ class ActorWidget(BoxLayout):
 
         ActorWidget.NEW_ACTOR_POINTER += 1
 
-        return 'Actor-{}'.format(ActorWidget.NEW_ACTOR_POINTER)
+        return "Actor-{}".format(ActorWidget.NEW_ACTOR_POINTER)
 
     def add_action(self):
         a = self.add_actor()
@@ -198,7 +202,7 @@ class IssueWidget(BoxLayout):
 
         IssueWidget.NEW_ISSUE_POINTER += 1
 
-        return 'Issue-{}'.format(IssueWidget.NEW_ISSUE_POINTER)
+        return "Issue-{}".format(IssueWidget.NEW_ISSUE_POINTER)
 
     def add_heading(self):
         self.add_row("Issue", "Lower", "Upper")
@@ -326,7 +330,10 @@ class ActorIssueWidget(BoxLayout):
             self.add_actor_issue(value, issue)
 
     def add_actor_issue(
-            self, actor: ActorInputModel, issue: IssueInputModel, actor_issue: ActorIssue = None
+            self,
+            actor: ActorInputModel,
+            issue: IssueInputModel,
+            actor_issue: ActorIssue = None,
     ):
 
         actor_issue_input = ActorIssueInputModel(actor, issue)
@@ -335,7 +342,9 @@ class ActorIssueWidget(BoxLayout):
         self.items[actor.id][issue.id] = actor_issue_input
 
         if actor_issue:
-            actor_issue_input.set_position(actor_issue.issue.de_normalize(actor_issue.position), silence=True)
+            actor_issue_input.set_position(
+                actor_issue.issue.de_normalize(actor_issue.position), silence=True
+            )
             actor_issue_input.set_salience(actor_issue.salience, silence=True)
             actor_issue_input.set_power(actor_issue.power, silence=True)
 
