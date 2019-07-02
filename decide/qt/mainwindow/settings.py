@@ -106,7 +106,7 @@ class ProgramSettings(QtCore.QObject):
 
     changed = QtCore.pyqtSignal()
 
-    settings_file = "decide-settings.xml"
+    settings_file = os.path.join(decide_base_path, "decide-settings.xml")
 
     def __init__(self, *args, **kwargs):
         super(ProgramSettings, self).__init__(*args, **kwargs)

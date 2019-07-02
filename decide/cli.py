@@ -1,12 +1,13 @@
 import argparse
-import copy
-import decimal
 import logging
 import os
 from datetime import datetime
+from typing import List
 
 from PyQt5.QtCore import QDir
 
+from decide.data.modelfactory import ModelFactory
+from decide.data.reader import InputDataFile
 from decide.model import randomrate, equalgain
 from decide.model.observers.exchanges_writer import ExchangesWriter
 from decide.model.observers.externalities import Externalities
@@ -14,6 +15,7 @@ from decide.model.observers.issue_development import IssueDevelopment
 from decide.model.observers.logger import Logger
 from decide.model.observers.observer import Observable
 from decide.model.observers.sqliteobserver import SQLiteObserver
+from decide.model.utils import ModelLoop
 
 
 def parse_arguments():
@@ -71,22 +73,6 @@ def parse_arguments():
     return parser.parse_args()
 
 
-def init_model(model_type, input_file, p=None):
-    """
-    Initial the right model from the given arguments
-    """
-
-    if model_type == "equal":
-        p = decimal.Decimal(p) if p else 0.0
-        model = equalgain.EqualGainModel(randomized_value=p)
-    else:
-        model = randomrate.RandomRateModel()
-
-    model.data_set_name = input_file.split("/")[-1].split(".")[0]
-
-    return model
-
-
 def init_event_handlers(model, output_directory, database_file, write_csv=True):
     event_handler = Observable(model_ref=model, output_directory=output_directory)
 
@@ -103,16 +89,8 @@ def init_event_handlers(model, output_directory, database_file, write_csv=True):
     return event_handler
 
 
-def init_output_directory(model, output_dir, selected_actors=None):
-    if selected_actors is None:
-        selected_actors = []
-
-    if len(model.actors) == len(selected_actors):
-        actor_unique = "all"
-    else:
-        actor_unique = "-".join(selected_actors)
-
-    output_directory = os.path.join(output_dir, model.data_set_name, model.model_name)
+def init_output_directory(data_set_name, model_name, output_dir):
+    output_directory = os.path.join(output_dir, data_set_name, model_name)
 
     if not os.path.isdir(output_directory):
         os.makedirs(output_directory)
@@ -121,7 +99,6 @@ def init_output_directory(model, output_dir, selected_actors=None):
 
 
 def float_range(start=0.0, stop=1.0, step=0.05):
-
     # when the step size is 0, return
     if step == 0:
         yield 0
@@ -137,9 +114,28 @@ def float_range(start=0.0, stop=1.0, step=0.05):
             i += step
 
 
-def main():
-    args = helpers.parse_arguments()
+def actors_param(args) -> List[str]:
+    actors = None
+    if args.actors:
+        actors = args.actors.split(
+            ";"
+        )
 
+    return actors
+
+
+def issues_param(args) -> List[str]:
+    issues = None
+
+    if args.issues:
+        issues = args.issues.split(
+            ";"
+        )
+
+    return issues
+
+
+def p_values_param(args) -> List[float]:
     p_values = []
 
     if args.start and args.step and args.stop:
@@ -150,37 +146,41 @@ def main():
             )
         ]
 
-    if args.p:
+    elif args.p:
 
         if ";" in args.p:
             p_values += args.p.split(";")
         else:
             p_values.append(args.p)
 
-    issues = None
+    return p_values
 
-    if args.issues:
-        issues = args.issues.split(
-            ";"
-        )  # 'commitments;control;devlopc2020;domestred;extra'.split(';')
 
-    actors = None
-    if args.actors:
-        actors = args.actors.split(
-            ";"
-        )  # 'australia;brazil;canada;euinclnorway;japan;russia;usa'.split(';')
+def main():
+    args = parse_arguments()
 
-    print(p_values)
-    print(issues)
-    print(actors)
+    p_values = p_values_param(args)
+    issues = issues_param(args)
+    actors = actors_param(args)
+
+    data_file = InputDataFile.open(args.input_file)
+
+    model_factory = ModelFactory(data_file, actor_whitelist=actors, issue_whitelist=issues)
+
+    """
+        Initial the right model from the given arguments
+        """
+
+    if args.model_type == "equal":
+        model_klass = equalgain.EqualGainModel
+    else:
+        model_klass = randomrate.RandomRateModel
 
     for p in p_values:
 
-        print(p)
-
         start_time = datetime.now()  # for timing operations
 
-        model = init_model(args.model, args.input_file, p)
+        model = model_factory(model_klass, p=p)
 
         output_directory = QDir.toNativeSeparators(
             init_output_directory(model, args.output_dir)
@@ -196,11 +196,6 @@ def main():
 
         event_handler.log(message="Start calculation at {0}".format(start_time))
 
-        csv_parser = csvparser.CsvParser(model)
-        csv_parser.read(args.input_file, actor_whitelist=actors, issue_whitelist=issues)
-
-        actor_issues = copy.deepcopy(model.actor_issues)
-
         event_handler.log(message="Parsed file".format(args.input_file))
 
         event_handler.before_repetitions(
@@ -209,9 +204,9 @@ def main():
 
         for repetition in range(args.repetitions):
 
-            model.actor_issues = copy.deepcopy(actor_issues)
+            model = model_factory()
 
-            model_loop = helpers.ModelLoop(model, event_handler, repetition)
+            model_loop = ModelLoop(model, event_handler, repetition)
 
             event_handler.before_iterations(repetition)
 
@@ -221,13 +216,11 @@ def main():
 
             event_handler.after_iterations(repetition)
 
-            print("{}/{}".format(repetition, args.repetitions))
-
         event_handler.after_repetitions()
 
         event_handler.log(message="Finished in {0}".format(datetime.now() - start_time))
 
-    print("done")
+    logging.info("Done")
 
 
 if __name__ == "__main__":

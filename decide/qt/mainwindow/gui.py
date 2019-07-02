@@ -8,17 +8,107 @@ from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 
 from decide import log_filename
+from decide.cli import init_output_directory, float_range
+from decide.data.modelfactory import ModelFactory
 from decide.data.reader import InputDataFile
+from decide.model.equalgain import EqualGainModel
 from decide.model.observers.exchanges_writer import ExchangesWriter
 from decide.model.observers.externalities import Externalities
 from decide.model.observers.issue_development import IssueDevelopment
 from decide.model.observers.observer import Observable
 from decide.model.observers.sqliteobserver import SQLiteObserver
+from decide.model.utils import ModelLoop
 from decide.qt import utils
-from decide.qt.mainwindow.settings import ProgramSettings, SettingsFormWidget
+from decide.qt.mainwindow.settings import ProgramSettings
+from decide.qt.mainwindow.settings import SettingsFormWidget
 from decide.qt.mainwindow.widgets import ActorWidget, IssueWidget, SummaryWidget, ActorIssueWidget, MenuBar
-from decide.qt.mainwindow.worker import Worker
 from decide.qt.utils import show_user_error
+
+
+class Worker(QtCore.QObject):
+    finished = QtCore.pyqtSignal(str, int)
+    update = QtCore.pyqtSignal(int, int, float)
+
+    def __init__(self, settings: ProgramSettings):
+        super(Worker, self).__init__()
+
+        self.settings = settings
+        self.break_loop = False
+
+    @QtCore.pyqtSlot()
+    def run_model(self):
+        settings = self.settings
+
+        if settings.start == settings.stop:
+            p_values = [settings.start]
+        else:
+            p_values = [
+                str(round(p, 2))
+                for p in float_range(
+                    start=settings.start, step=settings.step, stop=settings.stop
+                )
+            ]
+
+        repetitions = settings.repetitions
+        iterations = settings.iterations
+
+        input_filename = settings.input_filename
+
+        factory = ModelFactory(
+            date_file=InputDataFile.open(input_filename),
+            actor_whitelist=settings.selected_actors,
+            issue_whitelist=settings.selected_issues,
+        )
+
+        for p in p_values:
+
+            output_directory = init_output_directory(
+                data_set_name='x',
+                model_name='equal',
+                output_dir=settings.output_directory,
+            )
+
+            from decide.qt.mainwindow.gui import init_event_handlers
+
+            # Todo, find a fix (a proxy or something)
+            model = factory(model_klass=EqualGainModel, randomized_value=p)
+
+            event_handler = init_event_handlers(model, output_directory, settings)
+            event_handler.before_repetitions(
+                repetitions=repetitions, iterations=iterations
+            )
+
+            start_time = time.time()
+
+            for repetition in range(repetitions):
+
+                model = factory(model_klass=EqualGainModel, randomized_value=p)
+
+                model_loop = ModelLoop(model, event_handler, repetition)
+
+                event_handler.before_iterations(repetition)
+
+                for iteration_number in range(iterations):
+
+                    if self.break_loop:
+                        break
+
+                    logging.info("round {0}.{1}".format(repetition, iteration_number))
+                    self.update.emit(repetition, iteration_number, start_time)
+
+                    model_loop.loop()
+
+                event_handler.after_iterations(repetition)
+
+                if self.break_loop:
+                    break
+
+            event_handler.after_repetitions()
+
+            self.finished.emit(output_directory, model.tie_count)
+
+    def stop(self):
+        self.break_loop = True
 
 
 class ProgramData(QtCore.QObject):
@@ -70,7 +160,9 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
         self.issue_widget = IssueWidget(self)
         self.actor_widget = ActorWidget(self)
-        self.actor_issue_widget = ActorIssueWidget(self)
+        self.scroll_area_widget = QtWidgets.QWidget()
+        self.actor_issue_widget = ActorIssueWidget(self.scroll_area_widget)
+        self.scroll_area_widget.setLayout(self.actor_issue_widget)
         self.settings_widget = SettingsFormWidget(self.settings, self)
 
         self.progress_dialog = None
@@ -88,6 +180,75 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
         self.init_ui_data()
 
+    def init_ui(self):
+        self.statusBar().showMessage("Ready")
+
+        self.menu_bar = MenuBar(self, self)
+
+        self.setMenuBar(self.menu_bar)
+
+        self.menu_bar.setNativeMenuBar(False)
+
+        main = QtWidgets.QHBoxLayout()
+
+        self.start.clicked.connect(self.run)
+        self.set_start_button_state()
+
+        left = QtWidgets.QVBoxLayout()
+
+        left_top = QtWidgets.QHBoxLayout()
+
+        actor_box = QtWidgets.QGroupBox("Actors")
+        actor_box.setLayout(self.actor_widget)
+
+        issue_box = QtWidgets.QGroupBox("Issues")
+        issue_box.setLayout(self.issue_widget)
+
+        # for the ActorIssueBox
+        scroll_area = QtWidgets.QScrollArea(self)
+        scroll_area.setWidgetResizable(True)
+
+        scroll_area.setWidget(self.scroll_area_widget)
+
+        scroll_area_layout = QtWidgets.QHBoxLayout()
+        scroll_area_layout.addWidget(scroll_area)
+        # the grid layout = self.actor_issue_widget
+
+        actor_issue_box = QtWidgets.QGroupBox("Actor Issues")
+        actor_issue_box.setLayout(scroll_area_layout)
+
+        left_top.addWidget(actor_box, 1)
+        left_top.addWidget(issue_box, 1)
+
+        left.addLayout(left_top, 1)
+        left.addWidget(actor_issue_box, 1)
+
+        settings_box = QtWidgets.QGroupBox("Model parameters")
+        settings_box.setLayout(self.settings_widget)
+
+        overview_box = QtWidgets.QGroupBox("Overview")
+        overview_box.setLayout(self.overview_widget)
+        self.overview_widget.setAlignment(QtCore.Qt.AlignTop)
+
+        right = QtWidgets.QVBoxLayout()
+        right.addWidget(settings_box, 1)
+        right.addWidget(overview_box, 1)
+        right.addWidget(self.start, 1)
+        right.setAlignment(QtCore.Qt.AlignTop)
+
+        main.addLayout(left, 1)
+        main.addLayout(right, 1)
+
+        q = QtWidgets.QWidget()
+        q.setLayout(main)
+
+        self.setCentralWidget(q)
+
+        self.setGeometry(300, 300, 1024, 768)
+        self.setWindowTitle("Decide Exchange Model")
+        self.show()
+
+
     def show_debug_dialog(self):
         utils.open_file_natively(log_filename)
 
@@ -101,10 +262,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         self.issue_widget.set_issues(list(self.data.issues.values()))
         self.actor_widget.set_actors(list(self.data.actors.values()))
 
-        if len(self.issue_widget.objects) > 0:
-            issue = self.issue_widget.objects[0]
-            actor_issues = list(self.data.actor_issues[issue].values())
-            self.actor_issue_widget.set_actor_issues(issue.name, actor_issues)
+        self.actor_issue_widget.set_actor_issues(list(self.data.actor_issues.values()))
 
         self.overview_widget.update_widget()
 
@@ -157,64 +315,6 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         else:
             self.start.setEnabled(False)
             self.start.setDisabled(True)
-
-    def init_ui(self):
-        self.statusBar().showMessage("Ready")
-
-        self.menu_bar = MenuBar(self, self)
-
-        self.setMenuBar(self.menu_bar)
-
-        self.menu_bar.setNativeMenuBar(False)
-
-        main = QtWidgets.QHBoxLayout()
-
-        self.start.clicked.connect(self.run)
-        self.set_start_button_state()
-
-        left = QtWidgets.QVBoxLayout()
-
-        left_top = QtWidgets.QHBoxLayout()
-
-        # left_top.setAlignment(QtCore.Qt.AlignTop)
-
-        actor_box = QtWidgets.QGroupBox("Actors")
-        issue_box = QtWidgets.QGroupBox("Issues")
-        actor_issue_box = QtWidgets.QGroupBox("Actor Issues")
-
-        actor_box.setLayout(self.actor_widget)
-        issue_box.setLayout(self.issue_widget)
-        actor_issue_box.setLayout(self.actor_issue_widget)
-
-        left_top.addWidget(actor_box, 1)
-        left_top.addWidget(issue_box, 1)
-
-        left.addLayout(left_top, 1)
-        left.addWidget(actor_issue_box, 1)
-
-        settings_box = QtWidgets.QGroupBox("Model parameters")
-        settings_box.setLayout(self.settings_widget)
-
-        overview_box = QtWidgets.QGroupBox("Overview")
-        overview_box.setLayout(self.overview_widget)
-        self.overview_widget.setAlignment(QtCore.Qt.AlignTop)
-
-        right = QtWidgets.QVBoxLayout()
-        right.addWidget(settings_box, 1)
-        right.addWidget(overview_box, 1)
-        right.addWidget(self.start, 1)
-
-        main.addLayout(left, 1)
-        main.addLayout(right, 1)
-
-        q = QtWidgets.QWidget()
-        q.setLayout(main)
-
-        self.setCentralWidget(q)
-
-        self.setGeometry(300, 300, 1024, 768)
-        self.setWindowTitle("Decide Exchange Model")
-        self.show()
 
     def open_data_view(self):
 
@@ -341,7 +441,6 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         bar.setMinimum(0)
         bar.setMaximum(self.settings.iterations * self.settings.repetitions)
         self.progress_dialog.setBar(bar)
-        # self.progress_dialog.setWindowTitle(title)
 
         self.progress_dialog.canceled.connect(self.cancel)
 

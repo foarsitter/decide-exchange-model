@@ -1,9 +1,10 @@
 from typing import List
 
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore
 
 from decide.cli import float_range
-from decide.model import base
+from decide.data import types
+from decide.qt import utils
 
 
 class InputFilGrid:
@@ -18,6 +19,8 @@ class DynamicFormLayout(QtWidgets.QGridLayout):
         self.checkboxes = []
         self.objects = []
         self.row_pointer = 0
+
+        self.setAlignment(QtCore.Qt.AlignTop)
 
     def clear(self):
         """
@@ -54,16 +57,16 @@ class IssueWidget(DynamicFormLayout):
     Form layout for customizing the Issue selection
     """
 
-    def set_issues(self, issues: List[base.Issue]):
+    def set_issues(self, issues: List[types.Issue]):
         self.set_values(issues)
-
+        self.add_row(QtWidgets.QLabel('Issue'), QtWidgets.QLabel('Lower'), QtWidgets.QLabel('Upper'))
         for issue in issues:
             checkbox = QtWidgets.QCheckBox(issue.name)
 
-            lower = QtWidgets.QLabel(str(round(issue.lower, 3)))
-            upper = QtWidgets.QLabel(str(round(issue.upper, 3)))
+            lower = QtWidgets.QLabel(str(round(issue.lower, 2)))
+            upper = QtWidgets.QLabel(str(round(issue.upper, 2)))
 
-            checkbox.setObjectName(issue.issue_id)
+            checkbox.setObjectName(issue.name)
             checkbox.stateChanged.connect(self.state_changed)
 
             if (
@@ -72,12 +75,9 @@ class IssueWidget(DynamicFormLayout):
             ):
                 checkbox.setChecked(True)
 
-            info = QtWidgets.QPushButton("values")
-            info.setObjectName(issue.issue_id)
-            info.clicked.connect(self.main_window.update_actor_issue_widget)
-
             self.checkboxes.append(checkbox)
-            self.add_row(checkbox, lower, upper, info)
+
+            self.add_row(checkbox, lower, upper)
 
     def state_changed(self):
         self.main_window.overview_widget.update_widget()
@@ -91,12 +91,12 @@ class ActorWidget(DynamicFormLayout):
     Form layout for customizing the Actor selection
     """
 
-    def set_actors(self, actors: List[base.Actor]):
+    def set_actors(self, actors: List[types.Actor]):
         self.set_values(actors)
 
         for actor in actors:
-            checkbox = QtWidgets.QCheckBox(str(actor))
-            checkbox.setObjectName(actor.actor_id)
+            checkbox = QtWidgets.QCheckBox(str(actor.fullname))
+            checkbox.setObjectName(actor.id)
 
             if (
                     actor in self.main_window.settings.selected_actors
@@ -117,22 +117,25 @@ class ActorWidget(DynamicFormLayout):
 
 
 class ActorIssueWidget(DynamicFormLayout):
-    def set_actor_issues(self, issue: base.Issue, actor_issues=List[base.ActorIssue]):
+
+    def __init__(self, *args, **kwargs):
+        super(ActorIssueWidget, self).__init__(*args, **kwargs)
+
+    def set_actor_issues(self, actor_issues=List[types.ActorIssue]):
         self.set_values(actor_issues)
 
-        self.add_row(QtWidgets.QLabel(str(issue)))
-
-        heading = ["Actor", "Position", "Salience", "Power"]
+        heading = ["Issue", "Actor", "Position", "Salience", "Power"]
 
         self.add_row(*[QtWidgets.QLabel(x) for x in heading])
 
         for actor_issue in actor_issues:
+            issue = QtWidgets.QLabel(str(actor_issue.issue))
             actor = QtWidgets.QLabel(str(actor_issue.actor))
             position = QtWidgets.QLabel(str(round(actor_issue.position, 2)))
             salience = QtWidgets.QLabel(str(actor_issue.salience))
             power = QtWidgets.QLabel(str(actor_issue.power))
 
-            self.add_row(actor, position, salience, power)
+            self.add_row(issue, actor, position, salience, power)
 
 
 class SummaryWidget(DynamicFormLayout):
@@ -158,9 +161,7 @@ class SummaryWidget(DynamicFormLayout):
         self.clear()
 
         self.add_text_row("Input", self.settings.input_filename, self.test_callback)
-        self.add_text_row(
-            "Output directory", self.settings.output_directory, self.test_callback
-        )
+        self.add_text_row("Output directory", self.settings.output_directory, self.test_callback)
 
         settings = self.main_window.settings  # type: ProgramSettings
         settings_widget = self.main_window.settings_widget  # type: SettingsFormWidget
@@ -216,7 +217,7 @@ class SummaryWidget(DynamicFormLayout):
         self.add_row(QtWidgets.QLabel(label), value_label)
 
     def test_callback(self, link):
-        helpers.open_file(link)
+        utils.open_file_natively(link)
 
 
 class MenuBar(QtWidgets.QMenuBar):

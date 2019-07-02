@@ -1,6 +1,8 @@
 import typesystem
 from typesystem import ValidationError
 
+from decide.model import base
+
 
 class CSVColumn:
     starts_with = None
@@ -56,6 +58,12 @@ class Actor(CSVColumn, typesystem.Schema):
     def __lt__(self, other):
         return self.id < other.id
 
+    def as_model_object(self):
+
+        actor = base.Actor(self.fullname, self.id)
+
+        return actor
+
 
 class Issue(CSVColumn, typesystem.Schema):
     starts_with = "#P"
@@ -87,6 +95,12 @@ class Issue(CSVColumn, typesystem.Schema):
 
         if self.lower > self.upper:
             raise ValidationError(key='interval', text='lower needs to be less then upper')
+
+    def as_model_object(self):
+
+        issue = base.Issue(self.name, self.lower, self.upper)
+
+        return issue
 
 
 class IssuePosition(CSVColumn, typesystem.Schema):

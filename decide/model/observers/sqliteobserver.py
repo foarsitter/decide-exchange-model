@@ -34,6 +34,7 @@ class SQLiteObserver(Observer):
     def before_repetitions(self, repetitions, iterations):
         """
         Create a new data set when needed and add all the actors
+        # TODO the model does not yet exists here....
 
         """
         # create a data set row or find existing one

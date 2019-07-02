@@ -17,7 +17,7 @@ from decide.qt.inputwindow.widgets import (
     PositionWidget,
     SalienceWidget,
 )
-from decide.qt.mainwindow.helpers import show_user_error
+from decide.qt.utils import show_user_error
 
 
 class InputWindow(QtWidgets.QMainWindow):
