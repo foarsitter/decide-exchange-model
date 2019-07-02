@@ -36,8 +36,8 @@ class ErrorGrid(QDialog):
         layout.addWidget(scroll_area)
 
         self.setLayout(layout)
-
-        self.setGeometry(300, 300, 400, 400)
+        self.showMaximized()
+        # self.setGeometry(300, 300, 400, 400)
         self.setWindowTitle("Error reporting tool")
 
         self.init_grid()
