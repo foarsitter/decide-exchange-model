@@ -65,6 +65,9 @@ class ModelFactory:
             model_issue.lower = issue.lower
             model_issue.upper = issue.upper
 
+            model_issue.calculate_delta()
+            model_issue.calculate_step_size()
+
         for actor_issue in filtered_actor_issues:
             model.add_actor_issue(
                 actor=actor_issue.actor,

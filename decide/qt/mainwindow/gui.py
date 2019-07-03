@@ -83,6 +83,7 @@ class Worker(QtCore.QObject):
             for repetition in range(repetitions):
 
                 model = factory(model_klass=EqualGainModel, randomized_value=p)
+                event_handler = init_event_handlers(model, output_directory, settings)
 
                 model_loop = ModelLoop(model, event_handler, repetition)
 
@@ -153,9 +154,10 @@ class DecideMainWindow(QtWidgets.QMainWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.data = ProgramData()  # TODO: rewrite to InputDataFile
+        self.data = ProgramData()
         self.settings = ProgramSettings()
-        self.menu_bar = None
+        self.settings.load()
+        self.menu_bar = MenuBar(self, self)
         self.start = QtWidgets.QPushButton("Start")
 
         self.issue_widget = IssueWidget(self)
@@ -178,12 +180,10 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
         self.load_settings()
 
-        self.init_ui_data()
+        self.init_ui_data(self.settings.input_filename)
 
     def init_ui(self):
         self.statusBar().showMessage("Ready")
-
-        self.menu_bar = MenuBar(self, self)
 
         self.setMenuBar(self.menu_bar)
 
@@ -248,7 +248,6 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         self.setWindowTitle("Decide Exchange Model")
         self.show()
 
-
     def show_debug_dialog(self):
         utils.open_file_natively(log_filename)
 
@@ -285,9 +284,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         if file_name:
             self.statusBar().showMessage("Input file set to {} ".format(file_name))
 
-            self.settings.input_filename = file_name
-
-            self.init_ui_data()
+            self.init_ui_data(file_name)
 
         self.overview_widget.update_widget()
 
@@ -324,9 +321,9 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
         register_app(ex)
 
-    def init_ui_data(self):
+    def init_ui_data(self, file_name):
 
-        if not os.path.isfile(self.settings.input_filename):
+        if not os.path.isfile(file_name):
             show_user_error(self, "Selected file does not exists")
         else:
 
@@ -338,6 +335,10 @@ class DecideMainWindow(QtWidgets.QMainWindow):
                 self.data.issues = data_file.issues
                 self.data.actor_issues = data_file.actor_issues
                 self.update_data_widgets()
+
+                # update the settings
+                self.settings.set_input_filename(file_name)
+                self.settings.save()
             else:
                 show_user_error(
                     self,

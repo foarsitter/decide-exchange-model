@@ -140,6 +140,8 @@ class ProgramSettings(QtCore.QObject):
         self.selected_actors = []
         self.selected_issues = []
 
+        self.recently_opened = []
+
     def settings_file_path(self):
         file_path = os.path.join(decide_base_path, self.settings_file)
 
@@ -148,6 +150,14 @@ class ProgramSettings(QtCore.QObject):
     def save(self):
         if self.settings_type == "xml":
             self._save_xml()
+
+    def set_input_filename(self, value):
+        if value in self.recently_opened:
+            self.recently_opened.remove(value)
+
+        self.recently_opened.insert(0, value)
+
+        self.input_filename = value
 
     def _save_xml(self):
 
@@ -191,8 +201,13 @@ class ProgramSettings(QtCore.QObject):
                 elif isinstance(attr, float):
                     setattr(self, elm.tag, float(elm.text))
                 elif isinstance(attr, list):
+
+                    values = str(elm.text).split(self.settings_list_separator)
+
+                    values = [x.strip() for x in values]
+
                     setattr(
-                        self, elm.tag, str(elm.text).split(self.settings_list_separator)
+                        self, elm.tag, values
                     )
                 else:
                     setattr(self, elm.tag, str(elm.text))

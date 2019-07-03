@@ -39,8 +39,8 @@ class IssueDescription(CSVColumn, typesystem.Schema):
 
 class Actor(CSVColumn, typesystem.Schema):
     starts_with = "#A"
-    id = typesystem.String(max_length=100)
-    fullname = typesystem.String(max_length=100)
+    id = typesystem.String()
+    fullname = typesystem.String()
 
     def __hash__(self):
         return hash(self.id)
@@ -67,8 +67,8 @@ class Actor(CSVColumn, typesystem.Schema):
 
 class Issue(CSVColumn, typesystem.Schema):
     starts_with = "#P"
-    name = typesystem.String(max_length=100)
-    description = typesystem.String(max_length=100)
+    name = typesystem.String()
+    description = typesystem.String()
 
     def __init__(self, *args, **kwargs):
         super(Issue, self).__init__(*args, **kwargs)
@@ -109,7 +109,7 @@ class IssuePosition(CSVColumn, typesystem.Schema):
     """
 
     starts_with = "#M"
-    issue = typesystem.String(max_length=100)
+    issue = typesystem.String()
     position = typesystem.Number()
     description = typesystem.Text()
 
@@ -129,8 +129,8 @@ class ActorIssue(CSVColumn, typesystem.Schema):
     """
 
     starts_with = "#D"
-    actor = typesystem.String(max_length=100)
-    issue = typesystem.String(max_length=100)
+    actor = typesystem.String()
+    issue = typesystem.String()
     position = typesystem.Decimal()
     salience = typesystem.Decimal(minimum=0, maximum=1)
     power = typesystem.Decimal(minimum=0, maximum=1)

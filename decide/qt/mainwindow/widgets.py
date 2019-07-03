@@ -222,6 +222,9 @@ class SummaryWidget(DynamicFormLayout):
 
 class MenuBar(QtWidgets.QMenuBar):
     def __init__(self, main_window, *args, **kwargs):
+        """
+        :type main_window: decide.qt.mainwindow.gui.DecideMainWindow
+        """
         super().__init__(*args, **kwargs)
 
         self.main_window = main_window
@@ -289,6 +292,24 @@ class MenuBar(QtWidgets.QMenuBar):
         error_report_2 = QtWidgets.QAction("Trigger error", self)
         error_report_2.triggered.connect(self.trigger_error)
         debug.addAction(error_report_2)
+
+        self.recently_opened_menu(file_menu)
+
+    def recently_opened_menu(self, menu: QtWidgets.QMenu):
+        print(self.settings.recently_opened)
+
+        sub_menu = QtWidgets.QMenu("Recently opened", menu)
+        menu.addMenu(sub_menu)
+
+        for item in self.settings.recently_opened:
+            action = QtWidgets.QAction(item, self)
+            action.triggered.connect(self.open_input_data)
+            sub_menu.addAction(action)
+
+    def open_input_data(self):
+        sender = self.sender()  # type: QtWidgets.QAction
+
+        self.main_window.init_ui_data(sender.text())
 
     def trigger_error(self):
         raise Exception("Error triggered")
