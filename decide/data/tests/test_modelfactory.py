@@ -6,9 +6,9 @@ from decide.model.equalgain import EqualGainModel
 def test_issue_filter():
     data_file = reader.InputDataFile()
     data_file.parse_rows([
-        [types.Issue.starts_with, 'Issue #1', 'description'],
-        [types.Issue.starts_with, 'Issue #2', 'description'],
-        [types.Issue.starts_with, 'Issue #3', 'description'],
+        [types.PartialIssue.starts_with, 'Issue #1', 'description'],
+        [types.PartialIssue.starts_with, 'Issue #2', 'description'],
+        [types.PartialIssue.starts_with, 'Issue #3', 'description'],
     ])
 
     factory = ModelFactory(data_file, issue_whitelist=['Issue #2', 'Issue #3'])
@@ -20,9 +20,9 @@ def test_issue_filter():
 def test_actor_filter():
     data_file = reader.InputDataFile()
     data_file.parse_rows([
-        [types.Actor.starts_with, 'Actor #1', 'description'],
-        [types.Actor.starts_with, 'Actor #2', 'description'],
-        [types.Actor.starts_with, 'Actor #3', 'description'],
+        [types.PartialActor.starts_with, 'Actor #1', 'description'],
+        [types.PartialActor.starts_with, 'Actor #2', 'description'],
+        [types.PartialActor.starts_with, 'Actor #3', 'description'],
     ])
 
     factory = ModelFactory(data_file, actor_whitelist=['Actor #2', 'Actor #3'])
@@ -49,10 +49,10 @@ def test_actor_issue_filter():
     data = []
 
     for issue in issues:
-        data.append([types.Issue.starts_with, issue, issue])
+        data.append([types.PartialIssue.starts_with, issue, issue])
 
     for actor in actors:
-        data.append([types.Actor.starts_with, actor, actor])
+        data.append([types.PartialActor.starts_with, actor, actor])
 
         for issue in issues:
             data.append([types.ActorIssue.starts_with, actor, issue, 100, 1, 1])

@@ -7,12 +7,12 @@ from typing import List, Dict
 
 import typesystem
 
-from .types import Actor, ActorIssue, Issue, IssuePosition, IssueDescription, Comment
+from .types import PartialActor, ActorIssue, PartialIssue, IssuePosition, IssueDescription, Comment
 
 types = {
-    Actor.starts_with: Actor,
+    PartialActor.starts_with: PartialActor,
     ActorIssue.starts_with: ActorIssue,
-    Issue.starts_with: Issue,
+    PartialIssue.starts_with: PartialIssue,
     IssuePosition.starts_with: IssuePosition,
     IssueDescription.starts_with: IssueDescription,
     Comment.starts_with: Comment,
@@ -72,12 +72,12 @@ class InputDataFile:
         return len(self.errors) == 0
 
     @property
-    def actors(self) -> Dict[str, Actor]:
-        return self.data[Actor]
+    def actors(self) -> Dict[str, PartialActor]:
+        return self.data[PartialActor]
 
     @property
-    def issues(self) -> Dict[str, Issue]:
-        return self.data[Issue]
+    def issues(self) -> Dict[str, PartialIssue]:
+        return self.data[PartialIssue]
 
     @property
     def actor_issues(self) -> Dict[str, ActorIssue]:

@@ -17,7 +17,7 @@ def test_cop2():
 
 def test_validation_error():
     data = [
-        [types.Issue.starts_with, 'Issue', 'Issue description'],
+        [types.PartialIssue.starts_with, 'Issue', 'Issue description'],
         [types.IssuePosition.starts_with, 'Issue', 0, 'Issue position description'],
         [types.IssuePosition.starts_with, 'Issue', 100, 'Issue position description'],
         [types.ActorIssue.starts_with, "Actor", "Issue", 150, 0.5, 0.5, "Comment", "2", ],
@@ -41,7 +41,7 @@ def test_validation_error():
 
 
 def test_hash():
-    issue = types.Issue()
+    issue = types.PartialIssue()
     issue.name = 'x'
 
     data = {issue: issue}
@@ -111,7 +111,7 @@ def test_squash():
 
 
 def test_issue_validate_interval():
-    issue = types.Issue()
+    issue = types.PartialIssue()
     issue.lower = 0
     issue.upper = 100
 
@@ -123,7 +123,7 @@ def test_issue_validate_interval():
 
 
 def test_actor_issue_validate_position():
-    issue = types.Issue()
+    issue = types.PartialIssue()
     issue.lower = 0
     issue.upper = 100
 

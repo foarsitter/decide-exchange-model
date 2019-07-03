@@ -57,7 +57,7 @@ class IssueWidget(DynamicFormLayout):
     Form layout for customizing the Issue selection
     """
 
-    def set_issues(self, issues: List[types.Issue]):
+    def set_issues(self, issues: List[types.PartialIssue]):
         self.set_values(issues)
         self.add_row(QtWidgets.QLabel('Issue'), QtWidgets.QLabel('Lower'), QtWidgets.QLabel('Upper'))
         for issue in issues:
@@ -91,7 +91,7 @@ class ActorWidget(DynamicFormLayout):
     Form layout for customizing the Actor selection
     """
 
-    def set_actors(self, actors: List[types.Actor]):
+    def set_actors(self, actors: List[types.PartialActor]):
         self.set_values(actors)
 
         for actor in actors:

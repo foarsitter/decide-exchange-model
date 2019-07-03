@@ -23,21 +23,21 @@ class ModelFactory:
         self.actor_whitelist = actor_whitelist
         self.issue_whitelist = issue_whitelist
 
-    def filter_actors(self) -> Dict[str, types.Actor]:
+    def filter_actors(self) -> Dict[str, types.PartialActor]:
 
         if not self.actor_whitelist or len(self.actor_whitelist) == 0:
             return self.data_file.actors
 
         return {x: y for x, y in self.data_file.actors.items() if y.id in self.actor_whitelist}
 
-    def filter_issues(self) -> Dict[str, types.Issue]:
+    def filter_issues(self) -> Dict[str, types.PartialIssue]:
 
         if not self.issue_whitelist or len(self.issue_whitelist) == 0:
             return self.data_file.issues
 
         return {x: y for x, y in self.data_file.issues.items() if y.name in self.issue_whitelist}
 
-    def filter_actor_issues(self, actors: Dict[str, types.Actor], issues: Dict[str, types.Issue]):
+    def filter_actor_issues(self, actors: Dict[str, types.PartialActor], issues: Dict[str, types.PartialIssue]):
 
         actor_issues = []
 

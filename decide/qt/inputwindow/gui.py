@@ -3,11 +3,12 @@ import os
 import sys
 
 from PyQt5 import QtWidgets
-from decide.qt.helpers import esc, normalize
 
 from decide import log_filename, input_folder
-from decide.cli import init_model
+from decide.data.modelfactory import ModelFactory
+from decide.data.reader import InputDataFile
 from decide.model.base import ActorIssue
+from decide.model.equalgain import EqualGainModel
 from decide.qt.inputwindow import signals
 from decide.qt.inputwindow.models import IssueInputModel, ActorInputModel
 from decide.qt.inputwindow.widgets import (
@@ -17,7 +18,8 @@ from decide.qt.inputwindow.widgets import (
     PositionWidget,
     SalienceWidget,
 )
-from decide.qt.utils import show_user_error
+from decide.qt.mainwindow.helpers import esc, normalize
+from decide.qt.utils import show_user_error, open_file_natively, exception_hook
 
 
 class InputWindow(QtWidgets.QMainWindow):
@@ -121,11 +123,11 @@ class InputWindow(QtWidgets.QMainWindow):
 
     def load(self, input_filename):
 
-        model = init_model("equal", input_filename, p=0.0)
+        data_file = InputDataFile.open(input_filename)
 
-        csv_parser = csvparser.CsvParser(model)
+        factory = ModelFactory(data_file)
 
-        csv_parser.read(input_filename)
+        model = factory(EqualGainModel)
 
         actor_inputs = {}
 
@@ -222,8 +224,7 @@ class InputWindow(QtWidgets.QMainWindow):
                         )
                     )
 
-        print(filename)
-        open_file(filename)
+        open_file_natively(filename)
 
 
 input_window = None

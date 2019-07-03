@@ -37,7 +37,7 @@ class IssueDescription(CSVColumn, typesystem.Schema):
         return NotImplemented
 
 
-class Actor(CSVColumn, typesystem.Schema):
+class PartialActor(CSVColumn, typesystem.Schema):
     starts_with = "#A"
     id = typesystem.String()
     fullname = typesystem.String()
@@ -50,7 +50,7 @@ class Actor(CSVColumn, typesystem.Schema):
         if isinstance(other, str):
             return self.id == other
 
-        if isinstance(other, Actor):
+        if isinstance(other, PartialActor):
             return self.id == other.id
 
         return NotImplemented
@@ -65,13 +65,20 @@ class Actor(CSVColumn, typesystem.Schema):
         return actor
 
 
-class Issue(CSVColumn, typesystem.Schema):
+class Actor(PartialActor):
+    power = typesystem.Float(minimum=0, maximum=1)
+
+
+class PartialIssue(CSVColumn, typesystem.Schema):
+    """
+    An issue as referenced in the csv data file
+    """
     starts_with = "#P"
     name = typesystem.String()
-    description = typesystem.String()
+    description = typesystem.String(allow_blank=True)
 
     def __init__(self, *args, **kwargs):
-        super(Issue, self).__init__(*args, **kwargs)
+        super(PartialIssue, self).__init__(*args, **kwargs)
         self.lower = None
         self.upper = None
 
@@ -83,7 +90,7 @@ class Issue(CSVColumn, typesystem.Schema):
         if isinstance(other, str):
             return self.name == other
 
-        if isinstance(other, Issue):
+        if isinstance(other, PartialIssue):
             return self.name == other.name
 
         return NotImplemented
@@ -103,6 +110,16 @@ class Issue(CSVColumn, typesystem.Schema):
         return issue
 
 
+class Issue(PartialIssue):
+    """
+    An issue from the InputWindow
+    """
+    name = typesystem.String()
+    upper = typesystem.Float()
+    lower = typesystem.Float()
+    comment = typesystem.String(allow_blank=True)
+
+
 class IssuePosition(CSVColumn, typesystem.Schema):
     """
     #M;Issue ID;position;meaning;
@@ -117,7 +134,7 @@ class IssuePosition(CSVColumn, typesystem.Schema):
         return hash(self.issue)
 
     def __eq__(self, other):
-        if isinstance(other, Issue):
+        if isinstance(other, PartialIssue):
             return self.issue == other.issue and self.position == other.position
 
         return NotImplemented
@@ -144,7 +161,7 @@ class ActorIssue(CSVColumn, typesystem.Schema):
 
     def __eq__(self, other):
 
-        if isinstance(other, Issue):
+        if isinstance(other, PartialIssue):
             return self.__str__() == other.__str__()
 
         return NotImplemented
@@ -152,7 +169,7 @@ class ActorIssue(CSVColumn, typesystem.Schema):
     def __lt__(self, other):
         return self.issue.__lt__(other.issue)
 
-    def validate_position(self, issue: Issue):
+    def validate_position(self, issue: PartialIssue):
 
         issue.validate_interval()
 

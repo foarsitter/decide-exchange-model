@@ -3,7 +3,6 @@ from decimal import Decimal
 
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtWidgets import QListWidgetItem
-from decide.qt.helpers import DoubleInput, clear_layout, normalize
 
 from decide.model.base import ActorIssue
 from decide.qt.inputwindow import signals
@@ -12,6 +11,7 @@ from decide.qt.inputwindow.models import (
     IssueInputModel,
     ActorIssueInputModel,
 )
+from decide.qt.mainwindow.helpers import DoubleInput, clear_layout, normalize
 
 
 class BoxLayout(QtWidgets.QGroupBox):
@@ -119,6 +119,8 @@ class ActorWidget(BoxLayout):
         power_input.setValue(power)
         power_input.valueChanged.connect(actor_input.set_power)
 
+        actor_input.widgets['power'] = power_input
+
         return power_input
 
     def add_comment_button(self):
@@ -133,6 +135,8 @@ class ActorWidget(BoxLayout):
         name_input = QtWidgets.QLineEdit()
         name_input.setText(name)
         name_input.textChanged.connect(actor_input.set_name)
+
+        actor_input.widgets['id'] = name_input
 
         return name_input
 
@@ -243,6 +247,10 @@ class IssueWidget(BoxLayout):
         lower_input.valueChanged.connect(issue_input.set_lower)
         upper_input.valueChanged.connect(issue_input.set_upper)
 
+        issue_input.widgets['name'] = name_input
+        issue_input.widgets['lower'] = lower_input
+        issue_input.widgets['upper'] = upper_input
+
         comment_button = self.add_comment_button()
         delete_button = self.add_delete_button()
 
@@ -342,9 +350,7 @@ class ActorIssueWidget(BoxLayout):
         self.items[actor.id][issue.id] = actor_issue_input
 
         if actor_issue:
-            actor_issue_input.set_position(
-                actor_issue.issue.de_normalize(actor_issue.position), silence=True
-            )
+            actor_issue_input.set_position(actor_issue.issue.de_normalize(actor_issue.position), silence=True)
             actor_issue_input.set_salience(actor_issue.salience, silence=True)
             actor_issue_input.set_power(actor_issue.power, silence=True)
 
@@ -483,11 +489,13 @@ class PositionWidget(PositionSalienceWidget):
     def add_heading(self):
         self.add_row("Issue", "Actor", "Power", "Position")
 
-    def draw_actor_issue(self, actor_issue):
+    def draw_actor_issue(self, actor_issue: ActorIssueInputModel):
         if self.is_selected(actor_issue.issue.name):
             position = DoubleInput()
             position.setValue(actor_issue.position)
             position.valueChanged.connect(actor_issue.set_position)
+
+            actor_issue.widgets['position'] = position
 
             self.add_row(
                 QtWidgets.QLabel(actor_issue.issue.name),
