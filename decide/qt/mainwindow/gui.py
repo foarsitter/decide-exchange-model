@@ -327,7 +327,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
             show_user_error(self, "Selected file does not exists")
         else:
 
-            data_file = InputDataFile.open(self.settings.input_filename)
+            data_file = InputDataFile.open(file_name)
 
             if data_file.is_valid:
 
