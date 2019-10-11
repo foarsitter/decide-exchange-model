@@ -6,8 +6,6 @@ from PyQt5 import QtWidgets
 def clear_layout(layout):
     """
     Clear al the widgets recursively
-    :param layout:
-    :return:
     """
     if layout is not None:
         while layout.count():
@@ -20,6 +18,9 @@ def clear_layout(layout):
 
 
 class DoubleInput(QtWidgets.QLineEdit):
+    """
+    Helper for double inputs
+    """
     def __init__(self):
         super(DoubleInput, self).__init__()
 
@@ -28,6 +29,10 @@ class DoubleInput(QtWidgets.QLineEdit):
     def setValue(self, value: Decimal):
         if isinstance(value, Decimal):
             value = str(float(value.normalize()))
+        if isinstance(value, int):
+            value = str(value)
+        if isinstance(value, float):
+            value = str(value)
 
         self.setText(value)
 
@@ -37,10 +42,16 @@ class DoubleInput(QtWidgets.QLineEdit):
 
 
 def esc(value):
+    """
+    Escape function used for writing csv files with strings
+    """
     return "'{}'".format(value)
 
 
 def normalize(value):
+    """
+    Normalize a decimal or float to string, used for writing csv files and the input window
+    """
 
     if isinstance(value, Decimal):
         # float converts exponential values to readable values

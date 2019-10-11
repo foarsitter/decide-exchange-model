@@ -13,6 +13,10 @@ class SettingsFormWidget(QtWidgets.QFormLayout):
     """
 
     def __init__(self, settings, main_window, *args, **kwargs):
+        """
+        :type settings: decide.qt.mainwindow.settings.ProgramSettings
+        :type main_window: decide.qt.mainwindow.gui.DecideMainWindow
+        """
         super().__init__(*args, **kwargs)
 
         self.settings = settings

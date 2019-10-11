@@ -12,6 +12,9 @@ from decide.qt.utils import exception_hook
 
 
 class ErrorGrid(QDialog):
+    """
+    Visualisation of the input file in a dialog to inform the user of the errors a input file has
+    """
     def __init__(self, data_file: InputDataFile, *args, **kwargs):
         super(ErrorGrid, self).__init__(*args, **kwargs)
 

@@ -259,10 +259,14 @@ class MenuBar(QtWidgets.QMenuBar):
         open_action = QtWidgets.QAction("&Open", self)
         open_action.triggered.connect(self.main_window.open_input_data)
 
+        edit_action = QtWidgets.QAction("&Edit input data", self)
+        edit_action.triggered.connect(self.main_window.open_current_input_window_with_current_data)
+
         save_settings = QtWidgets.QAction("&Save settings", self)
         save_settings.triggered.connect(self.main_window.save_settings)
 
         file_menu.addAction(open_action)
+        file_menu.addAction(edit_action)
         file_menu.addAction(save_settings)
         file_menu.addSeparator()
         file_menu.addAction(self.open_data_view)

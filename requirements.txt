@@ -9,4 +9,5 @@ requests
 blinker
 typesystem
 pytest
+pytest-qt
 psycopg2

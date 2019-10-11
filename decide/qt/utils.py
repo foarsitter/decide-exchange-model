@@ -6,6 +6,8 @@ import traceback
 
 from PyQt5 import QtWidgets
 
+from decide.qt import app
+
 
 def open_file_natively(path):
     if sys.platform.startswith("darwin"):
@@ -24,14 +26,9 @@ def exception_hook(exctype, ex, _traceback):
     tb_text = exception_to_string(ex)
     logging.exception(tb_text)
 
-    print(tb_text)
-
-    app = QtWidgets.QApplication(sys.argv)
-    app.setQuitOnLastWindowClosed(True)
-
     from decide.qt.mainwindow.errordialog import ErrorDialog
 
-    error_dialog = ErrorDialog(tb_text)
+    error_dialog = ErrorDialog(tb_text, parent=app)
     sys.exit(error_dialog.exec_())
 
 

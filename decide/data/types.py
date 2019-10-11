@@ -6,7 +6,7 @@ from decide.model import base
 
 class CSVColumn:
     starts_with = None
-    comment = typesystem.Text(allow_null=True)
+    comment = typesystem.Text(allow_null=True, allow_blank=True)
 
 
 class Comment(CSVColumn, typesystem.Schema):
@@ -75,7 +75,9 @@ class PartialIssue(CSVColumn, typesystem.Schema):
     """
     starts_with = "#P"
     name = typesystem.String()
-    description = typesystem.String(allow_blank=True)
+    description = typesystem.Text(
+        allow_blank=True, allow_null=True
+    )
 
     def __init__(self, *args, **kwargs):
         super(PartialIssue, self).__init__(*args, **kwargs)
@@ -128,7 +130,7 @@ class IssuePosition(CSVColumn, typesystem.Schema):
     starts_with = "#M"
     issue = typesystem.String()
     position = typesystem.Number()
-    description = typesystem.Text()
+    description = typesystem.Text(allow_blank=True, allow_null=True)
 
     def __hash__(self):
         return hash(self.issue)

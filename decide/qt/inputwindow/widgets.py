@@ -4,7 +4,7 @@ from decimal import Decimal
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtWidgets import QListWidgetItem
 
-from decide.model.base import ActorIssue
+from decide.data.types import ActorIssue
 from decide.qt.inputwindow import signals
 from decide.qt.inputwindow.models import (
     ActorInputModel,
@@ -42,14 +42,14 @@ class BoxLayout(QtWidgets.QGroupBox):
 
         self.setLayout(self.layout_container)
 
-        self.items = {}
+        self.actor_issues = {}
 
         self._row_pointer = 0
 
     def clear(self):
         clear_layout(self.grid_layout)
 
-        self.items = {}
+        self.actor_issues = {}
         self._row_pointer = 0
 
     def add_heading(self):
@@ -78,9 +78,9 @@ class BoxLayout(QtWidgets.QGroupBox):
 
         row = int(sending_button.objectName().split("-")[-1])
 
-        obj = self.items[row]
+        obj = self.actor_issues[row]
 
-        del self.items[row]
+        del self.actor_issues[row]
 
         for column in range(self.grid_layout.count()):
 
@@ -153,7 +153,7 @@ class ActorWidget(BoxLayout):
         delete_button = self.add_delete_button()
         comment_button = self.add_comment_button()
 
-        self.items[actor_input.id] = actor_input
+        self.actor_issues[actor_input.id] = actor_input
 
         self.add_row(name_input, power_input, comment_button, delete_button)
 
@@ -181,7 +181,7 @@ class ActorWidget(BoxLayout):
 
         row = int(sending_button.objectName().split("-")[-1])
 
-        obj = self.items[row]
+        obj = self.actor_issues[row]
 
         text, ok_pressed = QtWidgets.QInputDialog.getMultiLineText(
             self, "Comment", "Comment", obj.comment
@@ -254,7 +254,7 @@ class IssueWidget(BoxLayout):
         comment_button = self.add_comment_button()
         delete_button = self.add_delete_button()
 
-        self.items[issue_input.id] = issue_input
+        self.actor_issues[issue_input.id] = issue_input
 
         self.add_row(
             name_input, lower_input, upper_input, comment_button, delete_button
@@ -277,7 +277,7 @@ class IssueWidget(BoxLayout):
 
         row = int(sending_button.objectName().split("-")[-1])
 
-        obj = self.items[row]
+        obj = self.actor_issues[row]
 
         text, ok_pressed = QtWidgets.QInputDialog.getMultiLineText(
             self, "Comment", "Comment", obj.comment
@@ -301,14 +301,14 @@ class ActorIssueWidget(BoxLayout):
         self.actor_box = actor_box
         self.issue_box = issue_box
 
-        self.items = defaultdict(lambda: dict())
+        self.actor_issues = defaultdict(lambda: dict())
 
         self.actors = set()
         self.issues = set()
 
     def clear(self):
         super(ActorIssueWidget, self).clear()
-        self.items = defaultdict(lambda: dict())
+        self.actor_issues = defaultdict(lambda: dict())
 
         self.actors = set()
         self.issues = set()
@@ -317,24 +317,24 @@ class ActorIssueWidget(BoxLayout):
         if row in self.actors:
             self.actors.remove(row)
 
-            for issue in self.issue_box.items.values():
-                if row.id in self.items and issue.id in self.items[row.id]:
-                    del self.items[row.id][issue.id]
+            for issue in self.issue_box.actor_issues.values():
+                if row.id in self.actor_issues and issue.id in self.actor_issues[row.id]:
+                    del self.actor_issues[row.id][issue.id]
 
     def delete_issue(self, row):
         if row in self.issues:
             self.issues.remove(row)
-            for actor in self.actor_box.items.values():
-                del self.items[actor.id][row.id]
+            for actor in self.actor_box.actor_issues.values():
+                del self.actor_issues[actor.id][row.id]
 
     def add_issue(self, value):
         self.issues.add(value)
-        for actor in self.actor_box.items.values():
+        for actor in self.actor_box.actor_issues.values():
             self.add_actor_issue(actor, value)
 
     def add_actor(self, value):
         self.actors.add(value)
-        for issue in self.issue_box.items.values():
+        for issue in self.issue_box.actor_issues.values():
             self.add_actor_issue(value, issue)
 
     def add_actor_issue(
@@ -347,10 +347,10 @@ class ActorIssueWidget(BoxLayout):
         actor_issue_input = ActorIssueInputModel(actor, issue)
         actor_issue_input.id = self._row_pointer
 
-        self.items[actor.id][issue.id] = actor_issue_input
+        self.actor_issues[actor.id][issue.id] = actor_issue_input
 
         if actor_issue:
-            actor_issue_input.set_position(actor_issue.issue.de_normalize(actor_issue.position), silence=True)
+            actor_issue_input.set_position(actor_issue.position, silence=True)
             actor_issue_input.set_salience(actor_issue.salience, silence=True)
             actor_issue_input.set_power(actor_issue.power, silence=True)
 
@@ -423,10 +423,10 @@ class PositionSalienceWidget(QtWidgets.QWidget):
             for actor in self.actor_issue_box.actors:
 
                 if (
-                        actor.id in self.actor_issue_box.items
-                        and issue.id in self.actor_issue_box.items[actor.id]
+                        actor.id in self.actor_issue_box.actor_issues
+                        and issue.id in self.actor_issue_box.actor_issues[actor.id]
                 ):
-                    actor_issue = self.actor_issue_box.items[actor.id][
+                    actor_issue = self.actor_issue_box.actor_issues[actor.id][
                         issue.id
                     ]  # type: ActorIssueInputModel
 

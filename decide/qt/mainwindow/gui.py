@@ -26,6 +26,9 @@ from decide.qt.utils import show_user_error
 
 
 class Worker(QtCore.QObject):
+    """
+    Worker to execute the model in a thread so the window does not freeze
+    """
     finished = QtCore.pyqtSignal(str, int)
     update = QtCore.pyqtSignal(int, int, float)
 
@@ -67,8 +70,6 @@ class Worker(QtCore.QObject):
                 model_name='equal',
                 output_dir=settings.output_directory,
             )
-
-            from decide.qt.mainwindow.gui import init_event_handlers
 
             # Todo, find a fix (a proxy or something)
             model = factory(model_klass=EqualGainModel, randomized_value=p)
@@ -114,7 +115,7 @@ class Worker(QtCore.QObject):
 
 class ProgramData(QtCore.QObject):
     """
-    The data used for displaying
+    Central object for the data used for displaying
     """
 
     changed = QtCore.pyqtSignal()
@@ -151,6 +152,10 @@ def init_event_handlers(model, output_directory, settings):
 
 
 class DecideMainWindow(QtWidgets.QMainWindow):
+    """
+    The first thing you see
+    """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -282,11 +287,24 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         file_name, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Select input data")
 
         if file_name:
-            self.statusBar().showMessage("Input file set to {} ".format(file_name))
+            self.load_input_data(file_name)
 
-            self.init_ui_data(file_name)
+    def load_input_data(self, file_name):
+
+        self.statusBar().showMessage("Input file set to {} ".format(file_name))
+
+        self.init_ui_data(file_name)
 
         self.overview_widget.update_widget()
+
+    def open_current_input_window_with_current_data(self):
+
+        from decide.qt.inputwindow.gui import InputWindow, register_app
+
+        ex = InputWindow(self)
+        ex.load(self.settings.input_filename)
+
+        register_app(ex)
 
     def select_output_dir(self):
         """
@@ -477,13 +495,14 @@ def main():
         format=" %(asctime)s - %(levelname)s - %(message)s",
     )
 
+    qtapp = QtWidgets.QApplication(sys.argv)
+    qtapp.setQuitOnLastWindowClosed(True)
+
+    app = DecideMainWindow()
+
     sys.excepthook = utils.exception_hook
-    app = QtWidgets.QApplication(sys.argv)
-    app.setQuitOnLastWindowClosed(True)
 
-    decide = DecideMainWindow()
-
-    sys.exit(app.exec_())
+    sys.exit(qtapp.exec_())
 
 
 if __name__ == "__main__":

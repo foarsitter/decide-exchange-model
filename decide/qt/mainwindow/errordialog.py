@@ -7,9 +7,13 @@ from PyQt5.QtWidgets import QMessageBox, QDialog
 
 from decide import log_filename
 from decide.qt.mainwindow.settings import ProgramSettings
+from decide.qt.utils import exception_hook
 
 
 class ErrorDialog(QDialog):
+    """
+    Dialog to send error information to me
+    """
     def __init__(self, message="", *args, **kwargs):
         super(ErrorDialog, self).__init__(*args, **kwargs)
 

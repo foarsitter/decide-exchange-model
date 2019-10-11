@@ -23,8 +23,6 @@ class BaseInputModel:
         self.reset_state()
         self.validation_result = self.type.validate_or_error(self.as_dict())
 
-        print(self.validation_result)
-
         if self.validation_result.error:
             self.handle_error()
             return False
