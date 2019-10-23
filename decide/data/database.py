@@ -1,6 +1,7 @@
 import datetime
 
 import peewee
+from playhouse.db_url import connect
 
 connection = peewee.DatabaseProxy()
 
@@ -188,8 +189,9 @@ class Manager:
         self.database_path = database_path
 
     def init_database(self):
-        # connection.init(self.database_path)
-        pass
+        global connection
+        db = connect(self.database_path)
+        connection.initialize(db)
 
     def create_tables(self):
         connection.create_tables(self.tables, safe=True)

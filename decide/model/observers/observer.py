@@ -121,6 +121,11 @@ class Observable(Observer):
         self.model_ref = model_ref
         self.output_directory = output_directory
 
+    def update_model_ref(self, model):
+        self.model_ref = model
+        for observer in self.__observers:
+            observer.model_ref = model
+
     def register(self, observer):
         self.__observers.append(observer)
 

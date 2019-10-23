@@ -71,7 +71,6 @@ class Worker(QtCore.QObject):
                 output_dir=settings.output_directory,
             )
 
-            # Todo, find a fix (a proxy or something)
             model = factory(model_klass=EqualGainModel, randomized_value=p)
 
             event_handler = init_event_handlers(model, output_directory, settings)
@@ -84,7 +83,8 @@ class Worker(QtCore.QObject):
             for repetition in range(repetitions):
 
                 model = factory(model_klass=EqualGainModel, randomized_value=p)
-                event_handler = init_event_handlers(model, output_directory, settings)
+
+                event_handler.update_model_ref(model)
 
                 model_loop = ModelLoop(model, event_handler, repetition)
 

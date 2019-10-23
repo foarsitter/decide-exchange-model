@@ -112,12 +112,17 @@ class Actor:
             self.actor_id = name
 
     def __eq__(self, other):
+
+        from decide.data.database import Actor as ModelActor
+
         if isinstance(other, str):
             return self.actor_id == str(other)
         if isinstance(other, int):
             return self.__hash__() == other
         if isinstance(other, Actor):
             return self.actor_id == other.actor_id
+        if isinstance(other, ModelActor):
+            return self.actor_id == other.key
         if not other:
             return False
         raise NotImplementedError()

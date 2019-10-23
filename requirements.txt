@@ -11,3 +11,4 @@ typesystem
 pytest
 pytest-qt
 psycopg2
+pandas

@@ -570,6 +570,9 @@ class EqualGainModel(base.AbstractModel):
     def __init__(self, randomized_value=None):
         super().__init__()
 
+        if isinstance(randomized_value, str):
+            randomized_value = decimal.Decimal(randomized_value)
+
         self.randomized_value = randomized_value
 
         self.model_name = "equal"

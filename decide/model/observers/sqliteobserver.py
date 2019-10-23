@@ -27,6 +27,9 @@ class SQLiteObserver(Observer):
             output_directory += "/decide-data_1.db"
             print("logging to database {}".format(output_directory))
 
+        if not output_directory.startswith('sqlite:///'):
+            output_directory = "sqlite:///" + output_directory
+
         self.manager = db.Manager(output_directory)
         self.manager.init_database()
         self.manager.create_tables()
@@ -34,13 +37,11 @@ class SQLiteObserver(Observer):
     def before_repetitions(self, repetitions, iterations):
         """
         Create a new data set when needed and add all the actors
-        # TODO the model does not yet exists here....
 
         """
         # create a data set row or find existing one
         # add the Issues and Actors when they are not present
         with db.connection.atomic():
-            model = self.model_ref
 
             data_set, created = db.DataSet.get_or_create(
                 name=self.model_ref.data_set_name
@@ -54,13 +55,13 @@ class SQLiteObserver(Observer):
                 data_set=data_set,
             )
 
-            for actor in model.actors.values():  # type: Actor
+            for actor in self.model_ref.actors.values():  # type: Actor
                 actor, created = db.Actor.get_or_create(
                     name=actor.name, key=actor.actor_id, data_set=data_set
                 )
                 self.actors[actor] = actor
 
-            for issue in model.issues.values():  # type: Issue
+            for issue in self.model_ref.issues.values():  # type: Issue
                 issue, created = db.Issue.get_or_create(
                     name=issue.name,
                     key=issue.issue_id,
