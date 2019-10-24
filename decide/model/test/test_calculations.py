@@ -7,23 +7,10 @@ from decide.model import calculations, base
 from decide.model.equalgain import EqualGainModel, EqualGainExchange
 
 
-# def setUp():
-#     self.model = EqualGainModel()
-#
-#     filename = os.path.join(
-#         os.path.dirname(os.path.realpath(__file__)),
-#         "../../../data/input/sample_data.txt",
-#     )
-#
-#     csv = csvparser.CsvParser(self.model)
-#     csv.read(filename=filename)
-
-
 class TestModel:
-
-    def __init__(self):
-        pass
-
+    """
+    Object tit populate with test data
+    """
 
 @pytest.fixture
 def test_model():

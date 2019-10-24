@@ -7,22 +7,21 @@ before_install:
 - sudo apt-get install libsqlite3-dev
 - sudo apt-get install build-essential
 - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-- bash miniconda.sh -b -p $HOME/miniconda
-- export PATH="$HOME/miniconda/bin:$PATH"
-- hash -r
-- conda update --yes -q conda
+- bash miniconda.sh -b -p $HOME/minicondacoverage run -m pytest
 - conda config --set always_yes true
 - conda config --set anaconda_upload no
 - conda config --add channels conda-forge
 install:
 - conda install -q python=$TRAVIS_PYTHON_VERSION ncurses pip requests conda-build
-  jinja2 anaconda-client nose Cython peewee
+  jinja2 anaconda-client pytest Cython peewee
 - pip install Cython
 - pip install 'peewee>=3.0'
 - pip install -r requirements.txt
 - pip install codecov 'coverage==4.3' codeclimate-test-reporter
 script:
-- nosetests --with-coverage --cover-erase --cover-package=decide --cover-inclusive
+  - coverage run -m pytest
+  - coverage report -m pytest
+# - pytest --with-coverage --cover-erase --cover-package=decide --cover-inclusive
 after_success:
 - bash <(curl -s https://codecov.io/bash)
 - CODECLIMATE_REPO_TOKEN=38338f4be02599584d9d3672ed50c25ca2b24c0a9565bfbb000e6a1389f13700
