@@ -42,7 +42,7 @@
 #M	kleine-of-grote-ring	75	Voor grote ring		
 #M	kleine-of-grote-ring	100	Sterk voor grote ring		
 #/	actor	issue	position	salience	power
-#D	Willemsx	tolheffing-binnenstad	100	0.95	1
+#D	Willems	tolheffing-binnenstad	100	0.95	1
 #D	PvdA	tolheffing-binnenstad	50	0.8	1
 #D	GL	tolheffing-binnenstad	100	0.95	0.6
 #D	VVD	tolheffing-binnenstad	0	0.9	0.5
