@@ -1,33 +1,33 @@
-'#A'	'USA'	'USA'	'<typesystem.fields.Text object at 0x7f716ece0080>'	
-'#A'	'EU (incl Norway)'	'EU (incl Norway)'	'<typesystem.fields.Text object at 0x7f716ece0080>'	
-'#A'	'Australia'	'Australia'	'<typesystem.fields.Text object at 0x7f716ece0080>'	
-'#A'	'Canada'	'Canada'	'<typesystem.fields.Text object at 0x7f716ece0080>'	
-'#A'	'Japan'	'Japan'	'<typesystem.fields.Text object at 0x7f716ece0080>'	
-'#A'	'Russia'	'Russia'	'<typesystem.fields.Text object at 0x7f716ece0080>'	
-'#A'	'China India'	'China India'	'<typesystem.fields.Text object at 0x7f716ece0080>'	
-'#A'	'Brazil'	'Brazil'	'<typesystem.fields.Text object at 0x7f716ece0080>'	
-'#A'	'Least Developed Countries'	'Least Developed Countries'	'<typesystem.fields.Text object at 0x7f716ece0080>'	
-'#A'	'Developing Countries'	'Developing Countries'	'<typesystem.fields.Text object at 0x7f716ece0080>'	
-'#A'	'Alliance of Small Island States'	'Alliance of Small Island States'	'<typesystem.fields.Text object at 0x7f716ece0080>'	
-'#P'	'Newtreaty'	'Newtreaty'	'<typesystem.fields.Text object at 0x7f716ece0080>'	
+'#A'	'USA'	'USA'	'<typesystem.fields.Text object at 0x7f90e45a2438>'	
+'#A'	'EU (incl Norway)'	'EU (incl Norway)'	'<typesystem.fields.Text object at 0x7f90e45a2438>'	
+'#A'	'Australia'	'Australia'	'<typesystem.fields.Text object at 0x7f90e45a2438>'	
+'#A'	'Canadas'	'Canadas'	'<typesystem.fields.Text object at 0x7f90e45a2438>'	
+'#A'	'Japans'	'Japans'	'<typesystem.fields.Text object at 0x7f90e45a2438>'	
+'#A'	'Russia'	'Russia'	'<typesystem.fields.Text object at 0x7f90e45a2438>'	
+'#A'	'China India'	'China India'	'<typesystem.fields.Text object at 0x7f90e45a2438>'	
+'#A'	'Brazil'	'Brazil'	'<typesystem.fields.Text object at 0x7f90e45a2438>'	
+'#A'	'Least Developed Countries'	'Least Developed Countries'	'<typesystem.fields.Text object at 0x7f90e45a2438>'	
+'#A'	'Developing Countries'	'Developing Countries'	'<typesystem.fields.Text object at 0x7f90e45a2438>'	
+'#A'	'Alliance of Small Island States'	'Alliance of Small Island States'	'<typesystem.fields.Text object at 0x7f90e45a2438>'	
+'#P'	'Newtreaty'	'Newtreaty'	'<typesystem.fields.Text object at 0x7f90e45a2438>'	
 '#M'	'Newtreaty'	0	
 '#M'	'Newtreaty'	100	
-'#P'	'DevlopC2020'	'DevlopC2020'	'<typesystem.fields.Text object at 0x7f716ece0080>'	
+'#P'	'DevlopC2020'	'DevlopC2020'	'<typesystem.fields.Text object at 0x7f90e45a2438>'	
 '#M'	'DevlopC2020'	0	
 '#M'	'DevlopC2020'	100	
-'#P'	'Domestred'	'Domestred'	'<typesystem.fields.Text object at 0x7f716ece0080>'	
+'#P'	'Domestred'	'Domestred'	'<typesystem.fields.Text object at 0x7f90e45a2438>'	
 '#M'	'Domestred'	0	
 '#M'	'Domestred'	100	
-'#P'	'MRVdecrease'	'MRVdecrease'	'<typesystem.fields.Text object at 0x7f716ece0080>'	
+'#P'	'MRVdecrease'	'MRVdecrease'	'<typesystem.fields.Text object at 0x7f90e45a2438>'	
 '#M'	'MRVdecrease'	0	
 '#M'	'MRVdecrease'	100	
-'#P'	'Commitments'	'Commitments'	'<typesystem.fields.Text object at 0x7f716ece0080>'	
+'#P'	'Commitments'	'Commitments'	'<typesystem.fields.Text object at 0x7f90e45a2438>'	
 '#M'	'Commitments'	0	
 '#M'	'Commitments'	100	
-'#P'	'Control'	'Control'	'<typesystem.fields.Text object at 0x7f716ece0080>'	
+'#P'	'Control'	'Control'	'<typesystem.fields.Text object at 0x7f90e45a2438>'	
 '#M'	'Control'	0	
 '#M'	'Control'	100	
-'#P'	'Extra'	'Extra'	'<typesystem.fields.Text object at 0x7f716ece0080>'	
+'#P'	'Extra'	'Extra'	'<typesystem.fields.Text object at 0x7f90e45a2438>'	
 '#M'	'Extra'	0	
 '#M'	'Extra'	100	
 '#D'	'USA'	'Newtreaty'	10.0	0.9	0.26	
@@ -51,20 +51,20 @@
 '#D'	'Australia'	'Commitments'	20.0	0.4	0.026	
 '#D'	'Australia'	'Control'	40.0	0.5	0.026	
 '#D'	'Australia'	'Extra'	25.0	0.4	0.026	
-'#D'	'Canada'	'Newtreaty'	10.0	0.8	0.039	
-'#D'	'Canada'	'DevlopC2020'	30.0	0.8	0.039	
-'#D'	'Canada'	'Domestred'	30.0	0.6	0.039	
-'#D'	'Canada'	'MRVdecrease'	70.0	0.5	0.039	
-'#D'	'Canada'	'Commitments'	10.0	0.4	0.039	
-'#D'	'Canada'	'Control'	60.0	0.5	0.039	
-'#D'	'Canada'	'Extra'	25.0	0.4	0.039	
-'#D'	'Japan'	'Newtreaty'	50.0	0.6	0.052	
-'#D'	'Japan'	'DevlopC2020'	50.0	0.6	0.052	
-'#D'	'Japan'	'Domestred'	20.0	0.6	0.052	
-'#D'	'Japan'	'MRVdecrease'	70.0	0.5	0.052	
-'#D'	'Japan'	'Commitments'	20.0	0.2	0.052	
-'#D'	'Japan'	'Control'	20.0	0.4	0.052	
-'#D'	'Japan'	'Extra'	40.0	0.4	0.052	
+'#D'	'Canadas'	'Newtreaty'	10.0	0.8	0.039	
+'#D'	'Canadas'	'DevlopC2020'	30.0	0.8	0.039	
+'#D'	'Canadas'	'Domestred'	30.0	0.6	0.039	
+'#D'	'Canadas'	'MRVdecrease'	70.0	0.5	0.039	
+'#D'	'Canadas'	'Commitments'	10.0	0.4	0.039	
+'#D'	'Canadas'	'Control'	60.0	0.5	0.039	
+'#D'	'Canadas'	'Extra'	25.0	0.4	0.039	
+'#D'	'Japans'	'Newtreaty'	50.0	0.6	0.052	
+'#D'	'Japans'	'DevlopC2020'	50.0	0.6	0.052	
+'#D'	'Japans'	'Domestred'	20.0	0.6	0.052	
+'#D'	'Japans'	'MRVdecrease'	70.0	0.5	0.052	
+'#D'	'Japans'	'Commitments'	20.0	0.2	0.052	
+'#D'	'Japans'	'Control'	20.0	0.4	0.052	
+'#D'	'Japans'	'Extra'	40.0	0.4	0.052	
 '#D'	'Russia'	'Newtreaty'	90.0	0.7	0.013	
 '#D'	'Russia'	'DevlopC2020'	60.0	0.6	0.013	
 '#D'	'Russia'	'Domestred'	0.0	0.9	0.013	
