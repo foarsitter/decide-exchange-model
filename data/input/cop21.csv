@@ -1,0 +1,235 @@
+'#A'	'African_grp'	'African_grp'	'<typesystem.fields.Text object at 0x7f48377c6f60>'
+'#A'	'AILAC2'	'AILAC2'	'<typesystem.fields.Text object at 0x7f48377c6f60>'
+'#A'	'AOSIS'	'AOSIS'	'<typesystem.fields.Text object at 0x7f48377c6f60>'
+'#A'	'ALBA'	'ALBA'	'<typesystem.fields.Text object at 0x7f48377c6f60>'
+'#A'	'Arab_statess'	'Arab_statess'	'<typesystem.fields.Text object at 0x7f48377c6f60>'
+'#A'	'LDCs_BGD'	'LDCs_BGD'	'<typesystem.fields.Text object at 0x7f48377c6f60>'
+'#A'	'Brazil'	'Brazil'	'<typesystem.fields.Text object at 0x7f48377c6f60>'
+'#A'	'China'	'China'	'<typesystem.fields.Text object at 0x7f48377c6f60>'
+'#A'	'EIG'	'EIG'	'<typesystem.fields.Text object at 0x7f48377c6f60>'
+'#A'	'EU28'	'EU28'	'<typesystem.fields.Text object at 0x7f48377c6f60>'
+'#A'	'India'	'India'	'<typesystem.fields.Text object at 0x7f48377c6f60>'
+'#A'	'Umbrella_min'	'Umbrella_min'	'<typesystem.fields.Text object at 0x7f48377c6f60>'
+'#A'	'Japan'	'Japan'	'<typesystem.fields.Text object at 0x7f48377c6f60>'
+'#A'	'Russia'	'Russia'	'<typesystem.fields.Text object at 0x7f48377c6f60>'
+'#A'	'USA'	'USA'	'<typesystem.fields.Text object at 0x7f48377c6f60>'
+'#P'	'differentiation'	'differentiation'	'<typesystem.fields.Text object at 0x7f48377c6f60>'
+'#M'	'differentiation'	0
+'#M'	'differentiation'	100
+'#P'	'mrv'	'mrv'	'<typesystem.fields.Text object at 0x7f48377c6f60>'
+'#M'	'mrv'	0
+'#M'	'mrv'	100
+'#P'	'legal'	'legal'	'<typesystem.fields.Text object at 0x7f48377c6f60>'
+'#M'	'legal'	0
+'#M'	'legal'	100
+'#P'	'adapt_legal'	'adapt_legal'	'<typesystem.fields.Text object at 0x7f48377c6f60>'
+'#M'	'adapt_legal'	0
+'#M'	'adapt_legal'	100
+'#P'	'adapt_inst'	'adapt_inst'	'<typesystem.fields.Text object at 0x7f48377c6f60>'
+'#M'	'adapt_inst'	0
+'#M'	'adapt_inst'	100
+'#P'	'finance_vol'	'finance_vol'	'<typesystem.fields.Text object at 0x7f48377c6f60>'
+'#M'	'finance_vol'	0
+'#M'	'finance_vol'	100
+'#P'	'finance_who'	'finance_who'	'<typesystem.fields.Text object at 0x7f48377c6f60>'
+'#M'	'finance_who'	0
+'#M'	'finance_who'	100
+'#P'	'adapt_finance'	'adapt_finance'	'<typesystem.fields.Text object at 0x7f48377c6f60>'
+'#M'	'adapt_finance'	0
+'#M'	'adapt_finance'	100
+'#P'	'ld'	'ld'	'<typesystem.fields.Text object at 0x7f48377c6f60>'
+'#M'	'ld'	0
+'#M'	'ld'	100
+'#P'	'progress'	'progress'	'<typesystem.fields.Text object at 0x7f48377c6f60>'
+'#M'	'progress'	0
+'#M'	'progress'	100
+'#P'	'amb2050'	'amb2050'	'<typesystem.fields.Text object at 0x7f48377c6f60>'
+'#M'	'amb2050'	0
+'#M'	'amb2050'	100
+'#P'	'amb2100'	'amb2100'	'<typesystem.fields.Text object at 0x7f48377c6f60>'
+'#M'	'amb2100'	0
+'#M'	'amb2100'	100
+'#P'	'eaa'	'eaa'	'<typesystem.fields.Text object at 0x7f48377c6f60>'
+'#M'	'eaa'	0
+'#M'	'eaa'	100
+'#D'	'African_grp'	'differentiation'	70.0	0.75	0.25
+'#D'	'African_grp'	'mrv'	50.0	0.65	0.25
+'#D'	'African_grp'	'legal'	80.0	0.6	0.25
+'#D'	'African_grp'	'adapt_legal'	80.0	0.7	0.25
+'#D'	'African_grp'	'adapt_inst'	90.0	0.7	0.25
+'#D'	'African_grp'	'finance_vol'	100.0	0.8	0.25
+'#D'	'African_grp'	'finance_who'	0.0	0.5	0.25
+'#D'	'African_grp'	'adapt_finance'	100.0	0.8	0.25
+'#D'	'African_grp'	'ld'	70.0	0.75	0.25
+'#D'	'African_grp'	'progress'	100.0	0.75	0.25
+'#D'	'African_grp'	'amb2050'	100.0	0.6	0.25
+'#D'	'African_grp'	'amb2100'	90.0	0.6	0.25
+'#D'	'African_grp'	'eaa'	100.0	0.55	0.25
+'#D'	'AILAC2'	'differentiation'	50.0	0.6	0.35
+'#D'	'AILAC2'	'mrv'	85.0	0.75	0.35
+'#D'	'AILAC2'	'legal'	50.0	0.75	0.35
+'#D'	'AILAC2'	'adapt_legal'	80.0	0.8	0.35
+'#D'	'AILAC2'	'adapt_inst'	80.0	0.9	0.35
+'#D'	'AILAC2'	'finance_vol'	20.0	0.55	0.35
+'#D'	'AILAC2'	'finance_who'	60.0	0.3	0.35
+'#D'	'AILAC2'	'adapt_finance'	100.0	0.85	0.35
+'#D'	'AILAC2'	'ld'	75.0	0.6	0.35
+'#D'	'AILAC2'	'progress'	80.0	0.7	0.35
+'#D'	'AILAC2'	'amb2050'	90.0	0.7	0.35
+'#D'	'AILAC2'	'amb2100'	90.0	0.7	0.35
+'#D'	'AILAC2'	'eaa'	100.0	0.45	0.35
+'#D'	'ALBA'	'differentiation'	80.0	0.65	0.05
+'#D'	'ALBA'	'mrv'	0.0	0.4	0.05
+'#D'	'ALBA'	'legal'	70.0	0.3	0.05
+'#D'	'ALBA'	'adapt_legal'	80.0	0.6	0.05
+'#D'	'ALBA'	'adapt_inst'	70.0	0.6	0.05
+'#D'	'ALBA'	'finance_vol'	100.0	0.9	0.05
+'#D'	'ALBA'	'finance_who'	0.0	0.8	0.05
+'#D'	'ALBA'	'adapt_finance'	100.0	0.65	0.05
+'#D'	'ALBA'	'ld'	100.0	0.65	0.05
+'#D'	'ALBA'	'progress'	0.0	0.6	0.05
+'#D'	'ALBA'	'eaa'	0.0	0.55	0.05
+'#D'	'AOSIS'	'differentiation'	40.0	0.6	0.5
+'#D'	'AOSIS'	'mrv'	80.0	0.75	0.5
+'#D'	'AOSIS'	'legal'	100.0	0.8	0.5
+'#D'	'AOSIS'	'adapt_legal'	70.0	0.7	0.5
+'#D'	'AOSIS'	'adapt_inst'	80.0	0.85	0.5
+'#D'	'AOSIS'	'finance_vol'	100.0	0.85	0.5
+'#D'	'AOSIS'	'finance_who'	60.0	0.5	0.5
+'#D'	'AOSIS'	'adapt_finance'	100.0	0.9	0.5
+'#D'	'AOSIS'	'ld'	100.0	0.9	0.5
+'#D'	'AOSIS'	'progress'	100.0	0.85	0.5
+'#D'	'AOSIS'	'amb2050'	100.0	0.8	0.5
+'#D'	'AOSIS'	'amb2100'	90.0	0.85	0.5
+'#D'	'AOSIS'	'eaa'	100.0	0.65	0.5
+'#D'	'Arab_statess'	'differentiation'	100.0	0.75	0.4
+'#D'	'Arab_statess'	'mrv'	0.0	0.55	0.4
+'#D'	'Arab_statess'	'legal'	0.0	0.5	0.4
+'#D'	'Arab_statess'	'adapt_legal'	80.0	0.8	0.4
+'#D'	'Arab_statess'	'adapt_inst'	30.0	0.85	0.4
+'#D'	'Arab_statess'	'finance_vol'	100.0	0.35	0.4
+'#D'	'Arab_statess'	'finance_who'	0.0	0.9	0.4
+'#D'	'Arab_statess'	'adapt_finance'	50.0	0.8	0.4
+'#D'	'Arab_statess'	'ld'	20.0	0.6	0.4
+'#D'	'Arab_statess'	'progress'	0.0	0.8	0.4
+'#D'	'Arab_statess'	'eaa'	0.0	0.6	0.4
+'#D'	'LDCs_BGD'	'differentiation'	60.0	0.6	0.5	
+'#D'	'LDCs_BGD'	'mrv'	70.0	0.7	0.5	
+'#D'	'LDCs_BGD'	'legal'	100.0	0.75	0.5	
+'#D'	'LDCs_BGD'	'adapt_legal'	80.0	0.8	0.5	
+'#D'	'LDCs_BGD'	'adapt_inst'	90.0	0.85	0.5	
+'#D'	'LDCs_BGD'	'finance_vol'	100.0	0.85	0.5	
+'#D'	'LDCs_BGD'	'finance_who'	60.0	0.9	0.5	
+'#D'	'LDCs_BGD'	'adapt_finance'	100.0	0.9	0.5	
+'#D'	'LDCs_BGD'	'ld'	90.0	0.95	0.5	
+'#D'	'LDCs_BGD'	'progress'	100.0	0.85	0.5	
+'#D'	'LDCs_BGD'	'amb2050'	80.0	0.8	0.5	
+'#D'	'LDCs_BGD'	'amb2100'	100.0	0.85	0.5	
+'#D'	'LDCs_BGD'	'eaa'	90.0	0.45	0.5	
+'#D'	'Brazil'	'differentiation'	80.0	0.8	0.7	
+'#D'	'Brazil'	'mrv'	50.0	0.55	0.7	
+'#D'	'Brazil'	'legal'	50.0	0.5	0.7	
+'#D'	'Brazil'	'adapt_legal'	40.0	0.3	0.7	
+'#D'	'Brazil'	'adapt_inst'	70.0	0.4	0.7	
+'#D'	'Brazil'	'finance_vol'	50.0	0.45	0.7	
+'#D'	'Brazil'	'finance_who'	0.0	0.7	0.7	
+'#D'	'Brazil'	'adapt_finance'	50.0	0.5	0.7	
+'#D'	'Brazil'	'ld'	50.0	0.55	0.7	
+'#D'	'Brazil'	'progress'	30.0	0.7	0.7	
+'#D'	'Brazil'	'eaa'	90.0	0.35	0.7	
+'#D'	'China'	'differentiation'	80.0	0.75	1.0	
+'#D'	'China'	'mrv'	0.0	0.8	1.0	
+'#D'	'China'	'legal'	20.0	0.65	1.0	
+'#D'	'China'	'adapt_legal'	50.0	0.3	1.0	
+'#D'	'China'	'adapt_inst'	60.0	0.6	1.0	
+'#D'	'China'	'finance_vol'	100.0	0.5	1.0	
+'#D'	'China'	'finance_who'	0.0	0.8	1.0	
+'#D'	'China'	'adapt_finance'	50.0	0.55	1.0	
+'#D'	'China'	'ld'	50.0	0.7	1.0	
+'#D'	'China'	'progress'	0.0	0.8	1.0	
+'#D'	'China'	'eaa'	0.0	0.65	1.0	
+'#D'	'EIG'	'differentiation'	40.0	0.75	0.35	
+'#D'	'EIG'	'mrv'	85.0	0.8	0.35	
+'#D'	'EIG'	'legal'	100.0	0.75	0.35	
+'#D'	'EIG'	'adapt_legal'	40.0	0.3	0.35	
+'#D'	'EIG'	'adapt_inst'	60.0	0.7	0.35	
+'#D'	'EIG'	'finance_vol'	20.0	0.5	0.35	
+'#D'	'EIG'	'finance_who'	60.0	0.3	0.35	
+'#D'	'EIG'	'adapt_finance'	40.0	0.75	0.35	
+'#D'	'EIG'	'ld'	20.0	0.85	0.35	
+'#D'	'EIG'	'progress'	80.0	0.75	0.35	
+'#D'	'EIG'	'amb2050'	65.0	0.75	0.35	
+'#D'	'EIG'	'amb2100'	80.0	0.7	0.35	
+'#D'	'EIG'	'eaa'	100.0	0.45	0.35	
+'#D'	'EU28'	'differentiation'	30.0	0.75	0.75	
+'#D'	'EU28'	'mrv'	100.0	0.8	0.75	
+'#D'	'EU28'	'legal'	100.0	0.7	0.75	
+'#D'	'EU28'	'adapt_legal'	40.0	0.3	0.75	
+'#D'	'EU28'	'adapt_inst'	50.0	0.6	0.75	
+'#D'	'EU28'	'finance_vol'	0.0	0.65	0.75	
+'#D'	'EU28'	'finance_who'	80.0	0.8	0.75	
+'#D'	'EU28'	'adapt_finance'	40.0	0.6	0.75	
+'#D'	'EU28'	'ld'	20.0	0.85	0.75	
+'#D'	'EU28'	'progress'	65.0	0.8	0.75	
+'#D'	'EU28'	'amb2050'	65.0	0.75	0.75	
+'#D'	'EU28'	'amb2100'	80.0	0.5	0.75	
+'#D'	'EU28'	'eaa'	100.0	0.5	0.75	
+'#D'	'India'	'differentiation'	90.0	0.75	0.6	
+'#D'	'India'	'mrv'	0.0	0.55	0.6	
+'#D'	'India'	'legal'	20.0	0.7	0.6	
+'#D'	'India'	'adapt_legal'	70.0	0.5	0.6	
+'#D'	'India'	'adapt_inst'	90.0	0.7	0.6	
+'#D'	'India'	'finance_vol'	100.0	0.65	0.6	
+'#D'	'India'	'finance_who'	0.0	0.7	0.6	
+'#D'	'India'	'adapt_finance'	100.0	0.75	0.6	
+'#D'	'India'	'ld'	90.0	0.6	0.6	
+'#D'	'India'	'progress'	0.0	0.8	0.6	
+'#D'	'India'	'eaa'	0.0	0.6	0.6	
+'#D'	'Umbrella_min'	'differentiation'	25.0	0.9	0.4	
+'#D'	'Umbrella_min'	'mrv'	70.0	0.7	0.4	
+'#D'	'Umbrella_min'	'legal'	70.0	0.75	0.4	
+'#D'	'Umbrella_min'	'adapt_legal'	40.0	0.2	0.4	
+'#D'	'Umbrella_min'	'adapt_inst'	40.0	0.5	0.4	
+'#D'	'Umbrella_min'	'finance_vol'	0.0	0.65	0.4	
+'#D'	'Umbrella_min'	'finance_who'	80.0	0.8	0.4	
+'#D'	'Umbrella_min'	'adapt_finance'	30.0	0.75	0.4	
+'#D'	'Umbrella_min'	'ld'	20.0	0.85	0.4	
+'#D'	'Umbrella_min'	'progress'	50.0	0.65	0.4	
+'#D'	'Umbrella_min'	'eaa'	60.0	0.4	0.4	
+'#D'	'Japan'	'differentiation'	25.0	0.9	0.6	
+'#D'	'Japan'	'mrv'	100.0	0.7	0.6	
+'#D'	'Japan'	'legal'	70.0	0.65	0.6	
+'#D'	'Japan'	'adapt_legal'	40.0	0.3	0.6	
+'#D'	'Japan'	'adapt_inst'	40.0	0.6	0.6	
+'#D'	'Japan'	'finance_vol'	0.0	0.65	0.6	
+'#D'	'Japan'	'finance_who'	80.0	0.5	0.6	
+'#D'	'Japan'	'adapt_finance'	30.0	0.75	0.6	
+'#D'	'Japan'	'ld'	0.0	0.85	0.6	
+'#D'	'Japan'	'progress'	50.0	0.65	0.6	
+'#D'	'Japan'	'amb2050'	60.0	0.6	0.6	
+'#D'	'Japan'	'amb2100'	70.0	0.4	0.6	
+'#D'	'Japan'	'eaa'	60.0	0.4	0.6	
+'#D'	'Russia'	'differentiation'	15.0	0.8	0.6	
+'#D'	'Russia'	'mrv'	50.0	0.45	0.6	
+'#D'	'Russia'	'legal'	50.0	0.5	0.6	
+'#D'	'Russia'	'adapt_legal'	0.0	0.2	0.6	
+'#D'	'Russia'	'adapt_inst'	0.0	0.4	0.6	
+'#D'	'Russia'	'finance_vol'	0.0	0.5	0.6	
+'#D'	'Russia'	'finance_who'	0.0	0.3	0.6	
+'#D'	'Russia'	'adapt_finance'	0.0	0.3	0.6	
+'#D'	'Russia'	'ld'	0.0	0.3	0.6	
+'#D'	'Russia'	'progress'	30.0	0.3	0.6	
+'#D'	'Russia'	'eaa'	0.0	0.3	0.6	
+'#D'	'USA'	'differentiation'	20.0	0.95	1.0	
+'#D'	'USA'	'mrv'	70.0	0.7	1.0	
+'#D'	'USA'	'legal'	40.0	1.0	1.0	
+'#D'	'USA'	'adapt_legal'	30.0	0.2	1.0	
+'#D'	'USA'	'adapt_inst'	40.0	0.5	1.0	
+'#D'	'USA'	'finance_vol'	0.0	0.7	1.0	
+'#D'	'USA'	'finance_who'	80.0	0.5	1.0	
+'#D'	'USA'	'adapt_finance'	0.0	0.7	1.0	
+'#D'	'USA'	'ld'	0.0	0.9	1.0	
+'#D'	'USA'	'progress'	40.0	0.65	1.0	
+'#D'	'USA'	'amb2050'	30.0	0.6	1.0	
+'#D'	'USA'	'amb2100'	80.0	0.4	1.0	
+'#D'	'USA'	'eaa'	100.0	0.4	1.0	
