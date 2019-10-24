@@ -6,9 +6,9 @@ import xml.etree.cElementTree as ET
 
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
-
 from decide import log_filename
 from decide.cli import init_output_directory, float_range
+from decide.data.database import connection
 from decide.data.modelfactory import ModelFactory
 from decide.data.reader import InputDataFile
 from decide.model.equalgain import EqualGainModel
@@ -23,6 +23,7 @@ from decide.qt.mainwindow.settings import ProgramSettings
 from decide.qt.mainwindow.settings import SettingsFormWidget
 from decide.qt.mainwindow.widgets import ActorWidget, IssueWidget, SummaryWidget, ActorIssueWidget, MenuBar
 from decide.qt.utils import show_user_error
+from decide.results import externalities
 
 
 class Worker(QtCore.QObject):
@@ -65,6 +66,8 @@ class Worker(QtCore.QObject):
             issue_whitelist=settings.selected_issues,
         )
 
+        model_run_ids = []
+
         for p in p_values:
 
             output_directory = init_output_directory(
@@ -76,6 +79,12 @@ class Worker(QtCore.QObject):
             model = factory(model_klass=EqualGainModel, randomized_value=p)
 
             event_handler = init_event_handlers(model, output_directory, settings)
+
+            if settings.output_sqlite:
+                sql_observer = SQLiteObserver(event_handler, settings.output_directory)
+            else:
+                sql_observer = None
+
             event_handler.before_repetitions(
                 repetitions=repetitions, iterations=iterations
             )
@@ -109,7 +118,17 @@ class Worker(QtCore.QObject):
 
             event_handler.after_repetitions()
 
+            if sql_observer:
+                model_run_ids.append(sql_observer.model_run.id)
+
             self.finished.emit(output_directory, model.tie_count)
+
+        if len(model_run_ids) > 0:
+            externalities.write_summary_result(
+                conn=connection,
+                model_run_ids=model_run_ids,
+                output_directory=init_output_directory(settings.output_directory, data_set_name),
+            )
 
     def stop(self):
         self.break_loop = True
@@ -137,9 +156,6 @@ def init_event_handlers(model, output_directory, settings):
     """
 
     event_handler = Observable(model_ref=model, output_directory=output_directory)
-
-    if settings.output_sqlite:
-        SQLiteObserver(event_handler, settings.output_directory)
 
     if settings.externalities_csv:
         Externalities(event_handler, settings)

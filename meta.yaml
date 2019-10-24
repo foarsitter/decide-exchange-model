@@ -15,7 +15,7 @@ build:
   number: 0
   entry_points:
     - decide-cli=decide.cli:main
-    - decide-gui=decide.qt.mainwindow:main
+    - decide-gui=decide.qt:main
   script: python setup.py install --single-version-externally-managed --record=record.txt
 
 requirements:
