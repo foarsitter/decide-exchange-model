@@ -29,7 +29,7 @@ install:
   - pip install -r requirements.txt
   - pip install codecov 'coverage==4.3' codeclimate-test-reporter
 script:
-  - coverage run -m pytest
+  - coverage run -m pytest --ignore=decide/qt
 after_success:
   - bash <(curl -s https://codecov.io/bash)
   - CODECLIMATE_REPO_TOKEN=38338f4be02599584d9d3672ed50c25ca2b24c0a9565bfbb000e6a1389f13700
