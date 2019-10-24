@@ -89,8 +89,8 @@ def init_event_handlers(model, output_directory, database_file, write_csv=True):
     return event_handler
 
 
-def init_output_directory(data_set_name, model_name, output_dir):
-    output_directory = os.path.join(output_dir, data_set_name, model_name)
+def init_output_directory(*args):
+    output_directory = os.path.join(*args)
 
     if not os.path.isdir(output_directory):
         os.makedirs(output_directory)

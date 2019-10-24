@@ -12,3 +12,4 @@ pytest
 pytest-qt
 psycopg2
 pandas
+environs==6.0.0

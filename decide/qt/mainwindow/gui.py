@@ -57,6 +57,8 @@ class Worker(QtCore.QObject):
 
         input_filename = settings.input_filename
 
+        data_set_name = os.path.splitext(os.path.basename(input_filename))[0]
+
         factory = ModelFactory(
             date_file=InputDataFile.open(input_filename),
             actor_whitelist=settings.selected_actors,
@@ -66,9 +68,9 @@ class Worker(QtCore.QObject):
         for p in p_values:
 
             output_directory = init_output_directory(
-                data_set_name='x',
-                model_name='equal',
-                output_dir=settings.output_directory,
+                settings.output_directory,
+                data_set_name,
+                p,
             )
 
             model = factory(model_klass=EqualGainModel, randomized_value=p)

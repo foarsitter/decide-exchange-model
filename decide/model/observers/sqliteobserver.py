@@ -3,9 +3,11 @@ from collections import defaultdict
 from typing import List
 
 from decide.data import database as db
+from decide.data.database import connection
 from decide.model import calculations
 from decide.model.base import AbstractExchange, Actor, Issue, AbstractExchangeActor
 from decide.model.observers.observer import Observer, Observable
+from decide import results
 
 
 class SQLiteObserver(Observer):
@@ -114,6 +116,8 @@ class SQLiteObserver(Observer):
     def after_repetitions(self):
         self.model_run.finished_at = datetime.datetime.now()
         self.model_run.save()
+
+        results.covariance.write_result(connection, self.model_run.id, self.output_directory)
 
     def _write_externalities(
         self, exchange: AbstractExchange, db_exchange: db.Exchange
