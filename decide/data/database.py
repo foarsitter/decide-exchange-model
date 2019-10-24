@@ -1,25 +1,16 @@
 import datetime
 
 import peewee
+from playhouse.db_url import connect
 
-try:
-    # try to use the Cython version
-    from playhouse.sqlite_ext import CSqliteExtDatabase
-
-    connection = CSqliteExtDatabase(
-        None,
-        c_extensions=True,
-        pragmas=(
-            ("cache_size", -1024 * 1024),  # 64MB page-cache.
-            ("journal_mode", "wal"),  # Use WAL-mode (you should always use this!).
-        ),
-    )
-except:
-    connection = peewee.SqliteDatabase("decide")
+connection = peewee.DatabaseProxy()
 
 
 class DictionaryIndexMixin:
     hash_field = "id"
+
+    def __init__(self, *args, **kwargs):
+        super(DictionaryIndexMixin, self).__init__(*args, **kwargs)
 
     def __hash__(self):
         return hash(self.get_hash_field())
@@ -67,7 +58,7 @@ class Issue(DictionaryIndexMixin, BaseModel):
     lower = peewee.DecimalField()
     upper = peewee.DecimalField()
 
-    data_set = peewee.ForeignKeyField(DataSet)
+    data_set = peewee.ForeignKeyField(DataSet, on_delete="CASCADE")
 
     hash_field = "key"
 
@@ -80,7 +71,7 @@ class ModelRun(BaseModel):
     iterations = peewee.IntegerField()
     repetitions = peewee.IntegerField()
 
-    data_set = peewee.ForeignKeyField(DataSet)
+    data_set = peewee.ForeignKeyField(DataSet, on_delete="CASCADE")
 
 
 class Repetition(DictionaryIndexMixin, BaseModel):
@@ -92,7 +83,7 @@ class Repetition(DictionaryIndexMixin, BaseModel):
 
     hash_field = "pointer"
 
-    model_run = peewee.ForeignKeyField(ModelRun)
+    model_run = peewee.ForeignKeyField(ModelRun, on_delete="CASCADE")
 
 
 class Iteration(DictionaryIndexMixin, BaseModel):
@@ -101,7 +92,7 @@ class Iteration(DictionaryIndexMixin, BaseModel):
     """
 
     pointer = peewee.IntegerField()
-    repetition = peewee.ForeignKeyField(Repetition)
+    repetition = peewee.ForeignKeyField(Repetition, on_delete="CASCADE")
 
     hash_field = "pointer"
 
@@ -111,14 +102,15 @@ class ActorIssue(BaseModel):
     Snapshot of a position of an actor on an issue
     """
 
-    issue = peewee.ForeignKeyField(Issue)
-    actor = peewee.ForeignKeyField(Actor)
+    issue = peewee.ForeignKeyField(Issue, on_delete="CASCADE")
+
+    actor = peewee.ForeignKeyField(Actor, on_delete="CASCADE")
 
     power = peewee.DecimalField(max_digits=20, decimal_places=15)
     position = peewee.DecimalField(max_digits=20, decimal_places=15)
     salience = peewee.DecimalField(max_digits=20, decimal_places=15)
 
-    iteration = peewee.ForeignKeyField(Iteration)
+    iteration = peewee.ForeignKeyField(Iteration, on_delete="CASCADE")
 
     type = peewee.CharField(choices=("before", "after"), default="before")
 
@@ -129,9 +121,10 @@ class ActorIssue(BaseModel):
 
 
 class ExchangeActor(BaseModel):
-    actor = peewee.ForeignKeyField(Actor)
-    supply_issue = peewee.ForeignKeyField(Issue)
-    demand_issue = peewee.ForeignKeyField(Issue)
+    actor = peewee.ForeignKeyField(Actor, on_delete="CASCADE")
+    supply_issue = peewee.ForeignKeyField(Issue, on_delete="CASCADE")
+
+    demand_issue = peewee.ForeignKeyField(Issue, on_delete="CASCADE")
 
     x = peewee.DecimalField(max_digits=20, decimal_places=15)  # begin position
     y = peewee.DecimalField(max_digits=20, decimal_places=15)  # end position
@@ -142,7 +135,7 @@ class ExchangeActor(BaseModel):
     demand_position = peewee.DecimalField(max_digits=20, decimal_places=15)
 
     # shortcut
-    other_actor = peewee.ForeignKeyField("self", null=True)
+    other_actor = peewee.ForeignKeyField("self", null=True, on_delete="CASCADE")
 
     @property
     def move(self):
@@ -150,19 +143,20 @@ class ExchangeActor(BaseModel):
 
 
 class Exchange(BaseModel):
-    i = peewee.ForeignKeyField(ExchangeActor)
-    j = peewee.ForeignKeyField(ExchangeActor)
+    i = peewee.ForeignKeyField(ExchangeActor, on_delete="CASCADE")
 
-    iteration = peewee.ForeignKeyField(Iteration)
+    j = peewee.ForeignKeyField(ExchangeActor, on_delete="CASCADE")
+
+    iteration = peewee.ForeignKeyField(Iteration, on_delete="CASCADE")
 
 
 class Externality(BaseModel):
-    actor = peewee.ForeignKeyField(Actor)
+    actor = peewee.ForeignKeyField(Actor, on_delete="CASCADE")
 
-    exchange = peewee.ForeignKeyField(Exchange)
+    exchange = peewee.ForeignKeyField(Exchange, on_delete="CASCADE")
 
-    supply = peewee.ForeignKeyField(Issue)
-    demand = peewee.ForeignKeyField(Issue)
+    supply = peewee.ForeignKeyField(Issue, on_delete="CASCADE")
+    demand = peewee.ForeignKeyField(Issue, on_delete="CASCADE")
 
     own = peewee.DecimalField(max_digits=20, decimal_places=15, null=True)
     inner_positive = peewee.DecimalField(max_digits=20, decimal_places=15, null=True)
@@ -195,7 +189,9 @@ class Manager:
         self.database_path = database_path
 
     def init_database(self):
-        connection.init(self.database_path)
+        global connection
+        db = connect(self.database_path)
+        connection.initialize(db)
 
     def create_tables(self):
         connection.create_tables(self.tables, safe=True)

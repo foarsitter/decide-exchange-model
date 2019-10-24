@@ -5,3 +5,4 @@ decide-settings.xml
 venv/
 *.log
 .coverage
+.env

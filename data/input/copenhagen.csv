@@ -1,0 +1,107 @@
+'#A'	'USA'	'USA'	'<typesystem.fields.Text object at 0x7f716ece0080>'	
+'#A'	'EU (incl Norway)'	'EU (incl Norway)'	'<typesystem.fields.Text object at 0x7f716ece0080>'	
+'#A'	'Australia'	'Australia'	'<typesystem.fields.Text object at 0x7f716ece0080>'	
+'#A'	'Canada'	'Canada'	'<typesystem.fields.Text object at 0x7f716ece0080>'	
+'#A'	'Japan'	'Japan'	'<typesystem.fields.Text object at 0x7f716ece0080>'	
+'#A'	'Russia'	'Russia'	'<typesystem.fields.Text object at 0x7f716ece0080>'	
+'#A'	'China India'	'China India'	'<typesystem.fields.Text object at 0x7f716ece0080>'	
+'#A'	'Brazil'	'Brazil'	'<typesystem.fields.Text object at 0x7f716ece0080>'	
+'#A'	'Least Developed Countries'	'Least Developed Countries'	'<typesystem.fields.Text object at 0x7f716ece0080>'	
+'#A'	'Developing Countries'	'Developing Countries'	'<typesystem.fields.Text object at 0x7f716ece0080>'	
+'#A'	'Alliance of Small Island States'	'Alliance of Small Island States'	'<typesystem.fields.Text object at 0x7f716ece0080>'	
+'#P'	'Newtreaty'	'Newtreaty'	'<typesystem.fields.Text object at 0x7f716ece0080>'	
+'#M'	'Newtreaty'	0	
+'#M'	'Newtreaty'	100	
+'#P'	'DevlopC2020'	'DevlopC2020'	'<typesystem.fields.Text object at 0x7f716ece0080>'	
+'#M'	'DevlopC2020'	0	
+'#M'	'DevlopC2020'	100	
+'#P'	'Domestred'	'Domestred'	'<typesystem.fields.Text object at 0x7f716ece0080>'	
+'#M'	'Domestred'	0	
+'#M'	'Domestred'	100	
+'#P'	'MRVdecrease'	'MRVdecrease'	'<typesystem.fields.Text object at 0x7f716ece0080>'	
+'#M'	'MRVdecrease'	0	
+'#M'	'MRVdecrease'	100	
+'#P'	'Commitments'	'Commitments'	'<typesystem.fields.Text object at 0x7f716ece0080>'	
+'#M'	'Commitments'	0	
+'#M'	'Commitments'	100	
+'#P'	'Control'	'Control'	'<typesystem.fields.Text object at 0x7f716ece0080>'	
+'#M'	'Control'	0	
+'#M'	'Control'	100	
+'#P'	'Extra'	'Extra'	'<typesystem.fields.Text object at 0x7f716ece0080>'	
+'#M'	'Extra'	0	
+'#M'	'Extra'	100	
+'#D'	'USA'	'Newtreaty'	10.0	0.9	0.26	
+'#D'	'USA'	'DevlopC2020'	10.0	0.8	0.26	
+'#D'	'USA'	'Domestred'	10.0	0.75	0.26	
+'#D'	'USA'	'MRVdecrease'	90.0	1.0	0.26	
+'#D'	'USA'	'Commitments'	10.0	0.8	0.26	
+'#D'	'USA'	'Control'	10.0	0.6	0.26	
+'#D'	'USA'	'Extra'	10.0	0.6	0.26	
+'#D'	'EU (incl Norway)'	'Newtreaty'	50.0	0.4	0.156	
+'#D'	'EU (incl Norway)'	'DevlopC2020'	70.0	0.9	0.156	
+'#D'	'EU (incl Norway)'	'Domestred'	50.0	0.8	0.156	
+'#D'	'EU (incl Norway)'	'MRVdecrease'	70.0	0.5	0.156	
+'#D'	'EU (incl Norway)'	'Commitments'	20.0	0.2	0.156	
+'#D'	'EU (incl Norway)'	'Control'	50.0	0.75	0.156	
+'#D'	'EU (incl Norway)'	'Extra'	50.0	0.4	0.156	
+'#D'	'Australia'	'Newtreaty'	20.0	0.4	0.026	
+'#D'	'Australia'	'DevlopC2020'	50.0	0.5	0.026	
+'#D'	'Australia'	'Domestred'	30.0	0.6	0.026	
+'#D'	'Australia'	'MRVdecrease'	80.0	0.6	0.026	
+'#D'	'Australia'	'Commitments'	20.0	0.4	0.026	
+'#D'	'Australia'	'Control'	40.0	0.5	0.026	
+'#D'	'Australia'	'Extra'	25.0	0.4	0.026	
+'#D'	'Canada'	'Newtreaty'	10.0	0.8	0.039	
+'#D'	'Canada'	'DevlopC2020'	30.0	0.8	0.039	
+'#D'	'Canada'	'Domestred'	30.0	0.6	0.039	
+'#D'	'Canada'	'MRVdecrease'	70.0	0.5	0.039	
+'#D'	'Canada'	'Commitments'	10.0	0.4	0.039	
+'#D'	'Canada'	'Control'	60.0	0.5	0.039	
+'#D'	'Canada'	'Extra'	25.0	0.4	0.039	
+'#D'	'Japan'	'Newtreaty'	50.0	0.6	0.052	
+'#D'	'Japan'	'DevlopC2020'	50.0	0.6	0.052	
+'#D'	'Japan'	'Domestred'	20.0	0.6	0.052	
+'#D'	'Japan'	'MRVdecrease'	70.0	0.5	0.052	
+'#D'	'Japan'	'Commitments'	20.0	0.2	0.052	
+'#D'	'Japan'	'Control'	20.0	0.4	0.052	
+'#D'	'Japan'	'Extra'	40.0	0.4	0.052	
+'#D'	'Russia'	'Newtreaty'	90.0	0.7	0.013	
+'#D'	'Russia'	'DevlopC2020'	60.0	0.6	0.013	
+'#D'	'Russia'	'Domestred'	0.0	0.9	0.013	
+'#D'	'Russia'	'MRVdecrease'	30.0	0.1	0.013	
+'#D'	'Russia'	'Control'	60.0	0.1	0.013	
+'#D'	'China India'	'Newtreaty'	100.0	0.9	0.247	
+'#D'	'China India'	'DevlopC2020'	70.0	0.8	0.247	
+'#D'	'China India'	'Domestred'	10.0	0.9	0.247	
+'#D'	'China India'	'MRVdecrease'	10.0	1.0	0.247	
+'#D'	'China India'	'Commitments'	85.0	0.7	0.247	
+'#D'	'China India'	'Control'	75.0	0.75	0.247	
+'#D'	'China India'	'Extra'	90.0	0.85	0.247	
+'#D'	'Brazil'	'Newtreaty'	100.0	0.5	0.026	
+'#D'	'Brazil'	'DevlopC2020'	70.0	0.8	0.026	
+'#D'	'Brazil'	'Domestred'	20.0	0.75	0.026	
+'#D'	'Brazil'	'MRVdecrease'	15.0	0.9	0.026	
+'#D'	'Brazil'	'Commitments'	70.0	0.3	0.026	
+'#D'	'Brazil'	'Control'	75.0	0.75	0.026	
+'#D'	'Brazil'	'Extra'	70.0	0.6	0.026	
+'#D'	'Least Developed Countries'	'Newtreaty'	100.0	0.9	0.078	
+'#D'	'Least Developed Countries'	'DevlopC2020'	100.0	1.0	0.078	
+'#D'	'Least Developed Countries'	'Domestred'	75.0	0.9	0.078	
+'#D'	'Least Developed Countries'	'MRVdecrease'	40.0	0.3	0.078	
+'#D'	'Least Developed Countries'	'Commitments'	90.0	0.85	0.078	
+'#D'	'Least Developed Countries'	'Control'	90.0	1.0	0.078	
+'#D'	'Least Developed Countries'	'Extra'	100.0	0.95	0.078	
+'#D'	'Developing Countries'	'Newtreaty'	100.0	0.5	0.026	
+'#D'	'Developing Countries'	'DevlopC2020'	80.0	0.8	0.026	
+'#D'	'Developing Countries'	'Domestred'	50.0	0.8	0.026	
+'#D'	'Developing Countries'	'MRVdecrease'	15.0	0.8	0.026	
+'#D'	'Developing Countries'	'Commitments'	70.0	0.3	0.026	
+'#D'	'Developing Countries'	'Control'	90.0	0.8	0.026	
+'#D'	'Developing Countries'	'Extra'	80.0	0.8	0.026	
+'#D'	'Alliance of Small Island States'	'Newtreaty'	100.0	0.9	0.078	
+'#D'	'Alliance of Small Island States'	'DevlopC2020'	100.0	1.0	0.078	
+'#D'	'Alliance of Small Island States'	'Domestred'	80.0	0.95	0.078	
+'#D'	'Alliance of Small Island States'	'MRVdecrease'	50.0	0.3	0.078	
+'#D'	'Alliance of Small Island States'	'Commitments'	90.0	0.85	0.078	
+'#D'	'Alliance of Small Island States'	'Control'	90.0	1.0	0.078	
+'#D'	'Alliance of Small Island States'	'Extra'	100.0	0.95	0.078	

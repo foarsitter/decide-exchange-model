@@ -1,10 +1,10 @@
-import math
 import os
 from decimal import *
 from unittest import TestCase
 
+import math
+
 from decide.model.equalgain import EqualGainModel
-from decide.model.helpers import csvparser
 
 
 class TestModel(TestCase):

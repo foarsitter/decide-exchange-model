@@ -26,8 +26,8 @@ requirements:
     - python
     - cython
     - matplotlib
-    - peewee ==3.3.4
-    - pyqt >=5.9.2
+    - peewee==3.3.4
+    - pyqt==5.9.2
     - blinker
     - requests
 
@@ -36,8 +36,6 @@ test:
     - decide
     - decide.qt
     - decide.model
-    - decide.model.helpers
-    - decide.model.helpers.test
     - decide.model.observers
     - decide.model.test
 

@@ -14,8 +14,6 @@ setup(
         "decide.qt.inputwindow",
         "decide.model",
         "decide.model.test",
-        "decide.model.helpers",
-        "decide.model.helpers.test",
         "decide.model.observers",
     ],
     url="https://github.com/foarsitter/decide-exchange-model",
@@ -27,9 +25,9 @@ setup(
     long_description_content_type="text/markdown",
     entry_points={
         "console_scripts": ["decide-cli=decide.cli:main"],
-        "gui_scripts": ["decide-gui=decide.qt.mainwindow:main"],
+        "gui_scripts": ["decide-gui=decide.qt.gui:main"],
     },
-    #data_files=[('data/input', ['data/input/kopenhagen.csv', 'data/input/CoP21.csv'])],
+    # data_files=[('data/input', ['data/input/kopenhagen.csv', 'data/input/CoP21.csv'])],
     python_requires=">=3.6",
     install_requires=["peewee>=3", "matplotlib", "requests", "blinker"],
 )

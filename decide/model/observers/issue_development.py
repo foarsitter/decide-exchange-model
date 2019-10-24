@@ -1,10 +1,10 @@
 import copy
 import csv
-import math
 import os
 from collections import defaultdict, OrderedDict
 from typing import List
 
+import math
 import matplotlib
 
 matplotlib.use("Qt5Agg")

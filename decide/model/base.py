@@ -3,11 +3,9 @@ from collections import defaultdict
 from decimal import Decimal
 from itertools import combinations
 
-from decide.model.helpers import helpers
-
 
 class Issue:
-    def __init__(self, name, lower=None, upper=None, issue_id=None):
+    def __init__(self, name, lower=None, upper=None):
         """
         Refers an issue
         :param name: str
@@ -19,8 +17,6 @@ class Issue:
 
         self.name = name
 
-        self.issue_id = issue_id if issue_id else helpers.create_key(name)
-
         self.lower = lower
         self.upper = upper
 
@@ -29,6 +25,10 @@ class Issue:
         if self.lower is not None or self.upper is not None:
             self.calculate_delta()
             self.calculate_step_size()
+
+    @property
+    def issue_id(self):
+        return self.name
 
     def calculate_delta(self):
         self.delta = self.upper - self.lower
@@ -102,21 +102,27 @@ class Actor:
     def __init__(self, name, actor_id=None):
         """
         Represents an Actor
-        :param name:
-        :param actor_id:
         """
         self.name = name
-        self.actor_id = actor_id if actor_id else helpers.create_key(name)
-
         self.comment = ""
 
+        if actor_id:
+            self.actor_id = actor_id
+        else:
+            self.actor_id = name
+
     def __eq__(self, other):
+
+        from decide.data.database import Actor as ModelActor
+
         if isinstance(other, str):
             return self.actor_id == str(other)
         if isinstance(other, int):
             return self.__hash__() == other
         if isinstance(other, Actor):
             return self.actor_id == other.actor_id
+        if isinstance(other, ModelActor):
+            return self.actor_id == other.key
         if not other:
             return False
         raise NotImplementedError()
@@ -238,12 +244,12 @@ class AbstractExchangeActor:
     """
 
     def __init__(
-        self,
-        model: "AbstractModel",
-        actor: Actor,
-        demand_issue: Issue,
-        supply_issue: Issue,
-        exchange: "AbstractExchange",
+            self,
+            model: "AbstractModel",
+            actor: Actor,
+            demand_issue: Issue,
+            supply_issue: Issue,
+            exchange: "AbstractExchange",
     ):
         """
         Constructor, must be invoked
@@ -462,7 +468,7 @@ class AbstractExchangeActor:
             self.moves.append(self.move)
 
             self.opposite_actor.y = (
-                self.opposite_actor.supply.position + self.opposite_actor.move
+                    self.opposite_actor.supply.position + self.opposite_actor.move
             )
             self.y = self.supply.position + self.move
 
@@ -520,9 +526,9 @@ class AbstractExchangeActor:
 
     def __eq__(self, other):
         return (
-            self.equals_actor(other)
-            and self.equals_demand_issue(other)
-            and self.equals_supply_issue(other)
+                self.equals_actor(other)
+                and self.equals_demand_issue(other)
+                and self.equals_supply_issue(other)
         )
 
 
@@ -568,7 +574,7 @@ class AbstractExchange:
         # issue q is the supply issue of i and issue p is the supply issue of j.
         # if ( (model$s_matrix[p, i] / model$s_matrix[q, i]) < (model$s_matrix[p, j] / model$s_matrix[q, j]))
         if (m.get_value(i, p, "s") / m.get_value(i, q, "s")) < (
-            m.get_value(j, p, "s") / m.get_value(j, q, "s")
+                m.get_value(j, p, "s") / m.get_value(j, q, "s")
         ):
             self.i = self.actor_class(
                 m, j, supply_issue=q, demand_issue=p, exchange=self
@@ -639,10 +645,10 @@ class AbstractExchange:
         return invalid_i or invalid_j
 
     def update_updates(
-        self,
-        exchange_actor: AbstractExchangeActor,
-        demand_issue: Issue,
-        updated_position,
+            self,
+            exchange_actor: AbstractExchangeActor,
+            demand_issue: Issue,
+            updated_position,
     ):
         """
         Update the updates dictionary with the current exchange
@@ -674,7 +680,7 @@ class AbstractExchange:
 
         # update the positions for the demand actors...
         if exchange.j.equals_actor_demand_issue(
-            self.j
+                self.j
         ) or exchange.j.equals_actor_demand_issue(self.i):
 
             if exchange.i.actor in self.updates[exchange.j.demand.issue]:
@@ -691,7 +697,7 @@ class AbstractExchange:
                 self.re_calc = True
 
         if exchange.i.equals_actor_demand_issue(
-            self.j
+                self.j
         ) or exchange.i.equals_actor_demand_issue(self.i):
 
             if exchange.j.actor in self.updates[exchange.i.demand.issue]:
@@ -759,7 +765,7 @@ class AbstractModel:
     FIXED_WEIGHT = 0.1
     VERBOSE = True  # verbose messages for debugging
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         self.issues = {}
         self.actor_issues = defaultdict(dict)
         self.actors = {}
@@ -827,7 +833,7 @@ class AbstractModel:
         :param issue_id:
         :param issue_name:
         """
-        issue = Issue(issue_name, issue_id=issue_id)
+        issue = Issue(issue_name)
         issue.comment = comment
         self.issues[issue] = issue
         return issue
@@ -1027,8 +1033,8 @@ class AbstractModel:
         """
 
         is_inner = (
-            actor in self.groups[issue_set_key][inner[0]]
-            or actor in self.groups[issue_set_key][inner[1]]
+                actor in self.groups[issue_set_key][inner[0]]
+                or actor in self.groups[issue_set_key][inner[1]]
         )
 
         return is_inner

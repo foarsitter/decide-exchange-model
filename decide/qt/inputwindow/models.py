@@ -2,15 +2,57 @@ import uuid
 from decimal import Decimal
 
 from PyQt5 import QtWidgets
+from typesystem.base import ValidationResult
 
-from decide.qt.helpers import DoubleInput
+from decide.data import types
 from decide.qt.inputwindow import signals
+from decide.qt.mainwindow.helpers import DoubleInput
 
 
-class ActorInputModel(object):
+class BaseInputModel:
+    type = None
+
+    def __init__(self):
+        self.elements = {}
+        self.uuid = uuid.uuid4()
+        self.validation_result = ValidationResult()
+        self.widgets = {}
+        self.stylesheets = {}
+
+    def is_valid(self):
+        self.reset_state()
+        self.validation_result = self.type.validate_or_error(self.as_dict())
+
+        if self.validation_result.error:
+            self.handle_error()
+            return False
+        else:
+            return True
+
+    def as_dict(self):
+        raise NotImplementedError
+
+    def handle_error(self):
+        for key, value in self.validation_result.error.items():
+            if key in self.widgets:
+
+                if key not in self.stylesheets:
+                    self.stylesheets[key] = self.widgets[key].styleSheet()
+
+                self.widgets[key].setStyleSheet("border: 1px solid red")
+                self.widgets[key].setToolTip(self.validation_result.error[key])
+
+    def reset_state(self):
+        for key, value in self.stylesheets.items():
+            self.widgets[key].setStyleSheet(value)
+
+
+class ActorInputModel(BaseInputModel):
     """
     Object containing a name and power
     """
+
+    type = types.Actor
 
     def __init__(self, name: str, power: Decimal):
         super().__init__()
@@ -20,7 +62,12 @@ class ActorInputModel(object):
         self._comment = ""
         self.key = "actor_input"
 
-        self.uuid = uuid.uuid4()
+    def as_dict(self):
+        return {
+            'id': self.name,
+            'power': self.power,
+            'comment': self.comment
+        }
 
     @property
     def name(self):
@@ -41,15 +88,14 @@ class ActorInputModel(object):
     def set_name(self, value, silence=False):
         self._name = value
 
-        if not silence:
-            signals.actor_changed.send(self, key='name', value=value)
+        if self.is_valid() and not silence:
+            signals.actor_changed.send(self, key="name", value=value)
 
     def set_power(self, value, silence=False):
-
         self._power = value
 
-        if not silence:
-            signals.actor_changed.send(self, key='power', value=value)
+        if self.is_valid() and not silence:
+            signals.actor_changed.send(self, key="power", value=value)
 
     @property
     def comment(self):
@@ -63,10 +109,12 @@ class ActorInputModel(object):
         self._comment = value
 
 
-class IssueInputModel(object):
+class IssueInputModel(BaseInputModel):
     """
     Object containing a name, lower and upper bounds
     """
+
+    type = types.Issue
 
     def __init__(self, name: str, lower: Decimal, upper: Decimal):
         super().__init__()
@@ -77,7 +125,13 @@ class IssueInputModel(object):
         self._comment = ""
         self.key = "issue_input"
 
-        self.uuid = uuid.uuid4()
+    def as_dict(self):
+        return {
+            'name': self.name,
+            'lower': self.lower,
+            'upper': self.upper,
+            'comment': self.comment
+        }
 
     @property
     def name(self):
@@ -106,20 +160,22 @@ class IssueInputModel(object):
     def set_name(self, value, silence=False):
         self._name = value
 
-        if not silence:
-            signals.issue_changed.send(self, key='name', value=value)
+        if self.is_valid() and not silence:
+            signals.issue_changed.send(self, key="name", value=value)
 
     def set_lower(self, value, silence=False):
+
         self._lower = value
 
-        if not silence:
-            signals.issue_changed.send(self, key='lower', value=value)
+        if self.is_valid() and not silence:
+            signals.issue_changed.send(self, key="lower", value=value)
 
     def set_upper(self, value, silence=False):
+
         self._upper = value
 
-        if not silence:
-            signals.issue_changed.send(self, key='upper', value=value)
+        if self.is_valid() and not silence:
+            signals.issue_changed.send(self, key="upper", value=value)
 
     @property
     def comment(self):
@@ -133,7 +189,8 @@ class IssueInputModel(object):
         self._comment = value
 
 
-class ActorIssueInputModel(object):
+class ActorIssueInputModel(BaseInputModel):
+    type = types.ActorIssue
 
     def __init__(self, actor: ActorInputModel, issue: IssueInputModel):
         super().__init__()
@@ -160,6 +217,15 @@ class ActorIssueInputModel(object):
         self._position = Decimal(0.0)
         self._salience = Decimal(0.0)
 
+    def as_dict(self):
+        return {
+            'position': self.position,
+            'salience': self.salience,
+            'power': self.power,
+            'issue': self.issue.name,
+            'actor': self.actor.name,
+        }
+
     @property
     def position(self):
         return self._position
@@ -174,15 +240,15 @@ class ActorIssueInputModel(object):
 
     def set_position(self, value: Decimal, silence=False):
         self._position = value
-        if not silence:
-            signals.actor_issue_changed.send(self, key='position', value=value)
+        if self.is_valid() and not silence:
+            signals.actor_issue_changed.send(self, key="position", value=value)
 
     def set_power(self, value: Decimal, silence=False):
         self._power = value
-        if not silence:
-            signals.actor_issue_changed.send(self, key='power', value=value)
+        if self.is_valid() and not silence:
+            signals.actor_issue_changed.send(self, key="power", value=value)
 
     def set_salience(self, value: Decimal, silence=False):
         self._salience = value
-        if not silence:
-            signals.actor_issue_changed.send(self, key='salience', value=value)
+        if self.is_valid() and not silence:
+            signals.actor_issue_changed.send(self, key="salience", value=value)
