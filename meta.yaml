@@ -27,12 +27,11 @@ requirements:
     - cython
     - blinker==1.4
     - coverage==4.5.2
-    - environs==6.0.0
     - matplotlib==3.0.2
     - numpy==1.15.4
     - pandas==0.25.2
-    - peewee==3.9.6
-    - PyQt5==5.12.1
+    - peewee
+    - pyqt
     - requests==2.21.0
     - typesystem==0.2.2
 test:
