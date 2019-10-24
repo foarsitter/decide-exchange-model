@@ -23,13 +23,13 @@ def test_eq():
 
     store[iteration3] = iteration3
 
-    assert iteration2 == iteration
+    assert iteration2 != iteration
     assert iteration3 == iteration
     assert store[iteration3] == iteration
     assert store[1] == iteration
 
 
-def test_database():
+def test_database(sqlite_db):
     created = db.DataSet.create(name="test123")
 
     data_set = db.DataSet.get(name="test123")

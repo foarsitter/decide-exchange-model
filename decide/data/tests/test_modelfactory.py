@@ -59,6 +59,7 @@ def test_actor_issue_filter():
 
     data_file = reader.InputDataFile()
     data_file.parse_rows(data)
+    data_file.update_issues_with_positions()
 
     assert len(data_file.errors) == 0
     assert len(data_file.actors) == 3

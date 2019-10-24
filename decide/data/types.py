@@ -60,7 +60,7 @@ class PartialActor(CSVColumn, typesystem.Schema):
 
     def as_model_object(self):
 
-        actor = base.Actor(self.fullname, self.id)
+        actor = base.Actor(self.id, self.fullname)
 
         return actor
 

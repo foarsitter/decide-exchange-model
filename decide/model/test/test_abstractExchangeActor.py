@@ -25,7 +25,7 @@ class TestAbstractExchangeActor(TestCase):
         self.assertTrue(test_issue in model.issues)
 
         b = Issue("test")
-        b.issue_id = "test"
+        b.name = "test"
 
         self.assertEqual(b.__hash__(), test_issue.__hash__())
 

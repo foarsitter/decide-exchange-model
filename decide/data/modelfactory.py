@@ -58,7 +58,7 @@ class ModelFactory:
         filtered_actor_issues = self.filter_actor_issues(filtered_actors, filtered_issues)
 
         for actor in filtered_actors.values():
-            model.add_actor(actor.id, actor.fullname)
+            model.add_actor(actor_name=actor.fullname, actor_id=actor.id)
 
         for issue in filtered_issues.values():
             model_issue = model.add_issue(issue.name, issue.description)
@@ -79,5 +79,5 @@ class ModelFactory:
 
         return model
 
-    def __call__(self, *args, **kwargs):
-        return self.create(*args, **kwargs)
+    def __call__(self, model_klass, *args, **kwargs):
+        return self.create(*args, model_klass=model_klass, **kwargs)

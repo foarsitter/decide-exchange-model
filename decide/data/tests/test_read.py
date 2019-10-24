@@ -12,7 +12,7 @@ def test_cop2():
     data_file = reader.InputDataFile.open(os.path.join(input_folder, "cop21.csv"))
 
     assert len(data_file.errors) == 0
-    assert len(data_file.rows) == 283
+    assert len(data_file.rows) == 235
 
 
 def test_validation_error():
