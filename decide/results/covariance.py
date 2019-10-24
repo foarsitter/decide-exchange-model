@@ -1,10 +1,7 @@
 import os
 
 import pandas as pd
-from environs import Env
-from playhouse.db_url import connect
-
-from decide import input_folder, data_folder
+from decide import data_folder
 from decide.data.database import connection, Manager
 
 pd.set_option('display.max_rows', 500)
@@ -50,7 +47,7 @@ def write_result(conn, model_run_id, output_directory):
 
 
 if __name__ == '__main__':
-
+    from environs import Env
     env = Env()
     Env.read_env()  # read .env file, if it exists
 

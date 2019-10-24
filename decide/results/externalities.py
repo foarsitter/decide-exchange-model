@@ -4,7 +4,6 @@ import pandas as pd
 from decide import data_folder
 from decide.data.database import connection, Manager
 from decide.results.helpers import list_to_sql_param
-from environs import Env
 
 pd.set_option('display.max_rows', 500)
 pd.set_option('display.max_columns', 500)
@@ -94,6 +93,8 @@ def write_summary_result(conn, model_run_ids, output_directory):
 
 
 if __name__ == '__main__':
+    from environs import Env
+
     env = Env()
     Env.read_env()  # read .env file, if it exists
 

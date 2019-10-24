@@ -30,7 +30,7 @@ requirements:
     - matplotlib==3.0.2
     - numpy==1.15.4
     - pandas==0.25.2
-    - peewee
+    - peewee>=3.10.0
     - pyqt
     - requests==2.21.0
     - typesystem==0.2.2
