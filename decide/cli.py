@@ -4,8 +4,7 @@ import os
 from datetime import datetime
 from typing import List
 
-from PyQt5.QtCore import QDir
-
+from decide import input_folder
 from decide.data.modelfactory import ModelFactory
 from decide.data.reader import InputDataFile
 from decide.model import randomrate, equalgain
@@ -51,7 +50,7 @@ def parse_arguments():
     parser.add_argument(
         "--input_file",
         help="The location of the csv input file. ",
-        default="../data/input/sample_data.txt",
+        default=os.path.join(input_folder, 'sample_data.txt'),
         type=str,
     )
     parser.add_argument(
@@ -64,9 +63,10 @@ def parse_arguments():
         type=str,
     )
 
-    parser.add_argument("--step", default=None, type=str)
-    parser.add_argument("--stop", default=None, type=str)
-    parser.add_argument("--start", default=None, type=str)
+    parser.add_argument("--step", default='0.80', type=str)
+    parser.add_argument("--stop", default='0.80', type=str)
+    parser.add_argument("--start", default='0.0', type=str)
+    parser.add_argument("--name", default=None, type=str)
     parser.add_argument("--actors", default=None, type=str)
     parser.add_argument("--issues", default=None, type=str)
 
@@ -76,9 +76,10 @@ def parse_arguments():
 def init_event_handlers(model, output_directory, database_file, write_csv=True):
     event_handler = Observable(model_ref=model, output_directory=output_directory)
 
-    SQLiteObserver(event_handler, database_file)
+    SQLiteObserver(event_handler, output_directory)
 
     Logger(event_handler)
+    Logger.LOG_LEVEL = 99
 
     if write_csv:
         # csv handlers
@@ -165,13 +166,15 @@ def main():
 
     data_file = InputDataFile.open(args.input_file)
 
-    model_factory = ModelFactory(data_file, actor_whitelist=actors, issue_whitelist=issues)
+    data_set_name = os.path.splitext(os.path.basename(args.name or args.input_file))[0]
+
+    factory = ModelFactory(data_file, actor_whitelist=actors, issue_whitelist=issues)
 
     """
         Initial the right model from the given arguments
         """
 
-    if args.model_type == "equal":
+    if args.model == "equal":
         model_klass = equalgain.EqualGainModel
     else:
         model_klass = randomrate.RandomRateModel
@@ -180,10 +183,12 @@ def main():
 
         start_time = datetime.now()  # for timing operations
 
-        model = model_factory(model_klass, p=p)
+        model = factory(model_klass=model_klass, randomized_value=p)
 
-        output_directory = QDir.toNativeSeparators(
-            init_output_directory(model, args.output_dir)
+        output_directory = init_output_directory(
+            args.output_dir,
+            data_set_name,
+            p,
         )
 
         # The event handlers for logging and writing the results to the disk.
@@ -191,7 +196,7 @@ def main():
             model=model,
             output_directory=output_directory,
             database_file=args.database,
-            write_csv=False,
+            write_csv=True,
         )
 
         event_handler.log(message="Start calculation at {0}".format(start_time))
@@ -204,7 +209,9 @@ def main():
 
         for repetition in range(args.repetitions):
 
-            model = model_factory()
+            model = factory(model_klass=model_klass, randomized_value=p)
+
+            event_handler.update_model_ref(model)
 
             model_loop = ModelLoop(model, event_handler, repetition)
 

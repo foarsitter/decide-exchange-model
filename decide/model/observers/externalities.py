@@ -175,7 +175,7 @@ class Externalities(observer.Observer):
         self._setup()
         self._create_directories(repetition)
 
-    def end_loop(self, iteration: int, repetition: int, insert_db=True):
+    def end_loop(self, iteration: int, repetition: int):
         """
         Write the data to the filesystem and append the storage for the summary
         :param repetition:
@@ -266,12 +266,12 @@ class Externalities(observer.Observer):
 
             for realizations in self.exchanges:
                 writer.writerow(realizations)
-
-                if insert_db:
-                    from decide.data import database as db
-
-                    with db.connection.atomic():
-                        db.Externality.create()
+                #
+                # if insert_db:
+                #     from decide.data import database as db
+                #
+                #     with db.connection.atomic():
+                #         db.Externality.create()
 
     def after_repetitions(self):
         """
