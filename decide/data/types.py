@@ -1,12 +1,10 @@
 import typesystem
-from typesystem import ValidationError
-
 from decide.model import base
+from typesystem import ValidationError
 
 
 class CSVColumn:
     starts_with = None
-    comment = typesystem.Text(allow_null=True, allow_blank=True)
 
 
 class Comment(CSVColumn, typesystem.Schema):
@@ -41,6 +39,7 @@ class PartialActor(CSVColumn, typesystem.Schema):
     starts_with = "#A"
     id = typesystem.String()
     fullname = typesystem.String()
+    comment = typesystem.String(allow_blank=True)
 
     def __hash__(self):
         return hash(self.id)

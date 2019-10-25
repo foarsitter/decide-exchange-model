@@ -1,33 +1,33 @@
-'#A'	'USA'	'USA'	'<typesystem.fields.Text object at 0x7f90e45a2438>'	
-'#A'	'EU (incl Norway)'	'EU (incl Norway)'	'<typesystem.fields.Text object at 0x7f90e45a2438>'	
-'#A'	'Australia'	'Australia'	'<typesystem.fields.Text object at 0x7f90e45a2438>'	
-'#A'	'Canadas'	'Canadas'	'<typesystem.fields.Text object at 0x7f90e45a2438>'	
-'#A'	'Japans'	'Japans'	'<typesystem.fields.Text object at 0x7f90e45a2438>'	
-'#A'	'Russia'	'Russia'	'<typesystem.fields.Text object at 0x7f90e45a2438>'	
-'#A'	'China India'	'China India'	'<typesystem.fields.Text object at 0x7f90e45a2438>'	
-'#A'	'Brazil'	'Brazil'	'<typesystem.fields.Text object at 0x7f90e45a2438>'	
-'#A'	'Least Developed Countries'	'Least Developed Countries'	'<typesystem.fields.Text object at 0x7f90e45a2438>'	
-'#A'	'Developing Countries'	'Developing Countries'	'<typesystem.fields.Text object at 0x7f90e45a2438>'	
-'#A'	'Alliance of Small Island States'	'Alliance of Small Island States'	'<typesystem.fields.Text object at 0x7f90e45a2438>'	
-'#P'	'Newtreaty'	'Newtreaty'	'<typesystem.fields.Text object at 0x7f90e45a2438>'	
-'#M'	'Newtreaty'	0	
-'#M'	'Newtreaty'	100	
-'#P'	'DevlopC2020'	'DevlopC2020'	'<typesystem.fields.Text object at 0x7f90e45a2438>'	
-'#M'	'DevlopC2020'	0	
-'#M'	'DevlopC2020'	100	
-'#P'	'Domestred'	'Domestred'	'<typesystem.fields.Text object at 0x7f90e45a2438>'	
-'#M'	'Domestred'	0	
-'#M'	'Domestred'	100	
-'#P'	'MRVdecrease'	'MRVdecrease'	'<typesystem.fields.Text object at 0x7f90e45a2438>'	
-'#M'	'MRVdecrease'	0	
-'#M'	'MRVdecrease'	100	
-'#P'	'Commitments'	'Commitments'	'<typesystem.fields.Text object at 0x7f90e45a2438>'	
-'#M'	'Commitments'	0	
-'#M'	'Commitments'	100	
-'#P'	'Control'	'Control'	'<typesystem.fields.Text object at 0x7f90e45a2438>'	
-'#M'	'Control'	0	
-'#M'	'Control'	100	
-'#P'	'Extra'	'Extra'	'<typesystem.fields.Text object at 0x7f90e45a2438>'	
+'#A'	'USA'	'USA'	''
+'#A'	'EU (incl Norway)'	'EU (incl Norway)'	''
+'#A'	'Australia'	'Australia'	''
+'#A'	'Canadas'	'Canadas'	''
+'#A'	'Japans'	'Japans'	''
+'#A'	'Russia'	'Russia'	''
+'#A'	'China India'	'China India'	''
+'#A'	'Brazil'	'Brazil'	''
+'#A'	'Least Developed Countries'	'Least Developed Countries'	''
+'#A'	'Developing Countries'	'Developing Countries'	''
+'#A'	'Alliance of Small Island States'	'Alliance of Small Island States'	''
+'#P'	'Newtreaty'	'Newtreaty'	''
+'#M'	'Newtreaty'	0
+'#M'	'Newtreaty'	100
+'#P'	'DevlopC2020'	'DevlopC2020'	''
+'#M'	'DevlopC2020'	0
+'#M'	'DevlopC2020'	100
+'#P'	'Domestred'	'Domestred'	''
+'#M'	'Domestred'	0
+'#M'	'Domestred'	100
+'#P'	'MRVdecrease'	'MRVdecrease'	''
+'#M'	'MRVdecrease'	0
+'#M'	'MRVdecrease'	100
+'#P'	'Commitments'	'Commitments'	''
+'#M'	'Commitments'	0
+'#M'	'Commitments'	100
+'#P'	'Control'	'Control'	''
+'#M'	'Control'	0
+'#M'	'Control'	100
+'#P'	'Extra'	'Extra'	''
 '#M'	'Extra'	0	
 '#M'	'Extra'	100	
 '#D'	'USA'	'Newtreaty'	10.0	0.9	0.26	

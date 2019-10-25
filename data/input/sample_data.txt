@@ -1,29 +1,29 @@
-'#A'	'Willems'	'Willems'	'<typesystem.fields.Text object at 0x7f0f51d8a400>'	
-'#A'	'PvdA'	'PvdA'	'<typesystem.fields.Text object at 0x7f0f51d8a400>'	
-'#A'	'GL'	'GL'	'<typesystem.fields.Text object at 0x7f0f51d8a400>'	
-'#A'	'VVD'	'VVD'	'<typesystem.fields.Text object at 0x7f0f51d8a400>'	
-'#A'	'SP'	'SP'	'<typesystem.fields.Text object at 0x7f0f51d8a400>'	
-'#A'	'CDA'	'CDA'	'<typesystem.fields.Text object at 0x7f0f51d8a400>'	
-'#A'	'D66'	'D66'	'<typesystem.fields.Text object at 0x7f0f51d8a400>'	
-'#A'	'CU'	'CU'	'<typesystem.fields.Text object at 0x7f0f51d8a400>'	
-'#A'	'KvK'	'KvK'	'<typesystem.fields.Text object at 0x7f0f51d8a400>'	
-'#A'	'Wcentr'	'Wcentr'	'<typesystem.fields.Text object at 0x7f0f51d8a400>'	
-'#P'	'tolheffing-binnenstad'	'tolheffing-binnenstad'	'<typesystem.fields.Text object at 0x7f0f51d8a400>'	
+'#A'	'Willems'	'Willems'	'Test'	
+'#A'	'PvdA'	'PvdA'	''	
+'#A'	'GL'	'GL'	''	
+'#A'	'VVDs'	'VVDs'	''	
+'#A'	'SP'	'SP'	''	
+'#A'	'CDA'	'CDA'	'Test'	
+'#A'	'D66'	'D66'	''	
+'#A'	'CU'	'CU'	''	
+'#A'	'KvK'	'KvK'	''	
+'#A'	'Wcentr'	'Wcentr'	''	
+'#P'	'tolheffing-binnenstad'	'tolheffing-binnenstad'	'tolheffing-binnenstad'	
 '#M'	'tolheffing-binnenstad'	0	
 '#M'	'tolheffing-binnenstad'	100	
-'#P'	'tol-hoogte'	'tol-hoogte'	'<typesystem.fields.Text object at 0x7f0f51d8a400>'	
+'#P'	'tol-hoogte'	'tol-hoogte'	'tol-hoogte'	
 '#M'	'tol-hoogte'	0.5	
 '#M'	'tol-hoogte'	7	
-'#P'	'wanneer-tol'	'wanneer-tol'	'<typesystem.fields.Text object at 0x7f0f51d8a400>'	
+'#P'	'wanneer-tol'	'wanneer-tol'	'Wat is dit voor onzin?'	
 '#M'	'wanneer-tol'	0	
 '#M'	'wanneer-tol'	100	
-'#P'	'woonwerkverkeer'	'woonwerkverkeer'	'<typesystem.fields.Text object at 0x7f0f51d8a400>'	
+'#P'	'woonwerkverkeer'	'woonwerkverkeer'	'woonwerkverkeer'	
 '#M'	'woonwerkverkeer'	0	
 '#M'	'woonwerkverkeer'	100	
-'#P'	'extra-investering'	'extra-investering'	'<typesystem.fields.Text object at 0x7f0f51d8a400>'	
+'#P'	'extra-investering'	'extra-investering'	'extra-investering'	
 '#M'	'extra-investering'	0	
 '#M'	'extra-investering'	100	
-'#P'	'kleine-of-grote-ring'	'kleine-of-grote-ring'	'<typesystem.fields.Text object at 0x7f0f51d8a400>'	
+'#P'	'kleine-of-grote-ring'	'kleine-of-grote-ring'	'kleine-of-grote-ring'	
 '#M'	'kleine-of-grote-ring'	0	
 '#M'	'kleine-of-grote-ring'	100	
 '#D'	'Willems'	'tolheffing-binnenstad'	100.0	0.95	1.0	
@@ -44,12 +44,12 @@
 '#D'	'GL'	'woonwerkverkeer'	100.0	0.8	0.6	
 '#D'	'GL'	'extra-investering'	50.0	0.4	0.6	
 '#D'	'GL'	'kleine-of-grote-ring'	100.0	0.9	0.6	
-'#D'	'VVD'	'tolheffing-binnenstad'	0.0	0.9	0.5	
-'#D'	'VVD'	'tol-hoogte'	0.5	0.5	0.5	
-'#D'	'VVD'	'wanneer-tol'	0.0	0.9	0.5	
-'#D'	'VVD'	'woonwerkverkeer'	0.0	0.9	0.5	
-'#D'	'VVD'	'extra-investering'	50.0	0.8	0.5	
-'#D'	'VVD'	'kleine-of-grote-ring'	0.0	0.7	0.5	
+'#D'	'VVDs'	'tolheffing-binnenstad'	0.0	0.9	0.5	
+'#D'	'VVDs'	'tol-hoogte'	0.5	0.5	0.5	
+'#D'	'VVDs'	'wanneer-tol'	0.0	0.9	0.5	
+'#D'	'VVDs'	'woonwerkverkeer'	0.0	0.9	0.5	
+'#D'	'VVDs'	'extra-investering'	50.0	0.8	0.5	
+'#D'	'VVDs'	'kleine-of-grote-ring'	0.0	0.7	0.5	
 '#D'	'SP'	'tolheffing-binnenstad'	75.0	0.7	0.4	
 '#D'	'SP'	'tol-hoogte'	2.0	0.5	0.4	
 '#D'	'SP'	'wanneer-tol'	75.0	0.6	0.4	

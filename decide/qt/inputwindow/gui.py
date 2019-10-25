@@ -191,7 +191,7 @@ class InputWindow(QtWidgets.QMainWindow):
             issue_input = self.issue_widget.add_issue(
                 issue.name, issue.lower, issue.upper
             )
-            issue_input.comment = issue.comment
+            issue_input.comment = issue.description
 
             issue_inputs[issue_input.name] = issue_input
 
