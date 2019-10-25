@@ -1,1 +1,1 @@
-from . import covariance, externalities, descriptives, issuecomparison
+from . import covariance, externalities, descriptives, issuecomparison, nashbargainingsolution

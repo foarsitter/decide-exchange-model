@@ -6,9 +6,6 @@ from decide import data_folder
 from decide.data.database import connection, Manager
 from decide.results.helpers import list_to_sql_param
 
-pd.set_option('display.max_rows', 500)
-pd.set_option('display.max_columns', 500)
-
 
 def write_summary_result(conn, model_run_ids, output_directory):
     df = pd.read_sql("""
@@ -45,12 +42,15 @@ def write_summary_result(conn, model_run_ids, output_directory):
     table_avg.to_csv(os.path.join(output_directory, 'nbs_average.csv'))
     table_var.to_csv(os.path.join(output_directory, 'nbs_variance.csv'))
 
-    cursor = conn.execute("""SELECT issue.name, issue.id
+    sql_2 = """SELECT issue.name, issue.id
 FROM issue
 INNER JOIN dataset d on issue.data_set_id = d.id
 INNER JOIN modelrun m on d.id = m.data_set_id
-WHERE m.id IN(%s)
-ORDER BY issue.name""" % list_to_sql_param(model_run_ids))
+WHERE m.id IN (43, 44)
+GROUP BY issue.name, issue.id
+ORDER BY issue.name"""
+
+    cursor = conn.execute_sql(sql=sql_2, params=[])
     issues = cursor.fetchall()
 
     # %%
@@ -78,22 +78,27 @@ FROM (SELECT sum(ai.position * ai.power * ai.salience) AS numerator,
                LEFT JOIN modelrun m ON r.model_run_id = m.id
                LEFT JOIN dataset d ON a.data_set_id = d.id
       WHERE ai.type = 'before'
-        AND m.id = IN (%s)
-        AND i.id = ?
+        AND m.id IN(%s)
+        AND i.id = %s
       GROUP BY m.id, r.id, i2.id, i.id) a
-        """ % list_to_sql_param(model_run_ids),
+        """ % (list_to_sql_param(model_run_ids), issue_id),
                          conn,
-                         params=[issue_id],
                          index_col='p',
                          columns=['nbs']
                          )
         table = pd.pivot_table(df, index=['iteration'], columns=['p'], values=['nbs'])
         plt = table.plot()
-        lgd = plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
-        plt.title(name)
-        plt.ylim(0, 110)
 
-        plt.safe
+        plt.set_title(name)
+        plt.set_ylim(0, 110)
+
+        lgd = plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+
+        plt.figure.savefig(
+            os.path.join(output_directory, 'nbs_{}.png'.format(name)),
+            bbox_extra_artists=(lgd,),
+            bbox_inches="tight",
+        )
 
 
 if __name__ == '__main__':

@@ -137,6 +137,7 @@ class SQLiteObserver(Observer):
         results.externalities.write_summary_result(db.connection, self.model_run_ids, self.output_directory)
         results.descriptives.write_summary_result(db.connection, self.model_run_ids, self.output_directory)
         results.issuecomparison.write_summary_result(db.connection, self.model_run_ids, self.output_directory)
+        results.nashbargainingsolution.write_summary_result(db.connection, self.model_run_ids, self.output_directory)
 
     def _write_externalities(
         self, exchange: AbstractExchange, db_exchange: db.Exchange
