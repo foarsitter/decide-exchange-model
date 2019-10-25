@@ -1,6 +1,5 @@
-from setuptools import setup, find_packages
-
 from decide import __version__
+from setuptools import setup, find_packages
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -24,7 +23,6 @@ setup(
     python_requires=">=3.6",
     install_requires=[
         "blinker==1.4",
-        "environs==6.0.0",
         "matplotlib==3.0.2",
         "requests==2.21.0",
         "typesystem==0.2.2"

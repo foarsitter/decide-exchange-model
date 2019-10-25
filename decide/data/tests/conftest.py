@@ -8,11 +8,6 @@ def sqlite_db():
     m = Manager('sqlite:///:memory:')
     m.init_database()
     m.create_tables()
-
-    print('initialized test database')
-
     yield m
-
     m.delete_tables()
 
-    print('cleaned test database')

@@ -67,7 +67,7 @@ class SQLiteObserver(Observer):
                 )
                 self.issues[issue] = issue
 
-    def before_repetitions(self, repetitions, iterations):
+    def before_repetitions(self, repetitions, iterations, randomized_value=None):
         """
         Create a new data set when needed and add all the actors
 
@@ -80,7 +80,7 @@ class SQLiteObserver(Observer):
         # add the Issues and Actors when they are not present
         with db.connection.atomic():
             self.model_run = db.ModelRun.create(
-                p=self.model_ref.randomized_value,
+                p=randomized_value or self.model_ref.randomized_value,
                 iterations=iterations,
                 repetitions=repetitions,
                 data_set=self.data_set,
@@ -135,6 +135,8 @@ class SQLiteObserver(Observer):
 
     def after_model(self):
         results.externalities.write_summary_result(db.connection, self.model_run_ids, self.output_directory)
+        results.descriptives.write_summary_result(db.connection, self.model_run_ids, self.output_directory)
+        results.issuecomparison.write_summary_result(db.connection, self.model_run_ids, self.output_directory)
 
     def _write_externalities(
         self, exchange: AbstractExchange, db_exchange: db.Exchange

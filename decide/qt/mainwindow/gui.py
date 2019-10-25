@@ -14,6 +14,7 @@ from decide.model.equalgain import EqualGainModel
 from decide.model.observers.exchanges_writer import ExchangesWriter
 from decide.model.observers.externalities import Externalities
 from decide.model.observers.issue_development import IssueDevelopment
+from decide.model.observers.logger import Logger
 from decide.model.observers.observer import Observable
 from decide.model.observers.sqliteobserver import SQLiteObserver
 from decide.model.utils import ModelLoop
@@ -28,7 +29,7 @@ class Worker(QtCore.QObject):
     """
     Worker to execute the model in a thread so the window does not freeze
     """
-    finished = QtCore.pyqtSignal(str, int)
+    finished = QtCore.pyqtSignal(str)
     update = QtCore.pyqtSignal(int, int, float)
 
     def __init__(self, settings: ProgramSettings):
@@ -52,13 +53,15 @@ class Worker(QtCore.QObject):
             settings.data_set_name,
         )
 
-        model = factory(model_klass=EqualGainModel, randomized_value='0.0')
+        model = factory(model_klass=EqualGainModel, randomized_value=settings.model_variations[0])
 
         event_handler = init_event_handlers(model, parent_output_directory, settings)
 
         event_handler.before_model()
 
-        for p in settings.model_variations:
+        model_variations = list(settings.model_variations)
+
+        for p in model_variations:
 
             output_directory = init_output_directory(
                 settings.output_directory,
@@ -70,7 +73,8 @@ class Worker(QtCore.QObject):
 
             event_handler.before_repetitions(
                 repetitions=settings.repetitions,
-                iterations=settings.iterations
+                iterations=settings.iterations,
+                randomized_value=p,
             )
 
             start_time = time.time()
@@ -101,11 +105,12 @@ class Worker(QtCore.QObject):
 
             event_handler.after_repetitions()
 
-            print(model.tie_count)
+            logging.info('tie count is {}'.format(model.tie_count))
 
         self.finished.emit(parent_output_directory)
 
         if not self.break_loop:
+            event_handler.update_output_directory(parent_output_directory)
             event_handler.after_model()
 
     def stop(self):
@@ -134,6 +139,8 @@ def init_event_handlers(model, output_directory, settings):
     """
 
     event_handler = Observable(model_ref=model, output_directory=output_directory)
+
+    Logger(event_handler)
 
     if settings.output_sqlite:
         SQLiteObserver(event_handler, settings.output_directory)
@@ -411,12 +418,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
             )
 
             if button_reply == QtWidgets.QMessageBox.Yes:
-                if self.settings.summary_only and self.settings.issue_development_csv:
-                    utils.open_file_natively(
-                        os.path.join(output_directory, "issues", "summary")
-                    )
-                else:
-                    utils.open_file_natively(output_directory)
+                utils.open_file_natively(output_directory)
 
     def _clean_progress_dialog(self):
         self.progress_dialog.setValue(
@@ -487,8 +489,8 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 def main():
     logging.basicConfig(
         filename=log_filename,
-        filemode="w",
-        level=logging.DEBUG,
+        filemode="a",
+        level=logging.INFO,
         format=" %(asctime)s - %(levelname)s - %(message)s",
     )
 

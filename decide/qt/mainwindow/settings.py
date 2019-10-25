@@ -84,8 +84,6 @@ class SettingsFormWidget(QtWidgets.QFormLayout):
 
         for key, value in settings:
 
-            print(key, value)
-
             if hasattr(self, key):
                 attr = getattr(self, key)
 

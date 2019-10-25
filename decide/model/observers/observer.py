@@ -82,7 +82,7 @@ class Observer(object):
         """
         pass
 
-    def before_repetitions(self, repetitions, iterations):
+    def before_repetitions(self, repetitions, iterations, randomized_value=None):
         """
         First event
         :return:
@@ -143,9 +143,9 @@ class Observable(Observer):
         for observer in self.__observers:
             observer.before_model()
 
-    def before_repetitions(self, repetitions, iterations):
+    def before_repetitions(self, repetitions, iterations, randomized_value=None):
         for observer in self.__observers:
-            observer.before_repetitions(repetitions, iterations)
+            observer.before_repetitions(repetitions, iterations, randomized_value)
 
     def before_iterations(self, repetition):
         for observer in self.__observers:

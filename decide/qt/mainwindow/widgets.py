@@ -287,8 +287,6 @@ class MenuBar(QtWidgets.QMenuBar):
         self.recently_opened_menu(file_menu)
 
     def recently_opened_menu(self, menu: QtWidgets.QMenu):
-        print(self.settings.recently_opened)
-
         sub_menu = QtWidgets.QMenu("Recently opened", menu)
         menu.addMenu(sub_menu)
 

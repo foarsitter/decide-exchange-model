@@ -1,1 +1,1 @@
-from . import covariance, externalities
+from . import covariance, externalities, descriptives, issuecomparison

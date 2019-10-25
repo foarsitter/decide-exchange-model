@@ -49,3 +49,18 @@ def list_to_sql_param(list_object):
     :return:
     """
     return ','.join(list(map(lambda x: "\'{}\'".format(x), list_object)))
+
+
+def handle_data_frame(df, file_name, title):
+    df.to_csv(file_name.format('csv'))
+
+    plt = df.plot()  # .bar()
+
+    lgd = plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+    plt.set_title(title)
+    plt.set_xticks(df.index)
+    plt.figure.savefig(
+        file_name.format('png'),
+        bbox_extra_artists=(lgd,),
+        bbox_inches="tight",
+    )

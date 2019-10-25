@@ -164,7 +164,7 @@ class Externalities(observer.Observer):
             ]
         )
 
-    def before_repetitions(self, repetitions, iterations):
+    def before_repetitions(self, repetitions, iterations, randomized_value=None):
         """
         create storage units for each repetition and each iteration
         :return:

@@ -5,7 +5,6 @@ from typing import List
 
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QDialog
-
 from decide import log_filename, input_folder
 from decide.data.reader import InputDataFile
 from decide.qt.utils import exception_hook
@@ -60,7 +59,6 @@ class ErrorGrid(QDialog):
             if row in self.data_file.errors:
                 label.setStyleSheet("color: red")
                 error = self.data_file.errors[row]
-                print(error)
                 label.setToolTip(str(error))
 
             self.main.addWidget(label, row, column)

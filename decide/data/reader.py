@@ -123,6 +123,7 @@ class InputDataFile:
         Validate the positions of the actor issues against the lower & upper issue bounds
         """
 
+        # find the starting position of the actor issues, so we can show the error at the correct position
         row_index_correction = 0
 
         for type_class in types.values():
@@ -130,16 +131,29 @@ class InputDataFile:
                 row_index_correction += len(self.data[type_class])
 
         for index, actor_issue in enumerate(self.actor_issues.values(), row_index_correction + 1):
-            issue = self.issues[actor_issue.issue]
 
-            try:
-                actor_issue.validate_position(issue)
-            except typesystem.ValidationError as e:
+            if actor_issue.actor not in self.actors:
+                self.errors[index] = typesystem.ValidationError(
+                    key='actor',
+                    text='{} not found in document'.format(actor_issue.actor)
+                )
 
-                if index in self.errors:
-                    self.errors[index] = e
-                else:
-                    self.errors[index] = e
+            if actor_issue.issue in self.issues:
+                issue = self.issues[actor_issue.issue]
+
+                try:
+                    actor_issue.validate_position(issue)
+                except typesystem.ValidationError as e:
+
+                    if index in self.errors:
+                        self.errors[index] = e
+                    else:
+                        self.errors[index] = e
+            else:
+                self.errors[index] = typesystem.ValidationError(
+                    key='issue',
+                    text='{} not found document'.format(actor_issue.issue)
+                )
 
 
 def csv_row_to_type(row: List[str]):

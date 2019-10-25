@@ -1,10 +1,10 @@
 import copy
 import csv
+import math
 import os
 from collections import defaultdict, OrderedDict
 from typing import List
 
-import math
 import matplotlib
 
 matplotlib.use("Qt5Agg")
@@ -99,7 +99,7 @@ class IssueDevelopment(observer.Observer):
                 "{0}/issues/{1}/charts".format(self.output_directory, repetition)
             )
 
-    def before_repetitions(self, repetitions, iterations):
+    def before_repetitions(self, repetitions, iterations, randomized_value=None):
         pass
 
     def before_iterations(self, repetition):

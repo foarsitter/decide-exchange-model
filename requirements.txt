@@ -1,7 +1,6 @@
 blinker==1.4
 coverage==4.5.2
 Cython
-environs==6.0.0
 matplotlib==3.0.2
 numpy==1.15.4
 pandas==0.25.2

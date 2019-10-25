@@ -1,3 +1,4 @@
+import logging
 import os
 
 import pandas as pd
@@ -41,19 +42,13 @@ def write_result(conn, model_run_id, output_directory):
     for p in sorted(set(df.index)):
         x = df.loc[p].pivot(index='pointer', columns='issue', values='nbs').cov().round(5)
 
-        x.to_csv(os.path.join(output_directory, 'covariance_{}.csv'.format(p)))
+        x.to_csv(os.path.join(output_directory, 'covariance.equal-{}.csv'.format(p)))
 
-        print('writen covariance table for p={}'.format(p))
+        logging.info('writen covariance table for p={}'.format(p))
 
 
 if __name__ == '__main__':
-    from environs import Env
-    env = Env()
-    Env.read_env()  # read .env file, if it exists
-
-    url = env('DATABASE_URL')
-
-    m = Manager(url)
+    m = Manager(os.environ.get('DATABASE_URL'))
     m.init_database()
 
     model_run_id = 1
