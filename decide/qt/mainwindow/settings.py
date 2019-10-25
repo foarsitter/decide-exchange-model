@@ -19,6 +19,8 @@ class SettingsFormWidget(QtWidgets.QFormLayout):
         """
         super().__init__(*args, **kwargs)
 
+        self.is_loading = False
+
         self.settings = settings
         self.main_window = main_window
 
@@ -78,7 +80,12 @@ class SettingsFormWidget(QtWidgets.QFormLayout):
 
         settings = self.settings.__dict__.items()
 
+        self.is_loading = True
+
         for key, value in settings:
+
+            print(key, value)
+
             if hasattr(self, key):
                 attr = getattr(self, key)
 
@@ -88,6 +95,8 @@ class SettingsFormWidget(QtWidgets.QFormLayout):
                     self.settings.__dict__[attr] = value
                 else:
                     attr.setValue(value)
+
+        self.is_loading = False
 
     def save(self):
         """
@@ -100,7 +109,9 @@ class SettingsFormWidget(QtWidgets.QFormLayout):
                 setattr(self.settings, key, value.value())
 
     def state_changed(self):
-        self.save()
+
+        if not self.is_loading:
+            self.save()
         self.main_window.overview_widget.update_widget()
 
 

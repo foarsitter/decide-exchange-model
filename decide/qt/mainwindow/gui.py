@@ -105,7 +105,8 @@ class Worker(QtCore.QObject):
 
         self.finished.emit(parent_output_directory)
 
-        event_handler.after_model()
+        if not self.break_loop:
+            event_handler.after_model()
 
     def stop(self):
         self.break_loop = True
