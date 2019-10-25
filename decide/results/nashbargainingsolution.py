@@ -46,9 +46,9 @@ def write_summary_result(conn, model_run_ids, output_directory):
 FROM issue
 INNER JOIN dataset d on issue.data_set_id = d.id
 INNER JOIN modelrun m on d.id = m.data_set_id
-WHERE m.id IN (43, 44)
+WHERE m.id IN (%s)
 GROUP BY issue.name, issue.id
-ORDER BY issue.name"""
+ORDER BY issue.name""" % list_to_sql_param(model_run_ids)
 
     cursor = conn.execute_sql(sql=sql_2, params=[])
     issues = cursor.fetchall()
