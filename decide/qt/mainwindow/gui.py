@@ -44,7 +44,7 @@ class Worker(QtCore.QObject):
         settings = self.settings
 
         if settings.start == settings.stop:
-            p_values = [settings.start]
+            p_values = [str(settings.start)]
         else:
             p_values = [
                 str(round(p, 2))
@@ -73,7 +73,7 @@ class Worker(QtCore.QObject):
             output_directory = init_output_directory(
                 settings.output_directory,
                 data_set_name,
-                p,
+                p
             )
 
             model = factory(model_klass=EqualGainModel, randomized_value=p)
