@@ -8,6 +8,7 @@ from decide.data.database import connection
 from decide.model import calculations
 from decide.model.base import AbstractExchange, Actor, Issue, AbstractExchangeActor
 from decide.model.observers.observer import Observer, Observable
+from decide.results import externalities
 
 
 class SQLiteObserver(Observer):
@@ -86,8 +87,6 @@ class SQLiteObserver(Observer):
                 data_set=self.data_set,
             )
 
-
-
     def before_iterations(self, repetition):
         with db.connection.atomic():
             repetition = db.Repetition.create(
@@ -134,6 +133,9 @@ class SQLiteObserver(Observer):
         self.model_run_ids.append(self.model_run.id)
 
         results.covariance.write_result(connection, self.model_run.id, self.output_directory)
+
+    def after_model(self):
+        externalities.write_summary_result(db.connection, self.model_run_ids, self.output_directory)
 
     def _write_externalities(
         self, exchange: AbstractExchange, db_exchange: db.Exchange
