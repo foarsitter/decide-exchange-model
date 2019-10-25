@@ -101,7 +101,9 @@ class Worker(QtCore.QObject):
 
             event_handler.after_repetitions()
 
-            self.finished.emit(output_directory, model.tie_count)
+            print(model.tie_count)
+
+        self.finished.emit(parent_output_directory)
 
         event_handler.after_model()
 
@@ -394,7 +396,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
                 "{:.0f} minutes remaining ".format(estimated_time_left / 60)
             )
 
-    def finished(self, output_directory, tie_count):
+    def finished(self, output_directory):
 
         self._clean_progress_dialog()
 
@@ -402,9 +404,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
             button_reply = QtWidgets.QMessageBox.question(
                 self,
                 "Done",
-                "Done executing. Found {} ties. Open the result directory?".format(
-                    tie_count
-                ),
+                "Done executing. Open the result directory?",
                 QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
                 QtWidgets.QMessageBox.No,
             )
