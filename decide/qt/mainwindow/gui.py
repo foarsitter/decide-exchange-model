@@ -30,7 +30,7 @@ class Worker(QtCore.QObject):
     Worker to execute the model in a thread so the window does not freeze
     """
     finished = QtCore.pyqtSignal(str)
-    update = QtCore.pyqtSignal(int, int, float)
+    update = QtCore.pyqtSignal(int, int, int, float)
 
     def __init__(self, settings: ProgramSettings):
         super(Worker, self).__init__()
@@ -61,7 +61,7 @@ class Worker(QtCore.QObject):
 
         model_variations = list(settings.model_variations)
 
-        for p in model_variations:
+        for variation, p in enumerate(model_variations, 1):
 
             output_directory = init_output_directory(
                 settings.output_directory,
@@ -94,7 +94,7 @@ class Worker(QtCore.QObject):
                     if self.break_loop:
                         break
 
-                    self.update.emit(repetition, iteration_number, start_time)
+                    self.update.emit(variation, repetition, iteration_number, start_time)
 
                     model_loop.loop()
 
@@ -108,11 +108,11 @@ class Worker(QtCore.QObject):
 
                 logging.info('tie count is {}'.format(model.tie_count))
 
-        self.finished.emit(parent_output_directory)
-
         if not self.break_loop:
             event_handler.update_output_directory(parent_output_directory)
             event_handler.after_model()
+
+        self.finished.emit(parent_output_directory)
 
     def stop(self):
         self.break_loop = True
@@ -383,9 +383,9 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         self.thread.started.connect(self.worker.run_model)
         self.thread.start()
 
-    def update_progress(self, repetition, iteration, start_time):
+    def update_progress(self, variation, repetition, iteration, start_time):
 
-        value = repetition * self.settings.iterations + iteration
+        value = variation * repetition * self.settings.iterations + iteration
 
         self.progress_dialog.setValue(value)
         repetitions = self.settings.repetitions
@@ -413,7 +413,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
             button_reply = QtWidgets.QMessageBox.question(
                 self,
                 "Done",
-                "Done executing. Open the result directory?",
+                "Done running the calculations. Open the result directory?",
                 QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
                 QtWidgets.QMessageBox.No,
             )
@@ -423,7 +423,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
     def _clean_progress_dialog(self):
         self.progress_dialog.setValue(
-            self.settings.iterations * self.settings.repetitions
+            self.settings.iterations * self.settings.repetitions * len(self.settings.model_variations)
         )
         self.progress_dialog.hide()
 
@@ -431,34 +431,29 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         # store the current state of the app
         self.save_settings()
 
-        # create a whitelist for the selected actors
+        self.setWindowTitle("Decide Exchange Model")
 
-        selected_actors = self.actor_widget.get_selected()
-        selected_actors.sort()
-
-        actors_subset = "-".join(selected_actors)
-
-        self.setWindowTitle("Decide Exchange Model {}".format(actors_subset))
-
-        self.show_progress_dialog(actors_subset)
+        self.show_progress_dialog()
 
         self.run_safe()
 
-    def show_progress_dialog(self, title):
+    def show_progress_dialog(self):
 
         self.progress_dialog = QtWidgets.QProgressDialog(
             "Task in progress",
             "Cancel",
             0,
-            self.settings.repetitions * self.settings.iterations,
+            self.settings.repetitions * self.settings.iterations * len(self.settings.model_variations),
             self,
         )
+
+        self.progress_dialog.setWindowTitle('Progress')
 
         bar = QtWidgets.QProgressBar(self.progress_dialog)
         bar.setTextVisible(True)
         bar.setFormat("%v/%m (%p%)")
         bar.setMinimum(0)
-        bar.setMaximum(self.settings.iterations * self.settings.repetitions)
+        bar.setMaximum(self.settings.iterations * self.settings.repetitions * len(self.settings.model_variations))
         self.progress_dialog.setBar(bar)
 
         self.progress_dialog.canceled.connect(self.cancel)

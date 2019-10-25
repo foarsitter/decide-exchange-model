@@ -243,24 +243,17 @@ class MenuBar(QtWidgets.QMenuBar):
         self.open_data_view = QtWidgets.QAction("New data file", self)
         self.open_data_view.triggered.connect(self.main_window.open_data_view)
 
-        open_action = QtWidgets.QAction("&Open", self)
+        open_action = QtWidgets.QAction("&Open data file", self)
         open_action.triggered.connect(self.main_window.open_input_data)
 
-        edit_action = QtWidgets.QAction("&Edit input data", self)
+        edit_action = QtWidgets.QAction("&Edit data file", self)
         edit_action.triggered.connect(self.main_window.open_current_input_window_with_current_data)
 
         save_settings = QtWidgets.QAction("&Save settings", self)
         save_settings.triggered.connect(self.main_window.save_settings)
 
-        file_menu.addAction(open_action)
-        file_menu.addAction(edit_action)
-        file_menu.addAction(save_settings)
-        file_menu.addSeparator()
-        file_menu.addAction(self.open_data_view)
-
         output_dir_action = QtWidgets.QAction("&Set output directory", self)
         output_dir_action.triggered.connect(self.main_window.select_output_dir)
-        file_menu.addAction(output_dir_action)
 
         # output_menu.addAction(self.issue_development_csv)
         # output_menu.addAction(self.externalities_csv)
@@ -273,8 +266,19 @@ class MenuBar(QtWidgets.QMenuBar):
         # output_menu.addAction(output_dir_action)
 
         # debug = self.addMenu("Debug")
-        # log_action = QtWidgets.QAction("Show log window", self)
-        # log_action.triggered.connect(self.main_window.show_debug_dialog)
+        log_action = QtWidgets.QAction("Show log window", self)
+        log_action.triggered.connect(self.main_window.show_debug_dialog)
+
+        file_menu.addAction(open_action)
+        self.recently_opened_menu(file_menu)
+        file_menu.addAction(self.open_data_view)
+        file_menu.addSeparator()
+        file_menu.addAction(edit_action)
+        file_menu.addSeparator()
+        file_menu.addAction(save_settings)
+        file_menu.addAction(output_dir_action)
+        file_menu.addSeparator()
+        file_menu.addAction(log_action)
         # debug.addAction(log_action)
 
         # error_report = QtWidgets.QAction("Send error report", self)
@@ -284,8 +288,6 @@ class MenuBar(QtWidgets.QMenuBar):
         # error_report_2 = QtWidgets.QAction("Trigger error", self)
         # error_report_2.triggered.connect(self.trigger_error)
         # debug.addAction(error_report_2)
-
-        self.recently_opened_menu(file_menu)
 
     def recently_opened_menu(self, menu: QtWidgets.QMenu):
         sub_menu = QtWidgets.QMenu("Recently opened", menu)

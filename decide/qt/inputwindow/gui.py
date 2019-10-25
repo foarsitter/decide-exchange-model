@@ -2,8 +2,8 @@ import logging
 import os
 import sys
 
+import requests
 from PyQt5 import QtWidgets, QtGui
-
 from decide import log_filename, input_folder
 from decide.data.reader import InputDataFile
 from decide.qt.inputwindow import signals
@@ -95,15 +95,27 @@ class InputWindow(QtWidgets.QMainWindow):
         file_menu.addAction(save_action)
 
     def load_copenhagen(self):
-        self.load_input_file("copenhagen.csv")
+        self.load_input_file(
+            "https://raw.githubusercontent.com/foarsitter/decide-exchange-model/master/data/input/copenhagen.csv")
 
     def load_sample_data(self):
-        self.load_input_file("sample_data.txt")
+        self.load_input_file(
+            "https://raw.githubusercontent.com/foarsitter/decide-exchange-model/master/data/input/sample_data.txt")
 
     def load_cop21(self):
-        self.load_input_file("cop21.csv")
+        self.load_input_file(
+            "https://raw.githubusercontent.com/foarsitter/decide-exchange-model/master/data/input/cop21.csv"
+        )
 
     def load_input_file(self, file_path):
+
+        if file_path.startswith('http'):
+            response = requests.get(file_path)
+
+            file_path = file_path.split('/')[-1]
+
+            with open(os.path.join(input_folder, file_path), 'wb') as file:
+                file.write(response.content)
 
         file = os.path.join(input_folder, file_path)
 

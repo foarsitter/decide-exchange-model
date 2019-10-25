@@ -149,7 +149,7 @@ class ProgramSettings(QtCore.QObject):
         self.externalities_csv = True
         self.exchanges_csv = True
         self.voting_positions = True
-        self.summary_only = True
+        self.summary_only = False
 
         self.selected_actors = []
         self.selected_issues = []
