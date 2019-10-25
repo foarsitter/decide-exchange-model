@@ -103,9 +103,10 @@ class Worker(QtCore.QObject):
                 if self.break_loop:
                     break
 
-            event_handler.after_repetitions()
+            if not self.break_loop:
+                event_handler.after_repetitions()
 
-            logging.info('tie count is {}'.format(model.tie_count))
+                logging.info('tie count is {}'.format(model.tie_count))
 
         self.finished.emit(parent_output_directory)
 
