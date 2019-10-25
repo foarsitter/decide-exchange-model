@@ -133,6 +133,9 @@ class Observable(Observer):
     def update_output_directory(self, output_directory):
         self.output_directory = output_directory
 
+        for observer in self.__observers:
+            observer.output_directory = output_directory
+
     def register(self, observer):
         self.__observers.append(observer)
 
