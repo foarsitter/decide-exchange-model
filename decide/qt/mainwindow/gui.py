@@ -7,8 +7,7 @@ import xml.etree.cElementTree as ET
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 from decide import log_filename
-from decide.cli import init_output_directory, float_range
-from decide.data.database import connection
+from decide.cli import init_output_directory
 from decide.data.modelfactory import ModelFactory
 from decide.data.reader import InputDataFile
 from decide.model.equalgain import EqualGainModel
@@ -23,7 +22,6 @@ from decide.qt.mainwindow.settings import ProgramSettings
 from decide.qt.mainwindow.settings import SettingsFormWidget
 from decide.qt.mainwindow.widgets import ActorWidget, IssueWidget, SummaryWidget, ActorIssueWidget, MenuBar
 from decide.qt.utils import show_user_error
-from decide.results import externalities
 
 
 class Worker(QtCore.QObject):
@@ -43,55 +41,41 @@ class Worker(QtCore.QObject):
     def run_model(self):
         settings = self.settings
 
-        if settings.start == settings.stop:
-            p_values = [str(settings.start)]
-        else:
-            p_values = [
-                str(round(p, 2))
-                for p in float_range(
-                    start=settings.start, step=settings.step, stop=settings.stop
-                )
-            ]
-
-        repetitions = settings.repetitions
-        iterations = settings.iterations
-
-        input_filename = settings.input_filename
-
-        data_set_name = os.path.splitext(os.path.basename(input_filename))[0]
-
         factory = ModelFactory(
-            date_file=InputDataFile.open(input_filename),
+            date_file=InputDataFile.open(settings.input_filename),
             actor_whitelist=settings.selected_actors,
             issue_whitelist=settings.selected_issues,
         )
 
-        model_run_ids = []
+        parent_output_directory = init_output_directory(
+            settings.output_directory,
+            settings.data_set_name,
+        )
 
-        for p in p_values:
+        model = factory(model_klass=EqualGainModel, randomized_value='0.0')
+
+        event_handler = init_event_handlers(model, parent_output_directory, settings)
+
+        event_handler.before_model()
+
+        for p in settings.model_variations:
 
             output_directory = init_output_directory(
                 settings.output_directory,
-                data_set_name,
+                settings.data_set_name,
                 p
             )
 
-            model = factory(model_klass=EqualGainModel, randomized_value=p)
-
-            event_handler = init_event_handlers(model, output_directory, settings)
-
-            if settings.output_sqlite:
-                sql_observer = SQLiteObserver(event_handler, settings.output_directory)
-            else:
-                sql_observer = None
+            event_handler.update_output_directory(output_directory)
 
             event_handler.before_repetitions(
-                repetitions=repetitions, iterations=iterations
+                repetitions=settings.repetitions,
+                iterations=settings.iterations
             )
 
             start_time = time.time()
 
-            for repetition in range(repetitions):
+            for repetition in range(settings.repetitions):
 
                 model = factory(model_klass=EqualGainModel, randomized_value=p)
 
@@ -101,12 +85,11 @@ class Worker(QtCore.QObject):
 
                 event_handler.before_iterations(repetition)
 
-                for iteration_number in range(iterations):
+                for iteration_number in range(settings.iterations):
 
                     if self.break_loop:
                         break
 
-                    logging.info("round {0}.{1}".format(repetition, iteration_number))
                     self.update.emit(repetition, iteration_number, start_time)
 
                     model_loop.loop()
@@ -118,17 +101,9 @@ class Worker(QtCore.QObject):
 
             event_handler.after_repetitions()
 
-            if sql_observer:
-                model_run_ids.append(sql_observer.model_run.id)
-
             self.finished.emit(output_directory, model.tie_count)
 
-        if len(model_run_ids) > 0:
-            externalities.write_summary_result(
-                conn=connection,
-                model_run_ids=model_run_ids,
-                output_directory=init_output_directory(settings.output_directory, data_set_name),
-            )
+        event_handler.after_model()
 
     def stop(self):
         self.break_loop = True
@@ -157,8 +132,11 @@ def init_event_handlers(model, output_directory, settings):
 
     event_handler = Observable(model_ref=model, output_directory=output_directory)
 
+    if settings.output_sqlite:
+        SQLiteObserver(event_handler, settings.output_directory)
+
     if settings.externalities_csv:
-        Externalities(event_handler, settings)
+        Externalities(event_handler, settings.summary_only)
 
     if settings.exchanges_csv:
         ExchangesWriter(event_handler, settings.summary_only)

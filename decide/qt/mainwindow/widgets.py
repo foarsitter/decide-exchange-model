@@ -1,8 +1,6 @@
 from typing import List
 
 from PyQt5 import QtWidgets, QtCore
-
-from decide.cli import float_range
 from decide.data import types
 from decide.qt import utils
 
@@ -143,11 +141,10 @@ class SummaryWidget(DynamicFormLayout):
             self, main_window, settings, data, actor_widget, issue_widget, *args, **kwargs
     ):
         """
-
-        :type settings: ProgramSettings
-        :type data: ProgramData
-        :type actor_widget: ActorWidget
-        :type issue_widget: IssueWidget
+        :type settings: decide.qt.mainwindow.settings.ProgramSettings
+        :type data: decide.qt.mainwindow.gui.ProgramData
+        :type actor_widget: decide.qt.mainwindow.widgets.ActorWidget
+        :type issue_widget: decide.qt.mainwindow.widgets.IssueWidget
         """
         super(SummaryWidget, self).__init__(main_window, *args, **kwargs)
 
@@ -164,18 +161,8 @@ class SummaryWidget(DynamicFormLayout):
         self.add_text_row("Output directory", self.settings.output_directory, self.test_callback)
 
         settings = self.main_window.settings  # type: ProgramSettings
-        settings_widget = self.main_window.settings_widget  # type: SettingsFormWidget
 
-        p_values = [
-            str(round(p, 2))
-            for p in float_range(
-                start=float(settings_widget.start.value()),
-                step=float(settings_widget.step.value()),
-                stop=float(settings_widget.stop.value()),
-            )
-        ]
-
-        self.add_text_row("p-values", ", ".join(p_values))
+        self.add_text_row("p-values", ", ".join(settings.model_variations))
 
         output_selection = []
 

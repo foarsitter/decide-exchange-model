@@ -24,15 +24,19 @@ class Observer(object):
 
     def __init__(self, observable: "Observable"):
         """
-        Init
-        :param observable: Observable reference to the main event handler
-        :param model_ref:  AbstractModel this reference is almost always needed
+        :type observable: Observable reference to the main event handler
         """
         observable.register(self)
         self.model_ref = observable.model_ref
         self.output_directory = observable.output_directory
 
     def update(self, observable, notification_type, **kwargs):
+        pass
+
+    def before_model(self):
+        pass
+
+    def after_model(self):
         pass
 
     def before_loop(self, iteration: int, repetition: int):
@@ -132,6 +136,10 @@ class Observable(Observer):
     def register(self, observer):
         self.__observers.append(observer)
 
+    def before_model(self):
+        for observer in self.__observers:
+            observer.before_model()
+
     def before_repetitions(self, repetitions, iterations):
         for observer in self.__observers:
             observer.before_repetitions(repetitions, iterations)
@@ -165,3 +173,7 @@ class Observable(Observer):
     def after_repetitions(self):
         for observer in self.__observers:
             observer.after_repetitions()
+
+    def after_model(self):
+        for observer in self.__observers:
+            observer.after_model()

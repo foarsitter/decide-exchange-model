@@ -22,12 +22,17 @@ def test_load_settings(qtbot):
 
     assert widget.salience_weight.value() == salience_weight
 
-# def test_save_settings(qtbot):
-#     """
-#     Can we save settings from the widget to ProgramSettings
-#     """
-#
-#     settings = SettingsFormWidget(None, None)
-#     settings.load()
-#
-#     pytest.fail()
+
+def test_model_variations(qtbot):
+    program_settings = ProgramSettings()
+
+    program_settings.start = 0.0
+    program_settings.stop = 0.0
+
+    assert program_settings.model_variations == ['0.00']
+
+    program_settings.start = 0.0
+    program_settings.step = 0.05
+    program_settings.stop = 0.10
+
+    assert program_settings.model_variations == ['0.00', '0.05', '0.10']

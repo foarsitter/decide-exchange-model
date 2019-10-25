@@ -3,8 +3,8 @@ import xml.etree.cElementTree as ET
 
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
-
 from decide import decide_base_path
+from decide.cli import float_range
 
 
 class SettingsFormWidget(QtWidgets.QFormLayout):
@@ -100,6 +100,7 @@ class SettingsFormWidget(QtWidgets.QFormLayout):
                 setattr(self.settings, key, value.value())
 
     def state_changed(self):
+        self.save()
         self.main_window.overview_widget.update_widget()
 
 
@@ -215,3 +216,29 @@ class ProgramSettings(QtCore.QObject):
                     )
                 else:
                     setattr(self, elm.tag, str(elm.text))
+
+    @property
+    def data_set_name(self):
+        return os.path.splitext(os.path.basename(self.input_filename))[0]
+
+    @property
+    def model_variations(self):
+        """
+        Takes start, step and stop and creates a list of values
+        :rtype: list of str
+        """
+
+        if self.start and self.stop and self.start == self.stop:
+            return ['{:.2f}'.format(self.start)]
+        else:
+            values = [
+                '{:.2f}'.format(round(p, 2))
+                for p in float_range(
+                    start=self.start, step=self.step, stop=self.stop
+                )
+            ]
+
+            if len(values) > 0:
+                return values
+            else:
+                return ['0.0']

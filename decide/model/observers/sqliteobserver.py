@@ -2,12 +2,12 @@ import datetime
 from collections import defaultdict
 from typing import List
 
+from decide import results
 from decide.data import database as db
 from decide.data.database import connection
 from decide.model import calculations
 from decide.model.base import AbstractExchange, Actor, Issue, AbstractExchangeActor
 from decide.model.observers.observer import Observer, Observable
-from decide import results
 
 
 class SQLiteObserver(Observer):
@@ -18,48 +18,42 @@ class SQLiteObserver(Observer):
     def __init__(self, observable: "Observable", output_directory: str):
         super().__init__(observable)
 
-        self.data_set = None
         self.repetitions = {}
         self.iterations = defaultdict(lambda: {})
+
         self.actors = {}
         self.issues = {}
+        self.model_run_ids = []
+        self.data_set = None
         self.model_run = None
 
         if not output_directory.endswith(".db") and output_directory != ":memory:":
-            output_directory += "/decide-data_1.db"
-            print("logging to database {}".format(output_directory))
+            output_directory += "/decide-data.sqlite.db"
+            self.log("logging to database {}".format(output_directory))
 
         if not output_directory.startswith('sqlite:///'):
             output_directory = "sqlite:///" + output_directory
 
-        self.manager = db.Manager(output_directory)
-        self.manager.init_database()
-        self.manager.create_tables()
+        self.database_path = output_directory
 
-    def before_repetitions(self, repetitions, iterations):
-        """
-        Create a new data set when needed and add all the actors
+    def before_model(self):
 
-        """
-        # create a data set row or find existing one
-        # add the Issues and Actors when they are not present
+        # initialize the database
+        manager = db.Manager(self.database_path)
+        manager.init_database()
+        manager.create_tables()
+
         with db.connection.atomic():
 
             data_set, created = db.DataSet.get_or_create(
                 name=self.model_ref.data_set_name
             )
-            self.data_set = data_set
 
-            self.model_run = db.ModelRun.create(
-                p=self.model_ref.randomized_value,
-                iterations=iterations,
-                repetitions=repetitions,
-                data_set=data_set,
-            )
+            self.data_set = data_set
 
             for actor in self.model_ref.actors.values():  # type: Actor
                 actor, created = db.Actor.get_or_create(
-                    name=actor.name, key=actor.actor_id, data_set=data_set
+                    name=actor.name, key=actor.actor_id, data_set=self.data_set
                 )
                 self.actors[actor] = actor
 
@@ -69,9 +63,30 @@ class SQLiteObserver(Observer):
                     key=issue.issue_id,
                     lower=issue.lower,
                     upper=issue.upper,
-                    data_set=data_set,
+                    data_set=self.data_set,
                 )
                 self.issues[issue] = issue
+
+    def before_repetitions(self, repetitions, iterations):
+        """
+        Create a new data set when needed and add all the actors
+
+        """
+        # setup
+        self.repetitions = {}
+        self.iterations = defaultdict(lambda: {})
+
+        # create a data set row or find existing one
+        # add the Issues and Actors when they are not present
+        with db.connection.atomic():
+            self.model_run = db.ModelRun.create(
+                p=self.model_ref.randomized_value,
+                iterations=iterations,
+                repetitions=repetitions,
+                data_set=self.data_set,
+            )
+
+
 
     def before_iterations(self, repetition):
         with db.connection.atomic():
@@ -116,6 +131,7 @@ class SQLiteObserver(Observer):
     def after_repetitions(self):
         self.model_run.finished_at = datetime.datetime.now()
         self.model_run.save()
+        self.model_run_ids.append(self.model_run.id)
 
         results.covariance.write_result(connection, self.model_run.id, self.output_directory)
 
