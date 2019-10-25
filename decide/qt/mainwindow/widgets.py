@@ -222,6 +222,7 @@ class MenuBar(QtWidgets.QMenuBar):
 
         self.output_sqlite = QtWidgets.QAction("&sqlite", self)
         self.output_sqlite.setCheckable(True)
+        self.output_sqlite.setChecked(True)
 
         self.issue_development_csv = QtWidgets.QAction("Issue development (.csv)", self)
         self.issue_development_csv.setCheckable(True)
@@ -229,12 +230,15 @@ class MenuBar(QtWidgets.QMenuBar):
 
         self.externalities_csv = QtWidgets.QAction("Externalities (.csv)", self)
         self.externalities_csv.setCheckable(True)
+        self.externalities_csv.setChecked(True)
 
         self.exchanges_csv = QtWidgets.QAction("Exchanges (.csv)", self)
         self.exchanges_csv.setCheckable(True)
+        self.exchanges_csv.setChecked(True)
 
         self.voting_positions = QtWidgets.QAction("Show voting positions", self)
         self.voting_positions.setCheckable(True)
+        self.voting_positions.setChecked(True)
 
         self.summary_only = QtWidgets.QAction("Summary only (.csv)", self)
         self.summary_only.setCheckable(True)

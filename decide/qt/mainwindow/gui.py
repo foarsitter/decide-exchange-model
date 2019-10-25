@@ -143,17 +143,10 @@ def init_event_handlers(model, output_directory, settings):
 
     Logger(event_handler)
 
-    if settings.output_sqlite:
-        SQLiteObserver(event_handler, settings.output_directory)
-
-    if settings.externalities_csv:
-        Externalities(event_handler, settings.summary_only)
-
-    if settings.exchanges_csv:
-        ExchangesWriter(event_handler, settings.summary_only)
-
-    if settings.issue_development_csv:
-        IssueDevelopment(event_handler, summary_only=settings.summary_only)
+    SQLiteObserver(event_handler, settings.output_directory)
+    Externalities(event_handler, False)
+    ExchangesWriter(event_handler, False)
+    IssueDevelopment(event_handler, False)
 
     return event_handler
 
