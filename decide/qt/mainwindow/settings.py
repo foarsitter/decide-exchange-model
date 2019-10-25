@@ -144,11 +144,11 @@ class ProgramSettings(QtCore.QObject):
 
         self.version = 1
 
-        self.output_sqlite = False
+        self.output_sqlite = True
         self.issue_development_csv = True
-        self.externalities_csv = False
-        self.exchanges_csv = False
-        self.voting_positions = False
+        self.externalities_csv = True
+        self.exchanges_csv = True
+        self.voting_positions = True
         self.summary_only = True
 
         self.selected_actors = []

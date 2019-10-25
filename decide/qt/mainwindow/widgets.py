@@ -184,10 +184,10 @@ class SummaryWidget(DynamicFormLayout):
         if settings.voting_positions:
             output_selection.append("Show Voting positions [.csv]")
 
-        self.add_text_row("Output settings", output_selection[0])
-
-        for setting in output_selection[-1:]:
-            self.add_text_row("", setting)
+        # self.add_text_row("Output settings", output_selection[0])
+        #
+        # for setting in output_selection[-1:]:
+        #     self.add_text_row("", setting)
 
         self.main_window.set_start_button_state()
 
@@ -218,7 +218,7 @@ class MenuBar(QtWidgets.QMenuBar):
         self.settings = main_window.settings
 
         file_menu = self.addMenu("&File")
-        output_menu = self.addMenu("&Output")
+        # output_menu = self.addMenu("&Output")
 
         self.output_sqlite = QtWidgets.QAction("&sqlite", self)
         self.output_sqlite.setCheckable(True)
@@ -240,7 +240,7 @@ class MenuBar(QtWidgets.QMenuBar):
         self.summary_only.setCheckable(True)
         self.summary_only.setChecked(True)
 
-        self.open_data_view = QtWidgets.QAction("Data view", self)
+        self.open_data_view = QtWidgets.QAction("New data file", self)
         self.open_data_view.triggered.connect(self.main_window.open_data_view)
 
         open_action = QtWidgets.QAction("&Open", self)
@@ -258,31 +258,32 @@ class MenuBar(QtWidgets.QMenuBar):
         file_menu.addSeparator()
         file_menu.addAction(self.open_data_view)
 
-        output_dir_action = QtWidgets.QAction("&Directory", self)
+        output_dir_action = QtWidgets.QAction("&Set output directory", self)
         output_dir_action.triggered.connect(self.main_window.select_output_dir)
+        file_menu.addAction(output_dir_action)
 
-        output_menu.addAction(self.issue_development_csv)
-        output_menu.addAction(self.externalities_csv)
-        output_menu.addAction(self.exchanges_csv)
-        output_menu.addSeparator()
-        output_menu.addAction(self.summary_only)
-        output_menu.addAction(self.output_sqlite)
-        output_menu.addAction(self.voting_positions)
-        output_menu.addSeparator()
-        output_menu.addAction(output_dir_action)
+        # output_menu.addAction(self.issue_development_csv)
+        # output_menu.addAction(self.externalities_csv)
+        # output_menu.addAction(self.exchanges_csv)
+        # output_menu.addSeparator()
+        # output_menu.addAction(self.summary_only)
+        # output_menu.addAction(self.output_sqlite)
+        # output_menu.addAction(self.voting_positions)
+        # output_menu.addSeparator()
+        # output_menu.addAction(output_dir_action)
 
-        debug = self.addMenu("Debug")
-        log_action = QtWidgets.QAction("Show log window", self)
-        log_action.triggered.connect(self.main_window.show_debug_dialog)
-        debug.addAction(log_action)
+        # debug = self.addMenu("Debug")
+        # log_action = QtWidgets.QAction("Show log window", self)
+        # log_action.triggered.connect(self.main_window.show_debug_dialog)
+        # debug.addAction(log_action)
 
-        error_report = QtWidgets.QAction("Send error report", self)
-        error_report.triggered.connect(self.main_window.show_error_report_dialog)
-        debug.addAction(error_report)
+        # error_report = QtWidgets.QAction("Send error report", self)
+        # error_report.triggered.connect(self.main_window.show_error_report_dialog)
+        # debug.addAction(error_report)
 
-        error_report_2 = QtWidgets.QAction("Trigger error", self)
-        error_report_2.triggered.connect(self.trigger_error)
-        debug.addAction(error_report_2)
+        # error_report_2 = QtWidgets.QAction("Trigger error", self)
+        # error_report_2.triggered.connect(self.trigger_error)
+        # debug.addAction(error_report_2)
 
         self.recently_opened_menu(file_menu)
 
