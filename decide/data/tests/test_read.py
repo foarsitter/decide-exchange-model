@@ -2,9 +2,9 @@ import os
 
 import pytest
 import typesystem
+from decide import input_folder
 from typesystem import ValidationError
 
-from decide import input_folder
 from .. import reader, types
 
 
@@ -17,6 +17,7 @@ def test_cop2():
 
 def test_validation_error():
     data = [
+        [types.PartialActor.starts_with, "Actor", "Actor description"],
         [types.PartialIssue.starts_with, 'Issue', 'Issue description'],
         [types.IssuePosition.starts_with, 'Issue', 0, 'Issue position description'],
         [types.IssuePosition.starts_with, 'Issue', 100, 'Issue position description'],

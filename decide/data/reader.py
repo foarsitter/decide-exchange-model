@@ -95,17 +95,20 @@ class InputDataFile:
         if IssuePosition in self.data:
 
             for issue_position in self.issue_positions.values():
-                issue = self.issues[issue_position.issue]
 
-                if issue.lower is None:
-                    issue.lower = issue_position.position
-                elif issue_position.position < issue.lower:
-                    issue.lower = issue_position
+                if issue_position.issue in self.issues:
 
-                if issue.upper is None:
-                    issue.upper = issue_position.position
-                elif issue_position.position > issue.upper:
-                    issue.upper = issue_position.position
+                    issue = self.issues[issue_position.issue]
+
+                    if issue.lower is None:
+                        issue.lower = issue_position.position
+                    elif issue_position.position < issue.lower:
+                        issue.lower = issue_position
+
+                    if issue.upper is None:
+                        issue.upper = issue_position.position
+                    elif issue_position.position > issue.upper:
+                        issue.upper = issue_position.position
 
         self.set_default_issue_positions()
 

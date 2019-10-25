@@ -35,7 +35,7 @@
 #M	extra-investering	50	Voor een beperkte investering, ~ 3 milj.		
 #M	extra-investering	75	Voor een substantiele investering, ~ 5 milj.		
 #M	extra-investering	100	Voor een forse investering, ~ 7 milj.		
-#P	kleine-of-grote-ring	Issue 6: Moet er gekozen worden tussen een kleine ring  om het centrum of een grote ring?			
+#P	kleine-of-grote-ring	Issue 6: Moet er gekozen worden tussen een kleine ring  om het centrum of een grote ring?
 #M	kleine-of-grote-ring	0	Sterk voor kleine ring		
 #M	kleine-of-grote-ring	25	Voor kleine ring		
 #M	kleine-of-grote-ring	50	Geen voorkeur		
