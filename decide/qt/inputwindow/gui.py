@@ -4,6 +4,7 @@ import sys
 
 import requests
 from PyQt5 import QtWidgets, QtGui
+
 from decide import log_filename, input_folder
 from decide.data.reader import InputDataFile
 from decide.qt.inputwindow import signals
@@ -222,7 +223,11 @@ class InputWindow(QtWidgets.QMainWindow):
 
         with open(filename, "w") as file:
 
+            powers = {}
+
             for actor in self.actor_widget.actor_issues.values():
+                powers[actor.name] = actor.power
+
                 file.write(
                     "\t".join(
                         [
@@ -269,7 +274,7 @@ class InputWindow(QtWidgets.QMainWindow):
                                 esc(actor_issue.issue.name),
                                 normalize(actor_issue.position),
                                 normalize(actor_issue.salience),
-                                normalize(actor_issue.power),
+                                normalize(powers[actor_issue.actor.name]),
                                 "\n",
                             ]
                         )
