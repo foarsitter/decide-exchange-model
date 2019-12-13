@@ -145,15 +145,19 @@ class InputWindow(QtWidgets.QMainWindow):
 
     def save_location(self):
 
-        button_reply = QtWidgets.QMessageBox.question(
-            self,
-            "Save",
-            "Overwrite existing file {}".format(
-                self.input_filename
-            ),
-            QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
-            QtWidgets.QMessageBox.No,
-        )
+        if self.input_filename:
+
+            button_reply = QtWidgets.QMessageBox.question(
+                self,
+                "Save",
+                "Overwrite existing file {}".format(
+                    self.input_filename
+                ),
+                QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
+                QtWidgets.QMessageBox.No,
+            )
+        else:
+            button_reply = QtWidgets.QMessageBox.No
 
         if button_reply == QtWidgets.QMessageBox.Yes:
             file_name = self.input_filename
