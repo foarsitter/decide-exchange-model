@@ -38,7 +38,7 @@ class IssueDescription(CSVColumn, typesystem.Schema):
 class PartialActor(CSVColumn, typesystem.Schema):
     starts_with = "#A"
     id = typesystem.String()
-    fullname = typesystem.String()
+    fullname = typesystem.String(allow_blank=True)
     comment = typesystem.String(allow_blank=True)
 
     def __hash__(self):
