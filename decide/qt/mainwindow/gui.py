@@ -341,30 +341,30 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
     def init_ui_data(self, file_name):
 
-        if not os.path.isfile(file_name):
-            show_user_error(self, "Selected file does not exists")
-        else:
-
-            data_file = InputDataFile.open(file_name)
-
-            if data_file.is_valid:
-
-                self.data.actors = data_file.actors
-                self.data.issues = data_file.issues
-                self.data.actor_issues = data_file.actor_issues
-                self.update_data_widgets()
-
-                # update the settings
-                self.settings.set_input_filename(file_name)
-                self.settings.save()
+        if file_name:
+            if not os.path.isfile(file_name):
+                show_user_error(self, "Selected file does not exists")
             else:
-                show_user_error(
-                    self,
-                    "Your input file contains errors. The red rows are not valid. Hover with your move over the row for more information.",
-                )
-                from decide.qt.mainwindow.errorgrid import ErrorGrid
+                data_file = InputDataFile.open(file_name)
 
-                ex = ErrorGrid(data_file, self)
+                if data_file.is_valid:
+
+                    self.data.actors = data_file.actors
+                    self.data.issues = data_file.issues
+                    self.data.actor_issues = data_file.actor_issues
+                    self.update_data_widgets()
+
+                    # update the settings
+                    self.settings.set_input_filename(file_name)
+                    self.settings.save()
+                else:
+                    show_user_error(
+                        self,
+                        "Your input file contains errors. The red rows are not valid. Hover with your move over the row for more information.",
+                    )
+                    from decide.qt.mainwindow.errorgrid import ErrorGrid
+
+                    ex = ErrorGrid(data_file, self)
 
     def run_safe(self):
 
