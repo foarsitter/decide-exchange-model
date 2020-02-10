@@ -1,6 +1,9 @@
+import logging
 import os
 
 import pandas as pd
+from pandas.core.base import DataError
+
 from decide import data_folder
 from decide.data.database import connection, Manager
 from decide.results.helpers import list_to_sql_param, handle_data_frame
@@ -31,35 +34,56 @@ def write_summary_result(conn, model_run_ids, output_directory):
         index_col=['p'],
     )
 
-    handle_data_frame(
-        df=pd.pivot_table(df, index=['p'], columns=['actor'], values=['inner_positive']),
-        file_name=os.path.join(output_directory, 'externalities_inner_positive.{}'),
-        title='Inner positive externalities',
-    )
+    try:
+        handle_data_frame(
+            df=pd.pivot_table(df, index=['p'], columns=['actor'], values=['inner_positive']),
+            file_name=os.path.join(output_directory, 'externalities_inner_positive.{}'),
+            title='Inner positive externalities',
+        )
+    except DataError as ex:
+        logging.exception(ex)
+        print(ex)
+    try:
+        handle_data_frame(
+            df=pd.pivot_table(df, index=['p'], columns=['actor'], values=['inner_negative']),
+            file_name=os.path.join(output_directory, 'externalities_inner_negative.{}'),
+            title='Inner negative externalities',
+        )
+    except DataError as ex:
+        logging.exception(ex)
+        print(ex)
+    try:
 
-    handle_data_frame(
-        df=pd.pivot_table(df, index=['p'], columns=['actor'], values=['inner_negative']),
-        file_name=os.path.join(output_directory, 'externalities_inner_negative.{}'),
-        title='Inner negative externalities',
-    )
+        handle_data_frame(
+            df=pd.pivot_table(df, index=['p'], columns=['actor'], values=['outer_positive']),
+            file_name=os.path.join(output_directory, 'externalities_outer_positive.{}'),
+            title='Outer positive externalities',
+        )
 
-    handle_data_frame(
-        df=pd.pivot_table(df, index=['p'], columns=['actor'], values=['outer_positive']),
-        file_name=os.path.join(output_directory, 'externalities_outer_positive.{}'),
-        title='Outer positive externalities',
-    )
+    except DataError as ex:
+        logging.exception(ex)
+        print(ex)
+    try:
 
-    handle_data_frame(
-        df=pd.pivot_table(df, index=['p'], columns=['actor'], values=['outer_negative']),
-        file_name=os.path.join(output_directory, 'externalities_outer_negative.{}'),
-        title='Outer negative externalities',
-    )
+        handle_data_frame(
+            df=pd.pivot_table(df, index=['p'], columns=['actor'], values=['outer_negative']),
+            file_name=os.path.join(output_directory, 'externalities_outer_negative.{}'),
+            title='Outer negative externalities',
+        )
 
-    handle_data_frame(
-        df=pd.pivot_table(df, index=['p'], columns=['actor'], values=['own']),
-        file_name=os.path.join(output_directory, 'externalities_own.{}'),
-        title='Own utility sun',
-    )
+    except DataError as ex:
+        logging.exception(ex)
+        print(ex)
+    try:
+
+        handle_data_frame(
+            df=pd.pivot_table(df, index=['p'], columns=['actor'], values=['own']),
+            file_name=os.path.join(output_directory, 'externalities_own.{}'),
+            title='Own utility sun',
+        )
+    except DataError as ex:
+        logging.exception(ex)
+        print(ex)
 
 
 if __name__ == '__main__':

@@ -515,7 +515,7 @@ class EqualGainExchange(base.AbstractExchange):
             exchange.i.supply.power,
             exchange.i.supply.salience,
             exchange.i.demand.salience,
-            exchange.i.supply.salience / exchange.i.demand.salience,
+            zero_on_exception(exchange.i.supply.salience, exchange.i.demand.salience),
             exchange.i.supply.position,
             exchange.i.move,
             exchange.i.y,
@@ -537,7 +537,7 @@ class EqualGainExchange(base.AbstractExchange):
             exchange.j.supply.power,
             exchange.j.supply.salience,
             exchange.j.demand.salience,
-            exchange.j.supply.salience / exchange.j.demand.salience,
+            zero_on_exception(exchange.j.supply.salience , exchange.j.demand.salience),
             exchange.j.supply.position,
             exchange.j.move,
             exchange.j.y,
@@ -616,3 +616,10 @@ class EqualGainModel(base.AbstractModel):
     @staticmethod
     def new_exchange_factory(i, j, p, q, model, groups):
         return EqualGainExchange(i, j, p, q, model, groups)
+
+
+def zero_on_exception(a, b):
+    try:
+        return a / b
+    except:
+        return 0
