@@ -1,6 +1,9 @@
+import logging
 import os
 
 import pandas as pd
+from pandas.core.base import DataError
+
 from decide import data_folder
 from decide.data.database import connection, Manager
 from decide.results.helpers import list_to_sql_param, handle_data_frame
@@ -34,23 +37,31 @@ def write_summary_result(conn, model_run_ids, output_directory):
 
     file_name = os.path.join(output_directory, 'exchanges_count.{}')
 
-    handle_data_frame(
-        df=pd.pivot_table(df, index=['p'], columns=['actor'], values=['exchanges_count']),
-        file_name=file_name,
-        title='AVG count of the executed exchanges for a repetition'
-    )
+    try:
 
-    handle_data_frame(
-        df=pd.pivot_table(df, index=['p'], columns=['actor'], values=['utility_sum']),
-        file_name=os.path.join(output_directory, 'expected_utility_sum.{}'),
-        title='AVG Sum of the expected utility per repetition'
-    )
+        handle_data_frame(
+            df=pd.pivot_table(df, index=['p'], columns=['actor'], values=['exchanges_count']),
+            file_name=file_name,
+            title='AVG count of the executed exchanges for a repetition'
+        )
+    except DataError as ex:
+        logging.exception(ex)
+        print(ex)
+    try:
+        handle_data_frame(
+            df=pd.pivot_table(df, index=['p'], columns=['actor'], values=['utility_sum']),
+            file_name=os.path.join(output_directory, 'expected_utility_sum.{}'),
+            title='AVG Sum of the expected utility per repetition'
+        )
 
-    handle_data_frame(
-        df=pd.pivot_table(df, index=['p'], columns=['actor'], values=['utility_avg']),
-        file_name=os.path.join(output_directory, 'expected_utility_avg.{}'),
-        title='Average of the expected utility'
-    )
+        handle_data_frame(
+            df=pd.pivot_table(df, index=['p'], columns=['actor'], values=['utility_avg']),
+            file_name=os.path.join(output_directory, 'expected_utility_avg.{}'),
+            title='Average of the expected utility'
+        )
+    except DataError as ex:
+        logging.exception(ex)
+        print(ex)
 
 
 if __name__ == '__main__':

@@ -51,7 +51,8 @@ class InputDataFile:
 
             data.parse_rows(reader)
             data.update_issues_with_positions()
-            data.validate_actor_issue_positions()
+            if data.is_valid:
+                data.validate_actor_issue_positions()
 
         return data
 

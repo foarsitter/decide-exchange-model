@@ -358,9 +358,12 @@ class DecideMainWindow(QtWidgets.QMainWindow):
                     self.settings.set_input_filename(file_name)
                     self.settings.save()
                 else:
+
+                    error_list = "\n".join([f"line: {line_no}, {message}" for line_no, message in data_file.errors.items()])
+
                     show_user_error(
                         self,
-                        "Your input file contains errors. The red rows are not valid. Hover with your move over the row for more information.",
+                        f"Your input file contains errors. The red rows are not valid. Hover with your mouse over the row for more information.\n{error_list}",
                     )
                     from decide.qt.mainwindow.errorgrid import ErrorGrid
 
