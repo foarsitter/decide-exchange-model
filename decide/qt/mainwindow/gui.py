@@ -64,8 +64,7 @@ class Worker(QtCore.QObject):
         for variation, p in enumerate(model_variations, 1):
 
             output_directory = init_output_directory(
-                settings.output_directory,
-                settings.data_set_name,
+                parent_output_directory,
                 p
             )
 

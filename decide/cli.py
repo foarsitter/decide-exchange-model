@@ -94,7 +94,12 @@ def init_output_directory(*args):
     output_directory = os.path.join(*args)
 
     if not os.path.isdir(output_directory):
-        os.makedirs(output_directory)
+
+        if os.path.isfile(output_directory):
+            output_directory += '_output'
+
+        if not os.path.isdir(output_directory):
+            os.makedirs(output_directory)
 
     return output_directory
 
