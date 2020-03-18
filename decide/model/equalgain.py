@@ -2,6 +2,7 @@ import decimal
 import logging
 import random
 from operator import attrgetter
+from typing import List
 
 from decide.model import base, calculations
 
@@ -27,7 +28,7 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
         self.v = "-"
         self.eu_max = "-"
 
-    def randomized_gain(self, u, v, z, exchange_ratio, exchange_ratio_j):
+    def randomized_gain(self, u, v, z):
 
         p = self.exchange.model.randomized_value
 
@@ -41,27 +42,11 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
         self.opposite_actor.v = v
         self.opposite_actor.z = z
 
-        exchange_ratio_zero_i = calculations.exchange_ratio_by_expected_utility(
-            exchange_ratio, self.supply.salience, self.demand.salience
-        )
-
-        self.eu_max = abs(
-            calculations.expected_utility(self, exchange_ratio_zero_i, exchange_ratio)
-        )
-
-        exchange_ratio_zero_j = calculations.exchange_ratio_by_expected_utility(
-            exchange_ratio_j,
-            self.opposite_actor.supply.salience,
-            self.opposite_actor.demand.salience,
-        )
-
-        self.opposite_actor.eu_max = abs(
-            calculations.expected_utility(self, exchange_ratio_zero_j, exchange_ratio_j)
-        )
-
         if v < 0.5:  # V < 0.5:
-            eui = p * z * (self.eu_max - eu) + eu
+            # wins
+            eui = eu + p * z * (self.eu_max - eu)
         else:
+            # loses
             eui = eu - p * z * eu
 
         # calculate the expected utility of J
@@ -358,6 +343,8 @@ class EqualGainExchange(base.AbstractExchange):
     actor_class = EqualGainExchangeActor
 
     def __init__(self, i, j, p, q, m, groups):
+        self.i: EqualGainExchangeActor
+        self.j: EqualGainExchangeActor
         super().__init__(i, j, p, q, m, groups)
 
     def calculate(self):
@@ -433,13 +420,47 @@ class EqualGainExchange(base.AbstractExchange):
 
             u = random.uniform(0, 1)
             v = random.uniform(0, 1)
-
             z = decimal.Decimal(random.uniform(0, 1))
 
+            self.calculate_maximum_utility()
+
             if u < 0.5:
-                self.i.randomized_gain(u, v, z, self.dp, self.dq)
+                self.i.randomized_gain(u, v, z)
             else:
-                self.j.randomized_gain(u, v, z, self.dq, self.dp)
+                self.j.randomized_gain(u, v, z)
+
+    def calculate_maximum_utility(self):
+
+        nbs_supply_i_adjusted = self.i.adjust_nbs(self.i.opposite_actor.demand.position)
+        nbs_supply_j_adjusted = self.j.adjust_nbs(self.j.opposite_actor.demand.position)
+
+        nbs_supply_i_delta = abs(self.i.nbs_0 - nbs_supply_i_adjusted)
+        nbs_supply_j_delta = abs(self.j.nbs_0 - nbs_supply_j_adjusted)
+
+        loss_actor_1_supply_issue = nbs_supply_j_delta * self.j.supply.salience * self.j.supply.power
+        gain_actor_2_demand_issue = nbs_supply_j_delta * self.i.demand.salience * self.i.demand.power
+
+        loss_actor_2_supply_issue = nbs_supply_i_delta * self.i.supply.salience * self.i.supply.power
+        gain_actor_1_demand_issue = nbs_supply_i_delta * self.j.demand.salience * self.j.demand.power
+
+        if gain_actor_2_demand_issue > gain_actor_1_demand_issue:
+            actor = self.j
+            gain = gain_actor_1_demand_issue
+            loss = loss_actor_2_supply_issue
+        else:
+            actor = self.i
+
+            gain = gain_actor_2_demand_issue
+            loss = loss_actor_1_supply_issue
+
+
+        s = actor.supply.salience / (actor.supply.salience + actor.opposite_actor.demand.salience)
+
+        delta_2_u1 = loss / (s * actor.opposite_actor.demand.salience)
+        delta_2_u2 = gain / (s * actor.supply.salience)
+
+        actor.eu_max = gain - (s * actor.supply.salience * delta_2_u1)
+        actor.opposite_actor.eu_max = s * actor.opposite_actor.demand.salience * delta_2_u2 - loss
 
     def csv_row(self, head=False):
 
@@ -569,6 +590,7 @@ class EqualGainModel(base.AbstractModel):
 
     def __init__(self, randomized_value=None):
         super().__init__()
+        self.exchanges: List[EqualGainExchange]
 
         if isinstance(randomized_value, str):
             randomized_value = decimal.Decimal(randomized_value)

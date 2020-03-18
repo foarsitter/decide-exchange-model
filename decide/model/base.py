@@ -2,6 +2,7 @@ import logging
 from collections import defaultdict
 from decimal import Decimal
 from itertools import combinations
+from typing import List
 
 
 class Issue:
@@ -180,7 +181,7 @@ class ActorIssue:
         :param nbs: int
         :return: bool 
         """
-        self.left = self.position < nbs
+        self.left = self.position <= nbs
         return self.left
 
     def __str__(self):
@@ -576,17 +577,17 @@ class AbstractExchange:
         if (m.get_value(i, p, "s") / m.get_value(i, q, "s")) < (
                 m.get_value(j, p, "s") / m.get_value(j, q, "s")
         ):
-            self.i = self.actor_class(
+            self.i: AbstractExchangeActor = self.actor_class(
                 m, j, supply_issue=q, demand_issue=p, exchange=self
             )
-            self.j = self.actor_class(
+            self.j: AbstractExchangeActor = self.actor_class(
                 m, i, supply_issue=p, demand_issue=q, exchange=self
             )
         else:
-            self.i = self.actor_class(
+            self.i: AbstractExchangeActor = self.actor_class(
                 m, i, supply_issue=q, demand_issue=p, exchange=self
             )
-            self.j = self.actor_class(
+            self.j: AbstractExchangeActor = self.actor_class(
                 m, j, supply_issue=p, demand_issue=q, exchange=self
             )
 
@@ -769,7 +770,7 @@ class AbstractModel:
         self.issues = {}
         self.actor_issues = defaultdict(dict)
         self.actors = {}
-        self.exchanges = []
+        self.exchanges: List[AbstractExchange] = []
         self.nbs = {}
         self.issue_combinations = []
         self.groups = {}
@@ -886,8 +887,11 @@ class AbstractModel:
         """
         e = self.new_exchange_factory(i, j, p, q, self, groups)
         e.calculate()
+        self.eui.append(e.i.eu)
         self.exchanges.append(e)
         return e
+
+    eui = []
 
     def calc_nbs(self):
         from . import calculations
@@ -919,7 +923,7 @@ class AbstractModel:
         """
         self.issue_combinations = combinations(self.issues, 2)
 
-    def determine_groups(self):
+    def determine_groups_and_calculate_exchanges(self):
         """
         There are 4 groups: A, B, C, and D.
         An actor is member of group A if his position on both issues is left of the NBS.

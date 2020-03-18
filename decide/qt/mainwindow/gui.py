@@ -1,5 +1,6 @@
 import logging
 import os
+import statistics
 import sys
 import time
 import xml.etree.cElementTree as ET
@@ -10,6 +11,7 @@ from decide import log_filename
 from decide.cli import init_output_directory
 from decide.data.modelfactory import ModelFactory
 from decide.data.reader import InputDataFile
+from decide.model.base import AbstractModel
 from decide.model.equalgain import EqualGainModel
 from decide.model.observers.exchanges_writer import ExchangesWriter
 from decide.model.observers.externalities import Externalities
@@ -110,7 +112,8 @@ class Worker(QtCore.QObject):
         if not self.break_loop:
             event_handler.update_output_directory(parent_output_directory)
             event_handler.after_model()
-
+            print(len(AbstractModel.eui))
+            print(statistics.variance(AbstractModel.eui))
         self.finished.emit(parent_output_directory)
 
     def stop(self):
@@ -143,9 +146,9 @@ def init_event_handlers(model, output_directory, settings):
     Logger(event_handler)
 
     SQLiteObserver(event_handler, settings.output_directory)
-    Externalities(event_handler, False)
-    ExchangesWriter(event_handler, False)
-    IssueDevelopment(event_handler, False)
+    Externalities(event_handler, summary_only=True)
+    ExchangesWriter(event_handler, summary_only=True)
+    IssueDevelopment(event_handler, False, summary_only=True)
 
     return event_handler
 

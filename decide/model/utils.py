@@ -16,7 +16,7 @@ class ModelLoop(object):
         self.model.calc_nbs()
         self.model.determine_positions()
         self.model.calc_combinations()
-        self.model.determine_groups()
+        self.model.determine_groups_and_calculate_exchanges()
 
         realized = []
 

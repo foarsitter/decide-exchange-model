@@ -19,7 +19,7 @@ def test_first_phase(model):
 
     model.calc_combinations()  # tested below
     model.determine_positions()
-    model.determine_groups()
+    model.determine_groups_and_calculate_exchanges()
 
     totalactor_issues = 0
 

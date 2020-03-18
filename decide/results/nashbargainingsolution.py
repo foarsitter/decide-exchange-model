@@ -35,12 +35,17 @@ def write_summary_result(conn, model_run_ids, output_directory):
                      index_col='p',
                      columns=['nbs']
                      )
+    try:
+        table_avg = pd.pivot_table(df, index=['issue', 'p'], columns=['iteration'], values=['nbs'], aggfunc=np.average)
+        table_avg.to_csv(os.path.join(output_directory, 'nbs_average.csv'))
+    except Exception as e:
+        print(e)
 
-    table_avg = pd.pivot_table(df, index=['issue', 'p'], columns=['iteration'], values=['nbs'], aggfunc=np.average)
-    table_var = pd.pivot_table(df, index=['issue', 'p'], columns=['iteration'], values=['nbs'], aggfunc=np.var)
-
-    table_avg.to_csv(os.path.join(output_directory, 'nbs_average.csv'))
-    table_var.to_csv(os.path.join(output_directory, 'nbs_variance.csv'))
+    try:
+        table_var = pd.pivot_table(df, index=['issue', 'p'], columns=['iteration'], values=['nbs'], aggfunc=np.var)
+        table_var.to_csv(os.path.join(output_directory, 'nbs_variance.csv'))
+    except Exception as e:
+        print(e)
 
     sql_2 = """SELECT issue.name, issue.id
 FROM issue
@@ -86,19 +91,23 @@ FROM (SELECT sum(ai.position * ai.power * ai.salience) AS numerator,
                          index_col='p',
                          columns=['nbs']
                          )
-        table = pd.pivot_table(df, index=['iteration'], columns=['p'], values=['nbs'])
-        plt = table.plot()
 
-        plt.set_title(name)
-        plt.set_ylim(0, 110)
+        try:
+            table = pd.pivot_table(df, index=['iteration'], columns=['p'], values=['nbs'])
+            plt = table.plot()
 
-        lgd = plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+            plt.set_title(name)
+            plt.set_ylim(0, 110)
 
-        plt.figure.savefig(
-            os.path.join(output_directory, 'nbs_{}.png'.format(name)),
-            bbox_extra_artists=(lgd,),
-            bbox_inches="tight",
-        )
+            lgd = plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+
+            plt.figure.savefig(
+                os.path.join(output_directory, 'nbs_{}.png'.format(name)),
+                bbox_extra_artists=(lgd,),
+                bbox_inches="tight",
+            )
+        except Exception as e:
+            print(e)
 
 
 if __name__ == '__main__':

@@ -49,10 +49,20 @@ class InputDataFile:
 
             reader = csv.reader(csv_file, dialect=dialect)
 
-            data.parse_rows(reader)
-            data.update_issues_with_positions()
-            if data.is_valid:
-                data.validate_actor_issue_positions()
+            InputDataFile.open_reader(reader, data)
+
+        return data
+
+    @classmethod
+    def open_reader(cls, reader, data=None):
+
+        if not data:
+            data = cls()
+
+        data.parse_rows(reader)
+        data.update_issues_with_positions()
+        if data.is_valid:
+            data.validate_actor_issue_positions()
 
         return data
 

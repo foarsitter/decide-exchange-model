@@ -65,7 +65,7 @@ class PartialActor(CSVColumn, typesystem.Schema):
 
 
 class Actor(PartialActor):
-    power = typesystem.Float(minimum=0, maximum=1)
+    power = typesystem.Float(minimum=0, maximum=100)
 
 
 class PartialIssue(CSVColumn, typesystem.Schema):
@@ -150,8 +150,8 @@ class ActorIssue(CSVColumn, typesystem.Schema):
     actor = typesystem.String()
     issue = typesystem.String()
     position = typesystem.Decimal()
-    salience = typesystem.Decimal(minimum=0, maximum=1)
-    power = typesystem.Decimal(minimum=0, maximum=1)
+    salience = typesystem.Decimal(minimum=0, maximum=100)
+    power = typesystem.Decimal(minimum=0, maximum=100)
     comment = typesystem.Text(allow_blank=True, allow_null=True)
 
     def __str__(self):
