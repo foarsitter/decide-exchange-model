@@ -1,14 +1,18 @@
 import csv
+import decimal
+import random
+import statistics
 from decimal import Decimal
 
 import pytest
+
 from decide.data.modelfactory import ModelFactory
 from decide.data.reader import InputDataFile
-from decide.model import calculations
 from decide.model.equalgain import EqualGainModel, EqualGainExchange, EqualGainExchangeActor
 
 
-def test_rex():
+@pytest.fixture
+def model_factory():
     input_data = """'#A'	'Actor-1'	'Actor-1'	''	
 '#A'	'Actor-2'	'Actor-2'	''	
 '#P'	'Issue-1'	'Issue-1'	'Issue-1'	
@@ -29,9 +33,13 @@ def test_rex():
     assert len(data_file.actors) == 2
     assert len(data_file.actor_issues) == 4
 
-    model = ModelFactory(data_file)
+    model_factory = ModelFactory(data_file)
 
-    rex = model(model_klass=EqualGainModel, randomized_value=1)
+    return model_factory
+
+
+def test_rex(model_factory):
+    rex = model_factory(model_klass=EqualGainModel, randomized_value=1)
 
     actor_1 = rex.actors['Actor-1']
     actor_2 = rex.actors['Actor-2']
@@ -46,8 +54,8 @@ def test_rex():
     nbs_issue_1 = rex.nbs[issue_1]
     nbs_issue_2 = rex.nbs[issue_2]
 
-    assert rex.nbs[issue_1] == pytest.approx(Decimal(85 + 5/7))
-    assert rex.nbs[issue_2] == pytest.approx(Decimal(35 + 5/7))
+    assert rex.nbs[issue_1] == pytest.approx(Decimal(85 + 5 / 7))
+    assert rex.nbs[issue_2] == pytest.approx(Decimal(35 + 5 / 7))
     exchange = rex.exchanges[0]
 
     a2 = exchange.i  # type: EqualGainExchangeActor
@@ -81,7 +89,7 @@ def test_rex():
 
     delta_2_u1 = loss_actor_1_issue_1 / (s * a1.demand.salience)
 
-    assert delta_2_u1 == pytest.approx(Decimal(1000/225))
+    assert delta_2_u1 == pytest.approx(Decimal(1000 / 225))
 
     delta_2_u2 = gain_actor_2_issue_1 / (s * a2.supply.salience)
 
@@ -94,30 +102,8 @@ def test_rex():
     assert max_eu_actor_2 == pytest.approx(Decimal(777.7778))
 
 
-def test_rex_2():
-    input_data = """'#A'	'Actor-1'	'Actor-1'	''	
-'#A'	'Actor-2'	'Actor-2'	''	
-'#P'	'Issue-1'	'Issue-1'	'Issue-1'	
-'#M'	'Issue-1'	0	
-'#M'	'Issue-1'	100	
-'#P'	'Issue-2'	'Issue-2'	'Issue-2'	
-'#M'	'Issue-2'	0	
-'#M'	'Issue-2'	100	
-'#D'	'Actor-1'	'Issue-1'	0.0	10	1	
-'#D'	'Actor-1'	'Issue-2'	0.0	90	1	
-'#D'	'Actor-2'	'Issue-1'	100.0	60	1	
-'#D'	'Actor-2'	'Issue-2'	100.0	50	1"""
-
-    reader = csv.reader(input_data.splitlines(), delimiter="\t", quotechar="'")
-
-    data_file = InputDataFile.open_reader(reader)
-
-    assert len(data_file.actors) == 2
-    assert len(data_file.actor_issues) == 4
-
-    model = ModelFactory(data_file)
-
-    rex = model(model_klass=EqualGainModel, randomized_value=1)  # type: EqualGainModel
+def test_rex_2(model_factory):
+    rex = model_factory(model_klass=EqualGainModel, randomized_value=1)
 
     actor_1 = rex.actors['Actor-1']
     actor_2 = rex.actors['Actor-2']
@@ -132,8 +118,8 @@ def test_rex_2():
     nbs_issue_1 = rex.nbs[issue_1]
     nbs_issue_2 = rex.nbs[issue_2]
 
-    assert rex.nbs[issue_1] == pytest.approx(Decimal(85 + 5/7))
-    assert rex.nbs[issue_2] == pytest.approx(Decimal(35 + 5/7))
+    assert rex.nbs[issue_1] == pytest.approx(Decimal(85 + 5 / 7))
+    assert rex.nbs[issue_2] == pytest.approx(Decimal(35 + 5 / 7))
     exchange = rex.exchanges[0]  # type: EqualGainExchange
 
     assert exchange.i.actor == actor_2
@@ -173,7 +159,7 @@ def test_rex_2():
 
     delta_2_uj = loss_actor_j_supply_issue / (s * exchange.i.opposite_actor.demand.salience)
 
-    assert delta_2_uj == pytest.approx(Decimal(1000/225))
+    assert delta_2_uj == pytest.approx(Decimal(1000 / 225))
 
     delta_2_ui = gain_actor_i_demand_issue / (s * exchange.i.supply.salience)
 
@@ -196,3 +182,34 @@ def test_rex_2():
 
     assert exchange.j.eu_max == max_eu_actor_i
     assert exchange.i.eu_max == max_eu_actor_j
+
+
+def test_x(model_factory):
+
+    for p in range(0, 125, 25):
+        p = decimal.Decimal(p / 100)
+
+        rex = model_factory(model_klass=EqualGainModel, randomized_value=p)
+
+        rex.calc_nbs()
+        rex.determine_positions()
+        rex.calc_combinations()
+        rex.determine_groups_and_calculate_exchanges()
+
+        exchange = rex.exchanges[0]  # type: EqualGainExchange
+
+        x = []
+
+        for _ in range(10000):
+            exchange.calculate()
+            u = random.uniform(0, 1)
+            v = random.uniform(0, 1)
+            z = decimal.Decimal(random.uniform(0, 1))
+
+            exchange.calculate_maximum_utility()
+
+            exchange.i.randomized_gain(u, v, z)
+
+            x.append(exchange.i.eu)
+        y = statistics.variance(x)
+        print(p, y)

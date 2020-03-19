@@ -177,7 +177,7 @@ def csv_row_to_type(row: List[str]):
     key = row[0]  # the first element contains the #id field
     row = row[1:]  # the rest the row
 
-    if key not in types:
+    if key not in types.keys():
         raise Exception(f"Add key {key} to Reader.types (row row: {row}")
 
     row_type = types[key]
