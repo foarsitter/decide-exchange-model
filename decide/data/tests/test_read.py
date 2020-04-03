@@ -73,8 +73,8 @@ def test_parse_actor_issue_row_power_to_high():
         "Actor",
         "Issue",
         50,
-        1.5,
-        0.5,
+        111.5,
+        100.5,
         "Comment",
         "2",
     ]
