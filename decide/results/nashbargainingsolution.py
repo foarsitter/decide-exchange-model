@@ -7,7 +7,13 @@ from decide.data.database import connection, Manager
 from decide.results.helpers import list_to_sql_param
 
 
-def write_summary_result(conn, model_run_ids, output_directory):
+def write_summary_result(conn, model_run_ids, output_directory, ai_type="before"):
+
+    if ai_type == "before":
+        x_type = "preference"
+    else:
+        x_type = "voting"
+
     df = pd.read_sql("""
     SELECT
       a.p as p,
@@ -28,22 +34,22 @@ def write_summary_result(conn, model_run_ids, output_directory):
             LEFT JOIN iteration i2 ON ai.iteration_id = i2.id
             LEFT JOIN repetition r ON i2.repetition_id = r.id
             LEFT JOIN modelrun m ON r.model_run_id = m.id        
-          WHERE  ai.type = 'before' AND m.id IN (%s)
+          WHERE  ai.type = '%s' AND m.id IN (%s)
          GROUP BY m.id,r.id, i2.id, i.id) a
-    """ % list_to_sql_param(model_run_ids),
+    """ % (ai_type, list_to_sql_param(model_run_ids)),
                      conn,
                      index_col='p',
                      columns=['nbs']
                      )
     try:
         table_avg = pd.pivot_table(df, index=['issue', 'p'], columns=['iteration'], values=['nbs'], aggfunc=np.average)
-        table_avg.to_csv(os.path.join(output_directory, 'nbs_average.csv'))
+        table_avg.to_csv(os.path.join(output_directory, f'nbs_average_{x_type}.csv'))
     except Exception as e:
         print(e)
 
     try:
         table_var = pd.pivot_table(df, index=['issue', 'p'], columns=['iteration'], values=['nbs'], aggfunc=np.var)
-        table_var.to_csv(os.path.join(output_directory, 'nbs_variance.csv'))
+        table_var.to_csv(os.path.join(output_directory, f'nbs_variance_{x_type}.csv'))
     except Exception as e:
         print(e)
 
@@ -82,11 +88,11 @@ FROM (SELECT sum(ai.position * ai.power * ai.salience) AS numerator,
                LEFT JOIN repetition r ON i2.repetition_id = r.id
                LEFT JOIN modelrun m ON r.model_run_id = m.id
                LEFT JOIN dataset d ON a.data_set_id = d.id
-      WHERE ai.type = 'before'
+      WHERE ai.type = '%s'
         AND m.id IN(%s)
         AND i.id = %s
       GROUP BY m.id, r.id, i2.id, i.id) a
-        """ % (list_to_sql_param(model_run_ids), issue_id),
+        """  % (ai_type, list_to_sql_param(model_run_ids), issue_id),
                          conn,
                          index_col='p',
                          columns=['nbs']
@@ -102,7 +108,7 @@ FROM (SELECT sum(ai.position * ai.power * ai.salience) AS numerator,
             lgd = plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
 
             plt.figure.savefig(
-                os.path.join(output_directory, 'nbs_{}.png'.format(name)),
+                os.path.join(output_directory, f'nbs_{name}_{x_type}.png'),
                 bbox_extra_artists=(lgd,),
                 bbox_inches="tight",
             )

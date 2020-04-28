@@ -148,7 +148,7 @@ def init_event_handlers(model, output_directory, settings):
     SQLiteObserver(event_handler, settings.output_directory)
     Externalities(event_handler, summary_only=True)
     ExchangesWriter(event_handler, summary_only=True)
-    IssueDevelopment(event_handler, False, summary_only=True)
+    IssueDevelopment(event_handler, write_voting_position=True, summary_only=True)
 
     return event_handler
 
