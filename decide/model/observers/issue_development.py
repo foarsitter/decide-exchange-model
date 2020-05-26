@@ -19,14 +19,13 @@ from ..observers import observer
 
 class IssueDevelopment(observer.Observer):
     """
-    There are three stages of externalities
-    By exchange, by issue set and by actor
+    Keeps track of the change in issue position
     """
 
     def __init__(
         self,
         observable: observer.Observable,
-        write_voting_position=False,
+        write_voting_position=True,
         summary_only=False,
     ):
         super().__init__(observable=observable)
@@ -51,7 +50,7 @@ class IssueDevelopment(observer.Observer):
             lambda: defaultdict(lambda: defaultdict(list))
         )
 
-        self.denominator = 0
+        self.denominator = 0  # TODO remove or document this attribute
 
         self.summary_only = summary_only
 
@@ -177,15 +176,27 @@ class IssueDevelopment(observer.Observer):
             for actor_id, actor_issue in self.model_ref.actor_issues[issue].items():
                 variance_sum += (actor_issue.position - nbs) ** 2
 
+                # the distance of the actor adjusted by his salience
+                actor_loss = abs(actor_issue.position - nbs) * actor_issue.salience
+
                 self.voting_history[issue][actor_id].append(actor_issue.position)
+
+                self.voting_history_sum[issue][actor_id][iteration].append(
+                    actor_issue.position
+                )
+
                 self.voting_loss[issue][actor_id].append(
                     abs(actor_issue.position - nbs) * actor_issue.salience
                 )
 
+                self.voting_loss_sum[issue][actor_id][iteration].append(actor_loss)
+
             nbs_var = variance_sum / len(self.model_ref.actor_issues[issue])
 
             self.voting_history[issue]["nbs"].append(nbs)
+            self.voting_history_sum[issue]["nbs"][iteration].append(nbs)
             self.voting_loss[issue]["nbs"].append(nbs_var)
+            self.voting_loss_sum[issue]["nbs"][iteration].append(nbs_var)
 
     def after_iterations(self, repetition):
         """
@@ -203,195 +214,197 @@ class IssueDevelopment(observer.Observer):
                 "w",
             ) as csv_file:
                 writer = csv.writer(csv_file, delimiter=";", lineterminator="\n")
+                self.write_issue_after_iterations_to_file(repetition, writer, issue)
 
-                self.issue_obj = self.model_ref.issues[issue]  # type: Issue
+    def write_issue_after_iterations_to_file(self, repetition, writer, issue):
+        self.issue_obj = self.model_ref.issues[issue]  # type: Issue
 
-                heading = [
-                    "rnd-" + str(x)
-                    for x in range(len(self.preference_history[issue]["nbs"]))
+        heading = [
+            "rnd-" + str(x)
+            for x in range(len(self.preference_history[issue]["nbs"]))
+        ]
+
+        writer.writerow([self.issue_obj])
+        writer.writerow([])  # empty row for readability
+
+        writer.writerow(["Issue overview"])
+
+        if self.write_voting_position:
+            writer.writerow(
+                [
+                    "round",
+                    "preference nbs",
+                    "preference nbs var",
+                    "",
+                    "voting nbs",
+                    "voting nbs var",
                 ]
+            )
+        else:
+            writer.writerow(["round", "preference nbs", "preference nbs var"])
 
-                writer.writerow([self.issue_obj])
-                writer.writerow([])  # empty row for readability
+        # remove the nbs from each collection so it doesn't show up in the table.
+        preference_nbs = self.preference_history[issue]["nbs"]
+        del self.preference_history[issue]["nbs"]
 
-                writer.writerow(["Issue overview"])
+        preference_nbs_var = self.preference_loss[issue]["nbs"]
+        del self.preference_loss[issue]["nbs"]
 
-                if self.write_voting_position:
-                    writer.writerow(
-                        [
-                            "round",
-                            "preference nbs",
-                            "preference nbs var",
-                            "",
-                            "voting nbs",
-                            "voting nbs var",
-                        ]
-                    )
-                else:
-                    writer.writerow(["round", "preference nbs", "preference nbs var"])
+        if self.write_voting_position:
+            voting_nbs = self.voting_history[issue]["nbs"]
+            del self.voting_history[issue]["nbs"]
 
-                # remove the nbs from each collection so it doesn't show up in the table.
-                preference_nbs = self.preference_history[issue]["nbs"]
-                del self.preference_history[issue]["nbs"]
+            voting_nbs_var = self.voting_loss[issue]["nbs"]
+            del self.voting_loss[issue]["nbs"]
 
-                preference_nbs_var = self.preference_loss[issue]["nbs"]
-                del self.preference_loss[issue]["nbs"]
+        # create a summary table for only the preference and voting nbs + variance
+        for x in range(len(preference_nbs)):
 
-                if self.write_voting_position:
-                    voting_nbs = self.voting_history[issue]["nbs"]
-                    del self.voting_history[issue]["nbs"]
+            row = [
+                "rnd-" + str(x),  # round
+                self._de_normalize_value(preference_nbs[x]),  # preference nbs
+                self._de_normalize_value(
+                    preference_nbs_var[x]
+                ),  # preference nbs variance
+            ]
 
-                    voting_nbs_var = self.voting_loss[issue]["nbs"]
-                    del self.voting_loss[issue]["nbs"]
+            # write the voting positions only when the author asks for it te keep the output simple.
+            if self.write_voting_position:
+                row.append("")  # extra spacing for readability
+                row.append(
+                    self._de_normalize_value(voting_nbs[x])
+                )  # voting nbs
+                row.append(
+                    self._de_normalize_value(voting_nbs_var[x])
+                )  # voting nbs variance
 
-                # create a summary table for only the preference and voting nbs + variance
-                for x in range(len(preference_nbs)):
+            writer.writerow(row)
 
-                    row = [
-                        "rnd-" + str(x),  # round
-                        self._de_normalize_value(preference_nbs[x]),  # preference nbs
-                        self._de_normalize_value(
-                            preference_nbs_var[x]
-                        ),  # preference nbs variance
-                    ]
+        # issue development summary
+        writer.writerow([])
+        writer.writerow(
+            ["First and last round comparison of NBS and all actors"]
+        )
+        writer.writerow(
+            [
+                "Actor",
+                "Salience",
+                "Power",
+                "First round",
+                "Final round",
+                "Position shift",
+                "Distance NBS start",
+                "Distance NBS end",
+            ]
+        )
 
-                    # write the voting positions only when the author asks for it te keep the output simple.
-                    if self.write_voting_position:
-                        row.append("")  # extra spacing for readability
-                        row.append(
-                            self._de_normalize_value(voting_nbs[x])
-                        )  # voting nbs
-                        row.append(
-                            self._de_normalize_value(voting_nbs_var[x])
-                        )  # voting nbs variance
+        nbs_start = self._de_normalize_value(preference_nbs[0])
+        nbs_end = self._de_normalize_value(preference_nbs[-1])
 
-                    writer.writerow(row)
+        writer.writerow(["NBS", "-", "-", nbs_start, nbs_end, "-"])
 
-                # issue development summary
-                writer.writerow([])
+        # to compare different issues and variances of the model, keep the output sorted
+        od = OrderedDict(sorted(self.preference_history[issue].items()))
+
+        for actor_id, value in od.items():
+            actor_issue = self.model_ref.actor_issues[self.issue_obj][actor_id]
+
+            position_start = self._de_normalize_value(value[0])
+            position_end = self._de_normalize_value(value[-1])
+            position_delta = position_end - position_start
+
+            nbs_distance_start = abs(position_start - nbs_start)
+            nbs_distance_end = abs(position_start - nbs_end)
+            nbs_distance_delta = nbs_distance_end - nbs_distance_start
+
+            writer.writerow(
+                [
+                    actor_issue.actor,
+                    actor_issue.salience,
+                    actor_issue.power,
+                    position_start,
+                    position_end,
+                    position_delta,
+                    nbs_distance_start,
+                    nbs_distance_end,
+                    nbs_distance_delta,
+                ]
+            )
+
+        # second table
+        writer.writerow([])
+        writer.writerow(["Preference development NBS and all actors"])
+        writer.writerow(["actor", "salience", "power"] + heading)
+
+        plt.clf()
+
+        nbs_values = self._de_normalize_list_value(preference_nbs)
+
+        writer.writerow(["nbs", "-", "-"] + nbs_values)
+
+        plt.plot(nbs_values, label="nbs")
+
+        for actor_id, value in od.items():
+            actor_issue = self.model_ref.actor_issues[self.issue_obj][actor_id]
+
+            values = self._de_normalize_list_value(value)
+            writer.writerow(
+                [actor_id, actor_issue.salience, actor_issue.power] + values
+            )
+
+            plt.plot(values, label=self.model_ref.actors[actor_id].name)
+
+        lgd = plt.legend(loc="upper left", bbox_to_anchor=(1, 1))
+        plt.title(self.issue_obj)
+        plt.savefig(
+            "{0}/issues/{2}/charts/{1}.png".format(
+                self.output_directory, self.issue_obj.name, repetition
+            ),
+            bbox_extra_artists=(lgd,),
+            bbox_inches="tight",
+        )
+
+        if self.write_voting_position:
+            writer.writerow([])
+            writer.writerow(["Voting development NBS and all actors"])
+            writer.writerow(["Actor", "Salience", "Power"] + heading)
+
+            writer.writerow(
+                ["NBS", "-", "-"] + self._de_normalize_list_value(voting_nbs)
+            )
+
+            od = OrderedDict(sorted(self.voting_history[issue].items()))
+
+            for actor_id, value in od.items():
+                actor_issue = self.model_ref.actor_issues[self.issue_obj][
+                    actor_id
+                ]
                 writer.writerow(
-                    ["First and last round comparison of NBS and all actors"]
-                )
-                writer.writerow(
-                    [
-                        "Actor",
-                        "Salience",
-                        "Power",
-                        "First round",
-                        "Final round",
-                        "Position shift",
-                        "Distance NBS start",
-                        "Distance NBS end",
-                    ]
+                    [actor_id, actor_issue.salience, actor_issue.power]
+                    + self._de_normalize_list_value(value)
                 )
 
-                nbs_start = self._de_normalize_value(preference_nbs[0])
-                nbs_end = self._de_normalize_value(preference_nbs[-1])
+        writer.writerow([])
+        writer.writerow(["Preference variance and loss of all actors"])
 
-                writer.writerow(["NBS", "-", "-", nbs_start, nbs_end, "-"])
+        writer.writerow(["nbs-var"] + preference_nbs_var)
 
-                # to compare different issues and variances of the model, keep the output sorted
-                od = OrderedDict(sorted(self.preference_history[issue].items()))
+        od = OrderedDict(sorted(self.preference_loss[issue].items()))
 
-                for actor_id, value in od.items():
-                    actor_issue = self.model_ref.actor_issues[self.issue_obj][actor_id]
+        for actor_id, value in od.items():
+            writer.writerow([actor_id] + value)
 
-                    position_start = self._de_normalize_value(value[0])
-                    position_end = self._de_normalize_value(value[-1])
-                    position_delta = position_end - position_start
+        if self.write_voting_position:
 
-                    nbs_distance_start = abs(position_start - nbs_start)
-                    nbs_distance_end = abs(position_start - nbs_end)
-                    nbs_distance_delta = nbs_distance_end - nbs_distance_start
+            writer.writerow([])
+            writer.writerow(["Voting variance and loss of all actors"])
 
-                    writer.writerow(
-                        [
-                            actor_issue.actor,
-                            actor_issue.salience,
-                            actor_issue.power,
-                            position_start,
-                            position_end,
-                            position_delta,
-                            nbs_distance_start,
-                            nbs_distance_end,
-                            nbs_distance_delta,
-                        ]
-                    )
+            writer.writerow(["nbs-var"] + voting_nbs_var)
 
-                # second table
-                writer.writerow([])
-                writer.writerow(["Preference development NBS and all actors"])
-                writer.writerow(["actor", "salience", "power"] + heading)
+            od = OrderedDict(sorted(self.voting_loss[issue].items()))
 
-                plt.clf()
-
-                nbs_values = self._de_normalize_list_value(preference_nbs)
-
-                writer.writerow(["nbs", "-", "-"] + nbs_values)
-
-                plt.plot(nbs_values, label="nbs")
-
-                for actor_id, value in od.items():
-                    actor_issue = self.model_ref.actor_issues[self.issue_obj][actor_id]
-
-                    values = self._de_normalize_list_value(value)
-                    writer.writerow(
-                        [actor_id, actor_issue.salience, actor_issue.power] + values
-                    )
-
-                    plt.plot(values, label=self.model_ref.actors[actor_id].name)
-
-                lgd = plt.legend(loc="upper left", bbox_to_anchor=(1, 1))
-                plt.title(self.issue_obj)
-                plt.savefig(
-                    "{0}/issues/{2}/charts/{1}.png".format(
-                        self.output_directory, self.issue_obj.name, repetition
-                    ),
-                    bbox_extra_artists=(lgd,),
-                    bbox_inches="tight",
-                )
-
-                if self.write_voting_position:
-                    writer.writerow([])
-                    writer.writerow(["Voting development NBS and all actors"])
-                    writer.writerow(["Actor", "Salience", "Power"] + heading)
-
-                    writer.writerow(
-                        ["NBS", "-", "-"] + self._de_normalize_list_value(voting_nbs)
-                    )
-
-                    od = OrderedDict(sorted(self.voting_history[issue].items()))
-
-                    for actor_id, value in od.items():
-                        actor_issue = self.model_ref.actor_issues[self.issue_obj][
-                            actor_id
-                        ]
-                        writer.writerow(
-                            [actor_id, actor_issue.salience, actor_issue.power]
-                            + self._de_normalize_list_value(value)
-                        )
-
-                writer.writerow([])
-                writer.writerow(["Preference variance and loss of all actors"])
-
-                writer.writerow(["nbs-var"] + preference_nbs_var)
-
-                od = OrderedDict(sorted(self.preference_loss[issue].items()))
-
-                for actor_id, value in od.items():
-                    writer.writerow([actor_id] + value)
-
-                if self.write_voting_position:
-
-                    writer.writerow([])
-                    writer.writerow(["Voting variance and loss of all actors"])
-
-                    writer.writerow(["nbs-var"] + voting_nbs_var)
-
-                    od = OrderedDict(sorted(self.voting_loss[issue].items()))
-
-                    for actor_id, value in od.items():
-                        writer.writerow([actor_id] + value)
+            for actor_id, value in od.items():
+                writer.writerow([actor_id] + value)
 
     def after_repetitions(self):
         """
@@ -472,6 +485,9 @@ class IssueDevelopment(observer.Observer):
                 nbs_start = None
                 nbs_end = None
 
+                nbs_voting_start = None
+                nbs_voting_end = None
+
                 for x in range(len(preference_nbs)):
 
                     if self.write_voting_position:
@@ -499,6 +515,11 @@ class IssueDevelopment(observer.Observer):
                         )
 
                         p_line.append(_(p[0]))
+
+                        if nbs_voting_start is None:
+                            nbs_voting_start = _(v[0])
+                        nbs_voting_end = _(v[0])
+
                     else:
                         p = calculations.average_and_variance(preference_nbs[x])
                         pvar = calculations.average_and_variance(preference_nbs_var[x])
@@ -517,7 +538,7 @@ class IssueDevelopment(observer.Observer):
 
                 writer.writerow([])
                 writer.writerow(
-                    ["First and last round comparison of NBS and all actors"]
+                    ["[Preference] First and last round comparison of NBS and all actors"]
                 )
                 writer.writerow(
                     [
@@ -538,23 +559,61 @@ class IssueDevelopment(observer.Observer):
 
                     actor_issue = self.model_ref.actor_issues[issue][actor]
 
-                    first = None
-                    last = 0
+                    initial, var = calculations.average_and_variance(list(value.values())[0])
+                    last, var = calculations.average_and_variance(list(value.values())[-1])
 
-                    for iteration, values in value.items():
-                        avg, var = calculations.average_and_variance(values)
-
-                        if not first:
-                            first = avg
-
-                        last = avg
-
-                    position_start = _(first)
+                    position_start = _(initial)
                     position_end = _(last)
                     position_delta = position_end - position_start
 
                     nbs_distance_start = abs(position_start - nbs_start)
                     nbs_distance_end = abs(position_start - nbs_end)
+
+                    writer.writerow(
+                        [
+                            actor_issue.actor,
+                            actor_issue.salience,
+                            actor_issue.power,
+                            position_start,
+                            position_end,
+                            position_delta,
+                            nbs_distance_start,
+                            nbs_distance_end,
+                        ]
+                    )
+
+                writer.writerow([])
+                writer.writerow(
+                    ["[Voting] First and last round comparison of NBS and all actors"]
+                )
+                writer.writerow(
+                    [
+                        "Actor",
+                        "Salience",
+                        "Power",
+                        "First round",
+                        "Final round",
+                        "Position shift",
+                        "Distance NBS start",
+                        "Distance NBS end",
+                    ]
+                )
+
+                writer.writerow(["NBS", "-", "-", nbs_voting_start, nbs_voting_end, "-"])
+
+                for actor, value in sorted(self.voting_history_sum[issue].items()):
+
+                    actor_issue = self.model_ref.actor_issues[issue][actor]
+
+                    initial, var = calculations.average_and_variance(list(value.values())[0])
+                    last, var = calculations.average_and_variance(list(value.values())[-1])
+
+                    position_start = _(initial)
+                    position_end = _(last)
+                    position_delta = position_end - position_start
+
+                    nbs_distance_start = abs(position_start - nbs_voting_start)
+                    nbs_distance_end = abs(position_start - nbs_voting_end)
 
                     writer.writerow(
                         [

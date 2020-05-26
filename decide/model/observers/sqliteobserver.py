@@ -139,6 +139,7 @@ class SQLiteObserver(Observer):
             results.descriptives.write_summary_result(db.connection, self.model_run_ids, self.output_directory)
             results.issuecomparison.write_summary_result(db.connection, self.model_run_ids, self.output_directory)
             results.nashbargainingsolution.write_summary_result(db.connection, self.model_run_ids, self.output_directory)
+            results.nashbargainingsolution.write_summary_result(db.connection, self.model_run_ids, self.output_directory, "after")
         except Exception as e:
             print(e)
 

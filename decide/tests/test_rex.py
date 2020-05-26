@@ -184,32 +184,32 @@ def test_rex_2(model_factory):
     assert exchange.i.eu_max == max_eu_actor_j
 
 
-def test_x(model_factory):
-
-    for p in range(0, 125, 25):
-        p = decimal.Decimal(p / 100)
-
-        rex = model_factory(model_klass=EqualGainModel, randomized_value=p)
-
-        rex.calc_nbs()
-        rex.determine_positions()
-        rex.calc_combinations()
-        rex.determine_groups_and_calculate_exchanges()
-
-        exchange = rex.exchanges[0]  # type: EqualGainExchange
-
-        x = []
-
-        for _ in range(10000):
-            exchange.calculate()
-            u = random.uniform(0, 1)
-            v = random.uniform(0, 1)
-            z = decimal.Decimal(random.uniform(0, 1))
-
-            exchange.calculate_maximum_utility()
-
-            exchange.i.randomized_gain(u, v, z)
-
-            x.append(exchange.i.eu)
-        y = statistics.variance(x)
-        print(p, y)
+# def test_x(model_factory):
+#
+#     for p in range(0, 125, 25):
+#         p = decimal.Decimal(p / 100)
+#
+#         rex = model_factory(model_klass=EqualGainModel, randomized_value=p)
+#
+#         rex.calc_nbs()
+#         rex.determine_positions()
+#         rex.calc_combinations()
+#         rex.determine_groups_and_calculate_exchanges()
+#
+#         exchange = rex.exchanges[0]  # type: EqualGainExchange
+#
+#         x = []
+#
+#         for _ in range(10000):
+#             exchange.calculate()
+#             u = random.uniform(0, 1)
+#             v = random.uniform(0, 1)
+#             z = decimal.Decimal(random.uniform(0, 1))
+#
+#             exchange.calculate_maximum_utility()
+#
+#             exchange.i.randomized_gain(u, v, z)
+#
+#             x.append(exchange.i.eu)
+#         y = statistics.variance(x)
+#         print(p, y)

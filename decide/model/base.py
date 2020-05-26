@@ -35,7 +35,7 @@ class Issue:
         self.delta = self.upper - self.lower
 
     def calculate_step_size(self):
-        if self.delta is not 0:
+        if self.delta != 0:
             self.step_size = Decimal(100 / self.delta)
         else:
             self.step_size = 0
@@ -805,11 +805,11 @@ class AbstractModel:
 
         if a is not False:
 
-            if field is "c":
+            if field == "c":
                 return a.power
-            if field is "s":
+            if field == "s":
                 return a.salience
-            if field is "x":
+            if field == "x":
                 return a.position
 
         raise ValueError("ActorIssue not found")
