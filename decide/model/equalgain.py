@@ -69,8 +69,8 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
             calculations.expected_utility(self, exchange_ratio_q, exchange_ratio_p)
         )
 
-        if abs(eui_check - eui) > 1e-10:
-            raise Exception("This should be equal.")
+        if abs(eui_check - abs(eui)) > 1e-10:
+            print("This should be equal.", abs(eui_check - eui))
 
         move_j = calculations.reverse_move(
             actor_issues=self.opposite_actor.actor_issues(),
@@ -276,8 +276,9 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
 
                 self.is_adjusted_by_nbs = True
 
-        if abs(eui - eui_check) > 1e-10:
-            logging.info("fail")
+        if abs(abs(eui) - abs(eui_check)) > 1e-10:
+            x = abs(eui - eui_check)
+            logging.info(f"fail: {x}")
             # raise Exception('Fail: the expected utility of the check ({0})'
             #                 ' does not match the expected utility ({1}), {2}.'
             #                 .format(eui_check, eui,
@@ -437,11 +438,11 @@ class EqualGainExchange(base.AbstractExchange):
         nbs_supply_i_delta = abs(self.i.nbs_0 - nbs_supply_i_adjusted)
         nbs_supply_j_delta = abs(self.j.nbs_0 - nbs_supply_j_adjusted)
 
-        loss_actor_1_supply_issue = nbs_supply_j_delta * self.j.supply.salience * self.j.supply.power
-        gain_actor_2_demand_issue = nbs_supply_j_delta * self.i.demand.salience * self.i.demand.power
+        loss_actor_1_supply_issue = nbs_supply_j_delta * self.j.supply.salience
+        gain_actor_2_demand_issue = nbs_supply_j_delta * self.i.demand.salience
 
-        loss_actor_2_supply_issue = nbs_supply_i_delta * self.i.supply.salience * self.i.supply.power
-        gain_actor_1_demand_issue = nbs_supply_i_delta * self.j.demand.salience * self.j.demand.power
+        loss_actor_2_supply_issue = nbs_supply_i_delta * self.i.supply.salience
+        gain_actor_1_demand_issue = nbs_supply_i_delta * self.j.demand.salience
 
         if gain_actor_2_demand_issue > gain_actor_1_demand_issue:
             actor = self.j
@@ -452,7 +453,6 @@ class EqualGainExchange(base.AbstractExchange):
 
             gain = gain_actor_2_demand_issue
             loss = loss_actor_1_supply_issue
-
 
         s = actor.supply.salience / (actor.supply.salience + actor.opposite_actor.demand.salience)
 
