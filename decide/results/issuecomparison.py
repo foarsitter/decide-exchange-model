@@ -14,7 +14,7 @@ def write_summary_result(conn, model_run_ids, output_directory):
     SELECT
             a.name AS actor,
             i.name as issue,
-            AVG(ai.position) as postion,        
+            AVG(ai.position) as position,        
             i2.pointer                                AS iteration,
             m.p,
             m.id  
@@ -29,11 +29,36 @@ def write_summary_result(conn, model_run_ids, output_directory):
     """ % list_to_sql_param(model_run_ids),
                      conn,
                      index_col=['issue', 'actor', 'p'],
-                     columns=['postion']
+                     columns=['position']
                      )
 
-    table = pd.pivot_table(df, index=['issue', 'actor', 'iteration'], columns=['p'], values=['postion'])
-    table.to_csv(os.path.join(output_directory, 'issues.csv'))
+    table = pd.pivot_table(df, index=['issue', 'actor', 'iteration'], columns=['p'], values=['position'])
+    table.to_csv(os.path.join(output_directory, 'issues_preference.csv'))
+
+    df = pd.read_sql("""
+    SELECT
+            a.name AS actor,
+            i.name as issue,
+            AVG(ai.position) as position,        
+            i2.pointer                                AS iteration,
+            m.p,
+            m.id  
+          FROM actorissue ai
+            LEFT JOIN issue i ON ai.issue_id = i.id
+            LEFT JOIN actor a ON ai.actor_id = a.id
+            LEFT JOIN iteration i2 ON ai.iteration_id = i2.id
+            LEFT JOIN repetition r ON i2.repetition_id = r.id
+            LEFT JOIN modelrun m ON r.model_run_id = m.id            
+          WHERE  ai.type = 'after' AND m.id IN(%s)
+         GROUP BY m.id, i2.pointer, a.id, i.id;
+    """ % list_to_sql_param(model_run_ids),
+                     conn,
+                     index_col=['issue', 'actor', 'p'],
+                     columns=['position']
+                     )
+
+    table = pd.pivot_table(df, index=['issue', 'actor', 'iteration'], columns=['p'], values=['position'])
+    table.to_csv(os.path.join(output_directory, 'issues_voting.csv'))
 
 
 if __name__ == '__main__':

@@ -632,42 +632,56 @@ class IssueDevelopment(observer.Observer):
                 writer.writerow(["AVG Preference development NBS and all actors"])
                 writer.writerow(["actor", "salience", "power"] + heading)
 
-                var_rows = []
-
-                for actor, value in sorted(self.preference_history_sum[issue].items()):
-
-                    actor_issue = self.model_ref.actor_issues[issue][actor]
-
-                    row = [actor, actor_issue.salience, actor_issue.power]
-                    var_row = [actor, actor_issue.salience, actor_issue.power]
-
-                    avg_row = []
-                    for iteration, values in value.items():
-                        avg, var = calculations.average_and_variance(values)
-                        avg_row.append(_(avg))
-                        var_row.append(math.sqrt(var))
-
-                    plt.plot(avg_row, label=actor.name)
-
-                    writer.writerow(row + avg_row)
-                    var_rows.append(var_row)
+                self._write_history_sum(writer, heading, issue, self.preference_history_sum, "preference")
 
                 writer.writerow([])
-                writer.writerow(["Standard deviation"])
+                writer.writerow(["AVG voting development NBS and all actors"])
                 writer.writerow(["actor", "salience", "power"] + heading)
 
-                for row in var_rows:
-                    writer.writerow(row)
+                if self.write_voting_position:
+                    self._write_history_sum(writer, heading, issue, self.voting_history_sum, "voting")
 
-                lgd = plt.legend(loc="upper left", bbox_to_anchor=(1, 1))
-                plt.title(self.issue_obj)
-                plt.savefig(
-                    "{0}/issues/{2}/charts/{1}.png".format(
-                        self.output_directory, self.issue_obj.issue_id, "summary"
-                    ),
-                    bbox_extra_artists=(lgd,),
-                    bbox_inches="tight",
-                )
+
+    def _write_history_sum(self, writer, heading, issue, data, label):
+
+        plt.clf()
+
+        var_rows = []
+
+        for actor, value in sorted(data[issue].items()):
+
+            actor_issue = self.model_ref.actor_issues[issue][actor]
+
+            row = [actor, actor_issue.salience, actor_issue.power]
+            var_row = [actor, actor_issue.salience, actor_issue.power]
+
+            avg_row = []
+            for iteration, values in value.items():
+                avg, var = calculations.average_and_variance(values)
+                avg_row.append(self._de_normalize_value(avg))
+                var_row.append(math.sqrt(var))
+
+            plt.plot(avg_row, label=actor.name)
+
+            writer.writerow(row + avg_row)
+            var_rows.append(var_row)
+
+        writer.writerow([])
+        writer.writerow(["Standard deviation {0}".format(label)])
+        writer.writerow(["actor", "salience", "power"] + heading)
+
+        for row in var_rows:
+            writer.writerow(row)
+
+        lgd = plt.legend(loc="upper left", bbox_to_anchor=(1, 1))
+        plt.title(self.issue_obj)
+        plt.savefig(
+            "{0}/issues/{2}/charts/{1}.{3}.png".format(
+                self.output_directory, self.issue_obj.issue_id, "summary", label
+            ),
+            bbox_extra_artists=(lgd,),
+            bbox_inches="tight",
+        )
 
     @property
     def _get_salt(self):
