@@ -342,7 +342,7 @@ class IssueDevelopment(observer.Observer):
 
         writer.writerow(["nbs", "-", "-"] + nbs_values)
 
-        plt.plot(nbs_values, label="nbs")
+        plt.plot(nbs_values, linestyle="--",  label="MDS")
 
         for actor_id, value in od.items():
             actor_issue = self.model_ref.actor_issues[self.issue_obj][actor_id]
@@ -534,7 +534,7 @@ class IssueDevelopment(observer.Observer):
                         nbs_start = _(p[0])
                     nbs_end = _(p[0])
 
-                plt.plot(p_line, label="nbs")
+                plt.plot(p_line, linestyle="--", label="MDS")
 
                 writer.writerow([])
                 writer.writerow(
