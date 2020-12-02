@@ -9,7 +9,7 @@ pd.set_option('display.max_rows', 500)
 pd.set_option('display.max_columns', 500)
 
 
-def write_result(conn, model_run_id, output_directory):
+def write_result(conn, iterations, model_run_id, output_directory):
 
     df = pd.read_sql("""
     SELECT  
@@ -30,11 +30,11 @@ def write_result(conn, model_run_id, output_directory):
             LEFT JOIN iteration i2 ON ai.iteration_id = i2.id
             LEFT JOIN repetition r ON i2.repetition_id = r.id
             LEFT JOIN modelrun m ON r.model_run_id = m.id            
-          WHERE  ai.type = 'before' AND i2.pointer = 9 AND m.id = ? 
+          WHERE  ai.type = 'before' AND i2.pointer = ? AND m.id = ? 
          GROUP BY m.id,r.id, i2.id, i.id) a
     """,
                      conn,
-                     params=(model_run_id, ),
+                     params=(iterations, model_run_id, ),
                      index_col=['p'],
                      columns=['issue']
                      )

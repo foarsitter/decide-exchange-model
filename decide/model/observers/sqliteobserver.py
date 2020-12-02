@@ -127,11 +127,12 @@ class SQLiteObserver(Observer):
             self._write_actor_issues(iteration, repetition, "after")
 
     def after_repetitions(self):
+
         self.model_run.finished_at = datetime.datetime.now()
         self.model_run.save()
         self.model_run_ids.append(self.model_run.id)
 
-        results.covariance.write_result(connection, self.model_run.id, self.output_directory)
+        results.covariance.write_result(connection, len(self.iterations)-1, self.model_run.id, self.output_directory)
 
     def after_model(self):
         try:
