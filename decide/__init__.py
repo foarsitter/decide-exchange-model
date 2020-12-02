@@ -1,6 +1,6 @@
 import os
 
-__version__ = "2020.1.3"
+__version__ = "2020.1.4"
 
 decide_base_path = os.path.dirname(os.path.abspath(__file__))
 
