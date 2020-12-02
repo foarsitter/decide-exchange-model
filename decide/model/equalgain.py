@@ -42,6 +42,7 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
         self.opposite_actor.v = v
         self.opposite_actor.z = z
 
+        # does this actor WIN or LOSE
         if v < 0.5:  # V < 0.5:
             # wins
             eui = eu + p * z * (self.eu_max - eu)
@@ -432,8 +433,11 @@ class EqualGainExchange(base.AbstractExchange):
 
     def calculate_maximum_utility(self):
 
-        nbs_supply_i_adjusted = self.i.adjust_nbs(self.i.opposite_actor.demand.position)
-        nbs_supply_j_adjusted = self.j.adjust_nbs(self.j.opposite_actor.demand.position)
+        i_pareto_optimal = self.i.demand.position == self.i.y
+        j_pareto_optimal = self.j.demand.position == self.j.y
+
+        nbs_supply_i_adjusted = self.i.adjust_nbs(self.i.y if i_pareto_optimal else self.i.opposite_actor.demand.position)
+        nbs_supply_j_adjusted = self.j.adjust_nbs(self.j.y if j_pareto_optimal else self.j.opposite_actor.demand.position)
 
         nbs_supply_i_delta = abs(self.i.nbs_0 - nbs_supply_i_adjusted)
         nbs_supply_j_delta = abs(self.j.nbs_0 - nbs_supply_j_adjusted)
@@ -443,6 +447,20 @@ class EqualGainExchange(base.AbstractExchange):
 
         loss_actor_2_supply_issue = nbs_supply_i_delta * self.i.supply.salience
         gain_actor_1_demand_issue = nbs_supply_i_delta * self.j.demand.salience
+
+        utility_i = gain_actor_1_demand_issue - loss_actor_1_supply_issue
+        utility_j = gain_actor_2_demand_issue - loss_actor_2_supply_issue
+
+        overwrite_opposite_actor = None
+
+        if i_pareto_optimal:
+            if utility_i > 0:
+                overwrite_opposite_actor = gain_actor_2_demand_issue - (loss_actor_1_supply_issue / self.j.demand.salience) * self.i.supply.salience
+
+        if j_pareto_optimal:
+            if utility_j > 0:
+                overwrite_opposite_actor = gain_actor_1_demand_issue - (
+                            loss_actor_2_supply_issue / self.i.demand.salience) * self.j.supply.salience
 
         if gain_actor_2_demand_issue > gain_actor_1_demand_issue:
             actor = self.j
@@ -459,8 +477,12 @@ class EqualGainExchange(base.AbstractExchange):
         delta_2_u1 = loss / (s * actor.opposite_actor.demand.salience)
         delta_2_u2 = gain / (s * actor.supply.salience)
 
+        if overwrite_opposite_actor:
+            actor.opposite_actor.eu_max = overwrite_opposite_actor
+        else:
+            actor.opposite_actor.eu_max = s * actor.opposite_actor.demand.salience * delta_2_u2 - loss
+
         actor.eu_max = gain - (s * actor.supply.salience * delta_2_u1)
-        actor.opposite_actor.eu_max = s * actor.opposite_actor.demand.salience * delta_2_u2 - loss
 
     def csv_row(self, head=False):
 
