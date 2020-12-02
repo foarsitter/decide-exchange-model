@@ -41,7 +41,7 @@ def graph_builder(file_path: str, p: str):
     csv_path = path / "csv"
     chart_path = path / "charts" / "modified"
 
-    chart_path_2 = Path("/home/jelmert/Downloads/kopenhagen (1)/kopenhagen/modified")
+    # chart_path_2 = Path("/home/jelmert/Downloads/kopenhagen (1)/kopenhagen/modified")
 
     if not chart_path.exists():
         chart_path.mkdir()
@@ -65,7 +65,7 @@ def graph_builder(file_path: str, p: str):
             for row in chart_area:
                 plt.plot([float(x) for x in row[3:]], label=row[0])
 
-            x = chart_path_2 / file.name
+            x = chart_path / file.name
             lgd = plt.legend(loc="upper left", bbox_to_anchor=(1, 1))
             plt.savefig(
                 str(x).replace(".csv", ".png"),
@@ -87,7 +87,10 @@ def get_chart_area_from_csv(begin: str, reader: csv.reader):
             found_begin = index
 
         if found_begin:
-            if len(row) > 0 and 1 < index - found_begin <= 12:
+            if len(row) == 0 or row[0] == "":
+                return data
+
+            if len(row) > 0 and index - found_begin > 1:
                 data.append(row)
 
     return data
@@ -95,8 +98,9 @@ def get_chart_area_from_csv(begin: str, reader: csv.reader):
 
 if __name__ == "__main__":
 
-    for p in ["0.00", "0.10", "0.20", "0.30", "0.40", "0.60", "0.80", "1.00"]:
+    for p in ["0.00", "0.20", "0.40", "0.60", "0.80", "1.00"]:
         graph_builder(
-            f"/home/jelmert/Downloads/kopenhagen (1)/kopenhagen/{p}/issues/summary",
+            # ~Alternative power files artikel/Alternative power files artikel/CoP21_2Oct2015_A_no_allfin_amb alt power/CoP21_2Oct2015_A_no_allfin_amb alt power/1.00/issues/summary
+            f"/home/jelmert/Downloads/Alternative power files artikel/Alternative power files artikel/CoP21_2Oct2015_A_no_allfin_amb alt power/CoP21_2Oct2015_A_no_allfin_amb alt power/{p}/issues/summary",
             p
         )
