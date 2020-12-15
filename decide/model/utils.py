@@ -55,7 +55,7 @@ class ModelLoop(object):
                 exchange.j.actor
             ].position = exchange.j.y
 
-        # calc the new NBS on the voting positions and fire the event for ending this loop
+        # calc the new MDS on the voting positions and fire the event for ending this loop
         self.model.calc_nbs()
         self.event_handler.end_loop(
             iteration=self.iteration_number, repetition=self.repetition_number

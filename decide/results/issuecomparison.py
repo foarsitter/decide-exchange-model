@@ -15,7 +15,7 @@ def write_summary_result(conn, model_run_ids, output_directory):
             a.name AS actor,
             i.name as issue,
             AVG(ai.position) as position,        
-            i2.pointer                                AS iteration,
+            i2.pointer + 1                                AS round,
             m.p,
             m.id  
           FROM actorissue ai
@@ -32,7 +32,7 @@ def write_summary_result(conn, model_run_ids, output_directory):
                      columns=['position']
                      )
 
-    table = pd.pivot_table(df, index=['issue', 'actor', 'iteration'], columns=['p'], values=['position'])
+    table = pd.pivot_table(df, index=['issue', 'actor', 'round'], columns=['p'], values=['position'])
     table.to_csv(os.path.join(output_directory, 'issues_preference.csv'))
 
     df = pd.read_sql("""
@@ -40,7 +40,7 @@ def write_summary_result(conn, model_run_ids, output_directory):
             a.name AS actor,
             i.name as issue,
             AVG(ai.position) as position,        
-            i2.pointer                                AS iteration,
+            i2.pointer + 1                                AS round,
             m.p,
             m.id  
           FROM actorissue ai
@@ -57,7 +57,7 @@ def write_summary_result(conn, model_run_ids, output_directory):
                      columns=['position']
                      )
 
-    table = pd.pivot_table(df, index=['issue', 'actor', 'iteration'], columns=['p'], values=['position'])
+    table = pd.pivot_table(df, index=['issue', 'actor', 'round'], columns=['p'], values=['position'])
     table.to_csv(os.path.join(output_directory, 'issues_voting.csv'))
 
 

@@ -91,7 +91,7 @@ def adjusted_nbs(actor_issues, updates, actor, new_position, denominator):
 
 def adjusted_nbs_by_position(actor_issues, updates, actor, x_pos, new_nbs, denominator):
     """
-    Calculate the new position (delta) of the given actor when the NBS is adjusted
+    Calculate the new position (delta) of the given actor when the MDS is adjusted
     :param actor_issues:
     :param updates:
     :param actor:
@@ -275,7 +275,7 @@ def actor_externalities(
 
 def position_by_nbs(actor_issues, exchange_actor, nbs, denominator):
     """
-    For the Random Rate implementation the position is need to be calculated where a NBS is given.
+    For the Random Rate implementation the position is need to be calculated where a MDS is given.
 
     :param actor_issues:
     :param exchange_actor:

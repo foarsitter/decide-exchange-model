@@ -492,7 +492,7 @@ class AbstractExchangeActor:
 
             if abs(self.nbs_1 - self.y) > 1e-10:
                 logging.debug(
-                    "The new calculated NBS is not exactly the same as the new position of the actor (nbs 0 {} nbs 1: {} y: {})".format(
+                    "The new calculated MDS is not exactly the same as the new position of the actor (nbs 0 {} nbs 1: {} y: {})".format(
                         self.nbs_0, self.nbs_1, self.y
                     )
                 )
@@ -926,7 +926,7 @@ class AbstractModel:
     def determine_groups_and_calculate_exchanges(self):
         """
         There are 4 groups: A, B, C, and D.
-        An actor is member of group A if his position on both issues is left of the NBS.
+        An actor is member of group A if his position on both issues is left of the MDS.
         Each actor of group A can exchange with the actors of Group D, the actors of B with C.
         """
         for combination in self.issue_combinations:

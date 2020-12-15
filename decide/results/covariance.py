@@ -30,7 +30,7 @@ def write_result(conn, iterations, model_run_id, output_directory):
             LEFT JOIN iteration i2 ON ai.iteration_id = i2.id
             LEFT JOIN repetition r ON i2.repetition_id = r.id
             LEFT JOIN modelrun m ON r.model_run_id = m.id            
-          WHERE  ai.type = 'before' AND i2.pointer = ? AND m.id = ? 
+          WHERE  ai.type = 'after' AND i2.pointer = ? AND m.id = ? 
          GROUP BY m.id,r.id, i2.id, i.id) a
     """,
                      conn,

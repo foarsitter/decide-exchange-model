@@ -232,16 +232,16 @@ class IssueDevelopment(observer.Observer):
         if self.write_voting_position:
             writer.writerow(
                 [
-                    "round",
-                    "preference nbs",
-                    "preference nbs var",
+                    "Round",
+                    "Preference MDS",
+                    "Preference MDS variance",
                     "",
-                    "voting nbs",
-                    "voting nbs var",
+                    "Voting MDS",
+                    "Voting MDS variance",
                 ]
             )
         else:
-            writer.writerow(["round", "preference nbs", "preference nbs var"])
+            writer.writerow(["Round", "Preference MDS", "Preference MDS variance"])
 
         # remove the nbs from each collection so it doesn't show up in the table.
         preference_nbs = self.preference_history[issue]["nbs"]
@@ -283,7 +283,7 @@ class IssueDevelopment(observer.Observer):
         # issue development summary
         writer.writerow([])
         writer.writerow(
-            ["First and last round comparison of NBS and all actors"]
+            ["First and last round comparison of MDS and all actors"]
         )
         writer.writerow(
             [
@@ -293,15 +293,15 @@ class IssueDevelopment(observer.Observer):
                 "First round",
                 "Final round",
                 "Position shift",
-                "Distance NBS start",
-                "Distance NBS end",
+                "Distance MDS start",
+                "Distance MDS end",
             ]
         )
 
         nbs_start = self._de_normalize_value(preference_nbs[0])
         nbs_end = self._de_normalize_value(preference_nbs[-1])
 
-        writer.writerow(["NBS", "-", "-", nbs_start, nbs_end, "-"])
+        writer.writerow(["MDS", "-", "-", nbs_start, nbs_end, "-"])
 
         # to compare different issues and variances of the model, keep the output sorted
         od = OrderedDict(sorted(self.preference_history[issue].items()))
@@ -333,14 +333,14 @@ class IssueDevelopment(observer.Observer):
 
         # second table
         writer.writerow([])
-        writer.writerow(["Preference development NBS and all actors"])
+        writer.writerow(["Preference development MDS and all actors"])
         writer.writerow(["actor", "salience", "power"] + heading)
 
         plt.clf()
 
         nbs_values = self._de_normalize_list_value(preference_nbs)
 
-        writer.writerow(["nbs", "-", "-"] + nbs_values)
+        writer.writerow(["MDS", "-", "-"] + nbs_values)
 
         plt.plot(nbs_values, linestyle="--",  label="MDS")
 
@@ -366,11 +366,11 @@ class IssueDevelopment(observer.Observer):
 
         if self.write_voting_position:
             writer.writerow([])
-            writer.writerow(["Voting development NBS and all actors"])
+            writer.writerow(["Voting development MDS and all actors"])
             writer.writerow(["Actor", "Salience", "Power"] + heading)
 
             writer.writerow(
-                ["NBS", "-", "-"] + self._de_normalize_list_value(voting_nbs)
+                ["MDS", "-", "-"] + self._de_normalize_list_value(voting_nbs)
             )
 
             od = OrderedDict(sorted(self.voting_history[issue].items()))
@@ -438,13 +438,13 @@ class IssueDevelopment(observer.Observer):
                     writer.writerow(
                         [
                             "round",
-                            "avg nbs",
+                            "avg MDS",
                             "variance",
                             "",
-                            "avg voting nbs",
+                            "avg voting MDS",
                             "variance",
                             "",
-                            "avg nbs var",
+                            "avg MDS var",
                             "variance",
                             "",
                             "avg voting variance",
@@ -455,10 +455,10 @@ class IssueDevelopment(observer.Observer):
                     writer.writerow(
                         [
                             "round",
-                            "avg nbs",
+                            "avg MDS",
                             "variance",
                             "",
-                            "avg voting nbs",
+                            "avg voting MDS",
                             "variance",
                         ]
                     )
@@ -477,7 +477,7 @@ class IssueDevelopment(observer.Observer):
 
                 _ = self._de_normalize_value
 
-                # NBS related data.
+                # MDS related data.
                 plt.clf()
 
                 p_line = []
@@ -538,7 +538,7 @@ class IssueDevelopment(observer.Observer):
 
                 writer.writerow([])
                 writer.writerow(
-                    ["[Preference] First and last round comparison of NBS and all actors"]
+                    ["[Preference] First and last round comparison of MDS and all actors"]
                 )
                 writer.writerow(
                     [
@@ -548,12 +548,12 @@ class IssueDevelopment(observer.Observer):
                         "First round",
                         "Final round",
                         "Position shift",
-                        "Distance NBS start",
-                        "Distance NBS end",
+                        "Distance MDS start",
+                        "Distance MDS end",
                     ]
                 )
 
-                writer.writerow(["NBS", "-", "-", nbs_start, nbs_end, "-"])
+                writer.writerow(["MDS", "-", "-", nbs_start, nbs_end, "-"])
 
                 for actor, value in sorted(self.preference_history_sum[issue].items()):
 
@@ -584,7 +584,7 @@ class IssueDevelopment(observer.Observer):
 
                 writer.writerow([])
                 writer.writerow(
-                    ["[Voting] First and last round comparison of NBS and all actors"]
+                    ["[Voting] First and last round comparison of MDS and all actors"]
                 )
                 writer.writerow(
                     [
@@ -594,12 +594,12 @@ class IssueDevelopment(observer.Observer):
                         "First round",
                         "Final round",
                         "Position shift",
-                        "Distance NBS start",
-                        "Distance NBS end",
+                        "Distance MDS start",
+                        "Distance MDS end",
                     ]
                 )
 
-                writer.writerow(["NBS", "-", "-", nbs_voting_start, nbs_voting_end, "-"])
+                writer.writerow(["MDS", "-", "-", nbs_voting_start, nbs_voting_end, "-"])
 
                 for actor, value in sorted(self.voting_history_sum[issue].items()):
 
@@ -629,13 +629,13 @@ class IssueDevelopment(observer.Observer):
                     )
 
                 writer.writerow([])
-                writer.writerow(["AVG Preference development NBS and all actors"])
+                writer.writerow(["AVG Preference development MDS and all actors"])
                 writer.writerow(["actor", "salience", "power"] + heading)
 
                 self._write_history_sum(writer, heading, issue, self.preference_history_sum, "preference")
 
                 writer.writerow([])
-                writer.writerow(["AVG voting development NBS and all actors"])
+                writer.writerow(["AVG voting development MDS and all actors"])
                 writer.writerow(["actor", "salience", "power"] + heading)
 
                 if self.write_voting_position:

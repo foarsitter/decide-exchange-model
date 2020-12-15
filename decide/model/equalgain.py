@@ -121,7 +121,7 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
                     )
                 )
 
-                # check if the shift does not exceed the NBS.
+                # check if the shift does not exceed the MDS.
                 if self.opposite_actor.supply.position > self.demand.position:
                     move_j_a = move_j * -1
                 else:
@@ -203,7 +203,7 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
                 )
 
         else:
-            # check if the shift does not exceed the NBS.
+            # check if the shift does not exceed the MDS.
             if self.supply.position > self.opposite_actor.demand.position:
                 move_i_a = move_i * -1
             else:

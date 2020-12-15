@@ -63,7 +63,7 @@ class Worker(QtCore.QObject):
 
         model_variations = list(settings.model_variations)
 
-        for variation, p in enumerate(model_variations, 1):
+        for variation, p in enumerate(model_variations, 0):
 
             output_directory = init_output_directory(
                 parent_output_directory,
@@ -383,7 +383,9 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
     def update_progress(self, variation, repetition, iteration, start_time):
 
-        value = variation * repetition * self.settings.iterations + iteration
+        x = variation * self.settings.repetitions * self.settings.iterations
+
+        value = x + (repetition * self.settings.iterations) + iteration
 
         self.progress_dialog.setValue(value)
         repetitions = self.settings.repetitions

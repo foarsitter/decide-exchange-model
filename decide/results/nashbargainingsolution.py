@@ -14,18 +14,19 @@ def write_summary_result(conn, model_run_ids, output_directory, ai_type="before"
     else:
         x_type = "voting"
 
-    df = pd.read_sql("""
+    df = pd.read_sql(
+        """
     SELECT
       a.p as p,
       a.issue as issue,
-      a.iteration as iteration,
+      a.round as round,
       a.repetion as repetion,
-      a.numerator / a.denominator AS nbs
+      a.numerator / a.denominator AS mds
     FROM (SELECT
             sum(ai.position * ai.power * ai.salience) AS numerator,
             sum(ai.salience * ai.power)               AS denominator,
             r.pointer                                 AS repetion,
-            i2.pointer                                AS iteration,
+            i2.pointer + 1                                AS round,
             m.p,
       i.name as issue
           FROM actorissue ai
@@ -36,20 +37,29 @@ def write_summary_result(conn, model_run_ids, output_directory, ai_type="before"
             LEFT JOIN modelrun m ON r.model_run_id = m.id        
           WHERE  ai.type = '%s' AND m.id IN (%s)
          GROUP BY m.id,r.id, i2.id, i.id) a
-    """ % (ai_type, list_to_sql_param(model_run_ids)),
-                     conn,
-                     index_col='p',
-                     columns=['nbs']
-                     )
+    """
+        % (ai_type, list_to_sql_param(model_run_ids)),
+        conn,
+        index_col="p",
+        columns=["mds"],
+    )
     try:
-        table_avg = pd.pivot_table(df, index=['issue', 'p'], columns=['iteration'], values=['nbs'], aggfunc=np.average)
-        table_avg.to_csv(os.path.join(output_directory, f'nbs_average_{x_type}.csv'))
+        table_avg = pd.pivot_table(
+            df,
+            index=["issue", "p"],
+            columns=["round"],
+            values=["mds"],
+            aggfunc=np.average,
+        )
+        table_avg.to_csv(os.path.join(output_directory, f"mds_average_{x_type}.csv"))
     except Exception as e:
         print(e)
 
     try:
-        table_var = pd.pivot_table(df, index=['issue', 'p'], columns=['iteration'], values=['nbs'], aggfunc=np.var)
-        table_var.to_csv(os.path.join(output_directory, f'nbs_variance_{x_type}.csv'))
+        table_var = pd.pivot_table(
+            df, index=["issue", "p"], columns=["round"], values=["mds"], aggfunc=np.var
+        )
+        table_var.to_csv(os.path.join(output_directory, f"mds_variance_{x_type}.csv"))
     except Exception as e:
         print(e)
 
@@ -59,7 +69,9 @@ INNER JOIN dataset d on issue.data_set_id = d.id
 INNER JOIN modelrun m on d.id = m.data_set_id
 WHERE m.id IN (%s)
 GROUP BY issue.name, issue.id
-ORDER BY issue.name""" % list_to_sql_param(model_run_ids)
+ORDER BY issue.name""" % list_to_sql_param(
+        model_run_ids
+    )
 
     cursor = conn.execute_sql(sql=sql_2, params=[])
     issues = cursor.fetchall()
@@ -67,18 +79,19 @@ ORDER BY issue.name""" % list_to_sql_param(model_run_ids)
     # %%
 
     for name, issue_id in issues:
-        df = pd.read_sql("""SELECT a.p                         as p,
+        df = pd.read_sql(
+            """SELECT a.p                         as p,
        a.issue                     as issue,
-       a.iteration                 as iteration,
+       a.round                 as round,
        a.repetion                  as repetion,
-       a.numerator / a.denominator AS nbs
+       a.numerator / a.denominator AS mds
 FROM (SELECT sum(ai.position * ai.power * ai.salience) AS numerator,
              sum(ai.salience * ai.power)
                                                        AS denominator,
              r.pointer
                                                        AS repetion,
-             i2.pointer
-                                                       AS iteration,
+             i2.pointer +1
+                                                       AS round,
              m.p,
              i.name                                    as issue
       FROM actorissue ai
@@ -92,23 +105,24 @@ FROM (SELECT sum(ai.position * ai.power * ai.salience) AS numerator,
         AND m.id IN(%s)
         AND i.id = %s
       GROUP BY m.id, r.id, i2.id, i.id) a
-        """  % (ai_type, list_to_sql_param(model_run_ids), issue_id),
-                         conn,
-                         index_col='p',
-                         columns=['nbs']
-                         )
+        """
+            % (ai_type, list_to_sql_param(model_run_ids), issue_id),
+            conn,
+            index_col="p",
+            columns=["mds"],
+        )
 
         try:
-            table = pd.pivot_table(df, index=['iteration'], columns=['p'], values=['nbs'])
+            table = pd.pivot_table(df, index=["round"], columns=["p"], values=["mds"])
             plt = table.plot()
 
             plt.set_title(name)
             plt.set_ylim(0, 110)
 
-            lgd = plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+            lgd = plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.0)
 
             plt.figure.savefig(
-                os.path.join(output_directory, f'nbs_{name}_{x_type}.png'),
+                os.path.join(output_directory, f"mds_{name}_{x_type}.png"),
                 bbox_extra_artists=(lgd,),
                 bbox_inches="tight",
             )
@@ -116,8 +130,8 @@ FROM (SELECT sum(ai.position * ai.power * ai.salience) AS numerator,
             print(e)
 
 
-if __name__ == '__main__':
-    m = Manager(os.environ.get('DATABASE_URL'))
+if __name__ == "__main__":
+    m = Manager(os.environ.get("DATABASE_URL"))
     m.init_database()
 
     model_run_ids = [43, 44]

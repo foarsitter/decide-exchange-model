@@ -53,7 +53,7 @@ def graph_builder(file_path: str, p: str):
             plot_name = next(reader)[0] + f" p={p}"
 
             chart_area = get_chart_area_from_csv(
-                "AVG Preference development NBS and all actors", reader
+                "AVG Preference development MDS and all actors", reader
             )
 
             nbs = append_nbs(chart_area)
