@@ -57,7 +57,11 @@ class IssueWidget(DynamicFormLayout):
 
     def set_issues(self, issues: List[types.PartialIssue]):
         self.set_values(issues)
-        self.add_row(QtWidgets.QLabel('Issue'), QtWidgets.QLabel('Lower'), QtWidgets.QLabel('Upper'))
+        self.add_row(
+            QtWidgets.QLabel("Issue"),
+            QtWidgets.QLabel("Lower"),
+            QtWidgets.QLabel("Upper"),
+        )
         for issue in issues:
             checkbox = QtWidgets.QCheckBox(issue.name)
 
@@ -68,8 +72,8 @@ class IssueWidget(DynamicFormLayout):
             checkbox.stateChanged.connect(self.state_changed)
 
             if (
-                    issue in self.main_window.settings.selected_issues
-                    or len(self.main_window.settings.selected_issues) == 0
+                issue in self.main_window.settings.selected_issues
+                or len(self.main_window.settings.selected_issues) == 0
             ):
                 checkbox.setChecked(True)
 
@@ -97,8 +101,8 @@ class ActorWidget(DynamicFormLayout):
             checkbox.setObjectName(actor.id)
 
             if (
-                    actor in self.main_window.settings.selected_actors
-                    or len(self.main_window.settings.selected_actors) == 0
+                actor in self.main_window.settings.selected_actors
+                or len(self.main_window.settings.selected_actors) == 0
             ):
                 checkbox.setChecked(True)
 
@@ -115,7 +119,6 @@ class ActorWidget(DynamicFormLayout):
 
 
 class ActorIssueWidget(DynamicFormLayout):
-
     def __init__(self, *args, **kwargs):
         super(ActorIssueWidget, self).__init__(*args, **kwargs)
 
@@ -138,7 +141,7 @@ class ActorIssueWidget(DynamicFormLayout):
 
 class SummaryWidget(DynamicFormLayout):
     def __init__(
-            self, main_window, settings, data, actor_widget, issue_widget, *args, **kwargs
+        self, main_window, settings, data, actor_widget, issue_widget, *args, **kwargs
     ):
         """
         :type settings: decide.qt.mainwindow.settings.ProgramSettings
@@ -152,13 +155,38 @@ class SummaryWidget(DynamicFormLayout):
         self.data = data
         self.actor_widget = actor_widget
         self.issue_widget = issue_widget
+        self.run_name = QtWidgets.QLineEdit()
+        self.run_name.setText(self.settings.run_name)
+        self.run_name.textChanged.connect(self.update_run_name)
+
+    def update_run_name(self, value):
+        self.settings.run_name = value
 
     def update_widget(self):
 
         self.clear()
 
         self.add_text_row("Input", self.settings.input_filename, self.test_callback)
-        self.add_text_row("Output directory", self.settings.output_directory, self.test_callback)
+
+        if (
+            self.settings.output_directory is None
+            or self.settings.output_directory == "None"
+        ):
+            self.add_text_row(
+                "Output directory",
+                "set output directory",
+                self.main_window.select_output_dir,
+            )
+        else:
+            self.add_text_row(
+                "Output directory", self.settings.output_directory, self.test_callback
+            )
+
+        self.add_row(QtWidgets.QLabel("Run name"), self.run_name)
+
+        self.add_text_row(
+            "", "You can make use of the variable {rounds} and {repetitions} in run name"
+        )
 
         settings = self.main_window.settings  # type: ProgramSettings
 
@@ -184,18 +212,19 @@ class SummaryWidget(DynamicFormLayout):
         if settings.voting_positions:
             output_selection.append("Show Voting positions [.csv]")
 
-        # self.add_text_row("Output settings", output_selection[0])
-        #
-        # for setting in output_selection[-1:]:
-        #     self.add_text_row("", setting)
-
         self.main_window.set_start_button_state()
 
     def add_text_row(self, label, value, callback=None):
 
         if callback:
+
+            if len(value) > 50:
+                value_x = "..." + value[-50:]
+            else:
+                value_x = value
+
             value_label = QtWidgets.QLabel(
-                '<a href="{}">...{}/</a>'.format(value, value[-50:])
+                '<a href="{}">{}</a>'.format(value, value_x)
             )
             value_label.linkActivated.connect(callback)
         else:
@@ -251,7 +280,9 @@ class MenuBar(QtWidgets.QMenuBar):
         open_action.triggered.connect(self.main_window.open_input_data)
 
         edit_action = QtWidgets.QAction("&Edit data file", self)
-        edit_action.triggered.connect(self.main_window.open_current_input_window_with_current_data)
+        edit_action.triggered.connect(
+            self.main_window.open_current_input_window_with_current_data
+        )
 
         save_settings = QtWidgets.QAction("&Save settings", self)
         save_settings.triggered.connect(self.main_window.save_settings)

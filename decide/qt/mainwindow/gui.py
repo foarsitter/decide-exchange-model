@@ -4,6 +4,7 @@ import statistics
 import sys
 import time
 import xml.etree.cElementTree as ET
+from shutil import copyfile
 
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
@@ -11,7 +12,7 @@ from decide import log_filename
 from decide.cli import init_output_directory
 from decide.data.modelfactory import ModelFactory
 from decide.data.reader import InputDataFile
-from decide.model.base import AbstractModel
+from decide.model.base import AbstractModel, ActorIssue
 from decide.model.equalgain import EqualGainModel
 from decide.model.observers.exchanges_writer import ExchangesWriter
 from decide.model.observers.externalities import Externalities
@@ -21,6 +22,7 @@ from decide.model.observers.observer import Observable
 from decide.model.observers.sqliteobserver import SQLiteObserver
 from decide.model.utils import ModelLoop
 from decide.qt import utils
+from decide.qt.mainwindow.helpers import esc, normalize
 from decide.qt.mainwindow.settings import ProgramSettings
 from decide.qt.mainwindow.settings import SettingsFormWidget
 from decide.qt.mainwindow.widgets import ActorWidget, IssueWidget, SummaryWidget, ActorIssueWidget, MenuBar
@@ -50,12 +52,12 @@ class Worker(QtCore.QObject):
             issue_whitelist=settings.selected_issues,
         )
 
-        parent_output_directory = init_output_directory(
-            settings.output_directory,
-            settings.data_set_name,
-        )
+        parent_output_directory = init_output_directory(*settings.output_path)
 
         model = factory(model_klass=EqualGainModel, randomized_value=settings.model_variations[0])
+
+        safe_model_as_input(model, os.path.join(parent_output_directory, "input.csv"))
+        safe_settings_as_csv(self.settings, os.path.join(parent_output_directory, "settings.csv"))
 
         event_handler = init_event_handlers(model, parent_output_directory, settings)
 
@@ -410,6 +412,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         self._clean_progress_dialog()
 
         if not self.worker.break_loop:
+
             button_reply = QtWidgets.QMessageBox.question(
                 self,
                 "Done",
@@ -429,7 +432,22 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
     def run(self):
         # store the current state of the app
+
         self.save_settings()
+
+        output_dir = os.path.join(*self.settings.output_path)
+
+        if os.path.isdir(output_dir):
+            button_reply = QtWidgets.QMessageBox.question(
+                self,
+                "Output directory already exists",
+                "The given directory {} already exists. Proceed?".format(output_dir),
+                QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
+                QtWidgets.QMessageBox.No,
+            )
+
+            if button_reply == QtWidgets.QMessageBox.No:
+                return
 
         self.setWindowTitle("Decide Exchange Model")
 
@@ -502,3 +520,76 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+def safe_settings_as_csv(settings: ProgramSettings, filename):
+
+    items = ["salience_weight", "fixed_weight", "iterations", "repetitions"]
+
+    with open(filename, "w") as file:
+        for item in items:
+
+            value = settings.__dict__[item]
+
+            if isinstance(value, list):
+                value = settings.settings_list_separator.join(value)
+
+            file.write("\t".join([esc(item), esc(value), "\n"]))
+
+
+def safe_model_as_input(model, filename):
+    with open(filename, "w") as file:
+
+        for actor in model.actors.values():
+
+            file.write(
+                "\t".join(
+                    [
+                        esc("#A"),
+                        esc(actor.name),
+                        esc(actor.name),
+                        esc(actor.comment),
+                        "\n",
+                    ]
+                )
+            )
+
+        for issue in model.issues.values():
+            file.write(
+                "\t".join(
+                    [
+                        esc("#P"),
+                        esc(issue.name),
+                        esc(issue.name),
+                        esc(issue.comment),
+                        "\n",
+                    ]
+                )
+            )
+
+            file.write(
+                "\t".join([esc("#M"), esc(issue.name), str(issue.lower), "\n"])
+            )
+
+            file.write(
+                "\t".join([esc("#M"), esc(issue.name), str(issue.upper), "\n"])
+            )
+
+        for issue_id, actor_issues in model.actor_issues.items():
+
+            for actor_id, actor_issue in actor_issues.items():
+                actor_issue = actor_issue  # type: ActorIssue
+
+                file.write(
+                    "\t".join(
+                        [
+                            esc("#D"),
+                            esc(actor_issue.actor.name),
+                            esc(actor_issue.issue.name),
+                            normalize(actor_issue.position),
+                            normalize(actor_issue.salience),
+                            normalize(actor_issue.power),
+                            "\n",
+                        ]
+                    )
+                )

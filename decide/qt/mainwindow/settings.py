@@ -127,6 +127,7 @@ class ProgramSettings(QtCore.QObject):
 
         self.input_filename = ""
         self.output_directory = ""
+        self.run_name = ""
 
         self.salience_weight = 0.4
         self.fixed_weight = 0.1
@@ -155,6 +156,10 @@ class ProgramSettings(QtCore.QObject):
         self.selected_issues = []
 
         self.recently_opened = []
+
+    @property
+    def output_path(self):
+        return self.output_directory, self.data_set_name, self.run_name.format(repetitions=self.repetitions, rounds=self.iterations)
 
     def settings_file_path(self):
         file_path = os.path.join(decide_base_path, self.settings_file)
