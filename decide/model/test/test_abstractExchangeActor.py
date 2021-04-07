@@ -10,10 +10,21 @@ class TestAbstractExchangeActor(TestCase):
         test_issue = model.add_issue("test")
         test1_issue = model.add_issue("test1")
 
+        test_issue.lower = 0
+        test_issue.upper = 100
+        test_issue.calculate_step_size()
+
+        test1_issue.lower = 0
+        test1_issue.upper = 100
+        test1_issue.calculate_step_size()
+
         test_actor = model.add_actor("test")
         test1_actor = model.add_actor("test1")
         test1_issue_duplicated = model.add_issue("test")
         test1_actor_duplicated = model.add_actor("test1")
+
+        test1_issue_duplicated.lower = 0
+        test1_issue_duplicated.upper = 100
 
         self.assertEqual(test_actor, test_actor)
         self.assertNotEqual(test_actor, test1_actor)
@@ -26,6 +37,9 @@ class TestAbstractExchangeActor(TestCase):
 
         b = Issue("test")
         b.name = "test"
+        b.lower = 0
+        b.upper = 100
+        b.calculate_step_size()
 
         self.assertEqual(b.__hash__(), test_issue.__hash__())
 

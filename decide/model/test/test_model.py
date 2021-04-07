@@ -61,7 +61,7 @@ def test_first_phase(model):
         model.remove_invalid_exchanges(realize)
         realized.append(realize)
 
-    assert len(realized) == 37
+    assert len(realized) == 39
 
 
 def test_calc_combinations(model):

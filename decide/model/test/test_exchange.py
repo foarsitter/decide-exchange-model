@@ -12,8 +12,13 @@ class TestExchange(TestCase):
         a3 = model.add_actor("a3")
         a4 = model.add_actor("a4")
 
-        model.add_issue("p")
-        model.add_issue("q")
+        p = model.add_issue("p")
+        p.lower = 0
+        p.upper = 100
+
+        q = model.add_issue("q")
+        q.lower = 0
+        q.upper = 100
 
         model.add_actor_issue(a1, "p", 70, 0.75, 0.5)
         model.add_actor_issue(a2, "p", 30, 0.25, 0.5)

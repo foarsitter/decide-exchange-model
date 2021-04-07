@@ -49,19 +49,6 @@ class Issue:
     def normalize(self, value):
         return Decimal(value - self.lower) * self.step_size
 
-    def expand_lower(self, value):
-
-        if self.lower is None:
-            self.lower = value
-        elif value < self.lower:
-            self.lower = value
-
-    def expand_upper(self, value):
-        if self.upper is None:
-            self.upper = value
-        elif value > self.upper:
-            self.upper = value
-
     def __str__(self):
         return self.__repr__()
 
@@ -869,8 +856,12 @@ class AbstractModel:
                     "Define '#P' with '{0}' and add a description".format(issue)
                 )
 
+        issue.calculate_delta()
+        issue.calculate_step_size()
+        normalized_position = issue.normalize(position)
+
         self.actor_issues[issue][actor] = ActorIssue(
-            actor, issue, position, salience, power
+            actor, issue, normalized_position, salience, power
         )
 
         return self.actor_issues[issue][actor]
