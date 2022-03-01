@@ -8,6 +8,6 @@ peewee==3.9.6
 PyQt5==5.12.1
 pytest==4.6.3
 pytest-qt==3.2.2
-requests==2.21.0
-typesystem==0.2.2
+requests
+typesystem
 bump2version
