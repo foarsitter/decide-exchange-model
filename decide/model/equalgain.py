@@ -45,7 +45,11 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
         # does this actor WIN or LOSE
         if v < 0.5:  # V < 0.5:
             # wins
-            eui = eu + p * z * (self.eu_max - eu)
+            a = self.eu_max - eu
+
+            if a > eu:
+                a = eu
+            eui = eu + p * z * a
         else:
             # loses
             eui = eu - p * z * eu
