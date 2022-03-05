@@ -20,11 +20,11 @@ setup(
         "gui_scripts": ["decide-gui=decide.gui:main"],
     },
     # data_files=[('data/input', ['data/input/kopenhagen.csv', 'data/input/CoP21.csv'])],
-    python_requires=">=3.6",
+    python_requires="==3.6",
     install_requires=[
         "blinker==1.4",
         "matplotlib==3.0.2",
-        "requests==2.21.0",
+        "requests==2.25.1",
         "typesystem==0.2.2"
     ],
 )
