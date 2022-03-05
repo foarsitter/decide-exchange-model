@@ -40,7 +40,7 @@ install:
     pyopenssl==20.0.1
     pyparsing==2.4.7
     pytest==4.6.3
-    python=3.6
+    python=3.6.7
     pytz==2021.1
     readline==8.1
     requests==2.25.1
