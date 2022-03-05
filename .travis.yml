@@ -23,9 +23,9 @@ install:
   - "export DISPLAY=:99.0"
   - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -screen 0 1920x1200x24 -ac +extension GLX +render -noreset"
   - sleep 3
-  - conda install -q python=$TRAVIS_PYTHON_VERSION ncurses pip requests conda-build jinja2 anaconda-client pytest Cython peewee
-  - pip install Cython
-  - pip install 'peewee>=3.0'
+  - conda install -q python=$TRAVIS_PYTHON_VERSION "ncurses==6.2" "pip==21.0.1" "requests==2.21.0" "conda-build==3.21.4" "jinja2==2.11.3" "anaconda-client==1.7.2" "pytest==4.6.3" "Cython==0.29.17" "peewee==3.14.4"
+  - pip install "Cython==0.29.17"
+  - pip install 'peewee==3.14.4'
   - pip install -r requirements.txt
   - pip install codecov 'coverage==4.3' codeclimate-test-reporter
 script:
