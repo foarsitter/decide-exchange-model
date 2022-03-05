@@ -2,7 +2,7 @@ blinker==1.4
 coverage==4.5.2
 Cython
 matplotlib==3.0.2
-numpy==1.15.4
+numpy==1.21.0
 pandas==0.25.2
 PyQt5==5.12.1
 pytest==4.6.3
