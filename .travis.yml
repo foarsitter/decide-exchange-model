@@ -23,7 +23,7 @@ install:
   - "export DISPLAY=:99.0"
   - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -screen 0 1920x1200x24 -ac +extension GLX +render -noreset"
   - sleep 3
-  - conda install -q python=$TRAVIS_PYTHON_VERSION "ncurses==6.2" "pip==21.0.1" "requests==2.21.0" "conda-build==3.21.4" "jinja2==2.11.3" "anaconda-client==1.7.2" "pytest==4.6.3" "Cython==0.29.17" "peewee==3.14.4"
+  - conda install -q python=$TRAVIS_PYTHON_VERSION "ncurses==6.2" "pytz==2021.1" "pyparsing==2.4.7" "wheel==0.36.2" "ca-certificates==2020.12.5" "certifi==2020.12.5" "conda==4.10.0" "readline==8.1" "cffi==1.14.5" "setuptools==49.6.0" "cryptography==3.4.7" "brotlipy==0.7.0" "pip==21.0.1" "requests==2.25.1" "conda-build==3.21.4" "jinja2==2.11.3" "anaconda-client==1.7.2" "pytest==4.6.3" "pyopenssl==20.0.1"  "urllib3==1.26.4" "Cython==0.29.17" "peewee==3.14.4"
   - pip install "Cython==0.29.17"
   - pip install 'peewee==3.14.4'
   - pip install -r requirements.txt
