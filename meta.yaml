@@ -16,16 +16,30 @@ build:
   entry_points:
     - decide-cli=decide.cli:main
     - decide-gui=decide.gui:main
-  script: python setup.py install --single-version-externally-managed --record=record.txt
+  script: "{{ PYTHON }} -m pip install . -vv"
 
 requirements:
   host:
+    - blinker ==1.4
+    - cython ==0.29.17
+    - matplotlib ==3.0.2
+    - numpy ==-1.19.5
+    - pandas ==1.1.5
+    - peewee ==3.14.4
+    - pip
+    - pyqt5 ==5.15.2
     - python
-    - setuptools
+    - typesystem ==0.2.2
   run:
+    - blinker ==1.4
+    - cython ==0.29.17
+    - matplotlib ==3.0.2
+    - numpy ==-1.19.5
+    - pandas ==1.1.5
+    - peewee ==3.14.4
+    - pyqt5 ==5.15.2
     - python
-    - cython
-    - numpy
+    - typesystem ==0.2.2
 test:
   imports:
     - decide

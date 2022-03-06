@@ -58,16 +58,16 @@ after_success:
     codeclimate-test-reporter
   - chmod +x ./deploy_anaconda.sh
 deploy:
-#  - provider: script
-#    script: "./deploy_anaconda.sh"
-#    on:
-#      tags: true
-#    skip_cleanup: true
-  - provider: pypi
-    user: jelmert
-    password:
-      secure: fmCoyxAZjjMM231CWnHqH3sbccEtBOklO00zztQXdHuNLkN0qk6jfkuU1CUD663tVPV75PCkhtr8CAXPTZ9vRR9gai3B4+IaJWUowdEL/c8wj7iilEixRlG2IdnXrI61dz/tMgRtq3pEzwDmdCvTfJaOUK2aAtocMKOC+74N/xh66sOCijbXBBdEE2x1tYjw1DhhoymHgAfYUjRU4rBKjSCrF3ZakeWGFhNeD66g/LzJh30MfT4Zzs5xHCEsRayVeKfYlBpmlvUOE+loPwdulGKEg2hYmOR566tKgYc0XGqlhepMIeFWMDwAyoXbsg9frTiVWgL3jdtIXQ2uQ7TqKjK8sIy28XFSX/WO/2RaNH0+iILFLkcM5K550Xw58exnDf9PoVkLP1qGUBiUlwLKoierA5jGY1AZA48tAsQ83AYNUHF2CJcLeyJHbGdmleFFYOu39Or48PazZAVXfvxOCfCiMMNvGVEPo4/+GkKyA2nioPZ/Pa2AhMMnNvJ36ey7yVI76E28zZTQqd4eqV1C+ipyiBG0Qo3zuCYSs6rQ/e+wxFU/UQxdF1PGthwXLoVa9ZVTcozypJnYVfHlugFIX0YvITFudWr1NuYMmYLXxSBpK1oyACgovOC95pp1eU2nyGwu2htE0a77eSx3+tphkmkNT+HTSQe629fzw/cxEYo=
-    distributions: sdist
+  - provider: script
+    script: "./deploy_anaconda.sh"
     on:
       tags: true
     skip_cleanup: true
+#  - provider: pypi
+#    user: jelmert
+#    password:
+#      secure: fmCoyxAZjjMM231CWnHqH3sbccEtBOklO00zztQXdHuNLkN0qk6jfkuU1CUD663tVPV75PCkhtr8CAXPTZ9vRR9gai3B4+IaJWUowdEL/c8wj7iilEixRlG2IdnXrI61dz/tMgRtq3pEzwDmdCvTfJaOUK2aAtocMKOC+74N/xh66sOCijbXBBdEE2x1tYjw1DhhoymHgAfYUjRU4rBKjSCrF3ZakeWGFhNeD66g/LzJh30MfT4Zzs5xHCEsRayVeKfYlBpmlvUOE+loPwdulGKEg2hYmOR566tKgYc0XGqlhepMIeFWMDwAyoXbsg9frTiVWgL3jdtIXQ2uQ7TqKjK8sIy28XFSX/WO/2RaNH0+iILFLkcM5K550Xw58exnDf9PoVkLP1qGUBiUlwLKoierA5jGY1AZA48tAsQ83AYNUHF2CJcLeyJHbGdmleFFYOu39Or48PazZAVXfvxOCfCiMMNvGVEPo4/+GkKyA2nioPZ/Pa2AhMMnNvJ36ey7yVI76E28zZTQqd4eqV1C+ipyiBG0Qo3zuCYSs6rQ/e+wxFU/UQxdF1PGthwXLoVa9ZVTcozypJnYVfHlugFIX0YvITFudWr1NuYMmYLXxSBpK1oyACgovOC95pp1eU2nyGwu2htE0a77eSx3+tphkmkNT+HTSQe629fzw/cxEYo=
+#    distributions: sdist
+#    on:
+#      tags: true
+#    skip_cleanup: true
