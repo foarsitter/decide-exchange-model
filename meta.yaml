@@ -27,7 +27,7 @@ requirements:
     - pandas ==1.1.5
     - peewee ==3.14.4
     - pip
-    - pyqt5 ==5.15.2
+    - pyqt
     - python
     - typesystem ==0.2.2
   run:
@@ -37,7 +37,7 @@ requirements:
     - numpy ==1.19.5
     - pandas ==1.1.5
     - peewee ==3.14.4
-    - pyqt5 ==5.15.2
+    - pyqt
     - python
     - typesystem ==0.2.2
 test:
