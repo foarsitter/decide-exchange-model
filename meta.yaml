@@ -23,7 +23,7 @@ requirements:
     - blinker ==1.4
     - cython ==0.29.17
     - matplotlib ==3.0.2
-    - numpy ==-1.19.5
+    - numpy ==1.19.5
     - pandas ==1.1.5
     - peewee ==3.14.4
     - pip
@@ -34,7 +34,7 @@ requirements:
     - blinker ==1.4
     - cython ==0.29.17
     - matplotlib ==3.0.2
-    - numpy ==-1.19.5
+    - numpy ==1.19.5
     - pandas ==1.1.5
     - peewee ==3.14.4
     - pyqt5 ==5.15.2

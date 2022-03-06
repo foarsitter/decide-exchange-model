@@ -46,8 +46,6 @@ install:
     setuptools==49.6.0
     urllib3==1.26.4
     wheel==0.36.2
-  - pip install "Cython==0.29.17"
-  - pip install 'peewee==3.14.4'
   - pip install -r requirements.txt
   - pip install codecov 'coverage==4.3' codeclimate-test-reporter
 script:
