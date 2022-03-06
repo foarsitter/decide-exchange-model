@@ -23,17 +23,9 @@ requirements:
     - python
     - setuptools
   run:
-    - python==3.6.7
+    - python
     - cython
-    - blinker==1.4
-    - coverage==4.5.2
-    - matplotlib==3.0.2
-    - numpy==1.15.4
-    - pandas==0.25.2
-    - peewee==3.14.4
-    - pyqt==5.9.2
-    - requests==2.25.1
-    - typesystem==0.2.2
+    - numpy
 test:
   imports:
     - decide
