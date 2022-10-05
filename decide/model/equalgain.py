@@ -11,6 +11,7 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
     """
     AbstractExchangeActor is the same actor...
     """
+    exchange: "EqualGainExchange"
 
     def __init__(
         self,
@@ -42,12 +43,13 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
         self.opposite_actor.v = v
         self.opposite_actor.z = z
 
+        apply_equal_length = False
         # does this actor WIN or LOSE
         if v < 0.5:  # V < 0.5:
             # wins
             a = self.eu_max - eu
 
-            if a > eu:
+            if apply_equal_length and a > eu:
                 a = eu
             eui = eu + p * z * a
         else:
@@ -347,6 +349,8 @@ class EqualGainExchangeActor(base.AbstractExchangeActor):
 
 class EqualGainExchange(base.AbstractExchange):
     actor_class = EqualGainExchangeActor
+    i: EqualGainExchangeActor
+    j: EqualGainExchangeActor
 
     def __init__(self, i, j, p, q, m, groups):
         self.i: EqualGainExchangeActor
