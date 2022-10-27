@@ -376,8 +376,8 @@ class DecideMainWindow(QtWidgets.QMainWindow):
     def run_safe(self):
 
         self.worker = Worker(self.settings)
-        self.worker.finished.connect(self.finished)
         self.worker.moveToThread(self.thread)
+        self.worker.finished.connect(self.finished)
         self.worker.finished.connect(self.thread.quit)
         self.worker.update.connect(self.update_progress)
         self.thread.started.connect(self.worker.run_model)
@@ -508,14 +508,14 @@ def main():
         format=" %(asctime)s - %(levelname)s - %(message)s",
     )
 
-    qtapp = QtWidgets.QApplication(sys.argv)
+    qtapp = QtWidgets.QApplication([])
     qtapp.setQuitOnLastWindowClosed(True)
 
     app = DecideMainWindow()
 
     sys.excepthook = utils.exception_hook
 
-    sys.exit(qtapp.exec_())
+    qtapp.exec_()
 
 
 if __name__ == "__main__":

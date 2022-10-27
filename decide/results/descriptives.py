@@ -2,7 +2,7 @@ import logging
 import os
 
 import pandas as pd
-from pandas.core.base import DataError
+from pandas.errors import DataError
 
 from decide import data_folder
 from decide.data.database import connection, Manager
