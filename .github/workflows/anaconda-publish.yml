@@ -17,5 +17,7 @@ jobs:
           channels: conda-forge
           channel-priority: strict
           conda-build-version: 3.22.0
+          activate-environment: "decide"
+          environment-file: environment.yml
       - run: |          
           conda build .

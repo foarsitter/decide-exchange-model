@@ -1,5 +1,3 @@
-{% set data = load_setup_py_data() %}
-
 package:
   name: 'decide-exchange-model'
   version: '2022.1.17'
