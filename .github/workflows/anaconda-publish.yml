@@ -1,10 +1,12 @@
 name: Publish to Anaconda
 
-on: [push]
+on:
+  release:
+    types: [created]
 
 jobs:
-  example-4:
-    name: Ex4 Linux
+  anaconda:
+    name: Publish to Anaconda
     runs-on: "ubuntu-latest"
     defaults:
       run:
