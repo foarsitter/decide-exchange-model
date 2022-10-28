@@ -117,8 +117,7 @@ class InputWindow(QtWidgets.QMainWindow):
 
             download_dir = os.path.join(input_folder, 'downloads')
 
-            if not os.path.isdir(download_dir):
-                os.mkdir(download_dir)
+            os.makedirs(download_dir, exist_ok=True)
 
             with open(os.path.join(download_dir, file_path), 'wb') as file:
                 file.write(response.content)
