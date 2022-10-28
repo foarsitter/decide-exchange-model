@@ -21,4 +21,4 @@ jobs:
           environment-file: environment.yml
       - run: |          
           conda build .
-          conda convert --platform all $HOME/miniconda/conda-bld/linux-64/decide-exchange-model-*.tar.bz2 --output-dir $HOME/miniconda/conda-bld/
+          conda convert --platform all /usr/share/miniconda/conda-bld/linux-64/decide-exchange-model-*.tar.bz2 --output-dir /usr/share/miniconda/conda-bld/
