@@ -28,6 +28,7 @@ jobs:
           activate-environment: "decide"
           use-only-tar-bz2: true
       - run: |
+          conda install --yes anaconda-client
           conda build .
           conda convert --platform all /usr/share/miniconda/conda-bld/linux-64/decide-exchange-model-*.tar.bz2 --output-dir /usr/share/miniconda/conda-bld/
           anaconda -t ${{ secrets.ANACONDA_TOKEN }} upload /usr/share/miniconda/conda-bld/**/decide-exchange-model-*.tar.bz2
