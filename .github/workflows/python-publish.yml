@@ -1,4 +1,4 @@
-name: Publish Raspcuterie to pypi
+name: Publish Decide to pypi
 
 on:
   release:

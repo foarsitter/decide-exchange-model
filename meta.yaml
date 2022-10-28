@@ -2,7 +2,7 @@
 
 package:
   name: 'decide-exchange-model'
-  version: {{ data.get('version') }}
+  version: '2022.1.17'
 
 #source:
 #  git_rev: master
@@ -16,6 +16,49 @@ build:
   entry_points:
     - decide-cli=decide.cli:main
     - decide-gui=decide.gui:main
+  script: "python -m pip install . -vv"
+
+requirements:
+  host:
+    - blinker ==1.5
+    - matplotlib ==3.6.0
+    - numpy ==1.23.4
+    - pandas ==1.5.0
+    - peewee ==3.14.4
+    - pip
+    - pyqt ==5.12.3
+    - python
+    - typesystem ==0.2.2
+    - poetry ==1.1.15
+  run:
+    - blinker ==1.5
+    - matplotlib ==3.6.0
+    - numpy ==1.23.4
+    - pandas ==1.5.0
+    - peewee ==3.14.4
+    - pyqt ==5.12.3
+    - python
+    - typesystem ==0.2.2
+    - poetry ==1.1.15
+
+test:
+  imports:
+    - decide
+    - decide.data
+    - decide.data.tests
+    - decide.model
+    - decide.model.observers
+    - decide.model.observers.tests
+    - decide.model.test
+    - decide.qt
+    - decide.qt.inputwindow
+    - decide.qt.inputwindow.tests
+    - decide.qt.mainwindow
+    - decide.qt.mainwindow.tests
+    - decide.results
+    - decide.tests
+  commands:
+    - decide-cli --help
 
 about:
   home: https://github.com/foarsitter/decide-exchange-model

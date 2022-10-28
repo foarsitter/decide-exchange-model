@@ -1,0 +1,20 @@
+name: Publish to Anaconda
+
+on: [push]
+
+jobs:
+  example-4:
+    name: Ex4 Linux
+    runs-on: "ubuntu-latest"
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          python-version: 3.9
+          channels: conda-forge
+          channel-priority: strict
+      - run: |          
+          conda build .
