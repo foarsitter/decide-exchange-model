@@ -290,16 +290,6 @@ class MenuBar(QtWidgets.QMenuBar):
         output_dir_action = QtWidgets.QAction("&Set output directory", self)
         output_dir_action.triggered.connect(self.main_window.select_output_dir)
 
-        # output_menu.addAction(self.issue_development_csv)
-        # output_menu.addAction(self.externalities_csv)
-        # output_menu.addAction(self.exchanges_csv)
-        # output_menu.addSeparator()
-        # output_menu.addAction(self.summary_only)
-        # output_menu.addAction(self.output_sqlite)
-        # output_menu.addAction(self.voting_positions)
-        # output_menu.addSeparator()
-        # output_menu.addAction(output_dir_action)
-
         # debug = self.addMenu("Debug")
         log_action = QtWidgets.QAction("Show log window", self)
         log_action.triggered.connect(self.main_window.show_debug_dialog)

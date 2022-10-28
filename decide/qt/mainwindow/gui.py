@@ -305,10 +305,11 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
         from decide.qt.inputwindow.gui import InputWindow, register_app
 
-        ex = InputWindow(self)
-        ex.load(self.settings.input_filename)
+        if self.settings and self.settings.input_filename:
+            ex = InputWindow(self)
+            ex.load(self.settings.input_filename)
 
-        register_app(ex)
+            register_app(ex)
 
     def select_output_dir(self):
         """
