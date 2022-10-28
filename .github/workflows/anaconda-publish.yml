@@ -18,7 +18,12 @@ jobs:
           channel-priority: strict
           conda-build-version: 3.22.0
           activate-environment: "decide"
-          environment-file: environment.yml
+      - uses: actions/cache@v2
+        with:
+          path: /usr/share/miniconda3/envs/decide
+          key: decide-conda-${{ hashFiles('environment.yml') }}
+        id: cache
       - run: |          
           conda build .
           conda convert --platform all /usr/share/miniconda/conda-bld/linux-64/decide-exchange-model-*.tar.bz2 --output-dir /usr/share/miniconda/conda-bld/
+          anaconda -t ${{ secrets.ANACONDA_TOKEN }} upload /usr/share/miniconda/conda-bld/**/decide-exchange-model-*.tar.bz2
