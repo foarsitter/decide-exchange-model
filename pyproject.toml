@@ -12,10 +12,14 @@ blinker = "1.5"
 matplotlib = "3.6.0"
 pandas = "1.5.0"
 numpy = "1.23.4"
-typesystem = "0.2.2"
-peewee = "3.14.4"
+typesystem = "0.2.5"
+peewee = ">=3.14.4"
 PyQt5 = "5.12.3"
-requests = "^2.29.0"
+requests = "*"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.3"
+pytest-qt = "^4.2.0"
 
 [build-system]
 requires = ["poetry-core"]
