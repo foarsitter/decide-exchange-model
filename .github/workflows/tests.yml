@@ -27,4 +27,4 @@ jobs:
 
       - name: Test with pytest
         run: |
-          poetry run coverage run --parallel -m pytest -n auto tests
+          poetry run pytest decide
