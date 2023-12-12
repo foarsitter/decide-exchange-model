@@ -21,7 +21,7 @@ jobs:
           path: /usr/share/miniconda3/envs/decide
           key: decide-conda-${{ env.CACHE_NUMBER }}-${{ hashFiles('environment.yml') }}
         id: cache
-      - uses: conda-incubator/setup-miniconda@v2
+      - uses: conda-incubator/setup-miniconda@v3
         with:
           python-version: 3.9
           channels: conda-forge
