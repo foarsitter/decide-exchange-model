@@ -24,7 +24,6 @@ dependencies:
   - cryptography=39.0.0=py39hd598818_0
   - cycler=0.12.1=pyhd8ed1ab_0
   - dbus=1.13.6=h5008d03_3
-  - decide-exchange-model=2022.1.18=py39_0
   - distlib=0.3.8=pyhd8ed1ab_0
   - dulwich=0.21.7=py39hd1e30aa_0
   - expat=2.5.0=hcb278e6_1
