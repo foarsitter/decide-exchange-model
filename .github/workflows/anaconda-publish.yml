@@ -25,10 +25,9 @@ jobs:
         with:
           python-version: 3.9
           channels: conda-forge
+          conda-solver: 'libmamba'
           channel-priority: strict
-          conda-build-version: 3.22.0
           activate-environment: "decide"
-          use-only-tar-bz2: true
       - run: |
           conda install --yes anaconda-client
           conda build .

@@ -21,9 +21,9 @@ requirements:
     - peewee ==3.14.4
     - pip
     - pyqt ==5.12.3
-    - python
+    - python ==3.9
     - typesystem ==0.2.2
-    - poetry ==1.1.15
+    - poetry
   run:
     - blinker ==1.5
     - matplotlib ==3.6.0
@@ -31,9 +31,9 @@ requirements:
     - pandas ==1.5.0
     - peewee ==3.14.4
     - pyqt ==5.12.3
-    - python
+    - python ==3.9
     - typesystem ==0.2.2
-    - poetry ==1.1.15
+    - poetry
 
 test:
   imports:
