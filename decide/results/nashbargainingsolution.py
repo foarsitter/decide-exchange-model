@@ -113,7 +113,7 @@ FROM (SELECT sum(ai.position * ai.power * ai.salience) AS numerator,
         )
 
         try:
-            table = pd.pivot_table(df, index=["round"], columns=["p"], values=["mds"])
+            table = pd.pivot_table(df, index=["round"], columns=["p"], values=["mds"], numeric_only=True)
             plt = table.plot()
 
             plt.set_title(name)
