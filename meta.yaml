@@ -20,7 +20,8 @@ requirements:
     - pandas ==1.5.0
     - peewee ==3.14.4
     - pip
-    - pyqt ==5.12.3
+    - pyqt ==5.15.10
+    - pyqt5-qt5 ==5.15.2
     - python ==3.9
     - typesystem ==0.2.2
     - poetry
@@ -31,6 +32,8 @@ requirements:
     - pandas ==1.5.0
     - peewee ==3.14.4
     - pyqt ==5.12.3
+    - pyqt ==5.15.10
+    - pyqt5-qt5 ==5.15.2
     - python ==3.9
     - typesystem ==0.2.2
     - poetry
