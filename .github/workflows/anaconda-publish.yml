@@ -19,9 +19,6 @@ jobs:
             - '3.10'
             - '3.11'
     name: Publish to Anaconda
-    defaults:
-      run:
-        shell: bash -l {0}
     steps:
       - uses: actions/checkout@v2
         id: cache
@@ -29,8 +26,9 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           channels: conda-forge
-          conda-build-version: '3.28.1'
+          conda-build-version: '3.28'
           conda-solver: 'libmamba'
+          channel-priority: strict
           activate-environment: "decide"
       - run: |
           conda install --yes anaconda-client
