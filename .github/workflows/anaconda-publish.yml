@@ -12,12 +12,12 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
-          - windows-latest
-          - macos-latest
+#          - windows-latest
+#          - macos-latest
         python-version:
             - '3.9'
-            - '3.10'
-            - '3.11'
+#            - '3.10'
+#            - '3.11'
     name: Publish to Anaconda
     steps:
       - uses: actions/checkout@v2
@@ -28,7 +28,7 @@ jobs:
           channels: conda-forge
           conda-build-version: '3.28'
           conda-solver: 'libmamba'
-          channel-priority: strict
+#          channel-priority: strict
           activate-environment: "decide"
       - run: |
           conda install --yes anaconda-client
