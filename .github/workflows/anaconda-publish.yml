@@ -38,7 +38,6 @@ jobs:
           channels: conda-forge
           conda-build-version: '3.28.1'
           conda-solver: 'libmamba'
-          channel-priority: strict
           activate-environment: "decide"
       - run: |
           conda install --yes anaconda-client
