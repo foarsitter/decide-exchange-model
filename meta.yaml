@@ -14,6 +14,7 @@ build:
 
 requirements:
   host:
+    - poetry
     - python
     - pip
     - setuptools
@@ -25,6 +26,7 @@ requirements:
     - pyqt ==5.15.10
     - typesystem ==0.2.2
   run:
+    - poetry
     - python
     - pip
     - setuptools
