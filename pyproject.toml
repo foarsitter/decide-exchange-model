@@ -12,7 +12,7 @@ readme = "README.md"
 packages = [{ include = "decide" }]
 
 dependencies = [
-    "blinker",
+    "blinker==1.5",
     "matplotlib==3.6.0",
     "pandas==1.5.0",
     "numpy==1.23.4",
@@ -30,11 +30,14 @@ decide-gui = "decide.gui:main"
 
 [tool.hatch]
 
+[tool.hatch.metadata]
+allow-direct-references = true
+
 [tool.hatch.envs.test]
 dependencies = [
-    "pytest>=7.4.3",
-    "pytest-qt>=4.2.0",
-    "pytest-xvfb>=3.0.0",
+    "pytest==7.4.3",
+    "pytest-qt==4.2.0",
+    "pytest-xvfb==3.0.0",
 ]
 
 [tool.hatch.envs.test.scripts]
@@ -47,3 +50,6 @@ python = [
     "3.10",
     "3.11"
 ]
+
+[tool.pytest]
+qt_api = 'pyqt5'
