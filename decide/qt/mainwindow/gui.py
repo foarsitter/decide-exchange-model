@@ -6,8 +6,8 @@ import time
 import xml.etree.cElementTree as ET
 from shutil import copyfile
 
-from PyQt5 import QtCore
-from PyQt5 import QtWidgets
+from PyQt6 import QtCore
+from PyQt6 import QtWidgets
 from decide import log_filename
 from decide.cli import init_output_directory
 from decide.data.modelfactory import ModelFactory
@@ -237,13 +237,13 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
         overview_box = QtWidgets.QGroupBox("Overview")
         overview_box.setLayout(self.overview_widget)
-        self.overview_widget.setAlignment(QtCore.Qt.AlignTop)
+        self.overview_widget.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
 
         right = QtWidgets.QVBoxLayout()
         right.addWidget(settings_box, 1)
         right.addWidget(overview_box, 1)
         right.addWidget(self.start, 1)
-        right.setAlignment(QtCore.Qt.AlignTop)
+        right.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
 
         main.addLayout(left, 1)
         main.addLayout(right, 1)
@@ -418,11 +418,11 @@ class DecideMainWindow(QtWidgets.QMainWindow):
                 self,
                 "Done",
                 "Done running the calculations. Open the result directory?",
-                QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
-                QtWidgets.QMessageBox.No,
+                QtWidgets.QMessageBox.StandardButton.Yes | QtWidgets.QMessageBox.StandardButton.No,
+                QtWidgets.QMessageBox.StandardButton.No,
             )
 
-            if button_reply == QtWidgets.QMessageBox.Yes:
+            if button_reply == QtWidgets.QMessageBox.StandardButton.Yes:
                 utils.open_file_natively(output_directory)
 
     def _clean_progress_dialog(self):
@@ -443,11 +443,11 @@ class DecideMainWindow(QtWidgets.QMainWindow):
                 self,
                 "Output directory already exists",
                 "The given directory {} already exists. Proceed?".format(output_dir),
-                QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
-                QtWidgets.QMessageBox.No,
+                QtWidgets.QMessageBox.StandardButton.Yes | QtWidgets.QMessageBox.StandardButton.No,
+                QtWidgets.QMessageBox.StandardButton.No,
             )
 
-            if button_reply == QtWidgets.QMessageBox.No:
+            if button_reply == QtWidgets.QMessageBox.StandardButton.No:
                 return
 
         self.setWindowTitle("Decide Exchange Model")
@@ -516,7 +516,7 @@ def main():
 
     sys.excepthook = utils.exception_hook
 
-    qtapp.exec_()
+    qtapp.exec()
 
 
 if __name__ == "__main__":

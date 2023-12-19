@@ -4,7 +4,8 @@ import subprocess
 import sys
 import traceback
 
-from PyQt5 import QtWidgets
+from PyQt6 import QtWidgets
+from PyQt6.QtWidgets import QMessageBox
 
 from decide.qt import app
 
@@ -39,4 +40,4 @@ def exception_to_string(ex):
 
 
 def show_user_error(self, message: str):
-    QtWidgets.QMessageBox.about(self, "Input data invalid", str(message))
+    QMessageBox.about(self, "Input data invalid", str(message))

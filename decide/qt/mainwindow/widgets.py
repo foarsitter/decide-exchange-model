@@ -1,6 +1,9 @@
 from typing import List
 
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
+from PyQt6.QtGui import QAction
+from PyQt6.QtWidgets import QMenu
+
 from decide.data import types
 from decide.qt import utils
 
@@ -18,7 +21,7 @@ class DynamicFormLayout(QtWidgets.QGridLayout):
         self.objects = []
         self.row_pointer = 0
 
-        self.setAlignment(QtCore.Qt.AlignTop)
+        self.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
 
     def clear(self):
         """
@@ -72,8 +75,8 @@ class IssueWidget(DynamicFormLayout):
             checkbox.stateChanged.connect(self.state_changed)
 
             if (
-                issue in self.main_window.settings.selected_issues
-                or len(self.main_window.settings.selected_issues) == 0
+                    issue in self.main_window.settings.selected_issues
+                    or len(self.main_window.settings.selected_issues) == 0
             ):
                 checkbox.setChecked(True)
 
@@ -101,8 +104,8 @@ class ActorWidget(DynamicFormLayout):
             checkbox.setObjectName(actor.id)
 
             if (
-                actor in self.main_window.settings.selected_actors
-                or len(self.main_window.settings.selected_actors) == 0
+                    actor in self.main_window.settings.selected_actors
+                    or len(self.main_window.settings.selected_actors) == 0
             ):
                 checkbox.setChecked(True)
 
@@ -141,7 +144,7 @@ class ActorIssueWidget(DynamicFormLayout):
 
 class SummaryWidget(DynamicFormLayout):
     def __init__(
-        self, main_window, settings, data, actor_widget, issue_widget, *args, **kwargs
+            self, main_window, settings, data, actor_widget, issue_widget, *args, **kwargs
     ):
         """
         :type settings: decide.qt.mainwindow.settings.ProgramSettings
@@ -169,8 +172,8 @@ class SummaryWidget(DynamicFormLayout):
         self.add_text_row("Input", self.settings.input_filename, self.test_callback)
 
         if (
-            self.settings.output_directory is None
-            or self.settings.output_directory == "None"
+                self.settings.output_directory is None
+                or self.settings.output_directory == "None"
         ):
             self.add_text_row(
                 "Output directory",
@@ -249,49 +252,49 @@ class MenuBar(QtWidgets.QMenuBar):
         file_menu = self.addMenu("&File")
         # output_menu = self.addMenu("&Output")
 
-        self.output_sqlite = QtWidgets.QAction("&sqlite", self)
+        self.output_sqlite = QAction("&sqlite", self)
         self.output_sqlite.setCheckable(True)
         self.output_sqlite.setChecked(True)
 
-        self.issue_development_csv = QtWidgets.QAction("Issue development (.csv)", self)
+        self.issue_development_csv = QAction("Issue development (.csv)", self)
         self.issue_development_csv.setCheckable(True)
         self.issue_development_csv.setChecked(True)
 
-        self.externalities_csv = QtWidgets.QAction("Externalities (.csv)", self)
+        self.externalities_csv = QAction("Externalities (.csv)", self)
         self.externalities_csv.setCheckable(True)
         self.externalities_csv.setChecked(True)
 
-        self.exchanges_csv = QtWidgets.QAction("Exchanges (.csv)", self)
+        self.exchanges_csv = QAction("Exchanges (.csv)", self)
         self.exchanges_csv.setCheckable(True)
         self.exchanges_csv.setChecked(True)
 
-        self.voting_positions = QtWidgets.QAction("Show voting positions", self)
+        self.voting_positions = QAction("Show voting positions", self)
         self.voting_positions.setCheckable(True)
         self.voting_positions.setChecked(True)
 
-        self.summary_only = QtWidgets.QAction("Summary only (.csv)", self)
+        self.summary_only = QAction("Summary only (.csv)", self)
         self.summary_only.setCheckable(True)
         self.summary_only.setChecked(True)
 
-        self.open_data_view = QtWidgets.QAction("New data file", self)
+        self.open_data_view = QAction("New data file", self)
         self.open_data_view.triggered.connect(self.main_window.open_data_view)
 
-        open_action = QtWidgets.QAction("&Open data file", self)
+        open_action = QAction("&Open data file", self)
         open_action.triggered.connect(self.main_window.open_input_data)
 
-        edit_action = QtWidgets.QAction("&Edit data file", self)
+        edit_action = QAction("&Edit data file", self)
         edit_action.triggered.connect(
             self.main_window.open_current_input_window_with_current_data
         )
 
-        save_settings = QtWidgets.QAction("&Save settings", self)
+        save_settings = QAction("&Save settings", self)
         save_settings.triggered.connect(self.main_window.save_settings)
 
-        output_dir_action = QtWidgets.QAction("&Set output directory", self)
+        output_dir_action = QAction("&Set output directory", self)
         output_dir_action.triggered.connect(self.main_window.select_output_dir)
 
         # debug = self.addMenu("Debug")
-        log_action = QtWidgets.QAction("Show log window", self)
+        log_action = QAction("Show log window", self)
         log_action.triggered.connect(self.main_window.show_debug_dialog)
 
         file_menu.addAction(open_action)
@@ -314,17 +317,17 @@ class MenuBar(QtWidgets.QMenuBar):
         # error_report_2.triggered.connect(self.trigger_error)
         # debug.addAction(error_report_2)
 
-    def recently_opened_menu(self, menu: QtWidgets.QMenu):
-        sub_menu = QtWidgets.QMenu("Recently opened", menu)
+    def recently_opened_menu(self, menu: QMenu):
+        sub_menu = QMenu("Recently opened", menu)
         menu.addMenu(sub_menu)
 
         for item in self.settings.recently_opened:
-            action = QtWidgets.QAction(item, self)
+            action = QAction(item, self)
             action.triggered.connect(self.open_input_data)
             sub_menu.addAction(action)
 
     def open_input_data(self):
-        sender = self.sender()  # type: QtWidgets.QAction
+        sender = self.sender()  # type: QAction
 
         self.main_window.init_ui_data(sender.text())
 
@@ -357,7 +360,7 @@ class MenuBar(QtWidgets.QMenuBar):
             if hasattr(self.settings, key):
                 attr = getattr(self, key)
 
-                if isinstance(attr, QtWidgets.QAction):
+                if isinstance(attr, QAction):
                     setattr(self.settings, key, value.isChecked())
                 else:
                     setattr(self.settings, key, value.value())

@@ -1,8 +1,8 @@
 import os
 import xml.etree.cElementTree as ET
 
-from PyQt5 import QtCore
-from PyQt5 import QtWidgets
+from PyQt6 import QtCore
+from PyQt6 import QtWidgets
 from decide import decide_base_path
 from decide.cli import float_range
 

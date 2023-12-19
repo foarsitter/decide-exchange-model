@@ -1,6 +1,6 @@
 from decimal import Decimal
 
-from PyQt5 import QtWidgets
+from PyQt6 import QtWidgets
 
 
 def clear_layout(layout):

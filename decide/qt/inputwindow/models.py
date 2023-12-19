@@ -1,7 +1,8 @@
 import uuid
 from decimal import Decimal
 
-from PyQt5 import QtWidgets
+from PyQt6 import QtWidgets
+from PyQt6.QtWidgets import QLabel
 from typesystem.base import ValidationResult
 
 from decide.data import types
@@ -199,10 +200,10 @@ class ActorIssueInputModel(BaseInputModel):
         self.actor = actor
         self.issue = issue
 
-        self.actor_input = QtWidgets.QLabel(actor.name)
-        self.issue_input = QtWidgets.QLabel(issue.name)
+        self.actor_input = QLabel(actor.name)
+        self.issue_input = QLabel(issue.name)
 
-        self.power_input = QtWidgets.QLabel(str(actor.power))
+        self.power_input = QLabel(str(actor.power))
 
         self.position_input = DoubleInput()
         self.position_input.valueChanged.connect(self.set_position)

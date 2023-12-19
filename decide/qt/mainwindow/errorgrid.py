@@ -3,8 +3,8 @@ import os
 import sys
 from typing import List
 
-from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QDialog
+from PyQt6 import QtWidgets
+from PyQt6.QtWidgets import QDialog
 from decide import log_filename, input_folder
 from decide.data.reader import InputDataFile
 from decide.qt.utils import exception_hook

@@ -1,8 +1,8 @@
 from collections import defaultdict
 from decimal import Decimal
 
-from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtWidgets import QListWidgetItem
+from PyQt6 import QtWidgets, QtCore
+from PyQt6.QtWidgets import QListWidgetItem
 
 from decide.data.types import ActorIssue
 from decide.qt.inputwindow import signals
@@ -25,7 +25,7 @@ class BoxLayout(QtWidgets.QGroupBox):
         self.scroll_area.setWidget(self.scroll_area_widget)
 
         self.grid_layout = QtWidgets.QGridLayout(self.scroll_area_widget)
-        self.grid_layout.setAlignment(QtCore.Qt.AlignTop)
+        self.grid_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
 
         self.layout_container = QtWidgets.QVBoxLayout()
         self.layout_container.addWidget(self.scroll_area)
@@ -367,7 +367,7 @@ class PositionSalienceWidget(QtWidgets.QWidget):
 
         self.choices_list_widget = QtWidgets.QListWidget(self)
         self.choices_list_widget.setMaximumHeight(100)
-        self.choices_list_widget.setSelectionMode(QtWidgets.QListWidget.MultiSelection)
+        self.choices_list_widget.setSelectionMode(QtWidgets.QListWidget.SelectionMode.MultiSelection)
         self.choices_list_widget.itemSelectionChanged.connect(self.redraw)
 
         self.choices_list_widget_items = {}
@@ -382,7 +382,7 @@ class PositionSalienceWidget(QtWidgets.QWidget):
         self.scroll_area.setWidget(self.scroll_area_widget)
 
         self.grid_layout = QtWidgets.QGridLayout(self.scroll_area_widget)
-        self.grid_layout.setAlignment(QtCore.Qt.AlignTop)
+        self.grid_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
 
         self.container.addWidget(self.scroll_area)
 
