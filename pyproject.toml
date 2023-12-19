@@ -53,3 +53,10 @@ python = [
 
 [tool.pytest]
 qt_api = 'pyqt5'
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "/decide",
+  "/docs",
+  "/data",
+]
