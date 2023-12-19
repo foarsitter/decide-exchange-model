@@ -37,6 +37,6 @@ jobs:
       - run: |
           conda install --yes anaconda-client
           anaconda --version
-          conda build --numpy 1.23.4 .
+          conda build --numpy 1.23.4 --python ${{ matrix.python-version }} .
           conda convert --platform all /usr/share/miniconda/conda-bld/linux-64/decide-exchange-model-*.tar.bz2 --output-dir /usr/share/miniconda/conda-bld/
           anaconda -t ${{ secrets.ANACONDA_TOKEN }} upload /usr/share/miniconda/conda-bld/**/decide-exchange-model-*.tar.bz2
