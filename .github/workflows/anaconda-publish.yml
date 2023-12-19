@@ -32,5 +32,5 @@ jobs:
           activate-environment: "decide"
       - run: |
           conda install --yes anaconda-client
-          conda build .
+          conda build --numpy 1.23.4 .
           anaconda -t ${{ secrets.ANACONDA_TOKEN }} upload /usr/share/miniconda/conda-bld/**/decide-exchange-model-*.tar.bz2
