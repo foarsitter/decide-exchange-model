@@ -1,32 +1,49 @@
-[tool.poetry]
+[build-system]
+requires = ["hatchling>=1.1.0"]
+build-backend = "hatchling.build"
+
+[project]
 name = "decide-exchange-model"
 version = "2022.1.19"
+requires-python = ">= 3.8"
 description = "Decide exchange model"
-authors = ["Jelmer Draaijer <info@jelmert.nl>"]
+authors = [{ name = "Jelmer Draaijer", email = "info@jelmert.nl" }]
 readme = "README.md"
-packages = [{include = "decide"}]
+packages = [{ include = "decide" }]
 
-[tool.poetry.dependencies]
-python = "^3.9"
-blinker = "1.5"
-matplotlib = "3.6.0"
-pandas = "1.5.0"
-numpy = "1.23.4"
-typesystem = "0.2.5"
-peewee = ">=3.14.4"
-PyQt5 = "5.12.3"
-requests = "*"
+dependencies = [
+    "blinker",
+    "matplotlib==3.6.0",
+    "pandas==1.5.0",
+    "numpy==1.23.4",
+    "typesystem==0.2.5",
+    "peewee",
+    "PyQt5==5.12.3",
+    "requests"
+]
 
-[tool.poetry.group.dev.dependencies]
-pytest = "^7.4.3"
-pytest-qt = "^4.2.0"
-pytest-xvfb = "^3.0.0"
-
-[build-system]
-requires = ["poetry-core>=1.2.0"]
-build-backend = "poetry.core.masonry.api"
-
-
-[tool.poetry.scripts]
+[project.scripts]
 decide-cli = 'decide.cli:main'
-decide-gui = 'decide.gui:main'
+
+[project.gui-scripts]
+decide-gui = "decide.gui:main"
+
+[tool.hatch]
+
+[tool.hatch.envs.test]
+dependencies = [
+    "pytest>=7.4.3",
+    "pytest-qt>=4.2.0",
+    "pytest-xvfb>=3.0.0",
+]
+
+[tool.hatch.envs.test.scripts]
+test = "pytest {args:decide}"
+
+[tool.hatch.all.matrix]
+python = [
+    "3.8",
+    "3.9",
+    "3.10",
+    "3.11"
+]

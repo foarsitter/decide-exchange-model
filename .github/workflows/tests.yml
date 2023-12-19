@@ -2,34 +2,72 @@ name: Test
 
 on: [push]
 
+
 jobs:
-  tests:
-    runs-on: ubuntu-latest
+  run:
+    name: Python ${{ matrix.python-version }} on ${{ startsWith(matrix.os, 'macos-') && 'macOS' || startsWith(matrix.os, 'windows-') && 'Windows' || 'Linux' }}
+    runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
-        python-version: ["3.9"]
-    env:
-      DISPLAY: ':99.0'
-      PYTEST_QT_API: 'pyqt5'
+        include:
+          - { os: ubuntu-latest, python-version: '3.8' }
+          - { os: ubuntu-latest, python-version: '3.9' }
+          - { os: ubuntu-latest, python-version: '3.10' }
+          - { os: ubuntu-latest, python-version: '3.11' }
+          - { os: windows-latest, python-version: '3.11' }
+          - { os: macos-latest, python-version: '3.11' }
     steps:
-      - uses: actions/checkout@v4
-      - name: Install Poetry
-        run: |
-          pipx install poetry
-          poetry --version
-          sudo apt install libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xfixes0 x11-utils
-          /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -screen 0 1920x1200x24 -ac +extension GLX
+    - uses: actions/checkout@v3
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-          cache: 'poetry'
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
 
-      - name: Install dependencies
-        run: |
-          poetry install --with dev
+    - name: Install Hatch
+      run: pip install --upgrade hatch
 
-      - name: Test with pytest
-        run: |
-          poetry run pytest decide
+#    - if: matrix.python-version == '3.9' && runner.os == 'Linux'
+#      name: Lint
+#      run: hatch run lint:all
+
+    - name: Run tests
+      run: hatch run test:test
+
+#jobs:
+#  tests:
+#    runs-on: ubuntu-latest
+#    strategy:
+#      matrix:
+#        python-version: [
+#          "3.8",
+#          "3.9",
+#          "3.10",
+#          "3.11",
+#        ]
+#    env:
+#      DISPLAY: ':99.0'
+#      PYTEST_QT_API: 'pyqt5'
+#    steps:
+#      - uses: actions/checkout@v4
+#      - name: Install Poetry
+#        run: |
+#          pipx install hatch
+#          poetry --version
+#          sudo apt install libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xfixes0 x11-utils
+#          /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -screen 0 1920x1200x24 -ac +extension GLX
+#
+#      - name: Set up Python ${{ matrix.python-version }}
+#        uses: actions/setup-python@v4
+#        with:
+#          python-version: ${{ matrix.python-version }}
+#          cache: 'poetry'
+#
+#      - name: Install dependencies
+#        run: |
+#          poetry install --with dev
+#
+#      - name: Test with pytest
+#        run: |
+#          poetry run pytest decide
