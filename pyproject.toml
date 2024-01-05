@@ -4,7 +4,7 @@ version = "2022.1.20"
 description = "Decide exchange model"
 authors = ["Jelmer Draaijer <info@jelmert.nl>"]
 readme = "README.md"
-packages = [{include = "decide"}]
+packages = [{ include = "decide" }]
 
 [tool.poetry.dependencies]
 python = "^3.9"

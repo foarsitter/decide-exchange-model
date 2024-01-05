@@ -17,6 +17,7 @@ requirements:
     - poetry
     - python
     - pip
+    - qt
     - setuptools
     - blinker ==1.5
     - matplotlib >=3.6.0
@@ -29,6 +30,7 @@ requirements:
     - poetry
     - python
     - pip
+    - qt
     - setuptools
     - blinker ==1.5
     - matplotlib >=3.6.0
