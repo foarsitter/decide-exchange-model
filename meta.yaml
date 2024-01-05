@@ -10,38 +10,29 @@ build:
   entry_points:
     - decide-cli=decide.cli:main
     - decide-gui=decide.gui:main
-  script: "python -m pip install . -vv"
+  osx_is_app: true
+  script: "$PYTHON -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv"
 
 requirements:
+  build:
+    - python                                 # [build_platform != target_platform]
+    - cross-python_{{ target_platform }}     # [build_platform != target_platform]
   host:
     - poetry
     - python
     - pip
-    - qt
-    - qt-main
     - setuptools
-    - blinker ==1.5
-    - matplotlib >=3.6.0
-    - numpy ==1.23.4
-    - pandas ==1.5.2
-    - peewee >=3.14.4
-    - pyqt ==5.15.10
-    - typesystem ==0.2.2
   run:
-    - poetry
     - python
-    - pip
-    - qt
-    - qt-main
-    - setuptools
+    - pyqt >=5.10,<5.16
+    - setuptools >=49.6.0
     - blinker ==1.5
     - matplotlib >=3.6.0
     - numpy ==1.23.4
     - pandas ==1.5.2
     - peewee >=3.14.4
-    - pyqt ==5.15.10
     - typesystem ==0.2.2
-
+    - python.app  # [osx]
 test:
   imports:
     - decide
