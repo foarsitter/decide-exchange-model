@@ -36,7 +36,7 @@ jobs:
           conda-solver: 'libmamba'
           activate-environment: "decide"
       - run: |
-          conda install --yes anaconda-client build
+          conda install --yes anaconda-client conda-build
           anaconda --version
           conda build --numpy 1.23.4 --python ${{ matrix.python-version }} .
           anaconda -t ${{ secrets.ANACONDA_TOKEN }} upload /usr/share/miniconda/conda-bld/**/decide-exchange-model-*.tar.bz2
