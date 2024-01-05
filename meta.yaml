@@ -1,6 +1,6 @@
 package:
   name: 'decide-exchange-model'
-  version: '2022.1.23'
+  version: '2022.1.24'
 
 source:
   path: ./
