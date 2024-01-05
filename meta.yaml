@@ -18,6 +18,7 @@ requirements:
     - python
     - pip
     - qt
+    - qt-main
     - setuptools
     - blinker ==1.5
     - matplotlib >=3.6.0
@@ -31,6 +32,7 @@ requirements:
     - python
     - pip
     - qt
+    - qt-main
     - setuptools
     - blinker ==1.5
     - matplotlib >=3.6.0
