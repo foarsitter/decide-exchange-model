@@ -11,9 +11,9 @@ jobs:
       fail-fast: false
       matrix:
         os: [
-          ubuntu-latest,
-          windows-latest,
-          macos-latest,
+          'ubuntu-latest',
+          'windows-latest',
+          'macos-latest',
         ]
         python-version: [
           '3.9',
@@ -21,19 +21,22 @@ jobs:
           '3.11',
         ]
     name: Publish to Anaconda
+    defaults:
+      run:
+        shell: bash -l {0}
     steps:
       - uses: actions/checkout@v2
         id: cache
       - uses: conda-incubator/setup-miniconda@v3
         with:
+          auto-update-conda: true
           python-version: ${{ matrix.python-version }}
           channels: conda-forge
           channel-priority: strict
-          conda-build-version: '3.28'
           conda-solver: 'libmamba'
           activate-environment: "decide"
-      - run: conda install --yes anaconda-client
-      - run: conda build --numpy 1.23.4 --python ${{ matrix.python-version }} .
-      - run: anaconda -t ${{ secrets.ANACONDA_TOKEN }} upload /usr/share/miniconda/conda-bld/**/decide-exchange-model-*.tar.bz2
-
-
+      - run: |
+          conda install --yes anaconda-client build
+          anaconda --version
+          conda build --numpy 1.23.4 --python ${{ matrix.python-version }} .
+          anaconda -t ${{ secrets.ANACONDA_TOKEN }} upload /usr/share/miniconda/conda-bld/**/decide-exchange-model-*.tar.bz2
