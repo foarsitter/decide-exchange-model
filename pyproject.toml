@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "decide-exchange-model"
-version = "2022.1.20"
+version = "2022.1.21"
 description = "Decide exchange model"
 authors = ["Jelmer Draaijer <info@jelmert.nl>"]
 readme = "README.md"
