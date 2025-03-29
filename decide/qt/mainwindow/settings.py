@@ -1,20 +1,18 @@
 import os
-import xml.etree.cElementTree as ET
+import xml.etree.ElementTree as ET
 
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
+
 from decide import decide_base_path
 from decide.cli import float_range
 
 
 class SettingsFormWidget(QtWidgets.QFormLayout):
-    """
-    FormLayout containing the different parameters for the model
-    """
+    """FormLayout containing the different parameters for the model."""
 
-    def __init__(self, settings, main_window, *args, **kwargs):
-        """
-        :type settings: decide.qt.mainwindow.settings.ProgramSettings
+    def __init__(self, settings, main_window, *args, **kwargs) -> None:
+        """:type settings: decide.qt.mainwindow.settings.ProgramSettings
         :type main_window: decide.qt.mainwindow.gui.DecideMainWindow
         """
         super().__init__(*args, **kwargs)
@@ -73,17 +71,13 @@ class SettingsFormWidget(QtWidgets.QFormLayout):
         self.addRow(QtWidgets.QLabel("Step"), self.step)
         self.addRow(QtWidgets.QLabel("Stop"), self.stop)
 
-    def load(self):
-        """
-        Copy the values from the ProgramSettings object
-        """
-
+    def load(self) -> None:
+        """Copy the values from the ProgramSettings object."""
         settings = self.settings.__dict__.items()
 
         self.is_loading = True
 
         for key, value in settings:
-
             if hasattr(self, key):
                 attr = getattr(self, key)
 
@@ -96,34 +90,29 @@ class SettingsFormWidget(QtWidgets.QFormLayout):
 
         self.is_loading = False
 
-    def save(self):
-        """
-        Set the attributes to the ProgramSettings object
-        """
+    def save(self) -> None:
+        """Set the attributes to the ProgramSettings object."""
         settings = self.__dict__.items()
 
         for key, value in settings:
             if hasattr(self.settings, key):
                 setattr(self.settings, key, value.value())
 
-    def state_changed(self):
-
+    def state_changed(self) -> None:
         if not self.is_loading:
             self.save()
         self.main_window.overview_widget.update_widget()
 
 
 class ProgramSettings(QtCore.QObject):
-    """
-    The settings for the model parameters
-    """
+    """The settings for the model parameters."""
 
     changed = QtCore.pyqtSignal()
 
     settings_file = os.path.join(decide_base_path, "decide-settings.xml")
 
-    def __init__(self, *args, **kwargs):
-        super(ProgramSettings, self).__init__(*args, **kwargs)
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
 
         self.input_filename = ""
         self.output_directory = ""
@@ -159,18 +148,20 @@ class ProgramSettings(QtCore.QObject):
 
     @property
     def output_path(self):
-        return self.output_directory, self.data_set_name, self.run_name.format(repetitions=self.repetitions, rounds=self.iterations)
+        return (
+            self.output_directory,
+            self.data_set_name,
+            self.run_name.format(repetitions=self.repetitions, rounds=self.iterations),
+        )
 
     def settings_file_path(self):
-        file_path = os.path.join(decide_base_path, self.settings_file)
+        return os.path.join(decide_base_path, self.settings_file)
 
-        return file_path
-
-    def save(self):
+    def save(self) -> None:
         if self.settings_type == "xml":
             self._save_xml()
 
-    def set_input_filename(self, value):
+    def set_input_filename(self, value) -> None:
         if value in self.recently_opened:
             self.recently_opened.remove(value)
 
@@ -178,15 +169,13 @@ class ProgramSettings(QtCore.QObject):
 
         self.input_filename = value
 
-    def _save_xml(self):
-
+    def _save_xml(self) -> None:
         file_path = self.settings_file_path()
 
         element = ET.Element("decide-settings")
 
         for key, value in self.__dict__.items():
             if not key.startswith("_") and hasattr(self, key):
-
                 if isinstance(value, list):
                     value = self.settings_list_separator.join(value)
 
@@ -196,21 +185,18 @@ class ProgramSettings(QtCore.QObject):
 
         ET.ElementTree(element).write(file_path)
 
-    def load(self):
+    def load(self) -> None:
         if self.settings_type == "xml":
             self._load_xml()
 
-    def _load_xml(self):
-
+    def _load_xml(self) -> None:
         file_path = os.path.join(decide_base_path, self.settings_file)
 
         if not os.path.exists(file_path):
             return
 
         for elm in ET.parse(file_path).getroot():
-
             if hasattr(self, elm.tag):
-
                 attr = getattr(self, elm.tag)
 
                 if isinstance(attr, bool):
@@ -220,14 +206,11 @@ class ProgramSettings(QtCore.QObject):
                 elif isinstance(attr, float):
                     setattr(self, elm.tag, float(elm.text))
                 elif isinstance(attr, list):
-
                     values = str(elm.text).split(self.settings_list_separator)
 
                     values = [x.strip() for x in values]
 
-                    setattr(
-                        self, elm.tag, values
-                    )
+                    setattr(self, elm.tag, values)
                 else:
                     setattr(self, elm.tag, str(elm.text))
 
@@ -237,22 +220,13 @@ class ProgramSettings(QtCore.QObject):
 
     @property
     def model_variations(self):
+        """Takes start, step and stop and creates a list of values
+        :rtype: list of str.
         """
-        Takes start, step and stop and creates a list of values
-        :rtype: list of str
-        """
-
         if self.start and self.stop and self.start == self.stop:
-            return ['{:.2f}'.format(self.start)]
-        else:
-            values = [
-                '{:.2f}'.format(round(p, 2))
-                for p in float_range(
-                    start=self.start, step=self.step, stop=self.stop
-                )
-            ]
+            return [f"{self.start:.2f}"]
+        values = [f"{round(p, 2):.2f}" for p in float_range(start=self.start, step=self.step, stop=self.stop)]
 
-            if len(values) > 0:
-                return values
-            else:
-                return ['0.0']
+        if len(values) > 0:
+            return values
+        return ["0.0"]

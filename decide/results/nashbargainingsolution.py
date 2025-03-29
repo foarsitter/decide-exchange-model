@@ -2,20 +2,18 @@ import os
 
 import numpy as np
 import pandas as pd
+
 from decide import data_folder
-from decide.data.database import connection, Manager
+from decide.data.database import Manager
+from decide.data.database import connection
 from decide.results.helpers import list_to_sql_param
 
 
-def write_summary_result(conn, model_run_ids, output_directory, ai_type="before"):
-
-    if ai_type == "before":
-        x_type = "preference"
-    else:
-        x_type = "voting"
+def write_summary_result(conn, model_run_ids, output_directory, ai_type="before") -> None:
+    x_type = "preference" if ai_type == "before" else "voting"
 
     df = pd.read_sql(
-        """
+        f"""
     SELECT
       a.p as p,
       a.issue as issue,
@@ -34,11 +32,10 @@ def write_summary_result(conn, model_run_ids, output_directory, ai_type="before"
             LEFT JOIN actor a ON ai.actor_id = a.id
             LEFT JOIN iteration i2 ON ai.iteration_id = i2.id
             LEFT JOIN repetition r ON i2.repetition_id = r.id
-            LEFT JOIN modelrun m ON r.model_run_id = m.id        
-          WHERE  ai.type = '%s' AND m.id IN (%s)
+            LEFT JOIN modelrun m ON r.model_run_id = m.id
+          WHERE  ai.type = '{ai_type}' AND m.id IN ({list_to_sql_param(model_run_ids)})
          GROUP BY m.id,r.id, i2.id, i.id) a
-    """
-        % (ai_type, list_to_sql_param(model_run_ids)),
+    """,
         conn,
         index_col="p",
         columns=["mds"],
@@ -52,26 +49,28 @@ def write_summary_result(conn, model_run_ids, output_directory, ai_type="before"
             aggfunc=np.average,
         )
         table_avg.to_csv(os.path.join(output_directory, f"mds_average_{x_type}.csv"))
-    except Exception as e:
-        print(e)
+    except Exception:
+        pass
 
     try:
         table_var = pd.pivot_table(
-            df, index=["issue", "p"], columns=["round"], values=["mds"], aggfunc=np.var
+            df,
+            index=["issue", "p"],
+            columns=["round"],
+            values=["mds"],
+            aggfunc=np.var,
         )
         table_var.to_csv(os.path.join(output_directory, f"mds_variance_{x_type}.csv"))
-    except Exception as e:
-        print(e)
+    except Exception:
+        pass
 
-    sql_2 = """SELECT issue.name, issue.id
+    sql_2 = f"""SELECT issue.name, issue.id
 FROM issue
 INNER JOIN dataset d on issue.data_set_id = d.id
 INNER JOIN modelrun m on d.id = m.data_set_id
-WHERE m.id IN (%s)
+WHERE m.id IN ({list_to_sql_param(model_run_ids)})
 GROUP BY issue.name, issue.id
-ORDER BY issue.name""" % list_to_sql_param(
-        model_run_ids
-    )
+ORDER BY issue.name"""
 
     cursor = conn.execute_sql(sql=sql_2, params=[])
     issues = cursor.fetchall()
@@ -80,7 +79,7 @@ ORDER BY issue.name""" % list_to_sql_param(
 
     for name, issue_id in issues:
         df = pd.read_sql(
-            """SELECT a.p                         as p,
+            f"""SELECT a.p                         as p,
        a.issue                     as issue,
        a.round                 as round,
        a.repetion                  as repetion,
@@ -101,19 +100,24 @@ FROM (SELECT sum(ai.position * ai.power * ai.salience) AS numerator,
                LEFT JOIN repetition r ON i2.repetition_id = r.id
                LEFT JOIN modelrun m ON r.model_run_id = m.id
                LEFT JOIN dataset d ON a.data_set_id = d.id
-      WHERE ai.type = '%s'
-        AND m.id IN(%s)
-        AND i.id = %s
+      WHERE ai.type = '{ai_type}'
+        AND m.id IN({list_to_sql_param(model_run_ids)})
+        AND i.id = {issue_id}
       GROUP BY m.id, r.id, i2.id, i.id) a
-        """
-            % (ai_type, list_to_sql_param(model_run_ids), issue_id),
+        """,
             conn,
             index_col="p",
             columns=["mds"],
         )
 
         try:
-            table = pd.pivot_table(df, index=["round"], columns=["p"], values=["mds"], numeric_only=True)
+            table = pd.pivot_table(
+                df,
+                index=["round"],
+                columns=["p"],
+                values=["mds"],
+                numeric_only=True,
+            )
             plt = table.plot()
 
             plt.set_title(name)
@@ -126,8 +130,8 @@ FROM (SELECT sum(ai.position * ai.power * ai.salience) AS numerator,
                 bbox_extra_artists=(lgd,),
                 bbox_inches="tight",
             )
-        except Exception as e:
-            print(e)
+        except Exception:
+            pass
 
 
 if __name__ == "__main__":

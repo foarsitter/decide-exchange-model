@@ -4,31 +4,21 @@ import uuid
 from collections import defaultdict
 from decimal import *
 from operator import attrgetter
-from typing import List
 
 from . import base
 from . import calculations
 
 
 class RandomRateExchangeActor(base.AbstractExchangeActor):
-    """
-    Random Rate solution of the model.
+    """Random Rate solution of the model.
     Where the expected utility in de Equal Gain solution are equal,
     the utility here is calculated on a random exchange ratio.
     """
 
-    def __str__(self):
-        return "{1} {2} {3:.1f} {4:.1f} ({5:.1f}) {0:.10f} ".format(
-            self.eu,
-            self.actor.name,
-            self.supply.issue,
-            self.supply.position,
-            self.y,
-            self.opposite_actor.demand.position,
-        )
+    def __str__(self) -> str:
+        return f"{self.actor.name} {self.supply.issue} {self.supply.position:.1f} {self.y:.1f} ({self.opposite_actor.demand.position:.1f}) {self.eu:.10f} "
 
-    def recalculate(self, delta_eu, increase):
-
+    def recalculate(self, delta_eu, increase) -> None:
         # we should not need the opposite actor, because the move isn't effecting the other actors position
         # opposite = self.exchange.opposite_actor
 
@@ -44,10 +34,8 @@ class RandomRateExchangeActor(base.AbstractExchangeActor):
 
         self.adjust_position_by_outcome(delta_o, increase=increase)
 
-    def adjust_position_by_outcome(self, delta_o, increase):
-        new_outcome = (
-            self.nbs_1 + delta_o
-        )  # we have to use nbs_1 here, because it is an incremental shift.
+    def adjust_position_by_outcome(self, delta_o, increase) -> None:
+        new_outcome = self.nbs_1 + delta_o  # we have to use nbs_1 here, because it is an incremental shift.
 
         position = calculations.position_by_nbs(
             actor_issues=self.exchange.model.actor_issues[self.supply.issue],
@@ -57,10 +45,8 @@ class RandomRateExchangeActor(base.AbstractExchangeActor):
         )
 
         if increase and (
-            delta_o < 0
-            and position < self.opposite_actor.demand.position
-            or delta_o > 0
-            and position > self.opposite_actor.demand.position
+            (delta_o < 0 and position < self.opposite_actor.demand.position)
+            or (delta_o > 0 and position > self.opposite_actor.demand.position)
         ):
             position = self.opposite_actor.demand.position
 
@@ -81,10 +67,7 @@ class RandomRateExchangeActor(base.AbstractExchangeActor):
         previous_move = self.moves.pop()
 
         # calculate the move in the right direction
-        if previous_move < 0:
-            move = abs(self.supply.position - position) * -1
-        else:
-            move = abs(self.supply.position - position)
+        move = abs(self.supply.position - position) * -1 if previous_move < 0 else abs(self.supply.position - position)
 
         self.moves.append(move)
         self.exchange.is_valid = self.is_move_valid(move)
@@ -96,21 +79,18 @@ class RandomRateExchangeActor(base.AbstractExchangeActor):
                 self.exchange.is_valid = False
             self.nbs_1 = new_outcome
 
-    def adjust_utility(self, delta_o):
-
+    def adjust_utility(self, delta_o) -> None:
         self.eu += abs(delta_o) * self.supply.salience
         self.opposite_actor.eu -= delta_o
 
 
 class RandomRateExchange(base.AbstractExchange):
-    """
-    An exchange for the random rate model
-    """
+    """An exchange for the random rate model."""
 
     actor_class = RandomRateExchangeActor
     """ For the factory, so the Abstract know's which type he has to create  """
 
-    def __init__(self, i, j, p, q, m, groups):
+    def __init__(self, i, j, p, q, m, groups) -> None:
         super().__init__(i, j, p, q, m, groups)
 
         self.i.exchange = self
@@ -120,7 +100,7 @@ class RandomRateExchange(base.AbstractExchange):
     def to_list(self):
         return [self.i, self.j]
 
-    def calculate(self):
+    def calculate(self) -> None:
         # first we try to move j to the position of i on issue p
         # we start with the calculation for j
 
@@ -135,19 +115,24 @@ class RandomRateExchange(base.AbstractExchange):
             self.dq = Decimal(random.uniform(a, b))
 
         self.i.move = calculations.reverse_move(
-            self.model.actor_issues[self.i.supply_issue], self.i, self.dq
+            self.model.actor_issues[self.i.supply_issue],
+            self.i,
+            self.dq,
         )
         self.j.move = abs(self.i.x_demand - self.j.x)
 
         if abs(self.i.move) > abs(self.j.x_demand - self.i.x):
             self.dq = calculations.by_absolute_move(
-                self.model.actor_issues[self.i.supply_issue], self.i
+                self.model.actor_issues[self.i.supply_issue],
+                self.i,
             )
             self.dp = calculations.by_exchange_ratio(self.i, self.dq)
 
             self.i.move = abs(self.j.x_demand - self.i.x)
             self.j.move = calculations.reverse_move(
-                self.model.actor_issues[self.j.supply_issue], self.j, self.dp
+                self.model.actor_issues[self.j.supply_issue],
+                self.j,
+                self.dp,
             )
 
         # this check is only necessary for the smallest exchange,
@@ -177,22 +162,22 @@ class RandomRateExchange(base.AbstractExchange):
             self.i.check_nbs()
             self.j.check_nbs()
 
-    def __str__(self):
-        return "{0}, {1}".format(str(self.i), str(self.j))
+    def __str__(self) -> str:
+        return f"{self.i!s}, {self.j!s}"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__str__()
 
     def __getitem__(self, item):
         if item == self.i.actor_name:
             return self.i
-        elif item == self.j.actor_name:
+        if item == self.j.actor_name:
             return self.j
 
-        raise Exception("Actor {0} not in exchange".format(item))
+        msg = f"Actor {item} not in exchange"
+        raise Exception(msg)
 
     def csv_row(self, head=False):
-
         if head:
             return [
                 # the actors
@@ -248,18 +233,15 @@ class RandomRateExchange(base.AbstractExchange):
 
 
 class RandomRateModel(base.AbstractModel):
-    """
-    The Random Rate implementation
-    """
+    """The Random Rate implementation."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.model_name = "random"
 
     def _get_sorted_exchange_actor_list(self):
         all_exchange_actors = []
         for exchange in self.exchanges:  # type: RandomRateExchange
-
             if exchange.is_valid:
                 all_exchange_actors.append(exchange.i)
                 all_exchange_actors.append(exchange.j)
@@ -268,15 +250,13 @@ class RandomRateModel(base.AbstractModel):
 
         return all_exchange_actors
 
-    def sort_exchanges(self):
+    def sort_exchanges(self) -> None:
         pass
 
     def highest_gain(self):
-
         deadlock = defaultdict(int)
 
         while len(self.exchanges) > 0:
-
             exchange_actors = self._get_sorted_exchange_actor_list()
 
             # place each ExchangeActor in a dict where al his exchanges are ordered by the utility
@@ -294,13 +274,10 @@ class RandomRateModel(base.AbstractModel):
             deadlock[len(self.exchanges)] += 1
 
             for exchange_actor in exchange_actors:  # type: RandomRateExchangeActor
-
                 exchange_actors_by_actor[exchange_actor.actor.name].append(
-                    exchange_actor.eu
+                    exchange_actor.eu,
                 )
-                exchange_actors_by_gain[exchange_actor.actor.name][
-                    exchange_actor.eu
-                ].append(exchange_actor)
+                exchange_actors_by_gain[exchange_actor.actor.name][exchange_actor.eu].append(exchange_actor)
 
             if deadlock[len(self.exchanges)] > 1024:
                 # this should never happen?
@@ -326,18 +303,14 @@ class RandomRateModel(base.AbstractModel):
                     # otherwise this exchange is already marked, then we have found an exchange where both actors
                     # achieve there highest gain
                     if exchange_actor.exchange.key not in exchange_by_key:
-                        exchange_by_key[
-                            exchange_actor.exchange.key
-                        ] = exchange_actor.exchange
+                        exchange_by_key[exchange_actor.exchange.key] = exchange_actor.exchange
                     else:
                         self.remove_exchange_by_key(exchange_actor.exchange.key)
                         return exchange_actor.exchange
 
                 elif highest_actors[exchange_actor.actor_name].eu == exchange_actor.eu:
                     if exchange_actor.exchange.key not in exchange_by_key:
-                        exchange_by_key[
-                            exchange_actor.exchange.key
-                        ] = exchange_actor.exchange
+                        exchange_by_key[exchange_actor.exchange.key] = exchange_actor.exchange
                     else:
                         self.remove_exchange_by_key(exchange_actor.exchange.key)
                         return exchange_actor.exchange
@@ -351,62 +324,50 @@ class RandomRateModel(base.AbstractModel):
                     second_highest = self._find_first_element_not_equal(values)
                     # if all the exchanges have the same gain, do nothing
                     if second_highest is not None:
-
                         delta_eu = highest - second_highest
 
                         highest_exchanges = exchange_actors_by_gain[actor_name][highest]
                         # lower ALL the exchanges with the highest gain
                         for highest_exchange_actor in highest_exchanges:
+                            highest_exchange = highest_exchange_actor.exchange  # type: RandomRateExchange
+                            opposite_actor_name = highest_exchange_actor.opposite_actor.actor_name
 
-                            highest_exchange = (
-                                highest_exchange_actor.exchange
-                            )  # type: RandomRateExchange
-                            opposite_actor_name = (
-                                highest_exchange_actor.opposite_actor.actor_name
-                            )
-
-                            if (
-                                highest_exchange[actor_name].y
-                                == highest_exchange[opposite_actor_name].x_demand
-                            ):
+                            if highest_exchange[actor_name].y == highest_exchange[opposite_actor_name].x_demand:
                                 highest_exchange[opposite_actor_name].recalculate(
-                                    delta_eu, increase=False
+                                    delta_eu,
+                                    increase=False,
                                 )
-                            elif (
-                                highest_exchange[opposite_actor_name].y
-                                == highest_exchange[actor_name].x_demand
-                            ):
+                            elif highest_exchange[opposite_actor_name].y == highest_exchange[actor_name].x_demand:
                                 highest_exchange[actor_name].recalculate(
-                                    delta_eu, increase=True
+                                    delta_eu,
+                                    increase=True,
                                 )
                             else:
                                 highest_exchange[opposite_actor_name].recalculate(
-                                    delta_eu, increase=False
+                                    delta_eu,
+                                    increase=False,
                                 )
 
                             highest_exchange[opposite_actor_name].adjust_utility(
-                                delta_eu
+                                delta_eu,
                             )
+        return None
 
     @staticmethod
     def new_exchange_factory(i, j, p, q, model, groups):
-        """
-        Creates a new instance of the RandomRateExchange
-        """
+        """Creates a new instance of the RandomRateExchange."""
         return RandomRateExchange(i, j, p, q, model, groups)
 
-    def remove_exchange_by_key(self, key):
-
+    def remove_exchange_by_key(self, key) -> None:
         for __, exchange in enumerate(self.exchanges):
-
             if key == exchange.key:
                 del self.exchanges[__]
                 return
 
     @staticmethod
-    def _find_first_element_not_equal(exchange_utility_list: List[Decimal]):
-
+    def _find_first_element_not_equal(exchange_utility_list: list[Decimal]):
         previous_value = exchange_utility_list.pop(0)
         for value in exchange_utility_list:
             if abs(value - previous_value) > 0:
                 return value
+        return None

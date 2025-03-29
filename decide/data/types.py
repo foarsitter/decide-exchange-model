@@ -1,6 +1,7 @@
 import typesystem
-from decide.model import base
 from typesystem import ValidationError
+
+from decide.model import base
 
 
 class CSVColumn:
@@ -45,7 +46,6 @@ class PartialActor(CSVColumn, typesystem.Schema):
         return hash(self.id)
 
     def __eq__(self, other):
-
         if isinstance(other, str):
             return self.id == other
 
@@ -58,10 +58,7 @@ class PartialActor(CSVColumn, typesystem.Schema):
         return self.id < other.id
 
     def as_model_object(self):
-
-        actor = base.Actor(self.id, self.fullname)
-
-        return actor
+        return base.Actor(self.id, self.fullname)
 
 
 class Actor(PartialActor):
@@ -69,17 +66,14 @@ class Actor(PartialActor):
 
 
 class PartialIssue(CSVColumn, typesystem.Schema):
-    """
-    An issue as referenced in the csv data file
-    """
+    """An issue as referenced in the csv data file."""
+
     starts_with = "#P"
     name = typesystem.String()
-    description = typesystem.Text(
-        allow_blank=True, allow_null=True
-    )
+    description = typesystem.Text(allow_blank=True, allow_null=True)
 
-    def __init__(self, *args, **kwargs):
-        super(PartialIssue, self).__init__(*args, **kwargs)
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
         self.lower = None
         self.upper = None
 
@@ -87,7 +81,6 @@ class PartialIssue(CSVColumn, typesystem.Schema):
         return hash(self.name)
 
     def __eq__(self, other):
-
         if isinstance(other, str):
             return self.name == other
 
@@ -99,22 +92,20 @@ class PartialIssue(CSVColumn, typesystem.Schema):
     def __lt__(self, other):
         return self.name < other.name
 
-    def validate_interval(self):
-
+    def validate_interval(self) -> None:
         if self.lower > self.upper:
-            raise ValidationError(key='interval', text='lower needs to be less then upper')
+            raise ValidationError(
+                key="interval",
+                text="lower needs to be less then upper",
+            )
 
     def as_model_object(self):
-
-        issue = base.Issue(self.name, self.lower, self.upper)
-
-        return issue
+        return base.Issue(self.name, self.lower, self.upper)
 
 
 class Issue(PartialIssue):
-    """
-    An issue from the InputWindow
-    """
+    """An issue from the InputWindow."""
+
     name = typesystem.String()
     upper = typesystem.Float()
     lower = typesystem.Float()
@@ -122,9 +113,7 @@ class Issue(PartialIssue):
 
 
 class IssuePosition(CSVColumn, typesystem.Schema):
-    """
-    #M;Issue ID;position;meaning;
-    """
+    """#M;Issue ID;position;meaning;"""
 
     starts_with = "#M"
     issue = typesystem.String()
@@ -142,9 +131,7 @@ class IssuePosition(CSVColumn, typesystem.Schema):
 
 
 class ActorIssue(CSVColumn, typesystem.Schema):
-    """
-    #A;actor;issue;position;salience;power
-    """
+    """#A;actor;issue;position;salience;power."""
 
     starts_with = "#D"
     actor = typesystem.String()
@@ -154,14 +141,13 @@ class ActorIssue(CSVColumn, typesystem.Schema):
     power = typesystem.Decimal(minimum=0, maximum=100)
     comment = typesystem.Text(allow_blank=True, allow_null=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.actor) + "-" + str(self.issue)
 
     def __hash__(self):
         return hash(self.__str__())
 
     def __eq__(self, other):
-
         if isinstance(other, PartialIssue):
             return self.__str__() == other.__str__()
 
@@ -170,12 +156,11 @@ class ActorIssue(CSVColumn, typesystem.Schema):
     def __lt__(self, other):
         return self.issue.__lt__(other.issue)
 
-    def validate_position(self, issue: PartialIssue):
-
+    def validate_position(self, issue: PartialIssue) -> None:
         issue.validate_interval()
 
         if not issue.lower <= self.position <= issue.upper:
             raise ValidationError(
-                key='position',
-                text='exceeds the issue interval of {}-{}'.format(issue.lower, issue.upper)
+                key="position",
+                text=f"exceeds the issue interval of {issue.lower}-{issue.upper}",
             )

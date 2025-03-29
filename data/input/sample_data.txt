@@ -1,88 +1,88 @@
-'#A'	'Willems'	'Willems'	'Test'	
-'#A'	'PvdA'	'PvdA'	''	
-'#A'	'GL'	'GL'	''	
-'#A'	'VVDs'	'VVDs'	''	
-'#A'	'SP'	'SP'	''	
-'#A'	'CDA'	'CDA'	'Test'	
-'#A'	'D66'	'D66'	''	
-'#A'	'CU'	'CU'	''	
-'#A'	'KvK'	'KvK'	''	
-'#A'	'Wcentr'	'Wcentr'	''	
-'#P'	'tolheffing-binnenstad'	'tolheffing-binnenstad'	'tolheffing-binnenstad'	
-'#M'	'tolheffing-binnenstad'	0	
-'#M'	'tolheffing-binnenstad'	100	
-'#P'	'tol-hoogte'	'tol-hoogte'	'tol-hoogte'	
-'#M'	'tol-hoogte'	0.5	
-'#M'	'tol-hoogte'	7	
-'#P'	'wanneer-tol'	'wanneer-tol'	'Wat is dit voor onzin?'	
-'#M'	'wanneer-tol'	0	
-'#M'	'wanneer-tol'	100	
-'#P'	'woonwerkverkeer'	'woonwerkverkeer'	'woonwerkverkeer'	
-'#M'	'woonwerkverkeer'	0	
-'#M'	'woonwerkverkeer'	100	
-'#P'	'extra-investering'	'extra-investering'	'extra-investering'	
-'#M'	'extra-investering'	0	
-'#M'	'extra-investering'	100	
-'#P'	'kleine-of-grote-ring'	'kleine-of-grote-ring'	'kleine-of-grote-ring'	
-'#M'	'kleine-of-grote-ring'	0	
-'#M'	'kleine-of-grote-ring'	100	
-'#D'	'Willems'	'tolheffing-binnenstad'	100.0	0.95	1.0	
-'#D'	'Willems'	'tol-hoogte'	3.0	0.7	1.0	
-'#D'	'Willems'	'wanneer-tol'	100.0	0.9	1.0	
-'#D'	'Willems'	'woonwerkverkeer'	100.0	0.8	1.0	
-'#D'	'Willems'	'extra-investering'	25.0	0.6	1.0	
-'#D'	'Willems'	'kleine-of-grote-ring'	75.0	0.95	1.0	
-'#D'	'PvdA'	'tolheffing-binnenstad'	50.0	0.8	1.0	
-'#D'	'PvdA'	'tol-hoogte'	3.0	0.7	1.0	
-'#D'	'PvdA'	'wanneer-tol'	75.0	0.7	1.0	
-'#D'	'PvdA'	'woonwerkverkeer'	100.0	0.6	1.0	
-'#D'	'PvdA'	'extra-investering'	25.0	0.5	1.0	
-'#D'	'PvdA'	'kleine-of-grote-ring'	25.0	0.8	1.0	
-'#D'	'GL'	'tolheffing-binnenstad'	100.0	0.95	0.6	
-'#D'	'GL'	'tol-hoogte'	5.0	0.9	0.6	
-'#D'	'GL'	'wanneer-tol'	100.0	0.95	0.6	
-'#D'	'GL'	'woonwerkverkeer'	100.0	0.8	0.6	
-'#D'	'GL'	'extra-investering'	50.0	0.4	0.6	
-'#D'	'GL'	'kleine-of-grote-ring'	100.0	0.9	0.6	
-'#D'	'VVDs'	'tolheffing-binnenstad'	0.0	0.9	0.5	
-'#D'	'VVDs'	'tol-hoogte'	0.5	0.5	0.5	
-'#D'	'VVDs'	'wanneer-tol'	0.0	0.9	0.5	
-'#D'	'VVDs'	'woonwerkverkeer'	0.0	0.9	0.5	
-'#D'	'VVDs'	'extra-investering'	50.0	0.8	0.5	
-'#D'	'VVDs'	'kleine-of-grote-ring'	0.0	0.7	0.5	
-'#D'	'SP'	'tolheffing-binnenstad'	75.0	0.7	0.4	
-'#D'	'SP'	'tol-hoogte'	2.0	0.5	0.4	
-'#D'	'SP'	'wanneer-tol'	75.0	0.6	0.4	
-'#D'	'SP'	'woonwerkverkeer'	50.0	0.4	0.4	
-'#D'	'SP'	'extra-investering'	0.0	0.3	0.4	
-'#D'	'SP'	'kleine-of-grote-ring'	0.0	0.7	0.4	
-'#D'	'CDA'	'tolheffing-binnenstad'	25.0	0.8	0.5	
-'#D'	'CDA'	'tol-hoogte'	1.0	0.6	0.5	
-'#D'	'CDA'	'wanneer-tol'	25.0	0.7	0.5	
-'#D'	'CDA'	'woonwerkverkeer'	50.0	0.4	0.5	
-'#D'	'CDA'	'extra-investering'	25.0	0.5	0.5	
-'#D'	'CDA'	'kleine-of-grote-ring'	50.0	0.6	0.5	
-'#D'	'D66'	'tolheffing-binnenstad'	25.0	0.5	0.2	
-'#D'	'D66'	'tol-hoogte'	3.0	0.3	0.2	
-'#D'	'D66'	'wanneer-tol'	50.0	0.5	0.2	
-'#D'	'D66'	'woonwerkverkeer'	75.0	0.6	0.2	
-'#D'	'D66'	'extra-investering'	25.0	0.5	0.2	
-'#D'	'D66'	'kleine-of-grote-ring'	50.0	0.7	0.2	
-'#D'	'CU'	'tolheffing-binnenstad'	75.0	0.7	0.2	
-'#D'	'CU'	'tol-hoogte'	3.0	0.5	0.2	
-'#D'	'CU'	'wanneer-tol'	75.0	0.6	0.2	
-'#D'	'CU'	'woonwerkverkeer'	100.0	0.6	0.2	
-'#D'	'CU'	'extra-investering'	50.0	0.5	0.2	
-'#D'	'CU'	'kleine-of-grote-ring'	75.0	0.8	0.2	
-'#D'	'KvK'	'tolheffing-binnenstad'	25.0	0.8	0.6	
-'#D'	'KvK'	'tol-hoogte'	1.0	0.6	0.6	
-'#D'	'KvK'	'wanneer-tol'	0.0	0.7	0.6	
-'#D'	'KvK'	'woonwerkverkeer'	0.0	0.9	0.6	
-'#D'	'KvK'	'extra-investering'	50.0	0.5	0.6	
-'#D'	'KvK'	'kleine-of-grote-ring'	25.0	0.8	0.6	
-'#D'	'Wcentr'	'tolheffing-binnenstad'	0.0	0.95	0.9	
-'#D'	'Wcentr'	'tol-hoogte'	0.5	0.8	0.9	
-'#D'	'Wcentr'	'wanneer-tol'	0.0	1.0	0.9	
-'#D'	'Wcentr'	'woonwerkverkeer'	0.0	0.95	0.9	
-'#D'	'Wcentr'	'extra-investering'	100.0	0.9	0.9	
-'#D'	'Wcentr'	'kleine-of-grote-ring'	100.0	0.9	0.9	
+'#A'	'Willems'	'Willems'	'Test'
+'#A'	'PvdA'	'PvdA'	''
+'#A'	'GL'	'GL'	''
+'#A'	'VVDs'	'VVDs'	''
+'#A'	'SP'	'SP'	''
+'#A'	'CDA'	'CDA'	'Test'
+'#A'	'D66'	'D66'	''
+'#A'	'CU'	'CU'	''
+'#A'	'KvK'	'KvK'	''
+'#A'	'Wcentr'	'Wcentr'	''
+'#P'	'tolheffing-binnenstad'	'tolheffing-binnenstad'	'tolheffing-binnenstad'
+'#M'	'tolheffing-binnenstad'	0
+'#M'	'tolheffing-binnenstad'	100
+'#P'	'tol-hoogte'	'tol-hoogte'	'tol-hoogte'
+'#M'	'tol-hoogte'	0.5
+'#M'	'tol-hoogte'	7
+'#P'	'wanneer-tol'	'wanneer-tol'	'Wat is dit voor onzin?'
+'#M'	'wanneer-tol'	0
+'#M'	'wanneer-tol'	100
+'#P'	'woonwerkverkeer'	'woonwerkverkeer'	'woonwerkverkeer'
+'#M'	'woonwerkverkeer'	0
+'#M'	'woonwerkverkeer'	100
+'#P'	'extra-investering'	'extra-investering'	'extra-investering'
+'#M'	'extra-investering'	0
+'#M'	'extra-investering'	100
+'#P'	'kleine-of-grote-ring'	'kleine-of-grote-ring'	'kleine-of-grote-ring'
+'#M'	'kleine-of-grote-ring'	0
+'#M'	'kleine-of-grote-ring'	100
+'#D'	'Willems'	'tolheffing-binnenstad'	100.0	0.95	1.0
+'#D'	'Willems'	'tol-hoogte'	3.0	0.7	1.0
+'#D'	'Willems'	'wanneer-tol'	100.0	0.9	1.0
+'#D'	'Willems'	'woonwerkverkeer'	100.0	0.8	1.0
+'#D'	'Willems'	'extra-investering'	25.0	0.6	1.0
+'#D'	'Willems'	'kleine-of-grote-ring'	75.0	0.95	1.0
+'#D'	'PvdA'	'tolheffing-binnenstad'	50.0	0.8	1.0
+'#D'	'PvdA'	'tol-hoogte'	3.0	0.7	1.0
+'#D'	'PvdA'	'wanneer-tol'	75.0	0.7	1.0
+'#D'	'PvdA'	'woonwerkverkeer'	100.0	0.6	1.0
+'#D'	'PvdA'	'extra-investering'	25.0	0.5	1.0
+'#D'	'PvdA'	'kleine-of-grote-ring'	25.0	0.8	1.0
+'#D'	'GL'	'tolheffing-binnenstad'	100.0	0.95	0.6
+'#D'	'GL'	'tol-hoogte'	5.0	0.9	0.6
+'#D'	'GL'	'wanneer-tol'	100.0	0.95	0.6
+'#D'	'GL'	'woonwerkverkeer'	100.0	0.8	0.6
+'#D'	'GL'	'extra-investering'	50.0	0.4	0.6
+'#D'	'GL'	'kleine-of-grote-ring'	100.0	0.9	0.6
+'#D'	'VVDs'	'tolheffing-binnenstad'	0.0	0.9	0.5
+'#D'	'VVDs'	'tol-hoogte'	0.5	0.5	0.5
+'#D'	'VVDs'	'wanneer-tol'	0.0	0.9	0.5
+'#D'	'VVDs'	'woonwerkverkeer'	0.0	0.9	0.5
+'#D'	'VVDs'	'extra-investering'	50.0	0.8	0.5
+'#D'	'VVDs'	'kleine-of-grote-ring'	0.0	0.7	0.5
+'#D'	'SP'	'tolheffing-binnenstad'	75.0	0.7	0.4
+'#D'	'SP'	'tol-hoogte'	2.0	0.5	0.4
+'#D'	'SP'	'wanneer-tol'	75.0	0.6	0.4
+'#D'	'SP'	'woonwerkverkeer'	50.0	0.4	0.4
+'#D'	'SP'	'extra-investering'	0.0	0.3	0.4
+'#D'	'SP'	'kleine-of-grote-ring'	0.0	0.7	0.4
+'#D'	'CDA'	'tolheffing-binnenstad'	25.0	0.8	0.5
+'#D'	'CDA'	'tol-hoogte'	1.0	0.6	0.5
+'#D'	'CDA'	'wanneer-tol'	25.0	0.7	0.5
+'#D'	'CDA'	'woonwerkverkeer'	50.0	0.4	0.5
+'#D'	'CDA'	'extra-investering'	25.0	0.5	0.5
+'#D'	'CDA'	'kleine-of-grote-ring'	50.0	0.6	0.5
+'#D'	'D66'	'tolheffing-binnenstad'	25.0	0.5	0.2
+'#D'	'D66'	'tol-hoogte'	3.0	0.3	0.2
+'#D'	'D66'	'wanneer-tol'	50.0	0.5	0.2
+'#D'	'D66'	'woonwerkverkeer'	75.0	0.6	0.2
+'#D'	'D66'	'extra-investering'	25.0	0.5	0.2
+'#D'	'D66'	'kleine-of-grote-ring'	50.0	0.7	0.2
+'#D'	'CU'	'tolheffing-binnenstad'	75.0	0.7	0.2
+'#D'	'CU'	'tol-hoogte'	3.0	0.5	0.2
+'#D'	'CU'	'wanneer-tol'	75.0	0.6	0.2
+'#D'	'CU'	'woonwerkverkeer'	100.0	0.6	0.2
+'#D'	'CU'	'extra-investering'	50.0	0.5	0.2
+'#D'	'CU'	'kleine-of-grote-ring'	75.0	0.8	0.2
+'#D'	'KvK'	'tolheffing-binnenstad'	25.0	0.8	0.6
+'#D'	'KvK'	'tol-hoogte'	1.0	0.6	0.6
+'#D'	'KvK'	'wanneer-tol'	0.0	0.7	0.6
+'#D'	'KvK'	'woonwerkverkeer'	0.0	0.9	0.6
+'#D'	'KvK'	'extra-investering'	50.0	0.5	0.6
+'#D'	'KvK'	'kleine-of-grote-ring'	25.0	0.8	0.6
+'#D'	'Wcentr'	'tolheffing-binnenstad'	0.0	0.95	0.9
+'#D'	'Wcentr'	'tol-hoogte'	0.5	0.8	0.9
+'#D'	'Wcentr'	'wanneer-tol'	0.0	1.0	0.9
+'#D'	'Wcentr'	'woonwerkverkeer'	0.0	0.95	0.9
+'#D'	'Wcentr'	'extra-investering'	100.0	0.9	0.9
+'#D'	'Wcentr'	'kleine-of-grote-ring'	100.0	0.9	0.9

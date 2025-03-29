@@ -1,3 +1,1 @@
-"""
-Contains the sub packages, abstract classes, calculation module and helper module.
-"""
+"""Contains the sub packages, abstract classes, calculation module and helper module."""

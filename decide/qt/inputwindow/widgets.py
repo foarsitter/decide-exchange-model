@@ -1,22 +1,24 @@
 from collections import defaultdict
 from decimal import Decimal
+from typing import NoReturn
 
-from PyQt5 import QtWidgets, QtCore
+from PyQt5 import QtCore
+from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QListWidgetItem
 
 from decide.data.types import ActorIssue
 from decide.qt.inputwindow import signals
-from decide.qt.inputwindow.models import (
-    ActorInputModel,
-    IssueInputModel,
-    ActorIssueInputModel,
-)
-from decide.qt.mainwindow.helpers import DoubleInput, clear_layout, normalize
+from decide.qt.inputwindow.models import ActorInputModel
+from decide.qt.inputwindow.models import ActorIssueInputModel
+from decide.qt.inputwindow.models import IssueInputModel
+from decide.qt.mainwindow.helpers import DoubleInput
+from decide.qt.mainwindow.helpers import clear_layout
+from decide.qt.mainwindow.helpers import normalize
 
 
 class BoxLayout(QtWidgets.QGroupBox):
-    def __init__(self, title, btn=True):
-        super(BoxLayout, self).__init__(title)
+    def __init__(self, title, btn=True) -> None:
+        super().__init__(title)
 
         self.scroll_area = QtWidgets.QScrollArea(self)
         self.scroll_area.setWidgetResizable(True)
@@ -46,21 +48,17 @@ class BoxLayout(QtWidgets.QGroupBox):
 
         self._row_pointer = 0
 
-    def clear(self):
+    def clear(self) -> None:
         clear_layout(self.grid_layout)
 
         self.actor_issues = {}
         self._row_pointer = 0
 
-    def add_heading(self):
+    def add_heading(self) -> NoReturn:
         raise NotImplementedError
 
     def add_row(self, *args, pointer=None):
-
-        if pointer:
-            row = pointer
-        else:
-            row = self._row_pointer
+        row = pointer if pointer else self._row_pointer
 
         for column, arg in enumerate(args):
             if isinstance(arg, str):
@@ -73,7 +71,6 @@ class BoxLayout(QtWidgets.QGroupBox):
         return row
 
     def delete_row_callback(self):
-
         sending_button = self.sender()  # type: QtWidgets.QPushButton
 
         row = int(sending_button.objectName().split("-")[-1])
@@ -83,7 +80,6 @@ class BoxLayout(QtWidgets.QGroupBox):
         del self.actor_issues[row]
 
         for column in range(self.grid_layout.count()):
-
             item = self.grid_layout.itemAtPosition(row, column)
             if item:
                 item.widget().deleteLater()
@@ -97,16 +93,15 @@ class ActorWidget(BoxLayout):
 
     NEW_ACTOR_POINTER = 0
 
-    def __init__(self):
-        super(ActorWidget, self).__init__("Actors")
+    def __init__(self) -> None:
+        super().__init__("Actors")
         self.add_heading()
         self.add_button.clicked.connect(self.add_action)
 
-    def add_heading(self):
+    def add_heading(self) -> None:
         self.add_row("Actor", "Power")
 
     def add_delete_button(self):
-
         delete_button = QtWidgets.QPushButton("Delete")
         delete_button.clicked.connect(self.delete_row_callback)
         delete_button.setObjectName("actor-" + str(self._row_pointer))
@@ -114,17 +109,15 @@ class ActorWidget(BoxLayout):
         return delete_button
 
     def add_power_input(self, actor_input, power):
-
         power_input = DoubleInput()
         power_input.setValue(power)
         power_input.valueChanged.connect(actor_input.set_power)
 
-        actor_input.widgets['power'] = power_input
+        actor_input.widgets["power"] = power_input
 
         return power_input
 
     def add_comment_button(self):
-
         comment_button = QtWidgets.QPushButton("Comment")
         comment_button.clicked.connect(self.comment_window)
         comment_button.setObjectName("actor-" + str(self._row_pointer))
@@ -136,12 +129,11 @@ class ActorWidget(BoxLayout):
         name_input.setText(name)
         name_input.textChanged.connect(actor_input.set_name)
 
-        actor_input.widgets['id'] = name_input
+        actor_input.widgets["id"] = name_input
 
         return name_input
 
-    def add_actor(self, name=None, power=Decimal(0.0)):
-
+    def add_actor(self, name=None, power=Decimal("0.0")):
         if not name:
             name = self.create_actor_name()
 
@@ -160,23 +152,22 @@ class ActorWidget(BoxLayout):
         return actor_input
 
     @staticmethod
-    def create_actor_name():
-
+    def create_actor_name() -> str:
         ActorWidget.NEW_ACTOR_POINTER += 1
 
-        return "Actor-{}".format(ActorWidget.NEW_ACTOR_POINTER)
+        return f"Actor-{ActorWidget.NEW_ACTOR_POINTER}"
 
-    def add_action(self):
+    def add_action(self) -> None:
         a = self.add_actor()
 
         signals.actor_created.send(a)
 
-    def delete_row_callback(self):
+    def delete_row_callback(self) -> None:
         row = super().delete_row_callback()
 
         signals.actor_deleted.send(row)
 
-    def comment_window(self):
+    def comment_window(self) -> None:
         sending_button = self.sender()  # type: QtWidgets.QPushButton
 
         row = int(sending_button.objectName().split("-")[-1])
@@ -184,7 +175,10 @@ class ActorWidget(BoxLayout):
         obj = self.actor_issues[row]
 
         text, ok_pressed = QtWidgets.QInputDialog.getMultiLineText(
-            self, "Comment", "Comment", obj.comment
+            self,
+            "Comment",
+            "Comment",
+            obj.comment,
         )
 
         if ok_pressed and text != "":
@@ -196,23 +190,21 @@ class IssueWidget(BoxLayout):
 
     NEW_ISSUE_POINTER = 0
 
-    def __init__(self):
-        super(IssueWidget, self).__init__("Issues")
+    def __init__(self) -> None:
+        super().__init__("Issues")
         self.add_heading()
         self.add_button.clicked.connect(self.add_action)
 
     @staticmethod
-    def create_issue_name():
-
+    def create_issue_name() -> str:
         IssueWidget.NEW_ISSUE_POINTER += 1
 
-        return "Issue-{}".format(IssueWidget.NEW_ISSUE_POINTER)
+        return f"Issue-{IssueWidget.NEW_ISSUE_POINTER}"
 
-    def add_heading(self):
+    def add_heading(self) -> None:
         self.add_row("Issue", "Lower", "Upper")
 
     def add_delete_button(self):
-
         delete_button = QtWidgets.QPushButton("Delete")
         delete_button.clicked.connect(self.delete_row_callback)
         delete_button.setObjectName("issue-" + str(self._row_pointer))
@@ -220,14 +212,13 @@ class IssueWidget(BoxLayout):
         return delete_button
 
     def add_comment_button(self):
-
         comment_button = QtWidgets.QPushButton("Comment")
         comment_button.clicked.connect(self.comment_window)
         comment_button.setObjectName("issue-" + str(self._row_pointer))
 
         return comment_button
 
-    def add_issue(self, name=None, lower=Decimal(0), upper=Decimal(100.0)):
+    def add_issue(self, name=None, lower=Decimal(0), upper=Decimal("100.0")):
         if not name:
             name = self.create_issue_name()
         issue_input = IssueInputModel(name, lower, upper)
@@ -247,9 +238,9 @@ class IssueWidget(BoxLayout):
         lower_input.valueChanged.connect(issue_input.set_lower)
         upper_input.valueChanged.connect(issue_input.set_upper)
 
-        issue_input.widgets['name'] = name_input
-        issue_input.widgets['lower'] = lower_input
-        issue_input.widgets['upper'] = upper_input
+        issue_input.widgets["name"] = name_input
+        issue_input.widgets["lower"] = lower_input
+        issue_input.widgets["upper"] = upper_input
 
         comment_button = self.add_comment_button()
         delete_button = self.add_delete_button()
@@ -257,22 +248,26 @@ class IssueWidget(BoxLayout):
         self.actor_issues[issue_input.id] = issue_input
 
         self.add_row(
-            name_input, lower_input, upper_input, comment_button, delete_button
+            name_input,
+            lower_input,
+            upper_input,
+            comment_button,
+            delete_button,
         )
 
         return issue_input
 
-    def add_action(self):
+    def add_action(self) -> None:
         issue = self.add_issue()
 
         signals.issue_created.send(issue)
 
-    def delete_row_callback(self):
+    def delete_row_callback(self) -> None:
         row = super().delete_row_callback()
 
         signals.issue_deleted.send(row)
 
-    def comment_window(self):
+    def comment_window(self) -> None:
         sending_button = self.sender()  # type: QtWidgets.QPushButton
 
         row = int(sending_button.objectName().split("-")[-1])
@@ -280,7 +275,10 @@ class IssueWidget(BoxLayout):
         obj = self.actor_issues[row]
 
         text, ok_pressed = QtWidgets.QInputDialog.getMultiLineText(
-            self, "Comment", "Comment", obj.comment
+            self,
+            "Comment",
+            "Comment",
+            obj.comment,
         )
 
         if ok_pressed and text != "":
@@ -288,32 +286,30 @@ class IssueWidget(BoxLayout):
 
 
 class ActorIssueWidget(BoxLayout):
-    """
-    The ActorIssueBox is an hidden box behind the scenes, so there is a single point of truth
-    """
+    """The ActorIssueBox is an hidden box behind the scenes, so there is a single point of truth."""
 
-    def add_heading(self):
+    def add_heading(self) -> None:
         pass
 
-    def __init__(self, actor_box: ActorWidget, issue_box: IssueWidget):
-        super(ActorIssueWidget, self).__init__("Hidden Box")
+    def __init__(self, actor_box: ActorWidget, issue_box: IssueWidget) -> None:
+        super().__init__("Hidden Box")
 
         self.actor_box = actor_box
         self.issue_box = issue_box
 
-        self.actor_issues = defaultdict(lambda: dict())
+        self.actor_issues = defaultdict(dict)
 
         self.actors = set()
         self.issues = set()
 
-    def clear(self):
-        super(ActorIssueWidget, self).clear()
-        self.actor_issues = defaultdict(lambda: dict())
+    def clear(self) -> None:
+        super().clear()
+        self.actor_issues = defaultdict(dict)
 
         self.actors = set()
         self.issues = set()
 
-    def delete_actor(self, row):
+    def delete_actor(self, row) -> None:
         if row in self.actors:
             self.actors.remove(row)
 
@@ -321,29 +317,28 @@ class ActorIssueWidget(BoxLayout):
                 if row.id in self.actor_issues and issue.id in self.actor_issues[row.id]:
                     del self.actor_issues[row.id][issue.id]
 
-    def delete_issue(self, row):
+    def delete_issue(self, row) -> None:
         if row in self.issues:
             self.issues.remove(row)
             for actor in self.actor_box.actor_issues.values():
                 del self.actor_issues[actor.id][row.id]
 
-    def add_issue(self, value):
+    def add_issue(self, value) -> None:
         self.issues.add(value)
         for actor in self.actor_box.actor_issues.values():
             self.add_actor_issue(actor, value)
 
-    def add_actor(self, value):
+    def add_actor(self, value) -> None:
         self.actors.add(value)
         for issue in self.issue_box.actor_issues.values():
             self.add_actor_issue(value, issue)
 
     def add_actor_issue(
-            self,
-            actor: ActorInputModel,
-            issue: IssueInputModel,
-            actor_issue: ActorIssue = None,
-    ):
-
+        self,
+        actor: ActorInputModel,
+        issue: IssueInputModel,
+        actor_issue: ActorIssue = None,
+    ) -> None:
         actor_issue_input = ActorIssueInputModel(actor, issue)
         actor_issue_input.id = self._row_pointer
 
@@ -358,8 +353,8 @@ class ActorIssueWidget(BoxLayout):
 
 
 class PositionSalienceWidget(QtWidgets.QWidget):
-    def __init__(self, actor_issue_box: ActorIssueWidget, *args, **kwargs):
-        super(PositionSalienceWidget, self).__init__(*args, **kwargs)
+    def __init__(self, actor_issue_box: ActorIssueWidget, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
 
         self.actor_issue_box = actor_issue_box
 
@@ -388,20 +383,15 @@ class PositionSalienceWidget(QtWidgets.QWidget):
 
         self.add_heading()
 
-    def clear(self):
-
+    def clear(self) -> None:
         self._row_pointer = 0
         clear_layout(self.grid_layout)
 
-    def add_heading(self):
+    def add_heading(self) -> NoReturn:
         raise NotImplementedError
 
     def add_row(self, *args, pointer=None):
-
-        if pointer:
-            row = pointer
-        else:
-            row = self._row_pointer
+        row = pointer if pointer else self._row_pointer
 
         for column, arg in enumerate(args):
             if isinstance(arg, str):
@@ -413,30 +403,25 @@ class PositionSalienceWidget(QtWidgets.QWidget):
 
         return row
 
-    def redraw(self):
-
+    def redraw(self) -> None:
         clear_layout(self.grid_layout)
 
         self.add_heading()
 
         for issue in self.actor_issue_box.issues:
             for actor in self.actor_issue_box.actors:
-
                 if (
-                        actor.id in self.actor_issue_box.actor_issues
-                        and issue.id in self.actor_issue_box.actor_issues[actor.id]
+                    actor.id in self.actor_issue_box.actor_issues
+                    and issue.id in self.actor_issue_box.actor_issues[actor.id]
                 ):
-                    actor_issue = self.actor_issue_box.actor_issues[actor.id][
-                        issue.id
-                    ]  # type: ActorIssueInputModel
+                    actor_issue = self.actor_issue_box.actor_issues[actor.id][issue.id]  # type: ActorIssueInputModel
 
                     self.draw_actor_issue(actor_issue)
 
-    def draw_actor_issue(self, actor_issue: ActorIssueInputModel):
+    def draw_actor_issue(self, actor_issue: ActorIssueInputModel) -> NoReturn:
         raise NotImplementedError
 
-    def add_choice(self, key, value):
-
+    def add_choice(self, key, value) -> None:
         item = QListWidgetItem(self.choices_list_widget)
         item.setText(value)
 
@@ -446,20 +431,17 @@ class PositionSalienceWidget(QtWidgets.QWidget):
 
         self.choices_list_widget.sortItems()
 
-    def delete_choice(self, key):
-
+    def delete_choice(self, key) -> None:
         item = self.choices_list_widget_items[key]  # type: QtWidgets.QListWidgetItem
 
         self.choices_list_widget.takeItem(self.choices_list_widget.row(item))
 
-    def update_choice(self, key, value):
-
+    def update_choice(self, key, value) -> None:
         item = self.choices_list_widget_items[key]
 
         item.setText(value)
 
-    def set_choices(self, choices):
-
+    def set_choices(self, choices) -> None:
         self.choices_list_widget.clear()
 
         for item in choices:
@@ -471,31 +453,26 @@ class PositionSalienceWidget(QtWidgets.QWidget):
 
         self.choices_list_widget.sortItems()
 
-    def is_selected(self, value):
-
+    def is_selected(self, value) -> bool:
         items = self.choices_list_widget.selectedItems()
 
         if len(items) == 0:
             return True
 
-        for item in items:
-            if item.text() == value:
-                return True
-
-        return False
+        return any(item.text() == value for item in items)
 
 
 class PositionWidget(PositionSalienceWidget):
-    def add_heading(self):
+    def add_heading(self) -> None:
         self.add_row("Issue", "Actor", "Power", "Position")
 
-    def draw_actor_issue(self, actor_issue: ActorIssueInputModel):
+    def draw_actor_issue(self, actor_issue: ActorIssueInputModel) -> None:
         if self.is_selected(actor_issue.issue.name):
             position = DoubleInput()
             position.setValue(actor_issue.position)
             position.valueChanged.connect(actor_issue.set_position)
 
-            actor_issue.widgets['position'] = position
+            actor_issue.widgets["position"] = position
 
             self.add_row(
                 QtWidgets.QLabel(actor_issue.issue.name),
@@ -506,10 +483,10 @@ class PositionWidget(PositionSalienceWidget):
 
 
 class SalienceWidget(PositionSalienceWidget):
-    def add_heading(self):
+    def add_heading(self) -> None:
         self.add_row("Actor", "Issue", "Power", "Position", "Salience")
 
-    def draw_actor_issue(self, actor_issue: ActorIssueInputModel):
+    def draw_actor_issue(self, actor_issue: ActorIssueInputModel) -> None:
         if self.is_selected(actor_issue.actor.name):
             salience = DoubleInput()
             salience.setValue(actor_issue.salience)

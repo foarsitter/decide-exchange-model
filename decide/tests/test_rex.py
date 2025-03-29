@@ -1,29 +1,26 @@
 import csv
-import decimal
-import random
-import statistics
 from decimal import Decimal
 
 import pytest
 
 from decide.data.modelfactory import ModelFactory
 from decide.data.reader import InputDataFile
-from decide.model.equalgain import EqualGainModel, EqualGainExchange, EqualGainExchangeActor
+from decide.model.equalgain import EqualGainModel
 
 
 @pytest.fixture
 def model_factory():
-    input_data = """'#A'	'Actor-1'	'Actor-1'	''	
-'#A'	'Actor-2'	'Actor-2'	''	
-'#P'	'Issue-1'	'Issue-1'	'Issue-1'	
-'#M'	'Issue-1'	0	
-'#M'	'Issue-1'	100	
-'#P'	'Issue-2'	'Issue-2'	'Issue-2'	
-'#M'	'Issue-2'	0	
-'#M'	'Issue-2'	100	
-'#D'	'Actor-1'	'Issue-1'	0.0	10	1	
-'#D'	'Actor-1'	'Issue-2'	0.0	90	1	
-'#D'	'Actor-2'	'Issue-1'	100.0	60	1	
+    input_data = """'#A'	'Actor-1'	'Actor-1'	''
+'#A'	'Actor-2'	'Actor-2'	''
+'#P'	'Issue-1'	'Issue-1'	'Issue-1'
+'#M'	'Issue-1'	0
+'#M'	'Issue-1'	100
+'#P'	'Issue-2'	'Issue-2'	'Issue-2'
+'#M'	'Issue-2'	0
+'#M'	'Issue-2'	100
+'#D'	'Actor-1'	'Issue-1'	0.0	10	1
+'#D'	'Actor-1'	'Issue-2'	0.0	90	1
+'#D'	'Actor-2'	'Issue-1'	100.0	60	1
 '#D'	'Actor-2'	'Issue-2'	100.0	50	1"""
 
     reader = csv.reader(input_data.splitlines(), delimiter="\t", quotechar="'")
@@ -33,18 +30,16 @@ def model_factory():
     assert len(data_file.actors) == 2
     assert len(data_file.actor_issues) == 4
 
-    model_factory = ModelFactory(data_file)
-
-    return model_factory
+    return ModelFactory(data_file)
 
 
-def test_rex(model_factory):
+def test_rex(model_factory) -> None:
     rex = model_factory(model_klass=EqualGainModel, randomized_value=1)
 
-    actor_1 = rex.actors['Actor-1']
-    actor_2 = rex.actors['Actor-2']
-    issue_1 = rex.issues['Issue-1']
-    issue_2 = rex.issues['Issue-2']
+    actor_1 = rex.actors["Actor-1"]
+    actor_2 = rex.actors["Actor-2"]
+    issue_1 = rex.issues["Issue-1"]
+    issue_2 = rex.issues["Issue-2"]
 
     rex.calc_nbs()
     rex.determine_positions()
@@ -99,24 +94,24 @@ def test_rex(model_factory):
     assert max_eu_actor_1 == 1400
 
     max_eu_actor_2 = gain_actor_2_issue_1 - (s * a2.supply.salience * delta_2_u1)
-    assert max_eu_actor_2 == pytest.approx(Decimal(777.7778))
+    assert max_eu_actor_2 == pytest.approx(Decimal("777.7778"))
 
 
-def test_rex_2(model_factory):
+def test_rex_2(model_factory) -> None:
     rex = model_factory(model_klass=EqualGainModel, randomized_value=1)
 
-    actor_1 = rex.actors['Actor-1']
-    actor_2 = rex.actors['Actor-2']
-    issue_1 = rex.issues['Issue-1']
-    issue_2 = rex.issues['Issue-2']
+    actor_1 = rex.actors["Actor-1"]
+    actor_2 = rex.actors["Actor-2"]
+    issue_1 = rex.issues["Issue-1"]
+    issue_2 = rex.issues["Issue-2"]
 
     rex.calc_nbs()
     rex.determine_positions()
     rex.calc_combinations()
     rex.determine_groups_and_calculate_exchanges()
 
-    nbs_issue_1 = rex.nbs[issue_1]
-    nbs_issue_2 = rex.nbs[issue_2]
+    rex.nbs[issue_1]
+    rex.nbs[issue_2]
 
     assert rex.nbs[issue_1] == pytest.approx(Decimal(85 + 5 / 7))
     assert rex.nbs[issue_2] == pytest.approx(Decimal(35 + 5 / 7))
@@ -128,8 +123,12 @@ def test_rex_2(model_factory):
     assert exchange.i.supply.issue == issue_2
     assert exchange.j.supply.issue == issue_1
 
-    nbs_supply_i_adjusted = exchange.i.adjust_nbs(exchange.i.opposite_actor.demand.position)
-    nbs_supply_j_adjusted = exchange.j.adjust_nbs(exchange.j.opposite_actor.demand.position)
+    nbs_supply_i_adjusted = exchange.i.adjust_nbs(
+        exchange.i.opposite_actor.demand.position,
+    )
+    nbs_supply_j_adjusted = exchange.j.adjust_nbs(
+        exchange.j.opposite_actor.demand.position,
+    )
 
     assert nbs_supply_i_adjusted == 0
     assert nbs_supply_j_adjusted == 100
@@ -169,7 +168,7 @@ def test_rex_2(model_factory):
     assert max_eu_actor_j == 1400
 
     max_eu_actor_i = gain_actor_i_demand_issue - (s * exchange.i.supply.salience * delta_2_uj)
-    assert max_eu_actor_i == pytest.approx(Decimal(777.7778))
+    assert max_eu_actor_i == pytest.approx(Decimal("777.7778"))
 
     exchange.calculate_maximum_utility()
 

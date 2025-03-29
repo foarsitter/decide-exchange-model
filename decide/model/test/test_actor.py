@@ -1,9 +1,10 @@
 import pytest
 
-from decide.model.base import Actor, Issue
+from decide.model.base import Actor
+from decide.model.base import Issue
 
 
-def test_actor_functions():
+def test_actor_functions() -> None:
     actor1 = Actor("Test")
     actor2 = Actor("Test")
     actor3 = Actor("Test 123")

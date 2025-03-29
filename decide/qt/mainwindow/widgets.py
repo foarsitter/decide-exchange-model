@@ -1,6 +1,8 @@
-from typing import List
+from typing import NoReturn
 
-from PyQt5 import QtWidgets, QtCore
+from PyQt5 import QtCore
+from PyQt5 import QtWidgets
+
 from decide.data import types
 from decide.qt import utils
 
@@ -10,7 +12,7 @@ class InputFilGrid:
 
 
 class DynamicFormLayout(QtWidgets.QGridLayout):
-    def __init__(self, main_window, *args, **kwargs):
+    def __init__(self, main_window, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
         self.main_window = main_window
@@ -20,27 +22,23 @@ class DynamicFormLayout(QtWidgets.QGridLayout):
 
         self.setAlignment(QtCore.Qt.AlignTop)
 
-    def clear(self):
-        """
-        Set the parent of all child widgets to None so they will be deleted
-        """
+    def clear(self) -> None:
+        """Set the parent of all child widgets to None so they will be deleted."""
         for i in reversed(range(self.count())):
             self.itemAt(i).widget().setParent(None)
 
-    def add_row(self, *widgets):
-
+    def add_row(self, *widgets) -> None:
         for index, widget in enumerate(widgets):
             self.addWidget(widget, self.row_pointer, index)
 
         self.row_pointer += 1
 
-    def set_values(self, objects):
+    def set_values(self, objects) -> None:
         self.objects = objects
         self.objects.sort()
         self.clear()
 
     def get_selected(self):
-
         selected = []
 
         for checkbox in self.checkboxes:  # type: QtWidgets.QCheckBox
@@ -51,11 +49,9 @@ class DynamicFormLayout(QtWidgets.QGridLayout):
 
 
 class IssueWidget(DynamicFormLayout):
-    """
-    Form layout for customizing the Issue selection
-    """
+    """Form layout for customizing the Issue selection."""
 
-    def set_issues(self, issues: List[types.PartialIssue]):
+    def set_issues(self, issues: list[types.PartialIssue]) -> None:
         self.set_values(issues)
         self.add_row(
             QtWidgets.QLabel("Issue"),
@@ -81,19 +77,17 @@ class IssueWidget(DynamicFormLayout):
 
             self.add_row(checkbox, lower, upper)
 
-    def state_changed(self):
+    def state_changed(self) -> None:
         self.main_window.overview_widget.update_widget()
 
-    def save(self):
+    def save(self) -> None:
         self.main_window.settings.selected_issues = self.get_selected()
 
 
 class ActorWidget(DynamicFormLayout):
-    """
-    Form layout for customizing the Actor selection
-    """
+    """Form layout for customizing the Actor selection."""
 
-    def set_actors(self, actors: List[types.PartialActor]):
+    def set_actors(self, actors: list[types.PartialActor]) -> None:
         self.set_values(actors)
 
         for actor in actors:
@@ -111,18 +105,18 @@ class ActorWidget(DynamicFormLayout):
             self.checkboxes.append(checkbox)
             self.add_row(checkbox)
 
-    def state_changed(self):
+    def state_changed(self) -> None:
         self.main_window.overview_widget.update_widget()
 
-    def save(self):
+    def save(self) -> None:
         self.main_window.settings.selected_actors = self.get_selected()
 
 
 class ActorIssueWidget(DynamicFormLayout):
-    def __init__(self, *args, **kwargs):
-        super(ActorIssueWidget, self).__init__(*args, **kwargs)
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
 
-    def set_actor_issues(self, actor_issues=List[types.ActorIssue]):
+    def set_actor_issues(self, actor_issues=list[types.ActorIssue]) -> None:
         self.set_values(actor_issues)
 
         heading = ["Issue", "Actor", "Position", "Salience", "Power"]
@@ -141,15 +135,21 @@ class ActorIssueWidget(DynamicFormLayout):
 
 class SummaryWidget(DynamicFormLayout):
     def __init__(
-        self, main_window, settings, data, actor_widget, issue_widget, *args, **kwargs
-    ):
-        """
-        :type settings: decide.qt.mainwindow.settings.ProgramSettings
+        self,
+        main_window,
+        settings,
+        data,
+        actor_widget,
+        issue_widget,
+        *args,
+        **kwargs,
+    ) -> None:
+        """:type settings: decide.qt.mainwindow.settings.ProgramSettings
         :type data: decide.qt.mainwindow.gui.ProgramData
         :type actor_widget: decide.qt.mainwindow.widgets.ActorWidget
         :type issue_widget: decide.qt.mainwindow.widgets.IssueWidget
         """
-        super(SummaryWidget, self).__init__(main_window, *args, **kwargs)
+        super().__init__(main_window, *args, **kwargs)
 
         self.settings = settings
         self.data = data
@@ -159,19 +159,15 @@ class SummaryWidget(DynamicFormLayout):
         self.run_name.setText(self.settings.run_name)
         self.run_name.textChanged.connect(self.update_run_name)
 
-    def update_run_name(self, value):
+    def update_run_name(self, value) -> None:
         self.settings.run_name = value
 
-    def update_widget(self):
-
+    def update_widget(self) -> None:
         self.clear()
 
         self.add_text_row("Input", self.settings.input_filename, self.test_callback)
 
-        if (
-            self.settings.output_directory is None
-            or self.settings.output_directory == "None"
-        ):
+        if self.settings.output_directory is None or self.settings.output_directory == "None":
             self.add_text_row(
                 "Output directory",
                 "set output directory",
@@ -179,13 +175,16 @@ class SummaryWidget(DynamicFormLayout):
             )
         else:
             self.add_text_row(
-                "Output directory", self.settings.output_directory, self.test_callback
+                "Output directory",
+                self.settings.output_directory,
+                self.test_callback,
             )
 
         self.add_row(QtWidgets.QLabel("Run name"), self.run_name)
 
         self.add_text_row(
-            "", "You can make use of the variable {rounds} and {repetitions} in run name"
+            "",
+            "You can make use of the variable {rounds} and {repetitions} in run name",
         )
 
         settings = self.main_window.settings  # type: ProgramSettings
@@ -214,33 +213,24 @@ class SummaryWidget(DynamicFormLayout):
 
         self.main_window.set_start_button_state()
 
-    def add_text_row(self, label, value, callback=None):
-
+    def add_text_row(self, label, value, callback=None) -> None:
         if callback:
+            value_x = "..." + value[-50:] if len(value) > 50 else value
 
-            if len(value) > 50:
-                value_x = "..." + value[-50:]
-            else:
-                value_x = value
-
-            value_label = QtWidgets.QLabel(
-                '<a href="{}">{}</a>'.format(value, value_x)
-            )
+            value_label = QtWidgets.QLabel(f'<a href="{value}">{value_x}</a>')
             value_label.linkActivated.connect(callback)
         else:
             value_label = QtWidgets.QLabel(value)
 
         self.add_row(QtWidgets.QLabel(label), value_label)
 
-    def test_callback(self, link):
+    def test_callback(self, link) -> None:
         utils.open_file_natively(link)
 
 
 class MenuBar(QtWidgets.QMenuBar):
-    def __init__(self, main_window, *args, **kwargs):
-        """
-        :type main_window: decide.qt.mainwindow.gui.DecideMainWindow
-        """
+    def __init__(self, main_window, *args, **kwargs) -> None:
+        """:type main_window: decide.qt.mainwindow.gui.DecideMainWindow"""
         super().__init__(*args, **kwargs)
 
         self.main_window = main_window
@@ -281,7 +271,7 @@ class MenuBar(QtWidgets.QMenuBar):
 
         edit_action = QtWidgets.QAction("&Edit data file", self)
         edit_action.triggered.connect(
-            self.main_window.open_current_input_window_with_current_data
+            self.main_window.open_current_input_window_with_current_data,
         )
 
         save_settings = QtWidgets.QAction("&Save settings", self)
@@ -314,7 +304,7 @@ class MenuBar(QtWidgets.QMenuBar):
         # error_report_2.triggered.connect(self.trigger_error)
         # debug.addAction(error_report_2)
 
-    def recently_opened_menu(self, menu: QtWidgets.QMenu):
+    def recently_opened_menu(self, menu: QtWidgets.QMenu) -> None:
         sub_menu = QtWidgets.QMenu("Recently opened", menu)
         menu.addMenu(sub_menu)
 
@@ -323,19 +313,17 @@ class MenuBar(QtWidgets.QMenuBar):
             action.triggered.connect(self.open_input_data)
             sub_menu.addAction(action)
 
-    def open_input_data(self):
+    def open_input_data(self) -> None:
         sender = self.sender()  # type: QtWidgets.QAction
 
         self.main_window.init_ui_data(sender.text())
 
-    def trigger_error(self):
-        raise Exception("Error triggered")
+    def trigger_error(self) -> NoReturn:
+        msg = "Error triggered"
+        raise Exception(msg)
 
-    def load(self):
-        """
-        Copy the values from the ProgramSettings object
-        """
-
+    def load(self) -> None:
+        """Copy the values from the ProgramSettings object."""
         settings = self.settings.__dict__.items()
 
         for key, value in settings:
@@ -347,10 +335,8 @@ class MenuBar(QtWidgets.QMenuBar):
                 else:
                     attr.setValue(value)
 
-    def save(self):
-        """
-        Set the attributes to the ProgramSettings object
-        """
+    def save(self) -> None:
+        """Set the attributes to the ProgramSettings object."""
         settings = self.__dict__.items()
 
         for key, value in settings:

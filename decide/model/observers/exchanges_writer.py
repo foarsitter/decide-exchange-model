@@ -1,80 +1,75 @@
 import os
-from typing import List
+from typing import Optional
 
 from decide.data.utils import write_exchanges
-from .. import base
-from ..observers import observer
+from decide.model import base
+from decide.model.observers import observer
 
 
 class ExchangesWriter(observer.Observer):
-    """
-    There are three stages of externalities
-    By exchange, by issue set and by actor
+    """There are three stages of externalities
+    By exchange, by issue set and by actor.
     """
 
     def __init__(
-        self, observable: observer.Observable, summary_only=False, before=False
-    ):
+        self,
+        observable: observer.Observable,
+        summary_only=False,
+        before=False,
+    ) -> None:
         super().__init__(observable)
         self.summary_only = summary_only
         self.before = before
 
-    def _create_directory(self, repetition: int):
+    def _create_directory(self, repetition: int) -> None:
         if not os.path.exists(
-            "{0}/exchanges/{1}".format(self.output_directory, repetition)
+            f"{self.output_directory}/exchanges/{repetition}",
         ):
-            os.makedirs("{0}/exchanges/{1}".format(self.output_directory, repetition))
+            os.makedirs(f"{self.output_directory}/exchanges/{repetition}")
 
         if (
             not os.path.exists(
-                "{0}/exchanges/{1}/initial".format(self.output_directory, repetition)
+                f"{self.output_directory}/exchanges/{repetition}/initial",
             )
             and self.before
         ):
             os.makedirs(
-                "{0}/exchanges/{1}/initial".format(self.output_directory, repetition)
+                f"{self.output_directory}/exchanges/{repetition}/initial",
             )
 
-    def before_iterations(self, repetition):
+    def before_iterations(self, repetition) -> None:
         self._create_directory(repetition)
 
-    def before_loop(self, iteration: int, repetition: int = None):
+    def before_loop(self, iteration: int, repetition: Optional[int] = None) -> None:
+        """Writes all the possible exchanges to the filesystem
+        :param iteration:
+        :param repetition:`.
         """
-        Writes all the possible exchanges to the filesystem
-        :param iteration: 
-        :param repetition:`
-        """
-
         if not self.before:
             return
 
         self.model_ref.sort_exchanges()
 
-        salt = self._get_salt
-
         write_exchanges(
-            "{0}/exchanges/{2}/initial/before.{1}.{2}.csv".format(
-                self.output_directory, iteration, repetition, salt
-            ),
+            f"{self.output_directory}/exchanges/{repetition}/initial/before.{iteration}.{repetition}.csv",
             self.model_ref.exchanges,
         )
 
     def after_loop(
-        self, realized: List[base.AbstractExchange], iteration: int, repetition: int
-    ):
-        """
-        Writes al the executed exchanges to the filesystem
-        :param repetition: 
-        :param realized: 
+        self,
+        realized: list[base.AbstractExchange],
+        iteration: int,
+        repetition: int,
+    ) -> None:
+        """Writes al the executed exchanges to the filesystem
+        :param repetition:
+        :param realized:
         :param iteration:
         """
-
         salt = self._get_salt
 
         write_exchanges(
-            filename="{0}/exchanges/{2}/round.{1}.{3}.csv".format(
-                self.output_directory, iteration + 1, repetition, salt
-            ),
+            filename=f"{self.output_directory}/exchanges/{repetition}/round.{iteration + 1}.{salt}.csv",
             realized=realized,
         )
 

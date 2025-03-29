@@ -4,7 +4,7 @@ from decimal import *
 from decide.model.equalgain import EqualGainModel
 
 
-def test_add_actor():
+def test_add_actor() -> None:
     model = EqualGainModel()
 
     a1 = model.add_actor("TestActor1")
@@ -14,7 +14,7 @@ def test_add_actor():
     assert a1 != a2
 
 
-def test_first_phase(model):
+def test_first_phase(model) -> None:
     model.calc_nbs()  # tested in test_calculations.py#test_calc_nbs
 
     model.calc_combinations()  # tested below
@@ -23,7 +23,7 @@ def test_first_phase(model):
 
     totalactor_issues = 0
 
-    for k, v in model.groups.items():
+    for k in model.groups:
         a = len(model.groups[k]["a"])
         b = len(model.groups[k]["b"])
         c = len(model.groups[k]["c"])
@@ -45,7 +45,7 @@ def test_first_phase(model):
     # we pick random the next exchange. Theoretically it is even possible to get more exchanges with the same gain
     assert len(model.exchanges) - 239 < 2
 
-    realized = list()
+    realized = []
     realized.append(e)
 
     model.remove_invalid_exchanges(e)
@@ -64,7 +64,7 @@ def test_first_phase(model):
     # assert len(realized) == 39
 
 
-def test_calc_combinations(model):
+def test_calc_combinations(model) -> None:
     model.calc_combinations()
     combinations = len(list(model.issue_combinations))
 

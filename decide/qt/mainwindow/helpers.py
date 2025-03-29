@@ -3,10 +3,8 @@ from decimal import Decimal
 from PyQt5 import QtWidgets
 
 
-def clear_layout(layout):
-    """
-    Clear al the widgets recursively
-    """
+def clear_layout(layout) -> None:
+    """Clear al the widgets recursively."""
     if layout is not None:
         while layout.count():
             item = layout.takeAt(0)
@@ -18,15 +16,14 @@ def clear_layout(layout):
 
 
 class DoubleInput(QtWidgets.QLineEdit):
-    """
-    Helper for double inputs
-    """
-    def __init__(self):
-        super(DoubleInput, self).__init__()
+    """Helper for double inputs."""
+
+    def __init__(self) -> None:
+        super().__init__()
 
         self.setFixedWidth(75)
 
-    def setValue(self, value: Decimal):
+    def setValue(self, value: Decimal) -> None:
         if isinstance(value, Decimal):
             value = str(float(value.normalize()))
         if isinstance(value, int):
@@ -41,18 +38,13 @@ class DoubleInput(QtWidgets.QLineEdit):
         return self.textChanged
 
 
-def esc(value):
-    """
-    Escape function used for writing csv files with strings
-    """
-    return "'{}'".format(value)
+def esc(value) -> str:
+    """Escape function used for writing csv files with strings."""
+    return f"'{value}'"
 
 
 def normalize(value):
-    """
-    Normalize a decimal or float to string, used for writing csv files and the input window
-    """
-
+    """Normalize a decimal or float to string, used for writing csv files and the input window."""
     if isinstance(value, Decimal):
         # float converts exponential values to readable values
         return str(float(value.normalize()))
@@ -61,4 +53,3 @@ def normalize(value):
         return str(value)
 
     return str(value)
-

@@ -2,26 +2,36 @@ import os
 
 import pytest
 import typesystem
-from decide import input_folder
 from typesystem import ValidationError
 
-from .. import reader, types
+from decide import input_folder
+from decide.data import reader
+from decide.data import types
 
 
-def test_cop2():
+def test_cop2() -> None:
     data_file = reader.InputDataFile.open(os.path.join(input_folder, "cop21.csv"))
 
     assert len(data_file.errors) == 0
     assert len(data_file.rows) == 235
 
 
-def test_validation_error():
+def test_validation_error() -> None:
     data = [
         [types.PartialActor.starts_with, "Actor", "Actor description"],
-        [types.PartialIssue.starts_with, 'Issue', 'Issue description'],
-        [types.IssuePosition.starts_with, 'Issue', 0, 'Issue position description'],
-        [types.IssuePosition.starts_with, 'Issue', 100, 'Issue position description'],
-        [types.ActorIssue.starts_with, "Actor", "Issue", 150, 0.5, 0.5, "Comment", "2", ],
+        [types.PartialIssue.starts_with, "Issue", "Issue description"],
+        [types.IssuePosition.starts_with, "Issue", 0, "Issue position description"],
+        [types.IssuePosition.starts_with, "Issue", 100, "Issue position description"],
+        [
+            types.ActorIssue.starts_with,
+            "Actor",
+            "Issue",
+            150,
+            0.5,
+            0.5,
+            "Comment",
+            "2",
+        ],
     ]
 
     input_file = reader.InputDataFile()
@@ -29,7 +39,7 @@ def test_validation_error():
 
     assert len(input_file.errors) == 0
 
-    issue = input_file.issues['Issue']
+    issue = input_file.issues["Issue"]
 
     input_file.update_issues_with_positions()
 
@@ -41,16 +51,16 @@ def test_validation_error():
     assert len(input_file.errors) == 1
 
 
-def test_hash():
+def test_hash() -> None:
     issue = types.PartialIssue()
-    issue.name = 'x'
+    issue.name = "x"
 
     data = {issue: issue}
 
-    assert data['x'] == issue
+    assert data["x"] == issue
 
 
-def test_parse_actor_issue_row():
+def test_parse_actor_issue_row() -> None:
     data = [
         types.ActorIssue.starts_with,
         "Actor",
@@ -67,7 +77,7 @@ def test_parse_actor_issue_row():
     assert obj.comment == "Comment 2", obj.comment
 
 
-def test_parse_actor_issue_row_power_to_high():
+def test_parse_actor_issue_row_power_to_high() -> None:
     data = [
         types.ActorIssue.starts_with,
         "Actor",
@@ -83,7 +93,7 @@ def test_parse_actor_issue_row_power_to_high():
         reader.csv_row_to_type(data)  # type: types.ActorIssue
 
 
-def test_parse_actor_issue_row_power_to_low():
+def test_parse_actor_issue_row_power_to_low() -> None:
     data = [
         types.ActorIssue.starts_with,
         "Actor",
@@ -99,7 +109,7 @@ def test_parse_actor_issue_row_power_to_low():
         reader.csv_row_to_type(data)  # type: types.ActorIssue
 
 
-def test_squash():
+def test_squash() -> None:
     data = ["x", "y", "z"]
 
     reader.squash(2, [])
@@ -111,7 +121,7 @@ def test_squash():
     assert reader.squash(3, data) == data, reader.squash(3, data)
 
 
-def test_issue_validate_interval():
+def test_issue_validate_interval() -> None:
     issue = types.PartialIssue()
     issue.lower = 0
     issue.upper = 100
@@ -123,7 +133,7 @@ def test_issue_validate_interval():
         issue.validate_interval()
 
 
-def test_actor_issue_validate_position():
+def test_actor_issue_validate_position() -> None:
     issue = types.PartialIssue()
     issue.lower = 0
     issue.upper = 100
