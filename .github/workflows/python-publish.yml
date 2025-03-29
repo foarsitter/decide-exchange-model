@@ -1,15 +1,16 @@
-name: Release
+name: release
 
 on:
   push:
-    branches:
-      - main
-      - master
+    branches: [master]
+  pull_request:
 
 jobs:
   release:
-    name: Release
+    name: release
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
     steps:
       - name: Check out the repository
         uses: actions/checkout@v4
@@ -29,25 +30,24 @@ jobs:
         run: |
           echo "::set-output name=sha::$(git rev-parse --verify --quiet HEAD^)"
 
-      - name: Detect and tag new version
-        id: check-version
-        if: steps.check-parent-commit.outputs.sha
-        uses: salsify/action-detect-and-tag-new-version@v2.0.3
-        with:
-          version-command: |
-            bash -o pipefail -c "uv version | awk '{ print \$2 }'"
+#      - name: Detect and tag new version
+#        id: check-version
+#        if: steps.check-parent-commit.outputs.sha
+#        uses: salsify/action-detect-and-tag-new-version@v2.0.3
+#        with:
+#          version-command: |
+#            bash -o pipefail -c "uv version | awk '{ print \$2 }'"
 
-      - name: Bump version for developmental release
-        if: "! steps.check-version.outputs.tag"
-        run: |
-          sed -i -e "s/0.0.0/${GITHUB_REF#refs/*/}/" pyproject.toml
-          # uv bump patch &&
-          # version=$(uv version | awk '{ print $2 }') &&
-          # uv bump $version.dev.$(date +%s)
+#      - name: Bump version for developmental release
+#        if: "! steps.check-version.outputs.tag"
+#        run: |
+#          sed -i -e "s/0.0.0/${GITHUB_REF#refs/*/}/" pyproject.toml
+#          # uv bump patch &&
+#          # version=$(uv version | awk '{ print $2 }') &&
+#          # uv bump $version.dev.$(date +%s)
 
       - name: Build package
-        run: |
-          uv build
+        run: uv build
 
       - name: Publish package on PyPI
         if: steps.check-version.outputs.tag
