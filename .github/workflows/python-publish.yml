@@ -1,26 +1,28 @@
-name: Publish Decide to pypi
+name: Release
 
 on:
   push:
-  release:
-    types: [ created ]
+    branches:
+      - main
+      - master
 
 jobs:
-  deploy:
-    strategy:
-      matrix:
-        python-version: [
-          "3.11",
-        ]
+  release:
+    name: Release
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Install uv and set the python version
-        uses: astral-sh/setup-uv@v5
+      - name: Check out the repository
+        uses: actions/checkout@v4
         with:
-          python-version: ${{ matrix.python-version }}
+          fetch-depth: 2
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
 
       - name: Check if there is a parent commit
         id: check-parent-commit
@@ -33,10 +35,26 @@ jobs:
         uses: salsify/action-detect-and-tag-new-version@v2.0.3
         with:
           version-command: |
-            bash -o pipefail -c "poetry version | awk '{ print \$2 }'"
+            bash -o pipefail -c "uv version | awk '{ print \$2 }'"
 
-      - name: Build
-        run: uv build
+      - name: Bump version for developmental release
+        if: "! steps.check-version.outputs.tag"
+        run: |
+          sed -i -e "s/0.0.0/${GITHUB_REF#refs/*/}/" pyproject.toml
+          # uv bump patch &&
+          # version=$(uv version | awk '{ print $2 }') &&
+          # uv bump $version.dev.$(date +%s)
+
+      - name: Build package
+        run: |
+          uv build
+
       - name: Publish package on PyPI
         if: steps.check-version.outputs.tag
-        run: uv publish --token ${{ secrets.PYPI_TOKEN }}
+        uses: pypa/gh-action-pypi-publish@v1.12.4
+
+      - name: Publish package on TestPyPI
+        if: "! steps.check-version.outputs.tag"
+        uses: pypa/gh-action-pypi-publish@v1.12.4
+        with:
+          repository_url: https://test.pypi.org/legacy/
