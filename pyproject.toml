@@ -9,15 +9,13 @@ version = "2025.1.0"
 description = "Decide exchange model"
 readme = "README.md"
 authors = [ { "name" = "Jelmer Draaijer", "email" = "info@jelmert.nl" } ]
-requires-python = ">=3.9"
+requires-python = ">=3.9,<3.12"
 
 classifiers = [
   "Programming Language :: Python :: 3 :: Only",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
-  "Programming Language :: Python :: 3.12",
-  "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
   "blinker==1.5",
