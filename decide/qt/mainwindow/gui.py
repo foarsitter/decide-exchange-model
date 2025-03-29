@@ -1,18 +1,16 @@
 import logging
 import os
-import statistics
 import sys
 import time
-import xml.etree.cElementTree as ET
-from shutil import copyfile
+import xml.etree.ElementTree as ET
 
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
+
 from decide import log_filename
 from decide.cli import init_output_directory
 from decide.data.modelfactory import ModelFactory
 from decide.data.reader import InputDataFile
-from decide.model.base import AbstractModel, ActorIssue
 from decide.model.equalgain import EqualGainModel
 from decide.model.observers.exchanges_writer import ExchangesWriter
 from decide.model.observers.externalities import Externalities
@@ -22,28 +20,32 @@ from decide.model.observers.observer import Observable
 from decide.model.observers.sqliteobserver import SQLiteObserver
 from decide.model.utils import ModelLoop
 from decide.qt import utils
-from decide.qt.mainwindow.helpers import esc, normalize
+from decide.qt.mainwindow.helpers import esc
+from decide.qt.mainwindow.helpers import normalize
 from decide.qt.mainwindow.settings import ProgramSettings
 from decide.qt.mainwindow.settings import SettingsFormWidget
-from decide.qt.mainwindow.widgets import ActorWidget, IssueWidget, SummaryWidget, ActorIssueWidget, MenuBar
+from decide.qt.mainwindow.widgets import ActorIssueWidget
+from decide.qt.mainwindow.widgets import ActorWidget
+from decide.qt.mainwindow.widgets import IssueWidget
+from decide.qt.mainwindow.widgets import MenuBar
+from decide.qt.mainwindow.widgets import SummaryWidget
 from decide.qt.utils import show_user_error
 
 
 class Worker(QtCore.QObject):
-    """
-    Worker to execute the model in a thread so the window does not freeze
-    """
+    """Worker to execute the model in a thread so the window does not freeze."""
+
     finished = QtCore.pyqtSignal(str)
     update = QtCore.pyqtSignal(int, int, int, float)
 
-    def __init__(self, settings: ProgramSettings):
-        super(Worker, self).__init__()
+    def __init__(self, settings: ProgramSettings) -> None:
+        super().__init__()
 
         self.settings = settings
         self.break_loop = False
 
     @QtCore.pyqtSlot()
-    def run_model(self):
+    def run_model(self) -> None:
         settings = self.settings
 
         factory = ModelFactory(
@@ -54,10 +56,16 @@ class Worker(QtCore.QObject):
 
         parent_output_directory = init_output_directory(*settings.output_path)
 
-        model = factory(model_klass=EqualGainModel, randomized_value=settings.model_variations[0])
+        model = factory(
+            model_klass=EqualGainModel,
+            randomized_value=settings.model_variations[0],
+        )
 
         safe_model_as_input(model, os.path.join(parent_output_directory, "input.csv"))
-        safe_settings_as_csv(self.settings, os.path.join(parent_output_directory, "settings.csv"))
+        safe_settings_as_csv(
+            self.settings,
+            os.path.join(parent_output_directory, "settings.csv"),
+        )
 
         event_handler = init_event_handlers(model, parent_output_directory, settings)
 
@@ -66,11 +74,7 @@ class Worker(QtCore.QObject):
         model_variations = list(settings.model_variations)
 
         for variation, p in enumerate(model_variations, 0):
-
-            output_directory = init_output_directory(
-                parent_output_directory,
-                p
-            )
+            output_directory = init_output_directory(parent_output_directory, p)
 
             event_handler.update_output_directory(output_directory)
 
@@ -83,7 +87,6 @@ class Worker(QtCore.QObject):
             start_time = time.time()
 
             for repetition in range(settings.repetitions):
-
                 model = factory(model_klass=EqualGainModel, randomized_value=p)
 
                 event_handler.update_model_ref(model)
@@ -93,11 +96,15 @@ class Worker(QtCore.QObject):
                 event_handler.before_iterations(repetition)
 
                 for iteration_number in range(settings.iterations):
-
                     if self.break_loop:
                         break
 
-                    self.update.emit(variation, repetition, iteration_number, start_time)
+                    self.update.emit(
+                        variation,
+                        repetition,
+                        iteration_number,
+                        start_time,
+                    )
 
                     model_loop.loop()
 
@@ -109,27 +116,23 @@ class Worker(QtCore.QObject):
             if not self.break_loop:
                 event_handler.after_repetitions()
 
-                logging.info('tie count is {}'.format(model.tie_count))
+                logging.info(f"tie count is {model.tie_count}")
 
         if not self.break_loop:
             event_handler.update_output_directory(parent_output_directory)
             event_handler.after_model()
-            print(len(AbstractModel.eui))
-            print(statistics.variance(AbstractModel.eui))
         self.finished.emit(parent_output_directory)
 
-    def stop(self):
+    def stop(self) -> None:
         self.break_loop = True
 
 
 class ProgramData(QtCore.QObject):
-    """
-    Central object for the data used for displaying
-    """
+    """Central object for the data used for displaying."""
 
     changed = QtCore.pyqtSignal()
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.issues = {}
         self.actors = {}
@@ -137,12 +140,10 @@ class ProgramData(QtCore.QObject):
 
 
 def init_event_handlers(model, output_directory, settings):
-    """
-    :type model: decide.model.base.AbstractModel
+    """:type model: decide.model.base.AbstractModel
     :type output_directory: str
     :type settings: ProgramSettings
     """
-
     event_handler = Observable(model_ref=model, output_directory=output_directory)
 
     Logger(event_handler)
@@ -156,11 +157,9 @@ def init_event_handlers(model, output_directory, settings):
 
 
 class DecideMainWindow(QtWidgets.QMainWindow):
-    """
-    The first thing you see
-    """
+    """The first thing you see."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
         self.data = ProgramData()
@@ -182,7 +181,11 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         self.worker = None
 
         self.overview_widget = SummaryWidget(
-            self, self.settings, self.data, self.actor_widget, self.issue_widget
+            self,
+            self.settings,
+            self.data,
+            self.actor_widget,
+            self.issue_widget,
         )
 
         self.init_ui()
@@ -191,7 +194,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
         self.init_ui_data(self.settings.input_filename)
 
-    def init_ui(self):
+    def init_ui(self) -> None:
         self.statusBar().showMessage("Ready")
 
         self.setMenuBar(self.menu_bar)
@@ -257,16 +260,15 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         self.setWindowTitle("Decide Exchange Model")
         self.show()
 
-    def show_debug_dialog(self):
+    def show_debug_dialog(self) -> None:
         utils.open_file_natively(log_filename)
 
-    def show_error_report_dialog(self):
-
+    def show_error_report_dialog(self) -> None:
         from decide.qt.mainwindow.errordialog import ErrorDialog
-        ex = ErrorDialog("Error message", self)
 
-    def update_data_widgets(self):
+        ErrorDialog("Error message", self)
 
+    def update_data_widgets(self) -> None:
         self.issue_widget.set_issues(list(self.data.issues.values()))
         self.actor_widget.set_actors(list(self.data.actors.values()))
 
@@ -274,36 +276,31 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
         self.overview_widget.update_widget()
 
-    def update_actor_issue_widget(self):
-        """
-        Button event to update the ActorIssueWidget
-        """
+    def update_actor_issue_widget(self) -> None:
+        """Button event to update the ActorIssueWidget."""
         issue = self.data.issues[self.sender().objectName()]
         actor_issues = list(self.data.actor_issues[issue].values())
 
         self.actor_issue_widget.set_actor_issues(issue, actor_issues)
         self.overview_widget.update_widget()
 
-    def open_input_data(self):
-        """
-        Open the file, parse the data and update the layout
-        """
+    def open_input_data(self) -> None:
+        """Open the file, parse the data and update the layout."""
         file_name, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Select input data")
 
         if file_name:
             self.load_input_data(file_name)
 
-    def load_input_data(self, file_name):
-
-        self.statusBar().showMessage("Input file set to {} ".format(file_name))
+    def load_input_data(self, file_name) -> None:
+        self.statusBar().showMessage(f"Input file set to {file_name} ")
 
         self.init_ui_data(file_name)
 
         self.overview_widget.update_widget()
 
-    def open_current_input_window_with_current_data(self):
-
-        from decide.qt.inputwindow.gui import InputWindow, register_app
+    def open_current_input_window_with_current_data(self) -> None:
+        from decide.qt.inputwindow.gui import InputWindow
+        from decide.qt.inputwindow.gui import register_app
 
         if self.settings and self.settings.input_filename:
             ex = InputWindow(self)
@@ -311,41 +308,34 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
             register_app(ex)
 
-    def select_output_dir(self):
-        """
-        Output directory
-        """
+    def select_output_dir(self) -> None:
+        """Output directory."""
         self.settings.output_directory = str(
-            QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory")
+            QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory"),
         )
         self.statusBar().showMessage(
-            "Output directory set to: {} ".format(self.settings.output_directory)
+            f"Output directory set to: {self.settings.output_directory} ",
         )
 
         self.overview_widget.update_widget()
 
-    def set_start_button_state(self):
-        if (
-                self.settings.input_filename
-                and self.settings.output_directory
-                and not self.thread.isRunning()
-        ):
+    def set_start_button_state(self) -> None:
+        if self.settings.input_filename and self.settings.output_directory and not self.thread.isRunning():
             self.start.setEnabled(True)
             self.start.setDisabled(False)
         else:
             self.start.setEnabled(False)
             self.start.setDisabled(True)
 
-    def open_data_view(self):
-
-        from decide.qt.inputwindow.gui import InputWindow, register_app
+    def open_data_view(self) -> None:
+        from decide.qt.inputwindow.gui import InputWindow
+        from decide.qt.inputwindow.gui import register_app
 
         ex = InputWindow(self)
 
         register_app(ex)
 
-    def init_ui_data(self, file_name):
-
+    def init_ui_data(self, file_name) -> None:
         if file_name:
             if not os.path.isfile(file_name):
                 show_user_error(self, "Selected file does not exists")
@@ -353,7 +343,6 @@ class DecideMainWindow(QtWidgets.QMainWindow):
                 data_file = InputDataFile.open(file_name)
 
                 if data_file.is_valid:
-
                     self.data.actors = data_file.actors
                     self.data.issues = data_file.issues
                     self.data.actor_issues = data_file.actor_issues
@@ -363,8 +352,9 @@ class DecideMainWindow(QtWidgets.QMainWindow):
                     self.settings.set_input_filename(file_name)
                     self.settings.save()
                 else:
-
-                    error_list = "\n".join([f"line: {line_no}, {message}" for line_no, message in data_file.errors.items()])
+                    error_list = "\n".join(
+                        [f"line: {line_no}, {message}" for line_no, message in data_file.errors.items()],
+                    )
 
                     show_user_error(
                         self,
@@ -372,10 +362,9 @@ class DecideMainWindow(QtWidgets.QMainWindow):
                     )
                     from decide.qt.mainwindow.errorgrid import ErrorGrid
 
-                    ex = ErrorGrid(data_file, self)
+                    ErrorGrid(data_file, self)
 
-    def run_safe(self):
-
+    def run_safe(self) -> None:
         self.worker = Worker(self.settings)
         self.worker.moveToThread(self.thread)
         self.worker.finished.connect(self.finished)
@@ -384,8 +373,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         self.thread.started.connect(self.worker.run_model)
         self.thread.start()
 
-    def update_progress(self, variation, repetition, iteration, start_time):
-
+    def update_progress(self, variation, repetition, iteration, start_time) -> None:
         x = variation * self.settings.repetitions * self.settings.iterations
 
         value = x + (repetition * self.settings.iterations) + iteration
@@ -400,20 +388,16 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
             estimated_time_needed_seconds = avg_time_per_repetition * repetitions
 
-            estimated_time_left = estimated_time_needed_seconds - (
-                    repetition * avg_time_per_repetition
-            )
+            estimated_time_left = estimated_time_needed_seconds - (repetition * avg_time_per_repetition)
 
             self.statusBar().showMessage(
-                "{:.0f} minutes remaining ".format(estimated_time_left / 60)
+                f"{estimated_time_left / 60:.0f} minutes remaining ",
             )
 
-    def finished(self, output_directory):
-
+    def finished(self, output_directory) -> None:
         self._clean_progress_dialog()
 
         if not self.worker.break_loop:
-
             button_reply = QtWidgets.QMessageBox.question(
                 self,
                 "Done",
@@ -425,13 +409,13 @@ class DecideMainWindow(QtWidgets.QMainWindow):
             if button_reply == QtWidgets.QMessageBox.Yes:
                 utils.open_file_natively(output_directory)
 
-    def _clean_progress_dialog(self):
+    def _clean_progress_dialog(self) -> None:
         self.progress_dialog.setValue(
-            self.settings.iterations * self.settings.repetitions * len(self.settings.model_variations)
+            self.settings.iterations * self.settings.repetitions * len(self.settings.model_variations),
         )
         self.progress_dialog.hide()
 
-    def run(self):
+    def run(self) -> None:
         # store the current state of the app
 
         self.save_settings()
@@ -442,7 +426,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
             button_reply = QtWidgets.QMessageBox.question(
                 self,
                 "Output directory already exists",
-                "The given directory {} already exists. Proceed?".format(output_dir),
+                f"The given directory {output_dir} already exists. Proceed?",
                 QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
                 QtWidgets.QMessageBox.No,
             )
@@ -456,8 +440,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
         self.run_safe()
 
-    def show_progress_dialog(self):
-
+    def show_progress_dialog(self) -> None:
         self.progress_dialog = QtWidgets.QProgressDialog(
             "Task in progress",
             "Cancel",
@@ -466,21 +449,22 @@ class DecideMainWindow(QtWidgets.QMainWindow):
             self,
         )
 
-        self.progress_dialog.setWindowTitle('Progress')
+        self.progress_dialog.setWindowTitle("Progress")
 
         bar = QtWidgets.QProgressBar(self.progress_dialog)
         bar.setTextVisible(True)
         bar.setFormat("%v/%m (%p%)")
         bar.setMinimum(0)
-        bar.setMaximum(self.settings.iterations * self.settings.repetitions * len(self.settings.model_variations))
+        bar.setMaximum(
+            self.settings.iterations * self.settings.repetitions * len(self.settings.model_variations),
+        )
         self.progress_dialog.setBar(bar)
 
         self.progress_dialog.canceled.connect(self.cancel)
 
         self.progress_dialog.show()
 
-    def load_settings(self):
-
+    def load_settings(self) -> None:
         if os.path.isfile(self.settings.settings_file):
             try:
                 self.settings.load()
@@ -490,18 +474,18 @@ class DecideMainWindow(QtWidgets.QMainWindow):
             except ET.ParseError:
                 logging.info("Invalid xml")
 
-    def save_settings(self):
+    def save_settings(self) -> None:
         self.settings_widget.save()
         self.issue_widget.save()
         self.actor_widget.save()
         self.menu_bar.save()
         self.settings.save()
 
-    def cancel(self):
+    def cancel(self) -> None:
         self.worker.stop()
 
 
-def main():
+def main() -> None:
     logging.basicConfig(
         filename=log_filename,
         filemode="a",
@@ -512,7 +496,7 @@ def main():
     qtapp = QtWidgets.QApplication([])
     qtapp.setQuitOnLastWindowClosed(True)
 
-    app = DecideMainWindow()
+    DecideMainWindow()
 
     sys.excepthook = utils.exception_hook
 
@@ -523,13 +507,11 @@ if __name__ == "__main__":
     main()
 
 
-def safe_settings_as_csv(settings: ProgramSettings, filename):
-
+def safe_settings_as_csv(settings: ProgramSettings, filename) -> None:
     items = ["salience_weight", "fixed_weight", "iterations", "repetitions"]
 
     with open(filename, "w") as file:
         for item in items:
-
             value = settings.__dict__[item]
 
             if isinstance(value, list):
@@ -538,11 +520,9 @@ def safe_settings_as_csv(settings: ProgramSettings, filename):
             file.write("\t".join([esc(item), esc(value), "\n"]))
 
 
-def safe_model_as_input(model, filename):
+def safe_model_as_input(model, filename) -> None:
     with open(filename, "w") as file:
-
         for actor in model.actors.values():
-
             file.write(
                 "\t".join(
                     [
@@ -551,8 +531,8 @@ def safe_model_as_input(model, filename):
                         esc(actor.name),
                         esc(actor.comment),
                         "\n",
-                    ]
-                )
+                    ],
+                ),
             )
 
         for issue in model.issues.values():
@@ -564,21 +544,16 @@ def safe_model_as_input(model, filename):
                         esc(issue.name),
                         esc(issue.comment),
                         "\n",
-                    ]
-                )
+                    ],
+                ),
             )
 
-            file.write(
-                "\t".join([esc("#M"), esc(issue.name), str(issue.lower), "\n"])
-            )
+            file.write("\t".join([esc("#M"), esc(issue.name), str(issue.lower), "\n"]))
 
-            file.write(
-                "\t".join([esc("#M"), esc(issue.name), str(issue.upper), "\n"])
-            )
+            file.write("\t".join([esc("#M"), esc(issue.name), str(issue.upper), "\n"]))
 
-        for issue_id, actor_issues in model.actor_issues.items():
-
-            for actor_id, actor_issue in actor_issues.items():
+        for actor_issues in model.actor_issues.values():
+            for actor_issue in actor_issues.values():
                 actor_issue = actor_issue  # type: ActorIssue
 
                 file.write(
@@ -591,6 +566,6 @@ def safe_model_as_input(model, filename):
                             normalize(actor_issue.salience),
                             normalize(actor_issue.power),
                             "\n",
-                        ]
-                    )
+                        ],
+                    ),
                 )

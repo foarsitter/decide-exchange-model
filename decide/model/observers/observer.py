@@ -1,14 +1,13 @@
 import logging
-from typing import List
+from typing import Optional
 
-from .. import base
-from .. import equalgain
-from .. import randomrate
+from decide.model import base
+from decide.model import equalgain
+from decide.model import randomrate
 
 
-class Observer(object):
-    """
-    The main event Object containing all the event methods.
+class Observer:
+    """The main event Object containing all the event methods.
 
     Order of events:
 
@@ -22,38 +21,36 @@ class Observer(object):
 
     """
 
-    def __init__(self, observable: "Observable"):
-        """
-        :type observable: Observable reference to the main event handler
-        """
+    def __init__(self, observable: "Observable") -> None:
+        """:type observable: Observable reference to the main event handler"""
         observable.register(self)
         self.model_ref = observable.model_ref
         self.output_directory = observable.output_directory
 
-    def update(self, observable, notification_type, **kwargs):
+    def update(self, observable, notification_type, **kwargs) -> None:
         pass
 
-    def before_model(self):
+    def before_model(self) -> None:
         pass
 
-    def after_model(self):
+    def after_model(self) -> None:
         pass
 
-    def before_loop(self, iteration: int, repetition: int):
-        """
-        Before the start of a single round.
+    def before_loop(self, iteration: int, repetition: int) -> None:
+        """Before the start of a single round.
         The actors are still on there starting position.
         Next event: after_loop
         :param iteration: int the current iteration number
         :param repetition: int only used in the RandRate model, represents the current number of repetition.
         """
-        pass
 
     def after_loop(
-        self, realized: List[base.AbstractExchange], iteration: int, repetition: int
-    ):
-        """
-        After all exchanges are executed. There are no potential exchanges left, but the model reference to actor
+        self,
+        realized: list[base.AbstractExchange],
+        iteration: int,
+        repetition: int,
+    ) -> None:
+        """After all exchanges are executed. There are no potential exchanges left, but the model reference to actor
         issues is still on there starting position.
         Next event: end_loop
         :param realized:
@@ -61,122 +58,110 @@ class Observer(object):
         :param repetition:
         :return:
         """
-        pass
 
-    def end_loop(self, iteration: int, repetition: int):
-        """
-        At the end of a loop with the final positions of the actors, but before the new_start_position()'s are calculated.
+    def end_loop(self, iteration: int, repetition: int) -> None:
+        """At the end of a loop with the final positions of the actors, but before the new_start_position()'s are calculated.
         The next event: before_loop.
         """
-        pass
 
-    def before_iterations(self, repetition):
-        """
-        Before a set of loops starts
-        """
-        pass
+    def before_iterations(self, repetition) -> None:
+        """Before a set of loops starts."""
 
-    def after_iterations(self, repetition):
-        """
-        After a set of loops are finished
-        """
-        pass
+    def after_iterations(self, repetition) -> None:
+        """After a set of loops are finished."""
 
-    def before_repetitions(self, repetitions, iterations, randomized_value=None):
-        """
-        First event
+    def before_repetitions(self, repetitions, iterations, randomized_value=None) -> None:
+        """First event
         :return:
         """
-        pass
 
-    def after_repetitions(self):
-        """
-        Last event
-        """
-        pass
+    def after_repetitions(self) -> None:
+        """Last event."""
 
     @staticmethod
-    def log(message: str):
+    def log(message: str) -> None:
         logging.info(message)
 
     def execute_exchange(self, exchange: base.AbstractExchange):
         if isinstance(exchange, equalgain.EqualGainExchange):
             return self._execute_equal_exchange(exchange)
-        elif isinstance(exchange, randomrate.RandomRateExchange):
+        if isinstance(exchange, randomrate.RandomRateExchange):
             return self._execute_random_exchange(exchange)
+        return None
 
-    def _execute_equal_exchange(self, exchange: equalgain.EqualGainExchange):
+    def _execute_equal_exchange(self, exchange: equalgain.EqualGainExchange) -> None:
         pass
 
-    def _execute_random_exchange(self, exchange: randomrate.RandomRateExchange):
+    def _execute_random_exchange(self, exchange: randomrate.RandomRateExchange) -> None:
         pass
 
-    def removed_exchanges(self, exchanges: List[base.AbstractExchange]):
+    def removed_exchanges(self, exchanges: list[base.AbstractExchange]) -> None:
         pass
 
 
 class Observable(Observer):
-    """
-    Even the Observable is and Observer, this gives us the possibility to call the right method with the correct params
-    """
+    """Even the Observable is and Observer, this gives us the possibility to call the right method with the correct params."""
 
-    def __init__(self, model_ref: base.AbstractModel, output_directory: str):
+    def __init__(self, model_ref: base.AbstractModel, output_directory: str) -> None:
         self.__observers = []
         self.model_ref = model_ref
         self.output_directory = output_directory
 
-    def update_model_ref(self, model):
+    def update_model_ref(self, model) -> None:
         self.model_ref = model
         for observer in self.__observers:
             observer.model_ref = model
 
-    def update_output_directory(self, output_directory):
+    def update_output_directory(self, output_directory) -> None:
         self.output_directory = output_directory
 
         for observer in self.__observers:
             observer.output_directory = output_directory
 
-    def register(self, observer):
+    def register(self, observer) -> None:
         self.__observers.append(observer)
 
-    def before_model(self):
+    def before_model(self) -> None:
         for observer in self.__observers:
             observer.before_model()
 
-    def before_repetitions(self, repetitions, iterations, randomized_value=None):
+    def before_repetitions(self, repetitions, iterations, randomized_value=None) -> None:
         for observer in self.__observers:
             observer.before_repetitions(repetitions, iterations, randomized_value)
 
-    def before_iterations(self, repetition):
+    def before_iterations(self, repetition) -> None:
         for observer in self.__observers:
             observer.before_iterations(repetition)
 
-    def before_loop(self, iteration: int, repetition: int = None):
+    def before_loop(self, iteration: int, repetition: Optional[int] = None) -> None:
         for observer in self.__observers:
             observer.before_loop(iteration, repetition)
 
-    def execute_exchange(self, exchange: base.AbstractExchange):
+    def execute_exchange(self, exchange: base.AbstractExchange) -> None:
         for observer in self.__observers:
             observer.execute_exchange(exchange)
 
     def after_loop(
-        self, realized: List[base.AbstractExchange], iteration: int, repetition: int
-    ):
+        self,
+        realized: list[base.AbstractExchange],
+        iteration: int,
+        repetition: int,
+    ) -> None:
         for observer in self.__observers:
             observer.after_loop(realized, iteration, repetition)
 
-    def end_loop(self, iteration: int, repetition: int):
+    def end_loop(self, iteration: int, repetition: int) -> None:
         for observer in self.__observers:
             observer.end_loop(iteration, repetition)
 
-    def after_iterations(self, repetition):
+    def after_iterations(self, repetition) -> None:
         for observer in self.__observers:
             observer.after_iterations(repetition)
 
-    def after_repetitions(self):
+    def after_repetitions(self) -> None:
         for observer in self.__observers:
             observer.after_repetitions()
 
-    def after_model(self):
+    def after_model(self) -> None:
         for observer in self.__observers:
             observer.after_model()

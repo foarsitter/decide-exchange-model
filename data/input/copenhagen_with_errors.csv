@@ -1,28 +1,28 @@
-#O	Copenhagen negotiations				
-#/	Data collected on 27 and 28 Oct 2009. Clarisse Siebert and Richard Klein (SEI)				
-#/	ID	Full name			
-#A	USA	USA			
-#A	EU (incl Norway)	EU (incl Norway)			
-#A	Australia	Australia			
-#A	Canada	Canada			
-#A	Japan	Japan			
-#A	Russia	Russia			
-#A	China India	China India			
-#A	Brazil	Brazil			
-#A	Least Developed Countries	Least Developed Countries			
-#A	Developing Countries	Developing Countries			
-#A	Alliance of Small Island States	Alliance of Small Island States			
-#/	issue input				
-#/	ID	full name			
-#/	Migration issues				
-#P	Newtreaty	Copenhagen new treaty vs extension of Kyoto			
-#P	DevlopC2020	Reduction of CO2 emission in 2020 by developed Countries relative to 1990			
-#P	Domestred	Percentage of reductions to be realized domestically			
-#P	MRVdecrease	Decrease intensity of carbon economy in MRVs in emerging economies			
-#/	Adaptation issues				
-#P	Commitments	Binding funding commitments for adaptation in developing countries			
-#P	Control	level of control of adaptation funding			
-#P	Extra	Is it counted as aid or new and additional			
+#O	Copenhagen negotiations
+#/	Data collected on 27 and 28 Oct 2009. Clarisse Siebert and Richard Klein (SEI)
+#/	ID	Full name
+#A	USA	USA
+#A	EU (incl Norway)	EU (incl Norway)
+#A	Australia	Australia
+#A	Canada	Canada
+#A	Japan	Japan
+#A	Russia	Russia
+#A	China India	China India
+#A	Brazil	Brazil
+#A	Least Developed Countries	Least Developed Countries
+#A	Developing Countries	Developing Countries
+#A	Alliance of Small Island States	Alliance of Small Island States
+#/	issue input
+#/	ID	full name
+#/	Migration issues
+#P	Newtreaty	Copenhagen new treaty vs extension of Kyoto
+#P	DevlopC2020	Reduction of CO2 emission in 2020 by developed Countries relative to 1990
+#P	Domestred	Percentage of reductions to be realized domestically
+#P	MRVdecrease	Decrease intensity of carbon economy in MRVs in emerging economies
+#/	Adaptation issues
+#P	Commitments	Binding funding commitments for adaptation in developing countries
+#P	Control	level of control of adaptation funding
+#P	Extra	Is it counted as aid or new and additional
 #/	Actor	Issue ID	position	salience	power
 #D	USA	Newtreaty	10	0.9	0.26
 #D	EU (incl Norway)	Newtreaty	50	0.4	0.156

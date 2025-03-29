@@ -1,25 +1,24 @@
 import datetime
 from collections import defaultdict
-from typing import List
 
 from decide import results
 from decide.data import database as db
 from decide.data.database import connection
 from decide.model import calculations
-from decide.model.base import AbstractExchange, Actor, Issue, AbstractExchangeActor
-from decide.model.observers.observer import Observer, Observable
+from decide.model.base import AbstractExchange
+from decide.model.base import AbstractExchangeActor
+from decide.model.observers.observer import Observable
+from decide.model.observers.observer import Observer
 
 
 class SQLiteObserver(Observer):
-    """
-    Observer to store all the data in a sqlite database
-    """
+    """Observer to store all the data in a sqlite database."""
 
-    def __init__(self, observable: "Observable", output_directory: str):
+    def __init__(self, observable: "Observable", output_directory: str) -> None:
         super().__init__(observable)
 
         self.repetitions = {}
-        self.iterations = defaultdict(lambda: {})
+        self.iterations = defaultdict(dict)
 
         self.actors = {}
         self.issues = {}
@@ -29,31 +28,31 @@ class SQLiteObserver(Observer):
 
         if not output_directory.endswith(".db") and output_directory != ":memory:":
             output_directory += "/decide-data.sqlite.db"
-            self.log("logging to database {}".format(output_directory))
+            self.log(f"logging to database {output_directory}")
 
-        if not output_directory.startswith('sqlite:///'):
+        if not output_directory.startswith("sqlite:///"):
             output_directory = "sqlite:///" + output_directory
 
         self.database_path = output_directory
 
-    def before_model(self):
-
+    def before_model(self) -> None:
         # initialize the database
         manager = db.Manager(self.database_path)
         manager.init_database()
         manager.create_tables()
 
         with db.connection.atomic():
-
             data_set, created = db.DataSet.get_or_create(
-                name=self.model_ref.data_set_name
+                name=self.model_ref.data_set_name,
             )
 
             self.data_set = data_set
 
             for actor in self.model_ref.actors.values():  # type: Actor
                 actor, created = db.Actor.get_or_create(
-                    name=actor.name, key=actor.actor_id, data_set=self.data_set
+                    name=actor.name,
+                    key=actor.actor_id,
+                    data_set=self.data_set,
                 )
                 self.actors[actor] = actor
 
@@ -67,14 +66,11 @@ class SQLiteObserver(Observer):
                 )
                 self.issues[issue] = issue
 
-    def before_repetitions(self, repetitions, iterations, randomized_value=None):
-        """
-        Create a new data set when needed and add all the actors
-
-        """
+    def before_repetitions(self, repetitions, iterations, randomized_value=None) -> None:
+        """Create a new data set when needed and add all the actors."""
         # setup
         self.repetitions = {}
-        self.iterations = defaultdict(lambda: {})
+        self.iterations = defaultdict(dict)
 
         # create a data set row or find existing one
         # add the Issues and Actors when they are not present
@@ -86,7 +82,7 @@ class SQLiteObserver(Observer):
                 data_set=self.data_set,
             )
 
-    def before_iterations(self, repetition):
+    def before_iterations(self, repetition) -> None:
         with db.connection.atomic():
             repetition = db.Repetition.create(
                 pointer=repetition,
@@ -96,13 +92,16 @@ class SQLiteObserver(Observer):
 
             self.repetitions[repetition] = repetition
 
-    def before_loop(self, iteration: int, repetition: int):
+    def before_loop(self, iteration: int, repetition: int) -> None:
         with db.connection.atomic():
             self._write_actor_issues(iteration, repetition)
 
     def after_loop(
-            self, realized: List[AbstractExchange], iteration: int, repetition: int
-    ):
+        self,
+        realized: list[AbstractExchange],
+        iteration: int,
+        repetition: int,
+    ) -> None:
         iteration = self.iterations[repetition][iteration]
 
         with db.connection.atomic():
@@ -122,39 +121,65 @@ class SQLiteObserver(Observer):
 
                 self._write_externalities(exchange, db_exchange)
 
-    def end_loop(self, iteration: int, repetition: int):
+    def end_loop(self, iteration: int, repetition: int) -> None:
         with db.connection.atomic():
             self._write_actor_issues(iteration, repetition, "after")
 
-    def after_repetitions(self):
-
+    def after_repetitions(self) -> None:
         self.model_run.finished_at = datetime.datetime.now()
         self.model_run.save()
         self.model_run_ids.append(self.model_run.id)
 
-        results.covariance.write_result(connection, self.model_run.iterations - 1, self.model_run.id, self.output_directory)
+        results.covariance.write_result(
+            connection,
+            self.model_run.iterations - 1,
+            self.model_run.id,
+            self.output_directory,
+        )
 
-    def after_model(self):
+    def after_model(self) -> None:
         try:
-            results.externalities.write_summary_result(db.connection, self.model_run_ids, self.output_directory)
-            results.descriptives.write_summary_result(db.connection, self.model_run_ids, self.output_directory)
-            results.issuecomparison.write_summary_result(db.connection, self.model_run_ids, self.output_directory)
-            results.nashbargainingsolution.write_summary_result(db.connection, self.model_run_ids, self.output_directory)
-            results.nashbargainingsolution.write_summary_result(db.connection, self.model_run_ids, self.output_directory, "after")
-        except Exception as e:
-            print(e)
+            results.externalities.write_summary_result(
+                db.connection,
+                self.model_run_ids,
+                self.output_directory,
+            )
+            results.descriptives.write_summary_result(
+                db.connection,
+                self.model_run_ids,
+                self.output_directory,
+            )
+            results.issuecomparison.write_summary_result(
+                db.connection,
+                self.model_run_ids,
+                self.output_directory,
+            )
+            results.nashbargainingsolution.write_summary_result(
+                db.connection,
+                self.model_run_ids,
+                self.output_directory,
+            )
+            results.nashbargainingsolution.write_summary_result(
+                db.connection,
+                self.model_run_ids,
+                self.output_directory,
+                "after",
+            )
+        except Exception:
+            pass
 
     def _write_externalities(
-        self, exchange: AbstractExchange, db_exchange: db.Exchange
-    ):
-
+        self,
+        exchange: AbstractExchange,
+        db_exchange: db.Exchange,
+    ) -> None:
         issue_set_key = self.model_ref.create_existing_issue_set_key(
-            exchange.p, exchange.q
+            exchange.p,
+            exchange.q,
         )
         inner = exchange.get_inner_groups()
 
         for actor in self.actors:
-
             externality = db.Externality()
             externality.actor = actor
             externality.exchange = db_exchange
@@ -163,38 +188,39 @@ class SQLiteObserver(Observer):
             externality.iteration = db_exchange.iteration
 
             externality_size = calculations.actor_externalities(
-                actor, self.model_ref, exchange
+                actor,
+                self.model_ref,
+                exchange,
             )
 
             is_inner = self.model_ref.is_inner_group_member(
-                str(actor.key), inner, issue_set_key
+                str(actor.key),
+                inner,
+                issue_set_key,
             )
 
             if actor.key == exchange.i.actor.actor_id:
                 externality.own = exchange.i.eu
             elif actor.key == exchange.j.actor.actor_id:
                 exchange.own = exchange.j.eu
-            else:
-                if externality_size < 0:
-                    if is_inner:
-                        externality.inner_negative = externality_size
-                    else:
-                        externality.outer_negative = externality_size
+            elif externality_size < 0:
+                if is_inner:
+                    externality.inner_negative = externality_size
                 else:
-                    if is_inner:
-                        externality.inner_positive = externality_size
-                    else:
-                        externality.outer_positive = externality_size
+                    externality.outer_negative = externality_size
+            elif is_inner:
+                externality.inner_positive = externality_size
+            else:
+                externality.outer_positive = externality_size
 
             externality.save()
 
-    def _write_actor_issues(self, iteration: int, repetition: int, _type="before"):
-
+    def _write_actor_issues(self, iteration: int, repetition: int, _type="before") -> None:
         with db.connection.atomic():
-
             repetition = self.repetitions[repetition]
             iteration, _ = db.Iteration.get_or_create(
-                pointer=iteration, repetition=repetition
+                pointer=iteration,
+                repetition=repetition,
             )
 
             self.iterations[repetition][iteration] = iteration
@@ -215,7 +241,6 @@ class SQLiteObserver(Observer):
                     )
 
     def _create_exchange_actor(self, i: AbstractExchangeActor):
-
         exchange_actor = db.ExchangeActor()
         exchange_actor.actor = self.actors[i.actor]
         exchange_actor.supply_issue = self.issues[i.supply.issue]

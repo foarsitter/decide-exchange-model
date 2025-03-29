@@ -1,0 +1,54 @@
+exclude: '^docs/|/migrations/|devcontainer.json'
+default_stages: [pre-commit]
+
+default_language_version:
+  python: python3.11
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-json
+      - id: check-toml
+      - id: check-xml
+      - id: check-yaml
+      - id: debug-statements
+      - id: check-builtin-literals
+      - id: check-case-conflict
+      - id: check-docstring-first
+      - id: detect-private-key
+
+
+  # Run the Ruff linter.
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff version.
+    rev: v0.8.3
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+      - id: ruff-format
+
+  - repo: https://github.com/tox-dev/pyproject-fmt
+    rev: "v2.5.0" # Use the sha / tag you want to point at
+    hooks:
+      - id: pyproject-fmt
+
+  - repo: https://github.com/adamchainz/djade-pre-commit
+    rev: "1.3.2"  # Replace with the latest tag on GitHub
+    hooks:
+    -   id: djade
+        args: [--target-version, "5.1"]  # Replace with Django version
+
+#  - repo: https://github.com/Riverside-Healthcare/djLint
+#    rev: v1.34.1
+#    hooks:
+#      - id: djlint-reformat-django
+#      - id: djlint-django
+
+# sets up .pre-commit-ci.yaml to ensure pre-commit dependencies stay up to date
+ci:
+  autoupdate_schedule: weekly
+  skip: []
+  submodules: false

@@ -9,7 +9,7 @@ from PyQt5 import QtWidgets
 from decide.qt import app
 
 
-def open_file_natively(path):
+def open_file_natively(path) -> None:
     if sys.platform.startswith("darwin"):
         subprocess.call(("open", path))
     elif os.name == "nt":
@@ -18,11 +18,8 @@ def open_file_natively(path):
         subprocess.call(("xdg-open", path))
 
 
-def exception_hook(exctype, ex, _traceback):
-    """
-    Setting the system exception hook so the exception will be logged and the log file displayed
-    """
-
+def exception_hook(exctype, ex, _traceback) -> None:
+    """Setting the system exception hook so the exception will be logged and the log file displayed."""
     tb_text = exception_to_string(ex)
     logging.exception(tb_text)
 
@@ -34,9 +31,8 @@ def exception_hook(exctype, ex, _traceback):
 
 def exception_to_string(ex):
     tb_lines = traceback.format_exception(ex.__class__, ex, ex.__traceback__)
-    tb_text = "".join(tb_lines)
-    return tb_text
+    return "".join(tb_lines)
 
 
-def show_user_error(self, message: str):
+def show_user_error(self, message: str) -> None:
     QtWidgets.QMessageBox.about(self, "Input data invalid", str(message))

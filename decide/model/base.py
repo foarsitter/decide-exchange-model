@@ -2,16 +2,16 @@ import logging
 from collections import defaultdict
 from decimal import Decimal
 from itertools import combinations
-from typing import List
+from typing import NoReturn
+from typing import Optional
 
 
 class Issue:
-    def __init__(self, name, lower=None, upper=None):
-        """
-        Refers an issue
+    def __init__(self, name, lower=None, upper=None) -> None:
+        """Refers an issue
         :param name: str
         :param lower: int
-        :param upper: int
+        :param upper: int.
         """
         self.delta = 0
         self.step_size = 0
@@ -31,10 +31,10 @@ class Issue:
     def issue_id(self):
         return self.name
 
-    def calculate_delta(self):
+    def calculate_delta(self) -> None:
         self.delta = self.upper - self.lower
 
-    def calculate_step_size(self):
+    def calculate_step_size(self) -> None:
         if self.delta != 0:
             self.step_size = Decimal(100 / self.delta)
         else:
@@ -49,37 +49,33 @@ class Issue:
     def normalize(self, value):
         return Decimal(value - self.lower) * self.step_size
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.__repr__()
 
-    def __repr__(self):
-        return "{0} [{1} - {2}]".format(self.name, self.lower, self.upper)
+    def __repr__(self) -> str:
+        return f"{self.name} [{self.lower} - {self.upper}]"
 
     def __eq__(self, other):
-
         if isinstance(other, str):
-            b = self.issue_id == other
-            return b
+            return self.issue_id == other
 
         if isinstance(other, Issue):
             return self.issue_id == other.issue_id
 
         if isinstance(other, int):
             h = self.__hash__()
-            b = h == other
-            return b
+            return h == other
 
         if not other:
             return False
 
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def __hash__(self):
         return hash(self.issue_id)
 
     def __lt__(self, other):
-        """
-        Needed for sorting
+        """Needed for sorting
         :param other:
         :return:
         """
@@ -87,10 +83,8 @@ class Issue:
 
 
 class Actor:
-    def __init__(self, name, actor_id=None):
-        """
-        Represents an Actor
-        """
+    def __init__(self, name, actor_id=None) -> None:
+        """Represents an Actor."""
         self.name = name
         self.comment = ""
 
@@ -100,7 +94,6 @@ class Actor:
             self.actor_id = name
 
     def __eq__(self, other):
-
         from decide.data.database import Actor as ModelActor
 
         if isinstance(other, str):
@@ -113,48 +106,42 @@ class Actor:
             return self.actor_id == other.key
         if not other:
             return False
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def __lt__(self, other):
-        """
-        Needed for sorting
+        """Needed for sorting
         :param other:
         :return:
         """
         if not isinstance(other, Actor):
-            raise ValueError("error")
+            msg = "error"
+            raise ValueError(msg)
 
         return self.actor_id < other.actor_id
 
     def __hash__(self):
-        """
-        Hashing is based on the id
+        """Hashing is based on the id
         :return:
         """
         return hash(self.actor_id)
 
-    def __str__(self):
-        """
-        Human representation of this object
+    def __str__(self) -> str:
+        """Human representation of this object
         :return:
         """
         return self.name
 
 
 class ActorIssue:
-    """
-    Represents a combination between an actor and issue
-    """
+    """Represents a combination between an actor and issue."""
 
-    def __init__(self, actor: Actor, issue: Issue, position, salience, power):
-        """
-        :param actor: Actor 
+    def __init__(self, actor: Actor, issue: Issue, position, salience, power) -> None:
+        """:param actor: Actor
         :param issue: Issue
         :param position: Double
         :param salience: Double
         :param power: Double
         """
-
         self.actor = actor
         self.power = Decimal(power)
         self.position = Decimal(position)
@@ -163,24 +150,20 @@ class ActorIssue:
         self.issue = issue
 
     def is_left_to_nbs(self, nbs):
-        """
-        True when the position is lower than the Nash Bargaining Solution for this issue. 
+        """True when the position is lower than the Nash Bargaining Solution for this issue.
         :param nbs: int
-        :return: bool 
+        :return: bool.
         """
         self.left = self.position <= nbs
         return self.left
 
-    def __str__(self):
-        return "{0} on {1} with x={2}, s={3}, c={4}".format(
-            self.actor.name, self.issue.name, self.position, self.salience, self.power
-        )
+    def __str__(self) -> str:
+        return f"{self.actor.name} on {self.issue.name} with x={self.position}, s={self.salience}, c={self.power}"
 
     def __eq__(self, other):
-        """
-        True when the name and issue are the same
-        :param other: 
-        :return: 
+        """True when the name and issue are the same
+        :param other:
+        :return:
         """
         if isinstance(other, ActorIssue):
             return self.actor == other.actor and self.issue == other.issue
@@ -192,11 +175,9 @@ class ActorIssue:
 
 
 class DemandActorIssue(ActorIssue):
-    """
-    Object for a demand issue, has the same properties as a ActorIssue
-    """
+    """Object for a demand issue, has the same properties as a ActorIssue."""
 
-    def __init__(self, actor_issue: ActorIssue):
+    def __init__(self, actor_issue: ActorIssue) -> None:
         super().__init__(
             actor_issue.actor,
             actor_issue.issue,
@@ -209,11 +190,9 @@ class DemandActorIssue(ActorIssue):
 
 
 class SupplyActorIssue(ActorIssue):
-    """
-    Object for a demand issue, has a extra voting_position (self.y)
-    """
+    """Object for a demand issue, has a extra voting_position (self.y)."""
 
-    def __init__(self, actor_issue: ActorIssue, y=None):
+    def __init__(self, actor_issue: ActorIssue, y=None) -> None:
         super().__init__(
             actor_issue.actor,
             actor_issue.issue,
@@ -227,20 +206,17 @@ class SupplyActorIssue(ActorIssue):
 
 
 class AbstractExchangeActor:
-    """
-    Represents an exchange actor. Contains his demand and supply issues and voting-position
-    """
+    """Represents an exchange actor. Contains his demand and supply issues and voting-position."""
 
     def __init__(
-            self,
-            model: "AbstractModel",
-            actor: Actor,
-            demand_issue: Issue,
-            supply_issue: Issue,
-            exchange: "AbstractExchange",
-    ):
-        """
-        Constructor, must be invoked
+        self,
+        model: "AbstractModel",
+        actor: Actor,
+        demand_issue: Issue,
+        supply_issue: Issue,
+        exchange: "AbstractExchange",
+    ) -> None:
+        """Constructor, must be invoked.
 
         :param model: AbstractModel
         :param actor: Actor
@@ -279,10 +255,8 @@ class AbstractExchangeActor:
 
         self.is_adjusted_by_nbs = False
 
-    def is_move_valid(self, move):
-
-        """
-        Cheks if a move not exceeds the interval [0,100]
+    def is_move_valid(self, move) -> Optional[bool]:
+        """Cheks if a move not exceeds the interval [0,100].
 
         :param move:
         :return:
@@ -302,10 +276,10 @@ class AbstractExchangeActor:
 
         if (moves_min < 0 and moves_max < 0) or (moves_min > 0 and moves_max > 0):
             return True
+        return None
 
     def new_start_position(self):
-        """
-        Calculate the new starting postion for the next round
+        """Calculate the new starting postion for the next round
         :return:
         """
         from decide.model import calculations
@@ -319,24 +293,23 @@ class AbstractExchangeActor:
         )
 
     def actor_issues(self):
-        """ shortcut, demand ActorIssues should never not be needed """
+        """shortcut, demand ActorIssues should never not be needed."""
         return self.supply_actor_issues()
 
     def supply_actor_issues(self):
-        """ shortcut function"""
+        """Shortcut function."""
         return self.model.actor_issues[self.supply.issue]
 
     def demand_actor_issues(self):
-        """ shortcut function"""
+        """Shortcut function."""
         return self.model.actor_issues[self.demand.issue]
 
     def adjust_nbs(self, position):
-
         actor_issues = self.actor_issues()
 
         updates = self.exchange.updates[self.supply.issue]
 
-        from . import calculations  # Todo should be global import
+        from . import calculations  # TODO should be global import
 
         return calculations.adjusted_nbs(
             actor_issues=actor_issues,
@@ -347,51 +320,44 @@ class AbstractExchangeActor:
         )
 
     def equals_actor_demand_issue(self, other: "AbstractExchangeActor"):
-        """
-        Has this ExchangeActor the same actor and same demand issue
+        """Has this ExchangeActor the same actor and same demand issue
         :param other:
         :return:
         """
         return self.equals_actor(other) and self.equals_demand_issue(other)
 
     def equals_actor_supply_issue(self, other: "AbstractExchangeActor"):
-        """
-        Has this ExchangeActor the same actor and same supply issue
+        """Has this ExchangeActor the same actor and same supply issue
         :param other:
         :return:
         """
         return self.equals_actor(other) and self.equals_supply_issue(other)
 
     def equals_actor(self, other):
-        """
-        Has this ExchangeActor the same actor
+        """Has this ExchangeActor the same actor
         :param other:
         :return:
         """
         return self.actor == other.actor
 
     def equals_supply_issue(self, other: "AbstractExchangeActor"):
-        """
-        Has this ExchangeActor the same supply issue
+        """Has this ExchangeActor the same supply issue
         :param other: AbstractExchangeActor
         :return:
         """
         return self.supply.issue == other.supply.issue
 
     def equals_demand_issue(self, other: "AbstractExchangeActor"):
-        """
-        Has this ExchangeActor the same demand issue?
+        """Has this ExchangeActor the same demand issue?
         :param other: AbstractExchangeActor
         :return:
         """
         return self.demand.issue == other.demand.issue
 
-    def check_nbs(self):
-        """
-        Calculate if the outcome doesn't shifts over the original position of the demand actor of his first exchange.
+    def check_nbs(self) -> None:
+        """Calculate if the outcome doesn't shifts over the original position of the demand actor of his first exchange.
         :return:
         """
-
         from . import calculations
 
         self.nbs_0 = self.adjust_nbs(self.supply.position)
@@ -401,18 +367,22 @@ class AbstractExchangeActor:
         x = self.opposite_actor.demand.position
 
         check = round(self.opposite_actor.demand.position, 3) >= round(
-            self.nbs_0, 3
+            self.nbs_0,
+            3,
         ) and round(self.opposite_actor.demand.position, 3) >= round(self.nbs_1, 3)
         check_2 = round(self.opposite_actor.demand.position, 3) <= round(
-            self.nbs_0, 3
+            self.nbs_0,
+            3,
         ) and round(self.opposite_actor.demand.position, 3) <= round(self.nbs_1, 3)
 
         if (x - self.nbs_0) >= 0 and (x - self.nbs_1) >= 0:
             if not check:
-                raise Exception("test")
+                msg = "test"
+                raise Exception(msg)
         elif (x - self.nbs_0) <= 0 and (x - self.nbs_1) <= 0:
             if not check_2:
-                raise Exception("test123")
+                msg = "test123"
+                raise Exception(msg)
         else:
             delta = abs(
                 calculations.adjusted_nbs_by_position(
@@ -422,7 +392,7 @@ class AbstractExchangeActor:
                     x_pos=self.supply.position,
                     new_nbs=self.opposite_actor.demand.position,
                     denominator=self.model.nbs_denominators[self.supply.issue],
-                )
+                ),
             )
 
             self.exchange.dp = calculations.exchange_ratio(
@@ -439,7 +409,7 @@ class AbstractExchangeActor:
                     actor_issues=self.opposite_actor.actor_issues(),
                     actor=self.opposite_actor,
                     exchange_ratio=self.exchange.dq,
-                )
+                ),
             )
 
             self.move = delta
@@ -455,22 +425,24 @@ class AbstractExchangeActor:
             self.opposite_actor.moves.append(self.opposite_actor.move)
             self.moves.append(self.move)
 
-            self.opposite_actor.y = (
-                    self.opposite_actor.supply.position + self.opposite_actor.move
-            )
+            self.opposite_actor.y = self.opposite_actor.supply.position + self.opposite_actor.move
             self.y = self.supply.position + self.move
 
             eui = calculations.expected_utility(
-                self.opposite_actor, self.exchange.dq, self.exchange.dp
+                self.opposite_actor,
+                self.exchange.dq,
+                self.exchange.dp,
             )
             euj = calculations.expected_utility(
-                self, self.exchange.dp, self.exchange.dq
+                self,
+                self.exchange.dp,
+                self.exchange.dq,
             )
 
             if abs(eui - euj) > 0.0001:
-                raise Exception("Expected equal gain")
-            else:
-                self.exchange.gain = abs(eui)
+                msg = "Expected equal gain"
+                raise Exception(msg)
+            self.exchange.gain = abs(eui)
 
             b1 = self.opposite_actor.is_move_valid(self.opposite_actor.move)
             b2 = self.is_move_valid(self.move)
@@ -479,63 +451,38 @@ class AbstractExchangeActor:
 
             if abs(self.nbs_1 - self.y) > 1e-10:
                 logging.debug(
-                    "The new calculated MDS is not exactly the same as the new position of the actor (nbs 0 {} nbs 1: {} y: {})".format(
-                        self.nbs_0, self.nbs_1, self.y
-                    )
+                    f"The new calculated MDS is not exactly the same as the new position of the actor (nbs 0 {self.nbs_0} nbs 1: {self.nbs_1} y: {self.y})",
                 )
 
             self.exchange.is_valid = b1 and b2
 
             self.is_adjusted_by_nbs = True
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """The String representation of the object
+        :return: String representation of the object.
         """
-        The String representation of the object
-        :return: String representation of the object
-        """
-
         if hasattr(self, "eu"):
-            return "{0} {1} eu={2}, x={3} y={4}, d={5}".format(
-                self.actor.name,
-                self.supply.issue.name,
-                round(self.eu, 2),
-                self.supply.position,
-                self.y,
-                self.opposite_actor.demand.position,
-            )
-        else:
-            return "{0} {1} {2} {3} ({4})".format(
-                self.actor.name,
-                self.supply.issue.name,
-                self.supply.position,
-                self.y,
-                self.opposite_actor.demand.position,
-            )
+            return f"{self.actor.name} {self.supply.issue.name} eu={round(self.eu, 2)}, x={self.supply.position} y={self.y}, d={self.opposite_actor.demand.position}"
+        return f"{self.actor.name} {self.supply.issue.name} {self.supply.position} {self.y} ({self.opposite_actor.demand.position})"
 
     def __eq__(self, other):
-        return (
-                self.equals_actor(other)
-                and self.equals_demand_issue(other)
-                and self.equals_supply_issue(other)
-        )
+        return self.equals_actor(other) and self.equals_demand_issue(other) and self.equals_supply_issue(other)
 
 
 class AbstractExchange:
-    """
-    An exchange between two actors and two issues. Each actor has a demand and supply issue
-    """
+    """An exchange between two actors and two issues. Each actor has a demand and supply issue."""
 
     actor_class = AbstractExchangeActor
 
-    def __init__(self, i, j, p, q, m, groups):
-        """
-        An exchange between two actors and two issues. Each actor has a demand and supply issue
+    def __init__(self, i, j, p, q, m, groups) -> None:
+        """An exchange between two actors and two issues. Each actor has a demand and supply issue
         :param i: Actor
         :param j: Actor
         :param p: Issue
         :param q: Issue
         :param m: AbstractModel
-        :param groups: tuple of the two groups each actor is in
+        :param groups: tuple of the two groups each actor is in.
         """
         self.model = m
         self.groups = groups
@@ -561,38 +508,50 @@ class AbstractExchange:
         # If (2) holds,
         # issue q is the supply issue of i and issue p is the supply issue of j.
         # if ( (model$s_matrix[p, i] / model$s_matrix[q, i]) < (model$s_matrix[p, j] / model$s_matrix[q, j]))
-        if (m.get_value(i, p, "s") / m.get_value(i, q, "s")) < (
-                m.get_value(j, p, "s") / m.get_value(j, q, "s")
-        ):
+        if (m.get_value(i, p, "s") / m.get_value(i, q, "s")) < (m.get_value(j, p, "s") / m.get_value(j, q, "s")):
             self.i: AbstractExchangeActor = self.actor_class(
-                m, j, supply_issue=q, demand_issue=p, exchange=self
+                m,
+                j,
+                supply_issue=q,
+                demand_issue=p,
+                exchange=self,
             )
             self.j: AbstractExchangeActor = self.actor_class(
-                m, i, supply_issue=p, demand_issue=q, exchange=self
+                m,
+                i,
+                supply_issue=p,
+                demand_issue=q,
+                exchange=self,
             )
         else:
             self.i: AbstractExchangeActor = self.actor_class(
-                m, i, supply_issue=q, demand_issue=p, exchange=self
+                m,
+                i,
+                supply_issue=q,
+                demand_issue=p,
+                exchange=self,
             )
             self.j: AbstractExchangeActor = self.actor_class(
-                m, j, supply_issue=p, demand_issue=q, exchange=self
+                m,
+                j,
+                supply_issue=p,
+                demand_issue=q,
+                exchange=self,
             )
 
         self.j.opposite_actor = self.i
         self.i.opposite_actor = self.j
 
-    def calculate(self):
-        """Method stub to be overriden"""
+    def calculate(self) -> NoReturn:
+        """Method stub to be overriden."""
         raise NotImplementedError
 
-    def invalidate_move(self):
+    def invalidate_move(self) -> None:
         self.i.moves.pop()
         self.j.moves.pop()
 
     def invalidate_exchange_by_supply(self, exchange):
-
-        """
-        If the actors and supply issues match one or both the actors from the exchange that is executed,
+        """If the actors and supply issues match one or both the actors from the exchange that is executed,
         this exchange invalidates and needs to be recalculated.
 
         When the move invalidates, erase the current values for the move so the new values can be calculated.
@@ -626,25 +585,24 @@ class AbstractExchange:
         if invalid_i or invalid_j:
             self.invalidate_move()
         elif invalid_i and invalid_j:
+            msg = f"Exchanges are equal: {self!s} and {exchange!s}"
             raise Exception(
-                "Exchanges are equal: {0} and {1}".format(str(self), str(exchange))
+                msg,
             )
 
         return invalid_i or invalid_j
 
     def update_updates(
-            self,
-            exchange_actor: AbstractExchangeActor,
-            demand_issue: Issue,
-            updated_position,
-    ):
-        """
-        Update the updates dictionary with the current exchange
+        self,
+        exchange_actor: AbstractExchangeActor,
+        demand_issue: Issue,
+        updated_position,
+    ) -> None:
+        """Update the updates dictionary with the current exchange
         :param exchange_actor:
         :param demand_issue:
         :param updated_position:
         """
-
         # if the start position is left of the updated_position then TODO
         if exchange_actor.start_position <= updated_position:
             # what is this?
@@ -652,15 +610,13 @@ class AbstractExchange:
                 self.updates[demand_issue][exchange_actor.actor] = updated_position
             else:
                 self.updates[demand_issue][exchange_actor.actor] = exchange_actor.y
+        elif updated_position > exchange_actor.y:
+            self.updates[demand_issue][exchange_actor.actor] = updated_position
         else:
-            if updated_position > exchange_actor.y:
-                self.updates[demand_issue][exchange_actor.actor] = updated_position
-            else:
-                self.updates[demand_issue][exchange_actor.actor] = exchange_actor.y
+            self.updates[demand_issue][exchange_actor.actor] = exchange_actor.y
 
-    def recalculate(self, exchange):
-        """
-        This exchange needs to be recalculated because the given exchange is performed
+    def recalculate(self, exchange) -> None:
+        """This exchange needs to be recalculated because the given exchange is performed
         and has an influence on this (self) exchange
         :param exchange:
         """
@@ -668,9 +624,8 @@ class AbstractExchange:
 
         # update the positions for the demand actors...
         if exchange.j.equals_actor_demand_issue(
-                self.j
+            self.j,
         ) or exchange.j.equals_actor_demand_issue(self.i):
-
             if exchange.i.actor in self.updates[exchange.j.demand.issue]:
                 self.update_updates(
                     exchange.i,
@@ -685,9 +640,8 @@ class AbstractExchange:
                 self.re_calc = True
 
         if exchange.i.equals_actor_demand_issue(
-                self.j
+            self.j,
         ) or exchange.i.equals_actor_demand_issue(self.i):
-
             if exchange.j.actor in self.updates[exchange.i.demand.issue]:
                 self.update_updates(
                     exchange.j,
@@ -704,28 +658,24 @@ class AbstractExchange:
         if self.re_calc:
             self.calculate()
 
-    def validate_groups(self):
-        """
-        Two actors can only exchange when they are in group a-d or b-c
+    def validate_groups(self) -> bool:
+        """Two actors can only exchange when they are in group a-d or b-c
         :return:
         """
-        if "a" in self.groups and "d" in self.groups:
+        if ("a" in self.groups and "d" in self.groups) or ("b" in self.groups and "c" in self.groups):
             return True
-        elif "b" in self.groups and "c" in self.groups:
-            return True
-        else:
-            raise Exception(
-                "invalid group combination [%,%]".format(self.groups[0], self.groups[1])
-            )
+        msg = "invalid group combination [%,%]"
+        raise Exception(
+            msg,
+        )
 
     def get_inner_groups(self):
+        """When groups[0] is not a and not d, the b&c group is inner.
+        If groups[0] == a, then groups[1] has to be D.
         """
-        When groups[0] is not a and not d, the b&c group is inner.
-        If groups[0] == a, then groups[1] has to be D
-        """
-
         if len(self.groups) != 2:
-            raise ValueError("Too much groups given!")
+            msg = "Too much groups given!"
+            raise ValueError(msg)
 
         if "a" in self.groups and "d" in self.groups:
             return ["a", "d"]
@@ -733,15 +683,15 @@ class AbstractExchange:
         if "b" in self.groups and "c" in self.groups:
             return ["b", "c"]
 
+        msg = "Actors should only exchange with their inner group." f" The given groups are {self.groups}"
         raise ValueError(
-            "Actors should only exchange with their inner group."
-            " The given groups are {0}".format(self.groups)
+            msg,
         )
 
-    def __str__(self):
-        return "{0}: {1}, {2}".format(round(self.gain, 9), str(self.i), str(self.j))
+    def __str__(self) -> str:
+        return f"{round(self.gain, 9)}: {self.i!s}, {self.j!s}"
 
-    def __bool__(self):
+    def __bool__(self) -> bool:
         return self.is_valid
 
     def __eq__(self, other):
@@ -753,11 +703,11 @@ class AbstractModel:
     FIXED_WEIGHT = 0.1
     VERBOSE = True  # verbose messages for debugging
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         self.issues = {}
         self.actor_issues = defaultdict(dict)
         self.actors = {}
-        self.exchanges: List[AbstractExchange] = []
+        self.exchanges: list[AbstractExchange] = []
         self.nbs = {}
         self.issue_combinations = []
         self.groups = {}
@@ -768,30 +718,25 @@ class AbstractModel:
         self.tie_count = 0
 
     def get_actor_issue(self, actor: Actor, issue: Issue):
-        """
-        Getter function for an ActorIssue
+        """Getter function for an ActorIssue
         :param actor: the id of the actor
         :param issue: the id of the issue
         :return:
         """
         if actor in self.actor_issues[issue]:
             return self.actor_issues[issue][actor]
-        else:
-            return False
+        return False
 
     def get_value(self, actor: Actor, issue: Issue, field):
-        """
-        Get the value of an attribute for an actor on the specified issue
+        """Get the value of an attribute for an actor on the specified issue
         :param actor: str
         :param issue: str
         :param field: str
-        :return: Double
+        :return: Double.
         """
-
         a = self.actor_issues[issue][actor]
 
         if a is not False:
-
             if field == "c":
                 return a.power
             if field == "s":
@@ -799,11 +744,11 @@ class AbstractModel:
             if field == "x":
                 return a.position
 
-        raise ValueError("ActorIssue not found")
+        msg = "ActorIssue not found"
+        raise ValueError(msg)
 
     def add_actor(self, actor_name, actor_id=None, comment="") -> Actor:
-        """
-        Add an actor to the model
+        """Add an actor to the model
         :param comment:
         :param actor_id:
         :param actor_name:
@@ -815,8 +760,7 @@ class AbstractModel:
         return actor
 
     def add_issue(self, issue_name, issue_id=None, comment="") -> Issue:
-        """
-        Add an issue to the model
+        """Add an issue to the model
         :param comment:
         :param issue_id:
         :param issue_name:
@@ -827,8 +771,7 @@ class AbstractModel:
         return issue
 
     def add_actor_issue(self, actor, issue, position, salience, power):
-        """
-        Add an actor issue to the model
+        """Add an actor issue to the model
         :param actor: Actor
         :param issue: Issue
         :param position: Double
@@ -836,14 +779,14 @@ class AbstractModel:
         :param power: Double
         :return:
         """
-
         if not isinstance(actor, Actor):
             if actor in self.actors:
                 actor = self.actors[actor]
             elif hash(actor) in self.actors:
                 actor = self.actors[hash(actor)]
             else:
-                raise ValueError("Actor not found: {0}".format(actor))
+                msg = f"Actor not found: {actor}"
+                raise ValueError(msg)
 
         if not isinstance(issue, Issue):
             if issue in self.issues:
@@ -851,9 +794,12 @@ class AbstractModel:
             elif hash(issue) in self.issues:
                 issue = self.issues[hash(issue)]
             else:
+                msg = (
+                    f"The issue '{issue}' is missing in your input file. "
+                    f"Define '#P' with '{issue}' and add a description"
+                )
                 raise ValueError(
-                    "The issue '{0}' is missing in your input file. "
-                    "Define '#P' with '{0}' and add a description".format(issue)
+                    msg,
                 )
 
         issue.calculate_delta()
@@ -861,14 +807,17 @@ class AbstractModel:
         normalized_position = issue.normalize(position)
 
         self.actor_issues[issue][actor] = ActorIssue(
-            actor, issue, normalized_position, salience, power
+            actor,
+            issue,
+            normalized_position,
+            salience,
+            power,
         )
 
         return self.actor_issues[issue][actor]
 
     def add_exchange(self, i, j, p, q, groups):
-        """
-        Add an exchange pair to the model
+        """Add an exchange pair to the model
         :param i:
         :param j:
         :param p:
@@ -884,7 +833,7 @@ class AbstractModel:
 
     eui = []
 
-    def calc_nbs(self):
+    def calc_nbs(self) -> None:
         from . import calculations
 
         """
@@ -892,40 +841,34 @@ class AbstractModel:
         """
         for issue, actor_issues in self.actor_issues.items():
             self.nbs_denominators[issue] = calculations.calc_nbs_denominator(
-                actor_issues
+                actor_issues,
             )
 
             nbs = calculations.nash_bargaining_solution(
-                actor_issues, self.nbs_denominators[issue]
+                actor_issues,
+                self.nbs_denominators[issue],
             )
             self.nbs[issue] = nbs
 
-    def determine_positions(self):
-        """
-        Determine if the position of an actor is left or right of the Nash Bargaining Solution on an issue
-        """
+    def determine_positions(self) -> None:
+        """Determine if the position of an actor is left or right of the Nash Bargaining Solution on an issue."""
         for issue_name, issue_nbs in self.nbs.items():
             for actor_issue in self.actor_issues[issue_name].values():
                 actor_issue.is_left_to_nbs(issue_nbs)
 
-    def calc_combinations(self):
-        """
-        Create a list of all possible combinations for the issues
-        """
+    def calc_combinations(self) -> None:
+        """Create a list of all possible combinations for the issues."""
         self.issue_combinations = combinations(self.issues, 2)
 
-    def determine_groups_and_calculate_exchanges(self):
-        """
-        There are 4 groups: A, B, C, and D.
+    def determine_groups_and_calculate_exchanges(self) -> None:
+        """There are 4 groups: A, B, C, and D.
         An actor is member of group A if his position on both issues is left of the MDS.
         Each actor of group A can exchange with the actors of Group D, the actors of B with C.
         """
         for combination in self.issue_combinations:
-
             pos = [[], [], [], []]
 
-            for k, actor in self.actors.items():
-
+            for actor in self.actors.values():
                 a0 = self.get_actor_issue(actor=actor, issue=combination[0])
                 a1 = self.get_actor_issue(actor=actor, issue=combination[1])
 
@@ -939,7 +882,7 @@ class AbstractModel:
                     position = a0.left | a1.left * 2
                     pos[position].append(actor)
 
-            combination_id = "{0}-{1}".format(combination[0], combination[1])
+            combination_id = f"{combination[0]}-{combination[1]}"
 
             self.groups[combination_id] = {
                 "a": pos[0],
@@ -952,7 +895,11 @@ class AbstractModel:
             for i in pos[0]:
                 for j in pos[3]:
                     self.add_exchange(
-                        i, j, combination[0], combination[1], groups=["a", "d"]
+                        i,
+                        j,
+                        combination[0],
+                        combination[1],
+                        groups=["a", "d"],
                     )
 
                     self.actor_issues[combination[0]][i].group = "a"
@@ -962,16 +909,19 @@ class AbstractModel:
             for i in pos[1]:
                 for j in pos[2]:
                     self.add_exchange(
-                        i, j, combination[0], combination[1], groups=["b", "c"]
+                        i,
+                        j,
+                        combination[0],
+                        combination[1],
+                        groups=["b", "c"],
                     )
                     self.actor_issues[combination[0]][i].group = "b"
                     self.actor_issues[combination[1]][j].group = "c"
 
     def remove_invalid_exchanges(self, res):
-        """
-        Removes all the invalid exchanges from the exchanges list and return them
+        """Removes all the invalid exchanges from the exchanges list and return them
         :param res: a list of exchanges
-        :return: a list with online valid exchanges
+        :return: a list with online valid exchanges.
         """
         length = len(self.exchanges)
 
@@ -979,7 +929,6 @@ class AbstractModel:
         invalid_exchanges = []
 
         for i in range(length):
-
             if self.exchanges[i].is_valid:
                 self.exchanges[i].recalculate(res)
 
@@ -992,57 +941,45 @@ class AbstractModel:
 
         return invalid_exchanges
 
-    def sort_exchanges(self):
-        """
-        Abstract method
+    def sort_exchanges(self) -> NoReturn:
+        """Abstract method
         :return:
         """
         raise NotImplementedError
 
-    def highest_gain(self):
-        """
-        Abstract method
+    def highest_gain(self) -> NoReturn:
+        """Abstract method
         :return:
         """
         raise NotImplementedError
 
     def create_existing_issue_set_key(self, p, q):
-        """
-        Create a combination of issue so it can be used as key
-        """
-        issue_set_key = "{0}-{1}".format(p, q)
+        """Create a combination of issue so it can be used as key."""
+        issue_set_key = f"{p}-{q}"
         # an combination only exists once, so it can happen that we have to change the sequence of the keys
         if issue_set_key not in self.groups:
-            issue_set_key = "{0}-{1}".format(q, p)
+            issue_set_key = f"{q}-{p}"
 
         return issue_set_key
 
     def is_inner_group_member(self, actor, inner, issue_set_key):
-        """
-        When an actor is in the same [A] or opposing group [D], return true
+        """When an actor is in the same [A] or opposing group [D], return true
         False, When in [B] or [C]
         :param actor:
         :param issue_set_key:
         :param inner:
         :return:
         """
-
-        is_inner = (
-                actor in self.groups[issue_set_key][inner[0]]
-                or actor in self.groups[issue_set_key][inner[1]]
-        )
-
-        return is_inner
+        return actor in self.groups[issue_set_key][inner[0]] or actor in self.groups[issue_set_key][inner[1]]
 
     @staticmethod
-    def new_exchange_factory(i, j, p, q, model_ref, groups):
-        """
-        Creates a new Exchange set 
-        :param groups: 
-        :param model_ref: 
-        :param q: 
-        :param p: 
-        :param j: 
+    def new_exchange_factory(i, j, p, q, model_ref, groups) -> NoReturn:
+        """Creates a new Exchange set
+        :param groups:
+        :param model_ref:
+        :param q:
+        :param p:
+        :param j:
         :param i:
         """
         raise NotImplementedError

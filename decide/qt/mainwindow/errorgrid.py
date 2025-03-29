@@ -1,21 +1,21 @@
 import logging
 import os
 import sys
-from typing import List
 
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QDialog
-from decide import log_filename, input_folder
+
+from decide import input_folder
+from decide import log_filename
 from decide.data.reader import InputDataFile
 from decide.qt.utils import exception_hook
 
 
 class ErrorGrid(QDialog):
-    """
-    Visualisation of the input file in a dialog to inform the user of the errors a input file has
-    """
-    def __init__(self, data_file: InputDataFile, *args, **kwargs):
-        super(ErrorGrid, self).__init__(*args, **kwargs)
+    """Visualisation of the input file in a dialog to inform the user of the errors a input file has."""
+
+    def __init__(self, data_file: InputDataFile, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
 
         self.data_file = data_file
         self.row_pointer = 0
@@ -24,8 +24,7 @@ class ErrorGrid(QDialog):
 
         self.init_window()
 
-    def init_window(self):
-
+    def init_window(self) -> None:
         central_widget = QtWidgets.QWidget()
         central_widget.setLayout(self.main)
 
@@ -46,14 +45,12 @@ class ErrorGrid(QDialog):
 
         self.show()
 
-    def init_grid(self):
-
+    def init_grid(self) -> None:
         for row, columns in self.data_file.rows.items():
             self.add_row(row, columns)
 
-    def add_row(self, row, columns: List[str]):
+    def add_row(self, row, columns: list[str]) -> None:
         for column, content in enumerate(columns):
-
             label = QtWidgets.QLabel(str(content))
 
             if row in self.data_file.errors:
@@ -64,8 +61,7 @@ class ErrorGrid(QDialog):
             self.main.addWidget(label, row, column)
 
 
-def main():
-
+def main() -> None:
     logging.basicConfig(
         filename=log_filename,
         filemode="w",
@@ -79,10 +75,10 @@ def main():
     app.setQuitOnLastWindowClosed(True)
 
     data_file = InputDataFile.open(
-        os.path.join(input_folder, "kopenhagen_with_errors.csv")
+        os.path.join(input_folder, "kopenhagen_with_errors.csv"),
     )
 
-    error_dialog = ErrorGrid(data_file)
+    ErrorGrid(data_file)
 
     sys.exit(app.exec_())
 

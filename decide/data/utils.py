@@ -1,22 +1,23 @@
 import csv
-from typing import List
 
 from decide.model.base import AbstractExchange
 
 
 def write_exchanges(
-        filename: str, realized: List[AbstractExchange], delimiter=";", lineterminator="\n"
-):
-    """
-    Write all realized exchanges to the given file
-    """
-
+    filename: str,
+    realized: list[AbstractExchange],
+    delimiter=";",
+    lineterminator="\n",
+) -> None:
+    """Write all realized exchanges to the given file."""
     if len(realized) <= 0:
         return
 
     with open(filename, "w") as csv_file:
         writer = csv.writer(
-            csv_file, delimiter=delimiter, lineterminator=lineterminator
+            csv_file,
+            delimiter=delimiter,
+            lineterminator=lineterminator,
         )
 
         # write heading

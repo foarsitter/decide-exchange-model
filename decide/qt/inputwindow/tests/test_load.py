@@ -1,11 +1,8 @@
 from decide.qt.inputwindow.gui import InputWindow
 
 
-def test_load_copenhagen(qtbot):
-    """
-    Load settings from ProgramSettings
-    """
-
+def test_load_copenhagen(qtbot) -> None:
+    """Load settings from ProgramSettings."""
     x = InputWindow()
 
     x.load_copenhagen()

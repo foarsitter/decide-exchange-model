@@ -1,10 +1,8 @@
 from decide.data import database as db
 
 
-def test_eq():
-    """
-    Shows the possibility of the hash/dictionary key implement
-    """
+def test_eq() -> None:
+    """Shows the possibility of the hash/dictionary key implement."""
     store = {}
 
     data_set = db.DataSet(name="pizza")
@@ -29,7 +27,7 @@ def test_eq():
     assert store[1] == iteration
 
 
-def test_database(sqlite_db):
+def test_database(sqlite_db) -> None:
     created = db.DataSet.create(name="test123")
 
     data_set = db.DataSet.get(name="test123")
@@ -37,6 +35,6 @@ def test_database(sqlite_db):
     assert data_set == created
 
 
-def test_exchange_database():
+def test_exchange_database() -> None:
     db.connection.drop_tables([db.ExchangeActor, db.Exchange])
     db.connection.create_tables([db.ExchangeActor, db.Exchange])

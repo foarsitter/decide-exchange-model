@@ -1,10 +1,11 @@
 from unittest import TestCase
 
-from decide.model.equalgain import EqualGainModel, EqualGainExchange
+from decide.model.equalgain import EqualGainExchange
+from decide.model.equalgain import EqualGainModel
 
 
 class TestExchange(TestCase):
-    def test_init(self):
+    def test_init(self) -> None:
         model = EqualGainModel()
 
         a1 = model.add_actor("a1")

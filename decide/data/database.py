@@ -9,14 +9,13 @@ connection = peewee.DatabaseProxy()
 class DictionaryIndexMixin:
     hash_field = "id"
 
-    def __init__(self, *args, **kwargs):
-        super(DictionaryIndexMixin, self).__init__(*args, **kwargs)
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
 
     def __hash__(self):
         return hash(self.get_hash_field())
 
     def __eq__(self, other):
-
         if hasattr(other, "get_hash_field"):
             return self.get_hash_field() == other.get_hash_field()
 
@@ -26,7 +25,7 @@ class DictionaryIndexMixin:
         if other is None:
             return False
 
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def get_hash_field(self):
         return getattr(self, self.__class__.hash_field)
@@ -75,9 +74,7 @@ class ModelRun(BaseModel):
 
 
 class Repetition(DictionaryIndexMixin, BaseModel):
-    """
-    A repetition for a data set
-    """
+    """A repetition for a data set."""
 
     pointer = peewee.IntegerField()
 
@@ -87,9 +84,7 @@ class Repetition(DictionaryIndexMixin, BaseModel):
 
 
 class Iteration(DictionaryIndexMixin, BaseModel):
-    """
-    A iteration inside a repetition
-    """
+    """A iteration inside a repetition."""
 
     pointer = peewee.IntegerField()
     repetition = peewee.ForeignKeyField(Repetition, on_delete="CASCADE")
@@ -98,9 +93,7 @@ class Iteration(DictionaryIndexMixin, BaseModel):
 
 
 class ActorIssue(BaseModel):
-    """
-    Snapshot of a position of an actor on an issue
-    """
+    """Snapshot of a position of an actor on an issue."""
 
     issue = peewee.ForeignKeyField(Issue, on_delete="CASCADE")
 
@@ -114,10 +107,8 @@ class ActorIssue(BaseModel):
 
     type = peewee.CharField(choices=("before", "after"), default="before")
 
-    def __str__(self):
-        return "{issue} {actor} {position}".format(
-            issue=self.issue.name, actor=self.actor.name, position=self.position
-        )
+    def __str__(self) -> str:
+        return f"{self.issue.name} {self.actor.name} {self.position}"
 
 
 class ExchangeActor(BaseModel):
@@ -129,7 +120,8 @@ class ExchangeActor(BaseModel):
     x = peewee.DecimalField(max_digits=20, decimal_places=15)  # begin position
     y = peewee.DecimalField(max_digits=20, decimal_places=15)  # end position
     eu = peewee.DecimalField(
-        max_digits=20, decimal_places=15
+        max_digits=20,
+        decimal_places=15,
     )  # expected utility or gain
 
     demand_position = peewee.DecimalField(max_digits=20, decimal_places=15)
@@ -168,9 +160,7 @@ class Externality(BaseModel):
 
 
 class Manager:
-    """
-    Helper for manage the state of the database.
-    """
+    """Helper for manage the state of the database."""
 
     tables = [
         DataSet,
@@ -185,22 +175,20 @@ class Manager:
         Externality,
     ]
 
-    def __init__(self, database_path):
+    def __init__(self, database_path) -> None:
         self.database_path = database_path
 
-    def init_database(self):
+    def init_database(self) -> None:
         global connection
         db = connect(self.database_path)
         connection.initialize(db)
 
-    def create_tables(self):
+    def create_tables(self) -> None:
         connection.create_tables(self.tables, safe=True)
 
-    def delete_tables(self):
+    def delete_tables(self) -> None:
         connection.drop_tables(self.tables)
 
     def __call__(self):
-        """
-        Single instance only
-        """
+        """Single instance only."""
         return self

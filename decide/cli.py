@@ -2,12 +2,12 @@ import argparse
 import logging
 import os
 from datetime import datetime
-from typing import List
 
 from decide import input_folder
 from decide.data.modelfactory import ModelFactory
 from decide.data.reader import InputDataFile
-from decide.model import randomrate, equalgain
+from decide.model import equalgain
+from decide.model import randomrate
 from decide.model.observers.exchanges_writer import ExchangesWriter
 from decide.model.observers.externalities import Externalities
 from decide.model.observers.issue_development import IssueDevelopment
@@ -18,20 +18,22 @@ from decide.model.utils import ModelLoop
 
 
 def parse_arguments():
-    parser = argparse.ArgumentParser(
-        description="Decide exchange model".format()
-    )
+    parser = argparse.ArgumentParser(description="Decide exchange model".format())
     parser.add_argument(
         "--model",
         "-m",
         help='The type of the model. The options are "equal" for the Equal Gain model and '
-             '"random" for the RandomRate model ',
+        '"random" for the RandomRate model ',
         default="equal",
         type=str,
     )
 
     parser.add_argument(
-        "--p", "-p", help="Randomized Equal Gain", default=None, type=str
+        "--p",
+        "-p",
+        help="Randomized Equal Gain",
+        default=None,
+        type=str,
     )
     parser.add_argument(
         "--iterations",
@@ -50,11 +52,14 @@ def parse_arguments():
     parser.add_argument(
         "--input_file",
         help="The location of the csv input file. ",
-        default=os.path.join(input_folder, 'sample_data.txt'),
+        default=os.path.join(input_folder, "sample_data.txt"),
         type=str,
     )
     parser.add_argument(
-        "--output_dir", help="Output directory ", default="../data/output/", type=str
+        "--output_dir",
+        help="Output directory ",
+        default="../data/output/",
+        type=str,
     )
     parser.add_argument(
         "--database",
@@ -63,9 +68,9 @@ def parse_arguments():
         type=str,
     )
 
-    parser.add_argument("--step", default='0.80', type=str)
-    parser.add_argument("--stop", default='0.80', type=str)
-    parser.add_argument("--start", default='0.0', type=str)
+    parser.add_argument("--step", default="0.80", type=str)
+    parser.add_argument("--stop", default="0.80", type=str)
+    parser.add_argument("--start", default="0.0", type=str)
     parser.add_argument("--name", default=None, type=str)
     parser.add_argument("--actors", default=None, type=str)
     parser.add_argument("--issues", default=None, type=str)
@@ -94,9 +99,8 @@ def init_output_directory(*args):
     output_directory = os.path.join(*args)
 
     if not os.path.isdir(output_directory):
-
         if os.path.isfile(output_directory):
-            output_directory += '_output'
+            output_directory += "_output"
 
         if not os.path.isdir(output_directory):
             os.makedirs(output_directory)
@@ -111,7 +115,8 @@ def float_range(start=0.0, stop=1.0, step=0.05):
     else:
         # prevent locking yourself out
         if (stop - start) / step > 256:
-            raise RuntimeError("Maximum steps exceeded with step={} (256)".format(step))
+            msg = f"Maximum steps exceeded with step={step} (256)"
+            raise RuntimeError(msg)
 
         i = start
         # add a 10th step to stop for floating point rounding differences 0.500001 vs 0.499999
@@ -120,40 +125,37 @@ def float_range(start=0.0, stop=1.0, step=0.05):
             i += step
 
 
-def actors_param(args) -> List[str]:
+def actors_param(args) -> list[str]:
     actors = None
     if args.actors:
-        actors = args.actors.split(
-            ";"
-        )
+        actors = args.actors.split(";")
 
     return actors
 
 
-def issues_param(args) -> List[str]:
+def issues_param(args) -> list[str]:
     issues = None
 
     if args.issues:
-        issues = args.issues.split(
-            ";"
-        )
+        issues = args.issues.split(";")
 
     return issues
 
 
-def p_values_param(args) -> List[float]:
+def p_values_param(args) -> list[float]:
     p_values = []
 
     if args.start and args.step and args.stop:
         p_values = [
             str(round(p, 2))
             for p in float_range(
-                start=float(args.start), step=float(args.step), stop=float(args.stop)
+                start=float(args.start),
+                step=float(args.step),
+                stop=float(args.stop),
             )
         ]
 
     elif args.p:
-
         if ";" in args.p:
             p_values += args.p.split(";")
         else:
@@ -162,7 +164,7 @@ def p_values_param(args) -> List[float]:
     return p_values
 
 
-def main():
+def main() -> None:
     args = parse_arguments()
 
     p_values = p_values_param(args)
@@ -179,13 +181,9 @@ def main():
         Initial the right model from the given arguments
         """
 
-    if args.model == "equal":
-        model_klass = equalgain.EqualGainModel
-    else:
-        model_klass = randomrate.RandomRateModel
+    model_klass = equalgain.EqualGainModel if args.model == "equal" else randomrate.RandomRateModel
 
     for p in p_values:
-
         start_time = datetime.now()  # for timing operations
 
         model = factory(model_klass=model_klass, randomized_value=p)
@@ -204,16 +202,16 @@ def main():
             write_csv=True,
         )
 
-        event_handler.log(message="Start calculation at {0}".format(start_time))
+        event_handler.log(message=f"Start calculation at {start_time}")
 
-        event_handler.log(message="Parsed file".format(args.input_file))
+        event_handler.log(message="Parsed file")
 
         event_handler.before_repetitions(
-            repetitions=args.repetitions, iterations=args.iterations
+            repetitions=args.repetitions,
+            iterations=args.iterations,
         )
 
         for repetition in range(args.repetitions):
-
             model = factory(model_klass=model_klass, randomized_value=p)
 
             event_handler.update_model_ref(model)
@@ -223,14 +221,14 @@ def main():
             event_handler.before_iterations(repetition)
 
             for iteration_number in range(args.iterations):
-                logging.info("round {0}.{1}".format(repetition, iteration_number))
+                logging.info(f"round {repetition}.{iteration_number}")
                 model_loop.loop()
 
             event_handler.after_iterations(repetition)
 
         event_handler.after_repetitions()
 
-        event_handler.log(message="Finished in {0}".format(datetime.now() - start_time))
+        event_handler.log(message=f"Finished in {datetime.now() - start_time}")
 
     logging.info("Done")
 

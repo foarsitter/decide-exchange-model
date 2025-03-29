@@ -3,27 +3,29 @@ import os
 import sys
 
 import requests
-from PyQt5 import QtWidgets, QtGui
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
-from decide import log_filename, input_folder
+from decide import input_folder
+from decide import log_filename
 from decide.data.reader import InputDataFile
 from decide.qt.inputwindow import signals
-from decide.qt.inputwindow.models import IssueInputModel, ActorInputModel
-from decide.qt.inputwindow.widgets import (
-    ActorWidget,
-    IssueWidget,
-    ActorIssueWidget,
-    PositionWidget,
-    SalienceWidget,
-)
+from decide.qt.inputwindow.models import ActorInputModel
+from decide.qt.inputwindow.models import IssueInputModel
+from decide.qt.inputwindow.widgets import ActorIssueWidget
+from decide.qt.inputwindow.widgets import ActorWidget
+from decide.qt.inputwindow.widgets import IssueWidget
+from decide.qt.inputwindow.widgets import PositionWidget
+from decide.qt.inputwindow.widgets import SalienceWidget
 from decide.qt.mainwindow.gui import DecideMainWindow
-from decide.qt.mainwindow.helpers import esc, normalize
+from decide.qt.mainwindow.helpers import esc
+from decide.qt.mainwindow.helpers import normalize
 from decide.qt.utils import show_user_error
 
 
 class InputWindow(QtWidgets.QMainWindow):
-    def __init__(self, main_window: DecideMainWindow = None, *args, **kwargs):
-        super(InputWindow, self).__init__(*args, **kwargs)
+    def __init__(self, main_window: DecideMainWindow = None, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
 
         # save the filename which we are editing
         self.input_filename = None
@@ -69,8 +71,7 @@ class InputWindow(QtWidgets.QMainWindow):
         if self.input_filename:
             self.main_window.load_input_data(self.input_filename)
 
-    def init_menu(self):
-
+    def init_menu(self) -> None:
         self.menubar.setNativeMenuBar(False)
         self.setMenuBar(self.menubar)
 
@@ -95,31 +96,32 @@ class InputWindow(QtWidgets.QMainWindow):
         file_menu.addAction(open_action)
         file_menu.addAction(save_action)
 
-    def load_copenhagen(self):
+    def load_copenhagen(self) -> None:
         self.load_input_file(
-            "https://raw.githubusercontent.com/foarsitter/decide-exchange-model/master/data/input/copenhagen.csv")
-
-    def load_sample_data(self):
-        self.load_input_file(
-            "https://raw.githubusercontent.com/foarsitter/decide-exchange-model/master/data/input/sample_data.txt")
-
-    def load_cop21(self):
-        self.load_input_file(
-            "https://raw.githubusercontent.com/foarsitter/decide-exchange-model/master/data/input/cop21.csv"
+            "https://raw.githubusercontent.com/foarsitter/decide-exchange-model/master/data/input/copenhagen.csv",
         )
 
-    def load_input_file(self, file_path):
+    def load_sample_data(self) -> None:
+        self.load_input_file(
+            "https://raw.githubusercontent.com/foarsitter/decide-exchange-model/master/data/input/sample_data.txt",
+        )
 
-        if file_path.startswith('http'):
+    def load_cop21(self) -> None:
+        self.load_input_file(
+            "https://raw.githubusercontent.com/foarsitter/decide-exchange-model/master/data/input/cop21.csv",
+        )
+
+    def load_input_file(self, file_path) -> None:
+        if file_path.startswith("http"):
             response = requests.get(file_path)
 
-            file_path = file_path.split('/')[-1]
+            file_path = file_path.split("/")[-1]
 
-            download_dir = os.path.join(input_folder, 'downloads')
+            download_dir = os.path.join(input_folder, "downloads")
 
             os.makedirs(download_dir, exist_ok=True)
 
-            with open(os.path.join(download_dir, file_path), 'wb') as file:
+            with open(os.path.join(download_dir, file_path), "wb") as file:
                 file.write(response.content)
 
         file = os.path.join(input_folder, file_path)
@@ -127,10 +129,9 @@ class InputWindow(QtWidgets.QMainWindow):
         if os.path.isfile(file):
             self.load(file)
         else:
-            show_user_error(self, "Cannot load {}".format(file))
+            show_user_error(self, f"Cannot load {file}")
 
-    def open_dialog(self):
-
+    def open_dialog(self) -> None:
         file_name, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Select input data")
 
         if file_name:
@@ -140,18 +141,14 @@ class InputWindow(QtWidgets.QMainWindow):
                 error_dialog = QtWidgets.QErrorMessage(self)
                 error_dialog.showMessage(str(ex))
 
-                raise ex
+                raise
 
-    def save_location(self):
-
+    def save_location(self) -> None:
         if self.input_filename:
-
             button_reply = QtWidgets.QMessageBox.question(
                 self,
                 "Save",
-                "Overwrite existing file {}".format(
-                    self.input_filename
-                ),
+                f"Overwrite existing file {self.input_filename}",
                 QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
                 QtWidgets.QMessageBox.No,
             )
@@ -161,13 +158,15 @@ class InputWindow(QtWidgets.QMainWindow):
         if button_reply == QtWidgets.QMessageBox.Yes:
             file_name = self.input_filename
         else:
-            file_name, _ = QtWidgets.QFileDialog.getSaveFileName(self, "Select input data")
+            file_name, _ = QtWidgets.QFileDialog.getSaveFileName(
+                self,
+                "Select input data",
+            )
 
         if file_name:
             self.save(file_name)
 
-    def load(self, input_filename):
-
+    def load(self, input_filename) -> None:
         data_file = InputDataFile.open(input_filename)
 
         actor_inputs = {}
@@ -186,9 +185,7 @@ class InputWindow(QtWidgets.QMainWindow):
                 actor_powers[actor_issue.actor] = actor_issue.power
 
         for actor in data_file.actors.values():
-            actor_input = self.actor_widget.add_actor(
-                actor.id, actor_powers[actor.id]
-            )
+            actor_input = self.actor_widget.add_actor(actor.id, actor_powers[actor.id])
 
             actor_input.comment = str(actor.comment)
 
@@ -198,7 +195,9 @@ class InputWindow(QtWidgets.QMainWindow):
 
         for issue in data_file.issues.values():
             issue_input = self.issue_widget.add_issue(
-                issue.name, issue.lower, issue.upper
+                issue.name,
+                issue.lower,
+                issue.upper,
             )
             issue_input.comment = issue.description
 
@@ -211,7 +210,9 @@ class InputWindow(QtWidgets.QMainWindow):
             issue_input = issue_inputs[actor_issue.issue]
 
             self.actor_issue_widget.add_actor_issue(
-                actor_input, issue_input, actor_issue
+                actor_input,
+                issue_input,
+                actor_issue,
             )
 
         self.position_widget.redraw()
@@ -222,10 +223,8 @@ class InputWindow(QtWidgets.QMainWindow):
 
         self.input_filename = input_filename
 
-    def save(self, filename):
-
+    def save(self, filename) -> None:
         with open(filename, "w") as file:
-
             powers = {}
 
             for actor in self.actor_widget.actor_issues.values():
@@ -239,8 +238,8 @@ class InputWindow(QtWidgets.QMainWindow):
                             esc(actor.name),
                             esc(actor.comment),
                             "\n",
-                        ]
-                    )
+                        ],
+                    ),
                 )
 
             for issue in self.issue_widget.actor_issues.values():
@@ -252,21 +251,20 @@ class InputWindow(QtWidgets.QMainWindow):
                             esc(issue.name),
                             esc(issue.comment),
                             "\n",
-                        ]
-                    )
+                        ],
+                    ),
                 )
 
                 file.write(
-                    "\t".join([esc("#M"), esc(issue.name), str(issue.lower), "\n"])
+                    "\t".join([esc("#M"), esc(issue.name), str(issue.lower), "\n"]),
                 )
 
                 file.write(
-                    "\t".join([esc("#M"), esc(issue.name), str(issue.upper), "\n"])
+                    "\t".join([esc("#M"), esc(issue.name), str(issue.upper), "\n"]),
                 )
 
-            for actor_id, actor_issues in self.actor_issue_widget.actor_issues.items():
-
-                for issue_id, actor_issue in actor_issues.items():
+            for actor_issues in self.actor_issue_widget.actor_issues.values():
+                for actor_issue in actor_issues.values():
                     actor_issue = actor_issue  # type: ActorIssueInputModel
 
                     file.write(
@@ -279,8 +277,8 @@ class InputWindow(QtWidgets.QMainWindow):
                                 normalize(actor_issue.salience),
                                 normalize(powers[actor_issue.actor.name]),
                                 "\n",
-                            ]
-                        )
+                            ],
+                        ),
                     )
 
         # open_file_natively(filename)
@@ -290,24 +288,23 @@ input_window = None
 
 
 @signals.actor_created.connect
-def actor_issue_box_actor_created(sender: ActorInputModel):
+def actor_issue_box_actor_created(sender: ActorInputModel) -> None:
     input_window.actor_issue_widget.add_actor(sender)
 
     input_window.salience_widget.add_choice(sender.id, sender.name)
 
 
 @signals.actor_deleted.connect
-def actor_issue_box_delete_actor(sender: ActorInputModel, **kwargs):
+def actor_issue_box_delete_actor(sender: ActorInputModel, **kwargs) -> None:
     input_window.actor_issue_widget.delete_actor(sender)
     input_window.salience_widget.delete_choice(sender.id)
 
 
 @signals.actor_changed.connect
-def actor_issue_box_update_actor(sender: ActorInputModel, key: str, value):
+def actor_issue_box_update_actor(sender: ActorInputModel, key: str, value) -> None:
     if key == "name":
         input_window.salience_widget.update_choice(sender.id, sender.name)
     elif key == "power":
-
         for actor_issue in input_window.actor_issue_widget.actor_issues[sender.id].values():
             actor_issue.set_power(value, True)
 
@@ -316,20 +313,20 @@ def actor_issue_box_update_actor(sender: ActorInputModel, key: str, value):
 
 
 @signals.issue_created.connect
-def actor_issue_box_issue_created(sender: IssueInputModel):
+def actor_issue_box_issue_created(sender: IssueInputModel) -> None:
     input_window.actor_issue_widget.add_issue(sender)
 
     input_window.position_widget.add_choice(sender.id, sender.name)
 
 
 @signals.issue_deleted.connect
-def actor_issue_box_delete_issue(sender: IssueInputModel, **kwargs):
+def actor_issue_box_delete_issue(sender: IssueInputModel, **kwargs) -> None:
     input_window.actor_issue_widget.delete_issue(sender)
     input_window.position_widget.delete_choice(sender.id)
 
 
 @signals.issue_changed.connect
-def actor_issue_box_update_issue(sender: IssueInputModel, key: str, value):
+def actor_issue_box_update_issue(sender: IssueInputModel, key: str, value) -> None:
     if key == "name":
         input_window.position_widget.update_choice(sender.id, sender.name)
 
@@ -337,7 +334,7 @@ def actor_issue_box_update_issue(sender: IssueInputModel, key: str, value):
     input_window.salience_widget.redraw()
 
 
-def register_app(ex):
+def register_app(ex) -> None:
     global input_window
     input_window = ex
 

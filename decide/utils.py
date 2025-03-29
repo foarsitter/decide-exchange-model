@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 
 
 def append_nbs(data):
-
     saliences = {}
     powers = {}
     positions = {}
@@ -16,7 +15,6 @@ def append_nbs(data):
     power_salience_positions = [Decimal(0) for _ in range(10)]
 
     for actor, salience, power, *_ in data:
-
         salience = Decimal(salience)
         power = Decimal(power)
 
@@ -35,7 +33,7 @@ def append_nbs(data):
     return [x / denominator for x in power_salience_positions]
 
 
-def graph_builder(file_path: str, p: str):
+def graph_builder(file_path: str, p: str) -> None:
     path = Path(file_path)
 
     csv_path = path / "csv"
@@ -53,7 +51,8 @@ def graph_builder(file_path: str, p: str):
             plot_name = next(reader)[0] + f" p={p}"
 
             chart_area = get_chart_area_from_csv(
-                "AVG Preference development MDS and all actors", reader
+                "AVG Preference development MDS and all actors",
+                reader,
             )
 
             nbs = append_nbs(chart_area)
@@ -82,7 +81,6 @@ def get_chart_area_from_csv(begin: str, reader: csv.reader):
     found_begin = False
 
     for index, row in enumerate(reader):
-
         if len(row) > 0 and row[0] == begin:
             found_begin = index
 
@@ -97,10 +95,9 @@ def get_chart_area_from_csv(begin: str, reader: csv.reader):
 
 
 if __name__ == "__main__":
-
     for p in ["0.00", "0.20", "0.40", "0.60", "0.80", "1.00"]:
         graph_builder(
             # ~Alternative power files artikel/Alternative power files artikel/CoP21_2Oct2015_A_no_allfin_amb alt power/CoP21_2Oct2015_A_no_allfin_amb alt power/1.00/issues/summary
             f"/home/jelmert/Downloads/Alternative power files artikel/Alternative power files artikel/CoP21_2Oct2015_A_no_allfin_amb alt power/CoP21_2Oct2015_A_no_allfin_amb alt power/{p}/issues/summary",
-            p
+            p,
         )
