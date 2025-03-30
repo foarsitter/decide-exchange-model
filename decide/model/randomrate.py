@@ -5,6 +5,8 @@ from collections import defaultdict
 from decimal import *
 from operator import attrgetter
 
+from decide.model.base import AbstractExchangeActor
+
 from . import base
 from . import calculations
 
@@ -35,7 +37,9 @@ class RandomRateExchangeActor(base.AbstractExchangeActor):
         self.adjust_position_by_outcome(delta_o, increase=increase)
 
     def adjust_position_by_outcome(self, delta_o, increase) -> None:
-        new_outcome = self.nbs_1 + delta_o  # we have to use nbs_1 here, because it is an incremental shift.
+        new_outcome = (
+            self.nbs_1 + delta_o
+        )  # we have to use nbs_1 here, because it is an incremental shift.
 
         position = calculations.position_by_nbs(
             actor_issues=self.exchange.model.actor_issues[self.supply.issue],
@@ -67,7 +71,11 @@ class RandomRateExchangeActor(base.AbstractExchangeActor):
         previous_move = self.moves.pop()
 
         # calculate the move in the right direction
-        move = abs(self.supply.position - position) * -1 if previous_move < 0 else abs(self.supply.position - position)
+        move = (
+            abs(self.supply.position - position) * -1
+            if previous_move < 0
+            else abs(self.supply.position - position)
+        )
 
         self.moves.append(move)
         self.exchange.is_valid = self.is_move_valid(move)
@@ -97,7 +105,7 @@ class RandomRateExchange(base.AbstractExchange):
         self.j.exchange = self
         self.key = uuid.uuid4()
 
-    def to_list(self):
+    def to_list(self) -> list[AbstractExchangeActor]:
         return [self.i, self.j]
 
     def calculate(self) -> None:
@@ -168,7 +176,7 @@ class RandomRateExchange(base.AbstractExchange):
     def __repr__(self) -> str:
         return self.__str__()
 
-    def __getitem__(self, item):
+    def __getitem__(self, item) -> AbstractExchangeActor:
         if item == self.i.actor_name:
             return self.i
         if item == self.j.actor_name:
@@ -177,7 +185,7 @@ class RandomRateExchange(base.AbstractExchange):
         msg = f"Actor {item} not in exchange"
         raise Exception(msg)
 
-    def csv_row(self, head=False):
+    def csv_row(self, head: bool = False):
         if head:
             return [
                 # the actors
@@ -277,7 +285,9 @@ class RandomRateModel(base.AbstractModel):
                 exchange_actors_by_actor[exchange_actor.actor.name].append(
                     exchange_actor.eu,
                 )
-                exchange_actors_by_gain[exchange_actor.actor.name][exchange_actor.eu].append(exchange_actor)
+                exchange_actors_by_gain[exchange_actor.actor.name][exchange_actor.eu].append(
+                    exchange_actor
+                )
 
             if deadlock[len(self.exchanges)] > 1024:
                 # this should never happen?
@@ -332,12 +342,18 @@ class RandomRateModel(base.AbstractModel):
                             highest_exchange = highest_exchange_actor.exchange  # type: RandomRateExchange
                             opposite_actor_name = highest_exchange_actor.opposite_actor.actor_name
 
-                            if highest_exchange[actor_name].y == highest_exchange[opposite_actor_name].x_demand:
+                            if (
+                                highest_exchange[actor_name].y
+                                == highest_exchange[opposite_actor_name].x_demand
+                            ):
                                 highest_exchange[opposite_actor_name].recalculate(
                                     delta_eu,
                                     increase=False,
                                 )
-                            elif highest_exchange[opposite_actor_name].y == highest_exchange[actor_name].x_demand:
+                            elif (
+                                highest_exchange[opposite_actor_name].y
+                                == highest_exchange[actor_name].x_demand
+                            ):
                                 highest_exchange[actor_name].recalculate(
                                     delta_eu,
                                     increase=True,
@@ -354,7 +370,7 @@ class RandomRateModel(base.AbstractModel):
         return None
 
     @staticmethod
-    def new_exchange_factory(i, j, p, q, model, groups):
+    def new_exchange_factory(i, j, p, q, model, groups) -> RandomRateExchange:
         """Creates a new instance of the RandomRateExchange."""
         return RandomRateExchange(i, j, p, q, model, groups)
 
@@ -365,7 +381,7 @@ class RandomRateModel(base.AbstractModel):
                 return
 
     @staticmethod
-    def _find_first_element_not_equal(exchange_utility_list: list[Decimal]):
+    def _find_first_element_not_equal(exchange_utility_list: list[Decimal]) -> Decimal | None:
         previous_value = exchange_utility_list.pop(0)
         for value in exchange_utility_list:
             if abs(value - previous_value) > 0:

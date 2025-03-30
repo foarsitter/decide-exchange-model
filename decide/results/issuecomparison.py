@@ -1,6 +1,11 @@
 import os
+from pathlib import Path
+from zipfile import Path
 
 import pandas as pd
+from click.types import Path
+from matplotlib.path import Path
+from peewee import DatabaseProxy
 
 from decide import data_folder
 from decide.data.database import Manager
@@ -11,7 +16,9 @@ pd.set_option("display.max_rows", 500)
 pd.set_option("display.max_columns", 500)
 
 
-def write_summary_result(conn, model_run_ids, output_directory) -> None:
+def write_summary_result(
+    conn: DatabaseProxy, model_run_ids: list[int], output_directory: Path
+) -> None:
     df = pd.read_sql(
         f"""
     SELECT
@@ -30,7 +37,7 @@ def write_summary_result(conn, model_run_ids, output_directory) -> None:
           WHERE  ai.type = 'before' AND m.id IN({list_to_sql_param(model_run_ids)})
          GROUP BY m.id, i2.pointer, a.id, i.id;
     """,
-        conn,
+        conn._state.conn,
         index_col=["issue", "actor", "p"],
         columns=["position"],
     )
@@ -41,7 +48,7 @@ def write_summary_result(conn, model_run_ids, output_directory) -> None:
         columns=["p"],
         values=["position"],
     )
-    table.to_csv(os.path.join(output_directory, "issues_preference.csv"))
+    table.to_csv(output_directory / "issues_preference.csv")
 
     df = pd.read_sql(
         f"""
@@ -61,7 +68,7 @@ def write_summary_result(conn, model_run_ids, output_directory) -> None:
           WHERE  ai.type = 'after' AND m.id IN({list_to_sql_param(model_run_ids)})
          GROUP BY m.id, i2.pointer, a.id, i.id;
     """,
-        conn,
+        conn._state.conn,
         index_col=["issue", "actor", "p"],
         columns=["position"],
     )
@@ -72,7 +79,7 @@ def write_summary_result(conn, model_run_ids, output_directory) -> None:
         columns=["p"],
         values=["position"],
     )
-    table.to_csv(os.path.join(output_directory, "issues_voting.csv"))
+    table.to_csv(output_directory / "issues_voting.csv")
 
 
 if __name__ == "__main__":

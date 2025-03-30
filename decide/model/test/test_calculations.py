@@ -15,7 +15,7 @@ class TestModel:
 
 
 @pytest.fixture
-def test_model():
+def test_model() -> TestModel:
     test = TestModel()
 
     a = base.Actor("a")

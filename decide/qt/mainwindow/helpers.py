@@ -1,6 +1,7 @@
 from decimal import Decimal
 
-from PyQt5 import QtWidgets
+from PyQt6 import QtWidgets
+from PyQt6.QtCore import pyqtBoundSignal
 
 
 def clear_layout(layout) -> None:
@@ -34,7 +35,7 @@ class DoubleInput(QtWidgets.QLineEdit):
         self.setText(value)
 
     @property
-    def valueChanged(self):
+    def valueChanged(self) -> pyqtBoundSignal:
         return self.textChanged
 
 
@@ -43,7 +44,7 @@ def esc(value) -> str:
     return f"'{value}'"
 
 
-def normalize(value):
+def normalize(value) -> str:
     """Normalize a decimal or float to string, used for writing csv files and the input window."""
     if isinstance(value, Decimal):
         # float converts exponential values to readable values

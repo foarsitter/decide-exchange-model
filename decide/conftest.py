@@ -10,7 +10,7 @@ from decide.model.equalgain import EqualGainModel
 
 @pytest.fixture
 def model():
-    date_file = InputDataFile.open(os.path.join(input_folder, "sample_data.txt"))
+    date_file = InputDataFile.open(input_folder / "sample_data.txt")
 
     factory = ModelFactory(date_file=date_file)
 
@@ -19,7 +19,7 @@ def model():
 
 @pytest.fixture
 def sample_model():
-    date_file = InputDataFile.open(os.path.join(input_folder, "sample_data.txt"))
+    date_file = InputDataFile.open(input_folder / "sample_data.txt")
 
     factory = ModelFactory(date_file=date_file)
 

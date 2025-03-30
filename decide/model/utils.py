@@ -44,8 +44,12 @@ class ModelLoop:
         )
 
         for exchange in realized:
-            self.model.actor_issues[exchange.i.supply.issue][exchange.i.actor].position = exchange.i.y
-            self.model.actor_issues[exchange.j.supply.issue][exchange.j.actor].position = exchange.j.y
+            self.model.actor_issues[exchange.i.supply.issue][
+                exchange.i.actor
+            ].position = exchange.i.y
+            self.model.actor_issues[exchange.j.supply.issue][
+                exchange.j.actor
+            ].position = exchange.j.y
 
         # calc the new MDS on the voting positions and fire the event for ending this loop
         self.model.calc_nbs()

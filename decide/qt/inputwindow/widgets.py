@@ -2,9 +2,19 @@ from collections import defaultdict
 from decimal import Decimal
 from typing import NoReturn
 
-from PyQt5 import QtCore
-from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QListWidgetItem
+from PyQt6 import QtCore
+from PyQt6.QtWidgets import QGridLayout
+from PyQt6.QtWidgets import QGroupBox
+from PyQt6.QtWidgets import QHBoxLayout
+from PyQt6.QtWidgets import QInputDialog
+from PyQt6.QtWidgets import QLabel
+from PyQt6.QtWidgets import QLineEdit
+from PyQt6.QtWidgets import QListWidget
+from PyQt6.QtWidgets import QListWidgetItem
+from PyQt6.QtWidgets import QPushButton
+from PyQt6.QtWidgets import QScrollArea
+from PyQt6.QtWidgets import QVBoxLayout
+from PyQt6.QtWidgets import QWidget
 
 from decide.data.types import ActorIssue
 from decide.qt.inputwindow import signals
@@ -16,26 +26,26 @@ from decide.qt.mainwindow.helpers import clear_layout
 from decide.qt.mainwindow.helpers import normalize
 
 
-class BoxLayout(QtWidgets.QGroupBox):
-    def __init__(self, title, btn=True) -> None:
+class BoxLayout(QGroupBox):
+    def __init__(self, title: str, btn=True) -> None:
         super().__init__(title)
 
-        self.scroll_area = QtWidgets.QScrollArea(self)
+        self.scroll_area = QScrollArea(self)
         self.scroll_area.setWidgetResizable(True)
 
-        self.scroll_area_widget = QtWidgets.QWidget()
+        self.scroll_area_widget = QWidget()
         self.scroll_area.setWidget(self.scroll_area_widget)
 
-        self.grid_layout = QtWidgets.QGridLayout(self.scroll_area_widget)
-        self.grid_layout.setAlignment(QtCore.Qt.AlignTop)
+        self.grid_layout = QGridLayout(self.scroll_area_widget)
+        self.grid_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
 
-        self.layout_container = QtWidgets.QVBoxLayout()
+        self.layout_container = QVBoxLayout()
         self.layout_container.addWidget(self.scroll_area)
 
         if btn:
-            container = QtWidgets.QHBoxLayout()
+            container = QHBoxLayout()
 
-            self.add_button = QtWidgets.QPushButton("Add")
+            self.add_button = QPushButton("Add")
 
             container.addWidget(self.add_button)
 
@@ -62,7 +72,7 @@ class BoxLayout(QtWidgets.QGroupBox):
 
         for column, arg in enumerate(args):
             if isinstance(arg, str):
-                arg = QtWidgets.QLabel(arg)
+                arg = QLabel(arg)
 
             self.grid_layout.addWidget(arg, row, column)
 
@@ -71,7 +81,7 @@ class BoxLayout(QtWidgets.QGroupBox):
         return row
 
     def delete_row_callback(self):
-        sending_button = self.sender()  # type: QtWidgets.QPushButton
+        sending_button: QPushButton = self.sender()
 
         row = int(sending_button.objectName().split("-")[-1])
 
@@ -101,14 +111,14 @@ class ActorWidget(BoxLayout):
     def add_heading(self) -> None:
         self.add_row("Actor", "Power")
 
-    def add_delete_button(self):
-        delete_button = QtWidgets.QPushButton("Delete")
+    def add_delete_button(self) -> QPushButton:
+        delete_button = QPushButton("Delete")
         delete_button.clicked.connect(self.delete_row_callback)
         delete_button.setObjectName("actor-" + str(self._row_pointer))
 
         return delete_button
 
-    def add_power_input(self, actor_input, power):
+    def add_power_input(self, actor_input: ActorInputModel, power) -> DoubleInput:
         power_input = DoubleInput()
         power_input.setValue(power)
         power_input.valueChanged.connect(actor_input.set_power)
@@ -117,15 +127,15 @@ class ActorWidget(BoxLayout):
 
         return power_input
 
-    def add_comment_button(self):
-        comment_button = QtWidgets.QPushButton("Comment")
+    def add_comment_button(self) -> QPushButton:
+        comment_button = QPushButton("Comment")
         comment_button.clicked.connect(self.comment_window)
         comment_button.setObjectName("actor-" + str(self._row_pointer))
 
         return comment_button
 
-    def add_name_input(self, actor_input, name):
-        name_input = QtWidgets.QLineEdit()
+    def add_name_input(self, actor_input: ActorInputModel, name) -> QLineEdit:
+        name_input = QLineEdit()
         name_input.setText(name)
         name_input.textChanged.connect(actor_input.set_name)
 
@@ -133,7 +143,7 @@ class ActorWidget(BoxLayout):
 
         return name_input
 
-    def add_actor(self, name=None, power=Decimal("0.0")):
+    def add_actor(self, name=None, power: Decimal = Decimal("0.0")) -> ActorInputModel:
         if not name:
             name = self.create_actor_name()
 
@@ -168,13 +178,13 @@ class ActorWidget(BoxLayout):
         signals.actor_deleted.send(row)
 
     def comment_window(self) -> None:
-        sending_button = self.sender()  # type: QtWidgets.QPushButton
+        sending_button: QPushButton = self.sender()
 
         row = int(sending_button.objectName().split("-")[-1])
 
         obj = self.actor_issues[row]
 
-        text, ok_pressed = QtWidgets.QInputDialog.getMultiLineText(
+        text, ok_pressed = QInputDialog.getMultiLineText(
             self,
             "Comment",
             "Comment",
@@ -204,21 +214,23 @@ class IssueWidget(BoxLayout):
     def add_heading(self) -> None:
         self.add_row("Issue", "Lower", "Upper")
 
-    def add_delete_button(self):
-        delete_button = QtWidgets.QPushButton("Delete")
+    def add_delete_button(self) -> QPushButton:
+        delete_button = QPushButton("Delete")
         delete_button.clicked.connect(self.delete_row_callback)
         delete_button.setObjectName("issue-" + str(self._row_pointer))
 
         return delete_button
 
-    def add_comment_button(self):
-        comment_button = QtWidgets.QPushButton("Comment")
+    def add_comment_button(self) -> QPushButton:
+        comment_button = QPushButton("Comment")
         comment_button.clicked.connect(self.comment_window)
         comment_button.setObjectName("issue-" + str(self._row_pointer))
 
         return comment_button
 
-    def add_issue(self, name=None, lower=Decimal(0), upper=Decimal("100.0")):
+    def add_issue(
+        self, name=None, lower: Decimal = Decimal(0), upper: Decimal = Decimal("100.0")
+    ) -> IssueInputModel:
         if not name:
             name = self.create_issue_name()
         issue_input = IssueInputModel(name, lower, upper)
@@ -230,7 +242,7 @@ class IssueWidget(BoxLayout):
         upper_input = DoubleInput()
         upper_input.setValue(upper)
 
-        name_input = QtWidgets.QLineEdit()
+        name_input = QLineEdit()
         name_input.setText(name)
 
         # call the setter on a change
@@ -274,7 +286,7 @@ class IssueWidget(BoxLayout):
 
         obj = self.actor_issues[row]
 
-        text, ok_pressed = QtWidgets.QInputDialog.getMultiLineText(
+        text, ok_pressed = QInputDialog.getMultiLineText(
             self,
             "Comment",
             "Comment",
@@ -352,7 +364,7 @@ class ActorIssueWidget(BoxLayout):
         self._row_pointer += 1
 
 
-class PositionSalienceWidget(QtWidgets.QWidget):
+class PositionSalienceWidget(QWidget):
     def __init__(self, actor_issue_box: ActorIssueWidget, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
@@ -360,24 +372,24 @@ class PositionSalienceWidget(QtWidgets.QWidget):
 
         self._row_pointer = 0
 
-        self.choices_list_widget = QtWidgets.QListWidget(self)
+        self.choices_list_widget = QListWidget(self)
         self.choices_list_widget.setMaximumHeight(100)
-        self.choices_list_widget.setSelectionMode(QtWidgets.QListWidget.MultiSelection)
+        self.choices_list_widget.setSelectionMode(QListWidget.SelectionMode.MultiSelection)
         self.choices_list_widget.itemSelectionChanged.connect(self.redraw)
 
         self.choices_list_widget_items = {}
 
-        self.container = QtWidgets.QVBoxLayout(self)
+        self.container = QVBoxLayout(self)
         self.container.addWidget(self.choices_list_widget)
 
-        self.scroll_area = QtWidgets.QScrollArea(self)
+        self.scroll_area = QScrollArea(self)
         self.scroll_area.setWidgetResizable(True)
 
-        self.scroll_area_widget = QtWidgets.QWidget()
+        self.scroll_area_widget = QWidget()
         self.scroll_area.setWidget(self.scroll_area_widget)
 
-        self.grid_layout = QtWidgets.QGridLayout(self.scroll_area_widget)
-        self.grid_layout.setAlignment(QtCore.Qt.AlignTop)
+        self.grid_layout = QGridLayout(self.scroll_area_widget)
+        self.grid_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
 
         self.container.addWidget(self.scroll_area)
 
@@ -395,7 +407,7 @@ class PositionSalienceWidget(QtWidgets.QWidget):
 
         for column, arg in enumerate(args):
             if isinstance(arg, str):
-                arg = QtWidgets.QLabel(arg)
+                arg = QLabel(arg)
 
             self.grid_layout.addWidget(arg, row, column)
 
@@ -432,7 +444,7 @@ class PositionSalienceWidget(QtWidgets.QWidget):
         self.choices_list_widget.sortItems()
 
     def delete_choice(self, key) -> None:
-        item = self.choices_list_widget_items[key]  # type: QtWidgets.QListWidgetItem
+        item = self.choices_list_widget_items[key]  # type: QListWidgetItem
 
         self.choices_list_widget.takeItem(self.choices_list_widget.row(item))
 
@@ -446,14 +458,14 @@ class PositionSalienceWidget(QtWidgets.QWidget):
 
         for item in choices:
             if item.name != "":
-                item_widget = QtWidgets.QListWidgetItem(self.choices_list_widget)
+                item_widget = QListWidgetItem(self.choices_list_widget)
                 item_widget.setText(item.name)
                 self.choices_list_widget_items[item.id] = item_widget
                 self.choices_list_widget.addItem(item_widget)
 
         self.choices_list_widget.sortItems()
 
-    def is_selected(self, value) -> bool:
+    def is_selected(self, value: str) -> bool:
         items = self.choices_list_widget.selectedItems()
 
         if len(items) == 0:
@@ -475,9 +487,9 @@ class PositionWidget(PositionSalienceWidget):
             actor_issue.widgets["position"] = position
 
             self.add_row(
-                QtWidgets.QLabel(actor_issue.issue.name),
-                QtWidgets.QLabel(actor_issue.actor.name),
-                QtWidgets.QLabel(normalize(actor_issue.actor.power)),
+                QLabel(actor_issue.issue.name),
+                QLabel(actor_issue.actor.name),
+                QLabel(normalize(actor_issue.actor.power)),
                 position,
             )
 
@@ -493,9 +505,9 @@ class SalienceWidget(PositionSalienceWidget):
             salience.valueChanged.connect(actor_issue.set_salience)
 
             self.add_row(
-                QtWidgets.QLabel(actor_issue.actor.name),
-                QtWidgets.QLabel(actor_issue.issue.name),
-                QtWidgets.QLabel(normalize(actor_issue.actor.power)),
-                QtWidgets.QLabel(normalize(actor_issue.position)),
+                QLabel(actor_issue.actor.name),
+                QLabel(actor_issue.issue.name),
+                QLabel(normalize(actor_issue.actor.power)),
+                QLabel(normalize(actor_issue.position)),
                 salience,
             )

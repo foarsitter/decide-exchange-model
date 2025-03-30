@@ -1,6 +1,3 @@
-import os
-from typing import Optional
-
 from decide.data.utils import write_exchanges
 from decide.model import base
 from decide.model.observers import observer
@@ -14,33 +11,23 @@ class ExchangesWriter(observer.Observer):
     def __init__(
         self,
         observable: observer.Observable,
-        summary_only=False,
-        before=False,
+        summary_only: bool = False,
+        before: bool = False,
     ) -> None:
         super().__init__(observable)
         self.summary_only = summary_only
         self.before = before
 
     def _create_directory(self, repetition: int) -> None:
-        if not os.path.exists(
-            f"{self.output_directory}/exchanges/{repetition}",
-        ):
-            os.makedirs(f"{self.output_directory}/exchanges/{repetition}")
-
-        if (
-            not os.path.exists(
-                f"{self.output_directory}/exchanges/{repetition}/initial",
-            )
-            and self.before
-        ):
-            os.makedirs(
-                f"{self.output_directory}/exchanges/{repetition}/initial",
-            )
+        (self.output_directory / "exchanges" / f"{repetition}" / "initial").mkdir(
+            parents=True,
+            exist_ok=True,
+        )
 
     def before_iterations(self, repetition) -> None:
         self._create_directory(repetition)
 
-    def before_loop(self, iteration: int, repetition: Optional[int] = None) -> None:
+    def before_loop(self, iteration: int, repetition: int | None = None) -> None:
         """Writes all the possible exchanges to the filesystem
         :param iteration:
         :param repetition:`.
@@ -68,13 +55,20 @@ class ExchangesWriter(observer.Observer):
         """
         salt = self._get_salt
 
+        filename = (
+            self.output_directory
+            / "exchanges"
+            / f"{repetition}"
+            / f"round.{iteration + 1}.{salt}.csv"
+        )
+
         write_exchanges(
-            filename=f"{self.output_directory}/exchanges/{repetition}/round.{iteration + 1}.{salt}.csv",
+            filename=filename,
             realized=realized,
         )
 
     @property
-    def _get_salt(self):
+    def _get_salt(self) -> str:
         model_name = "random"
         from decide.model.equalgain import EqualGainModel
 

@@ -1,12 +1,18 @@
 import logging
 import os
+from pathlib import Path
+from zipfile import Path
 
 import pandas as pd
+from click.types import Path
+from matplotlib.path import Path
 from pandas.errors import DataError
+from peewee import DatabaseProxy
 
 from decide import data_folder
 from decide.data.database import Manager
 from decide.data.database import connection
+from decide.log import logger
 from decide.results.helpers import handle_data_frame
 from decide.results.helpers import list_to_sql_param
 
@@ -14,7 +20,9 @@ pd.set_option("display.max_rows", 500)
 pd.set_option("display.max_columns", 500)
 
 
-def write_summary_result(conn, model_run_ids, output_directory) -> None:
+def write_summary_result(
+    conn: DatabaseProxy, model_run_ids: list[int], output_directory: Path
+) -> None:
     sql = f"""SELECT SUM(e.own)            as own,
            SUM(e.inner_positive) as inner_positive,
            SUM(e.inner_negative) as inner_negative,
@@ -32,7 +40,7 @@ def write_summary_result(conn, model_run_ids, output_directory) -> None:
 
     df = pd.read_sql_query(
         sql,
-        con=conn,
+        con=conn._state.conn,
         index_col=["p"],
     )
 
@@ -44,11 +52,12 @@ def write_summary_result(conn, model_run_ids, output_directory) -> None:
                 columns=["actor"],
                 values=["inner_positive"],
             ),
-            file_name=os.path.join(output_directory, "externalities_inner_positive.{}"),
+            file_name=str(output_directory / "externalities_inner_positive.{}"),
             title="Inner positive externalities",
         )
     except DataError as ex:
-        logging.exception(ex)
+        logger.exception(ex)
+        raise ex
     try:
         handle_data_frame(
             df=pd.pivot_table(
@@ -57,11 +66,12 @@ def write_summary_result(conn, model_run_ids, output_directory) -> None:
                 columns=["actor"],
                 values=["inner_negative"],
             ),
-            file_name=os.path.join(output_directory, "externalities_inner_negative.{}"),
+            file_name=str(output_directory / "externalities_inner_negative.{}"),
             title="Inner negative externalities",
         )
     except DataError as ex:
-        logging.exception(ex)
+        raise ex
+        logger.exception(ex)
     try:
         handle_data_frame(
             df=pd.pivot_table(
@@ -70,12 +80,13 @@ def write_summary_result(conn, model_run_ids, output_directory) -> None:
                 columns=["actor"],
                 values=["outer_positive"],
             ),
-            file_name=os.path.join(output_directory, "externalities_outer_positive.{}"),
+            file_name=str(output_directory / "externalities_outer_positive.{}"),
             title="Outer positive externalities",
         )
 
     except DataError as ex:
-        logging.exception(ex)
+        raise ex
+        logger.exception(ex)
     try:
         handle_data_frame(
             df=pd.pivot_table(
@@ -84,20 +95,22 @@ def write_summary_result(conn, model_run_ids, output_directory) -> None:
                 columns=["actor"],
                 values=["outer_negative"],
             ),
-            file_name=os.path.join(output_directory, "externalities_outer_negative.{}"),
+            file_name=str(output_directory / "externalities_outer_negative.{}"),
             title="Outer negative externalities",
         )
 
     except DataError as ex:
-        logging.exception(ex)
+        raise ex
+        logger.exception(ex)
     try:
         handle_data_frame(
             df=pd.pivot_table(df, index=["p"], columns=["actor"], values=["own"]),
-            file_name=os.path.join(output_directory, "externalities_own.{}"),
+            file_name=str(output_directory / "externalities_own.{}"),
             title="Own utility sun",
         )
     except DataError as ex:
-        logging.exception(ex)
+        raise ex
+        logger.exception(ex)
 
 
 if __name__ == "__main__":

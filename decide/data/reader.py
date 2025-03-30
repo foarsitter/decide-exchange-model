@@ -1,7 +1,11 @@
 import csv
+from _csv import Reader
 from copy import copy
+from pathlib import Path
+from typing import Optional
 
 import typesystem
+from typesystem.schemas import Schema
 
 from .types import ActorIssue
 from .types import Comment
@@ -26,7 +30,7 @@ class InputDataFile:
         self.rows = {}
         self.data = {}
 
-    def add_typed_object(self, obj) -> None:
+    def add_typed_object(self, obj: Schema) -> None:
         klass = obj.__class__
 
         if klass in self.data:
@@ -35,11 +39,11 @@ class InputDataFile:
             self.data[klass] = {obj: obj}
 
     @classmethod
-    def open(cls, filename: str) -> "InputDataFile":
+    def open(cls, filename: Path) -> "InputDataFile":
         """Transforms a file with comma separated values to a dictionary where the key is the row number."""
         data = cls()
 
-        with open(filename, encoding="utf-8", errors="replace") as csv_file:
+        with filename.open() as csv_file:
             # guess the document format
             dialect = csv.Sniffer().sniff(csv_file.read(1024))
             csv_file.seek(0)
@@ -51,7 +55,7 @@ class InputDataFile:
         return data
 
     @classmethod
-    def open_reader(cls, reader, data=None):
+    def open_reader(cls, reader: Reader, data: Optional["InputDataFile"] = None):
         if not data:
             data = cls()
 
@@ -62,7 +66,7 @@ class InputDataFile:
 
         return data
 
-    def parse_rows(self, items) -> None:
+    def parse_rows(self, items: Schema) -> None:
         for index, row in enumerate(items):
             # keep the original data
             self.rows[index] = row
@@ -74,7 +78,7 @@ class InputDataFile:
                 self.errors[index] = e  # collect the error for displaying purpose
 
     @property
-    def is_valid(self):
+    def is_valid(self) -> bool:
         return len(self.errors) == 0
 
     @property
@@ -154,7 +158,7 @@ class InputDataFile:
                 )
 
 
-def csv_row_to_type(row: list[str]):
+def csv_row_to_type(row: list[str]) -> Schema:
     """Translate a list of values to the corresponding object."""
     key = row[0]  # the first element contains the #id field
     row = row[1:]  # the rest the row

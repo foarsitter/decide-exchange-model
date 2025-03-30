@@ -5,6 +5,7 @@ from collections import defaultdict
 
 from decide.model import base
 from decide.model import calculations
+from decide.model.base import AbstractExchange
 from decide.model.observers import observer
 
 
@@ -13,7 +14,7 @@ class Externalities(observer.Observer):
     end of each loop the externalities to the filesystem.
     """
 
-    def __init__(self, observable: observer.Observable, summary_only=False) -> None:
+    def __init__(self, observable: observer.Observable, summary_only: bool = False) -> None:
         super().__init__(observable)
         self.actor_totals = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
         self.summary_only = summary_only
@@ -26,7 +27,9 @@ class Externalities(observer.Observer):
 
         self.database_objects = []
 
-    def _add_exchange_set(self, externalities, realized, model, inner, issue_set_key):
+    def _add_exchange_set(
+        self, externalities, realized: AbstractExchange, model, inner: list[str], issue_set_key
+    ):
         """Checks if an externality is own, inner or outer and positive or negative. This method also updates the actor
         externalities but returns the exchange as an set.
         """
@@ -58,7 +61,9 @@ class Externalities(observer.Observer):
 
         return exchange_set
 
-    def _add_or_update_issue_set(self, issue_set_key, realized, exchange_set) -> None:
+    def _add_or_update_issue_set(
+        self, issue_set_key, realized: AbstractExchange, exchange_set
+    ) -> None:
         """Create a new entry or adds the value to the existing connection
         :param issue_set_key:
         :param realized:
@@ -75,7 +80,7 @@ class Externalities(observer.Observer):
             # end if
 
     @staticmethod
-    def _calculate_externalities(model, realized):
+    def _calculate_externalities(model, realized: AbstractExchange):
         """Loops over all the actors and calculates each actor his externalities
         :param model:
         :param realized:
@@ -88,20 +93,16 @@ class Externalities(observer.Observer):
 
         return results
 
-    def _create_directories(self, repetition) -> None:
+    def _create_directories(self, repetition: int) -> None:
         """Helper for creating the output directory."""
-        if not os.path.exists(
-            f"{self.output_directory}/externalities/{repetition}",
-        ):
-            os.makedirs(
-                f"{self.output_directory}/externalities/{repetition}",
-            )
+        (self.output_directory / "externalities" / str(repetition)).mkdir(parents=True, exist_ok=True)
+
 
     def _ordered_actors(self):
         """Helper for outputting the actors in a consisting order."""
         return collections.OrderedDict(sorted(self.actors.items())).items()
 
-    def _sum(self, ordered_actors, iteration, repetition) -> None:
+    def _sum(self, ordered_actors, iteration: int, repetition: int) -> None:
         """Sum the dictionary keys."""
         for key, value in ordered_actors:
             actor = self.actor_totals[key][iteration]
@@ -255,10 +256,7 @@ class Externalities(observer.Observer):
 
     def after_repetitions(self) -> None:
         """Write the summary's."""
-        if not os.path.exists(
-            f"{self.output_directory}/externalities/summary",
-        ):
-            os.makedirs(f"{self.output_directory}/externalities/summary")
+        (self.output_directory /"externalities" / "summary").mkdir(parents=True, exist_ok=True)
 
         file = defaultdict(list)
 
@@ -312,7 +310,7 @@ class Externalities(observer.Observer):
                 for row in value:
                     writer.writerow(row)
 
-    def _sum_var(self, items: list):
+    def _sum_var(self, items: list) -> tuple[int, int] | tuple[str, str]:
         if len(items) == 0:
             return 0, 0
 

@@ -1,6 +1,6 @@
-import logging
-from typing import Optional
+from pathlib import Path
 
+from decide.log import logger
 from decide.model import base
 from decide.model import equalgain
 from decide.model import randomrate
@@ -25,7 +25,7 @@ class Observer:
         """:type observable: Observable reference to the main event handler"""
         observable.register(self)
         self.model_ref = observable.model_ref
-        self.output_directory = observable.output_directory
+        self.output_directory: Path = observable.output_directory
 
     def update(self, observable, notification_type, **kwargs) -> None:
         pass
@@ -80,9 +80,9 @@ class Observer:
 
     @staticmethod
     def log(message: str) -> None:
-        logging.info(message)
+        logger.info(message)
 
-    def execute_exchange(self, exchange: base.AbstractExchange):
+    def execute_exchange(self, exchange: base.AbstractExchange) -> None:
         if isinstance(exchange, equalgain.EqualGainExchange):
             return self._execute_equal_exchange(exchange)
         if isinstance(exchange, randomrate.RandomRateExchange):
@@ -102,10 +102,10 @@ class Observer:
 class Observable(Observer):
     """Even the Observable is and Observer, this gives us the possibility to call the right method with the correct params."""
 
-    def __init__(self, model_ref: base.AbstractModel, output_directory: str) -> None:
+    def __init__(self, model_ref: base.AbstractModel, output_directory: Path) -> None:
         self.__observers = []
         self.model_ref = model_ref
-        self.output_directory = output_directory
+        self.output_directory: Path = output_directory
 
     def update_model_ref(self, model) -> None:
         self.model_ref = model
@@ -133,7 +133,7 @@ class Observable(Observer):
         for observer in self.__observers:
             observer.before_iterations(repetition)
 
-    def before_loop(self, iteration: int, repetition: Optional[int] = None) -> None:
+    def before_loop(self, iteration: int, repetition: int | None = None) -> None:
         for observer in self.__observers:
             observer.before_loop(iteration, repetition)
 

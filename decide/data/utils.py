@@ -1,19 +1,20 @@
 import csv
+from pathlib import Path
 
 from decide.model.base import AbstractExchange
 
 
 def write_exchanges(
-    filename: str,
+    filename: Path,
     realized: list[AbstractExchange],
-    delimiter=";",
-    lineterminator="\n",
+    delimiter: str = ";",
+    lineterminator: str = "\n",
 ) -> None:
     """Write all realized exchanges to the given file."""
     if len(realized) <= 0:
         return
 
-    with open(filename, "w") as csv_file:
+    with filename.open("w") as csv_file:
         writer = csv.writer(
             csv_file,
             delimiter=delimiter,

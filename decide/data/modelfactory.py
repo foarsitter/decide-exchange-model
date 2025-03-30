@@ -1,5 +1,3 @@
-from typing import Optional
-
 from decide.data import types
 from decide.data.reader import InputDataFile
 from decide.model.base import AbstractModel
@@ -11,8 +9,8 @@ class ModelFactory:
     def __init__(
         self,
         date_file: InputDataFile,
-        actor_whitelist: Optional[list[str]] = None,
-        issue_whitelist: Optional[list[str]] = None,
+        actor_whitelist: list[str] | None = None,
+        issue_whitelist: list[str] | None = None,
         *args,
         **kwargs,
     ) -> None:

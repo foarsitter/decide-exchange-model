@@ -1,3 +1,5 @@
+from datetime import datetime
+from datetime import UTC
 import re
 import sys
 from pathlib import Path
@@ -41,6 +43,8 @@ if __name__ == "__main__":
     if x == "patch":
         print(update_version(path, increase_patch(version)))  # noqa: T201
     elif x == "dev":
-        print(update_version(path, increase_patch(version) + "-dev"))  # noqa: T201
+        # use the timestamp as dev number
+        n = datetime.now(UTC).strftime("%H%M%S")
+        print(update_version(path, increase_patch(version) + f"-dev{n}"))  # noqa: T201
     else:
         print(current_version())  # noqa: T201

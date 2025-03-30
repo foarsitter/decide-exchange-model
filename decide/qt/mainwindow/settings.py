@@ -1,8 +1,8 @@
-import os
 import xml.etree.ElementTree as ET
+from pathlib import Path
 
-from PyQt5 import QtCore
-from PyQt5 import QtWidgets
+from PyQt6 import QtCore
+from PyQt6 import QtWidgets
 
 from decide import decide_base_path
 from decide.cli import float_range
@@ -109,13 +109,13 @@ class ProgramSettings(QtCore.QObject):
 
     changed = QtCore.pyqtSignal()
 
-    settings_file = os.path.join(decide_base_path, "decide-settings.xml")
+    settings_file: Path = decide_base_path / "decide-settings.xml"
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
-        self.input_filename = ""
-        self.output_directory = ""
+        self.input_filename: Path | None = None
+        self.output_directory: Path | None = None
         self.run_name = ""
 
         self.salience_weight = 0.4
@@ -146,22 +146,23 @@ class ProgramSettings(QtCore.QObject):
 
         self.recently_opened = []
 
-    @property
-    def output_path(self):
+    def output_path(self) -> Path:
         return (
-            self.output_directory,
-            self.data_set_name,
-            self.run_name.format(repetitions=self.repetitions, rounds=self.iterations),
+            Path(self.output_directory)
+            / self.data_set_name()
+            / self.run_name.format(repetitions=self.repetitions, rounds=self.iterations)
         )
 
-    def settings_file_path(self):
-        return os.path.join(decide_base_path, self.settings_file)
+    def settings_file_path(self) -> Path:
+        return decide_base_path / self.settings_file
 
     def save(self) -> None:
         if self.settings_type == "xml":
             self._save_xml()
 
-    def set_input_filename(self, value) -> None:
+    def set_input_filename(self, value: Path) -> None:
+        value = str(value.absolute().resolve())
+
         if value in self.recently_opened:
             self.recently_opened.remove(value)
 
@@ -177,7 +178,7 @@ class ProgramSettings(QtCore.QObject):
         for key, value in self.__dict__.items():
             if not key.startswith("_") and hasattr(self, key):
                 if isinstance(value, list):
-                    value = self.settings_list_separator.join(value)
+                    value = self.settings_list_separator.join([str(v) for v in value])
 
                 child = ET.Element(key)
                 child.text = str(value)
@@ -190,9 +191,9 @@ class ProgramSettings(QtCore.QObject):
             self._load_xml()
 
     def _load_xml(self) -> None:
-        file_path = os.path.join(decide_base_path, self.settings_file)
+        file_path: Path = self.settings_file
 
-        if not os.path.exists(file_path):
+        if not file_path.exists():
             return
 
         for elm in ET.parse(file_path).getroot():
@@ -214,18 +215,22 @@ class ProgramSettings(QtCore.QObject):
                 else:
                     setattr(self, elm.tag, str(elm.text))
 
-    @property
-    def data_set_name(self):
-        return os.path.splitext(os.path.basename(self.input_filename))[0]
+    def data_set_name(self) -> str:
+        if not isinstance(self.input_filename, Path):
+            self.input_filename = Path(self.input_filename)
 
-    @property
-    def model_variations(self):
+        return self.input_filename.stem
+
+    def model_variations(self) -> list[str]:
         """Takes start, step and stop and creates a list of values
         :rtype: list of str.
         """
         if self.start and self.stop and self.start == self.stop:
             return [f"{self.start:.2f}"]
-        values = [f"{round(p, 2):.2f}" for p in float_range(start=self.start, step=self.step, stop=self.stop)]
+        values = [
+            f"{round(p, 2):.2f}"
+            for p in float_range(start=self.start, step=self.step, stop=self.stop)
+        ]
 
         if len(values) > 0:
             return values

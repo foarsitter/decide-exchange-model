@@ -3,7 +3,10 @@ from collections import defaultdict
 
 from decide import results
 from decide.data import database as db
+from decide.data.database import ExchangeActor
+from decide.data.database import ModelRun
 from decide.data.database import connection
+from decide.log import logger
 from decide.model import calculations
 from decide.model.base import AbstractExchange
 from decide.model.base import AbstractExchangeActor
@@ -24,7 +27,7 @@ class SQLiteObserver(Observer):
         self.issues = {}
         self.model_run_ids = []
         self.data_set = None
-        self.model_run = None
+        self.model_run: ModelRun = ModelRun()
 
         if not output_directory.endswith(".db") and output_directory != ":memory:":
             output_directory += "/decide-data.sqlite.db"
@@ -126,18 +129,26 @@ class SQLiteObserver(Observer):
             self._write_actor_issues(iteration, repetition, "after")
 
     def after_repetitions(self) -> None:
-        self.model_run.finished_at = datetime.datetime.now()
+        self.model_run.finished_at = datetime.datetime.now(datetime.UTC)
         self.model_run.save()
         self.model_run_ids.append(self.model_run.id)
 
+        if self.model_run.repetitions <= 1:
+            logger.info("Cannot calculate covariance, there is only 1 repetition")
+            return
+
         results.covariance.write_result(
             connection,
-            self.model_run.iterations - 1,
-            self.model_run.id,
-            self.output_directory,
+            last_iteration=self.model_run.iterations - 1,
+            model_run_id=self.model_run.id,
+            output_directory=self.output_directory,
         )
 
     def after_model(self) -> None:
+        if len(self.model_run_ids) <= 1:
+            logger.info("Cannot calculate summary results, there is only 1 model run")
+            return
+
         try:
             results.externalities.write_summary_result(
                 db.connection,
@@ -165,8 +176,10 @@ class SQLiteObserver(Observer):
                 self.output_directory,
                 "after",
             )
-        except Exception:
-            pass
+        except Exception as e:
+            raise e
+            logger.exception(e)
+            logger.error("After model error")
 
     def _write_externalities(
         self,
@@ -215,7 +228,7 @@ class SQLiteObserver(Observer):
 
             externality.save()
 
-    def _write_actor_issues(self, iteration: int, repetition: int, _type="before") -> None:
+    def _write_actor_issues(self, iteration: int, repetition: int, _type: str = "before") -> None:
         with db.connection.atomic():
             repetition = self.repetitions[repetition]
             iteration, _ = db.Iteration.get_or_create(
@@ -240,7 +253,7 @@ class SQLiteObserver(Observer):
                         type=_type,
                     )
 
-    def _create_exchange_actor(self, i: AbstractExchangeActor):
+    def _create_exchange_actor(self, i: AbstractExchangeActor) -> ExchangeActor:
         exchange_actor = db.ExchangeActor()
         exchange_actor.actor = self.actors[i.actor]
         exchange_actor.supply_issue = self.issues[i.supply.issue]

@@ -5,7 +5,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 
 
-def append_nbs(data):
+def append_nbs(data) -> list[Decimal]:
     saliences = {}
     powers = {}
     positions = {}
