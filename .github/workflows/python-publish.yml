@@ -30,12 +30,12 @@ jobs:
         run: |
           echo "::set-output name=sha::$(git rev-parse --verify --quiet HEAD^)"
 
-      - name: Detect and tag new version
-        id: check-version
-        if: steps.check-parent-commit.outputs.sha
-        uses: salsify/action-detect-and-tag-new-version@v2.0.3
-        with:
-          version-command: uv run -q python version.py current
+#      - name: Detect and tag new version
+#        id: check-version
+#        if: steps.check-parent-commit.outputs.sha
+#        uses: salsify/action-detect-and-tag-new-version@v2.0.3
+#        with:
+#          version-command: uv run -q python version.py current
 
       - name: Bump version for developmental release
         if: "! steps.check-version.outputs.tag"
