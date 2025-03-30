@@ -22,8 +22,7 @@ dependencies = [
   "numpy==1.23.4",
   "pandas==1.5",
   "peewee==3.14.4",
-  "pyqt5==5.15.11",
-  "pyqt5-qt5==5.15.2",
+  "pyqt6>=6.8.1",
   "requests",
   "typesystem==0.2.5",
 ]
@@ -106,7 +105,7 @@ format.docstring-code-line-length = "dynamic"
 # to be opt-out in the future.
 format.docstring-code-format = false
 lint.select = [ "ALL" ]
-lint.ignore = [ "D" ]
+lint.ignore = [ "ANN", "D" ]
 # Allow fix for all enabled rules (when `--fix`) is provided.
 lint.fixable = [ "ALL" ]
 lint.unfixable = [  ]

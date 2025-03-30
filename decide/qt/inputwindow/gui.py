@@ -3,8 +3,18 @@ import os
 import sys
 
 import requests
-from PyQt5 import QtGui
-from PyQt5 import QtWidgets
+from PyQt6 import QtGui
+from PyQt6.QtGui import QAction
+from PyQt6.QtWidgets import QApplication
+from PyQt6.QtWidgets import QErrorMessage
+from PyQt6.QtWidgets import QFileDialog
+from PyQt6.QtWidgets import QHBoxLayout
+from PyQt6.QtWidgets import QMainWindow
+from PyQt6.QtWidgets import QMenuBar
+from PyQt6.QtWidgets import QMessageBox
+from PyQt6.QtWidgets import QTabWidget
+from PyQt6.QtWidgets import QVBoxLayout
+from PyQt6.QtWidgets import QWidget
 
 from decide import input_folder
 from decide import log_filename
@@ -23,7 +33,7 @@ from decide.qt.mainwindow.helpers import normalize
 from decide.qt.utils import show_user_error
 
 
-class InputWindow(QtWidgets.QMainWindow):
+class InputWindow(QMainWindow):
     def __init__(self, main_window: DecideMainWindow = None, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
@@ -33,10 +43,10 @@ class InputWindow(QtWidgets.QMainWindow):
         # refresh the main windows after editing
         self.main_window = main_window
 
-        self.main = QtWidgets.QHBoxLayout()
-        self.left = QtWidgets.QVBoxLayout()
+        self.main = QHBoxLayout()
+        self.left = QVBoxLayout()
 
-        self.tabs = QtWidgets.QTabWidget()
+        self.tabs = QTabWidget()
 
         self.actor_widget = ActorWidget()
         self.issue_widget = IssueWidget()
@@ -55,10 +65,10 @@ class InputWindow(QtWidgets.QMainWindow):
         self.main.addLayout(self.left)
         self.main.addWidget(self.tabs)
 
-        q = QtWidgets.QWidget()
+        q = QWidget()
         q.setLayout(self.main)
 
-        self.menubar = QtWidgets.QMenuBar(self)
+        self.menubar = QMenuBar(self)
 
         self.init_menu()
         self.setCentralWidget(q)
@@ -78,16 +88,16 @@ class InputWindow(QtWidgets.QMainWindow):
         file_menu = self.menubar.addMenu("File")
         example_menu = self.menubar.addMenu("Examples")
 
-        load_kopenhagen = QtWidgets.QAction("&load Kopenhagen", self.menubar)
+        load_kopenhagen = QAction("&load Kopenhagen", self.menubar)
         load_kopenhagen.triggered.connect(self.load_copenhagen)
 
-        load_cop = QtWidgets.QAction("&load Parijs", self.menubar)
+        load_cop = QAction("&load Parijs", self.menubar)
         load_cop.triggered.connect(self.load_cop21)
 
-        open_action = QtWidgets.QAction("Open", self.menubar)
+        open_action = QAction("Open", self.menubar)
         open_action.triggered.connect(self.open_dialog)
 
-        save_action = QtWidgets.QAction("Save", self.menubar)
+        save_action = QAction("Save", self.menubar)
         save_action.triggered.connect(self.save_location)
 
         example_menu.addAction(load_kopenhagen)
@@ -132,33 +142,33 @@ class InputWindow(QtWidgets.QMainWindow):
             show_user_error(self, f"Cannot load {file}")
 
     def open_dialog(self) -> None:
-        file_name, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Select input data")
+        file_name, _ = QFileDialog.getOpenFileName(self, "Select input data")
 
         if file_name:
             try:
                 self.load(file_name)
             except Exception as ex:
-                error_dialog = QtWidgets.QErrorMessage(self)
+                error_dialog = QErrorMessage(self)
                 error_dialog.showMessage(str(ex))
 
                 raise
 
     def save_location(self) -> None:
         if self.input_filename:
-            button_reply = QtWidgets.QMessageBox.question(
+            button_reply = QMessageBox.question(
                 self,
                 "Save",
                 f"Overwrite existing file {self.input_filename}",
-                QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
-                QtWidgets.QMessageBox.No,
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                QMessageBox.StandardButton.No,
             )
         else:
-            button_reply = QtWidgets.QMessageBox.No
+            button_reply = QMessageBox.StandardButton.No
 
-        if button_reply == QtWidgets.QMessageBox.Yes:
+        if button_reply == QMessageBox.StandardButton.Yes:
             file_name = self.input_filename
         else:
-            file_name, _ = QtWidgets.QFileDialog.getSaveFileName(
+            file_name, _ = QFileDialog.getSaveFileName(
                 self,
                 "Select input data",
             )
@@ -349,7 +359,7 @@ if __name__ == "__main__":
 
     #    sys.excepthook = exception_hook
 
-    app = QtWidgets.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(True)
 
     input_window = InputWindow()

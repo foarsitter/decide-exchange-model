@@ -20,7 +20,7 @@ jobs:
 #          - { os: macos-latest, python-version: '3.11' }
     env:
       DISPLAY: ':99.0'
-      PYTEST_QT_API: 'pyqt5'
+      PYTEST_QT_API: 'PyQt6'
     steps:
       - uses: actions/checkout@v4
       - name: Install uv and set the python version
