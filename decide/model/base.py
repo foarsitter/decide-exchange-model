@@ -3,7 +3,6 @@ from collections import defaultdict
 from decimal import Decimal
 from itertools import combinations
 from typing import NoReturn
-from typing import Optional
 
 
 class Issue:
@@ -46,7 +45,7 @@ class Issue:
 
         return value / self.step_size + self.lower
 
-    def normalize(self, value):
+    def normalize(self, value) -> Decimal:
         return Decimal(value - self.lower) * self.step_size
 
     def __str__(self) -> str:
@@ -71,7 +70,7 @@ class Issue:
 
         raise NotImplementedError
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(self.issue_id)
 
     def __lt__(self, other):
@@ -119,7 +118,7 @@ class Actor:
 
         return self.actor_id < other.actor_id
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         """Hashing is based on the id
         :return:
         """
@@ -135,7 +134,9 @@ class Actor:
 class ActorIssue:
     """Represents a combination between an actor and issue."""
 
-    def __init__(self, actor: Actor, issue: Issue, position, salience, power) -> None:
+    def __init__(
+        self, actor: Actor, issue: Issue, position: Decimal, salience: Decimal, power: Decimal
+    ) -> None:
         """:param actor: Actor
         :param issue: Issue
         :param position: Double
@@ -149,7 +150,7 @@ class ActorIssue:
         self.left = False  # left of nbs
         self.issue = issue
 
-    def is_left_to_nbs(self, nbs):
+    def is_left_to_nbs(self, nbs) -> bool:
         """True when the position is lower than the Nash Bargaining Solution for this issue.
         :param nbs: int
         :return: bool.
@@ -168,7 +169,7 @@ class ActorIssue:
         if isinstance(other, ActorIssue):
             return self.actor == other.actor and self.issue == other.issue
 
-        return NotImplemented
+        raise NotImplementedError
 
     def __lt__(self, other):
         return self.actor < other.actor
@@ -255,7 +256,7 @@ class AbstractExchangeActor:
 
         self.is_adjusted_by_nbs = False
 
-    def is_move_valid(self, move) -> Optional[bool]:
+    def is_move_valid(self, move) -> bool | None:
         """Cheks if a move not exceeds the interval [0,100].
 
         :param move:
@@ -304,7 +305,7 @@ class AbstractExchangeActor:
         """Shortcut function."""
         return self.model.actor_issues[self.demand.issue]
 
-    def adjust_nbs(self, position):
+    def adjust_nbs(self, position: Decimal | None):
         actor_issues = self.actor_issues()
 
         updates = self.exchange.updates[self.supply.issue]
@@ -333,7 +334,7 @@ class AbstractExchangeActor:
         """
         return self.equals_actor(other) and self.equals_supply_issue(other)
 
-    def equals_actor(self, other):
+    def equals_actor(self, other: "AbstractExchangeActor"):
         """Has this ExchangeActor the same actor
         :param other:
         :return:
@@ -467,7 +468,11 @@ class AbstractExchangeActor:
         return f"{self.actor.name} {self.supply.issue.name} {self.supply.position} {self.y} ({self.opposite_actor.demand.position})"
 
     def __eq__(self, other):
-        return self.equals_actor(other) and self.equals_demand_issue(other) and self.equals_supply_issue(other)
+        return (
+            self.equals_actor(other)
+            and self.equals_demand_issue(other)
+            and self.equals_supply_issue(other)
+        )
 
 
 class AbstractExchange:
@@ -508,7 +513,9 @@ class AbstractExchange:
         # If (2) holds,
         # issue q is the supply issue of i and issue p is the supply issue of j.
         # if ( (model$s_matrix[p, i] / model$s_matrix[q, i]) < (model$s_matrix[p, j] / model$s_matrix[q, j]))
-        if (m.get_value(i, p, "s") / m.get_value(i, q, "s")) < (m.get_value(j, p, "s") / m.get_value(j, q, "s")):
+        if (m.get_value(i, p, "s") / m.get_value(i, q, "s")) < (
+            m.get_value(j, p, "s") / m.get_value(j, q, "s")
+        ):
             self.i: AbstractExchangeActor = self.actor_class(
                 m,
                 j,
@@ -550,7 +557,7 @@ class AbstractExchange:
         self.i.moves.pop()
         self.j.moves.pop()
 
-    def invalidate_exchange_by_supply(self, exchange):
+    def invalidate_exchange_by_supply(self, exchange) -> bool:
         """If the actors and supply issues match one or both the actors from the exchange that is executed,
         this exchange invalidates and needs to be recalculated.
 
@@ -662,14 +669,16 @@ class AbstractExchange:
         """Two actors can only exchange when they are in group a-d or b-c
         :return:
         """
-        if ("a" in self.groups and "d" in self.groups) or ("b" in self.groups and "c" in self.groups):
+        if ("a" in self.groups and "d" in self.groups) or (
+            "b" in self.groups and "c" in self.groups
+        ):
             return True
         msg = "invalid group combination [%,%]"
         raise Exception(
             msg,
         )
 
-    def get_inner_groups(self):
+    def get_inner_groups(self) -> list[str]:
         """When groups[0] is not a and not d, the b&c group is inner.
         If groups[0] == a, then groups[1] has to be D.
         """
@@ -683,7 +692,10 @@ class AbstractExchange:
         if "b" in self.groups and "c" in self.groups:
             return ["b", "c"]
 
-        msg = "Actors should only exchange with their inner group." f" The given groups are {self.groups}"
+        msg = (
+            "Actors should only exchange with their inner group."
+            f" The given groups are {self.groups}"
+        )
         raise ValueError(
             msg,
         )
@@ -747,7 +759,7 @@ class AbstractModel:
         msg = "ActorIssue not found"
         raise ValueError(msg)
 
-    def add_actor(self, actor_name, actor_id=None, comment="") -> Actor:
+    def add_actor(self, actor_name, actor_id=None, comment: str = "") -> Actor:
         """Add an actor to the model
         :param comment:
         :param actor_id:
@@ -759,7 +771,7 @@ class AbstractModel:
         self.actors[actor] = actor
         return actor
 
-    def add_issue(self, issue_name, issue_id=None, comment="") -> Issue:
+    def add_issue(self, issue_name, issue_id=None, comment: str = "") -> Issue:
         """Add an issue to the model
         :param comment:
         :param issue_id:
@@ -816,7 +828,7 @@ class AbstractModel:
 
         return self.actor_issues[issue][actor]
 
-    def add_exchange(self, i, j, p, q, groups):
+    def add_exchange(self, i, j, p, q, groups) -> NoReturn:
         """Add an exchange pair to the model
         :param i:
         :param j:
@@ -953,7 +965,7 @@ class AbstractModel:
         """
         raise NotImplementedError
 
-    def create_existing_issue_set_key(self, p, q):
+    def create_existing_issue_set_key(self, p, q) -> str:
         """Create a combination of issue so it can be used as key."""
         issue_set_key = f"{p}-{q}"
         # an combination only exists once, so it can happen that we have to change the sequence of the keys
@@ -970,7 +982,10 @@ class AbstractModel:
         :param inner:
         :return:
         """
-        return actor in self.groups[issue_set_key][inner[0]] or actor in self.groups[issue_set_key][inner[1]]
+        return (
+            actor in self.groups[issue_set_key][inner[0]]
+            or actor in self.groups[issue_set_key][inner[1]]
+        )
 
     @staticmethod
     def new_exchange_factory(i, j, p, q, model_ref, groups) -> NoReturn:

@@ -1,15 +1,23 @@
 import os
+from pathlib import Path
+from zipfile import Path
 
 import numpy as np
 import pandas as pd
+from click.types import Path
+from matplotlib.path import Path
+from peewee import DatabaseProxy
 
 from decide import data_folder
 from decide.data.database import Manager
 from decide.data.database import connection
+from decide.log import logger
 from decide.results.helpers import list_to_sql_param
 
 
-def write_summary_result(conn, model_run_ids, output_directory, ai_type="before") -> None:
+def write_summary_result(
+    conn: DatabaseProxy, model_run_ids: list[int], output_directory: Path, ai_type="before"
+) -> None:
     x_type = "preference" if ai_type == "before" else "voting"
 
     df = pd.read_sql(
@@ -36,7 +44,7 @@ def write_summary_result(conn, model_run_ids, output_directory, ai_type="before"
           WHERE  ai.type = '{ai_type}' AND m.id IN ({list_to_sql_param(model_run_ids)})
          GROUP BY m.id,r.id, i2.id, i.id) a
     """,
-        conn,
+        conn._state.conn,
         index_col="p",
         columns=["mds"],
     )
@@ -46,11 +54,11 @@ def write_summary_result(conn, model_run_ids, output_directory, ai_type="before"
             index=["issue", "p"],
             columns=["round"],
             values=["mds"],
-            aggfunc=np.average,
+            aggfunc="average",
         )
-        table_avg.to_csv(os.path.join(output_directory, f"mds_average_{x_type}.csv"))
-    except Exception:
-        pass
+        table_avg.to_csv(output_directory / f"mds_average_{x_type}.csv")
+    except Exception as e:
+        logger.exception(e)
 
     try:
         table_var = pd.pivot_table(
@@ -58,11 +66,11 @@ def write_summary_result(conn, model_run_ids, output_directory, ai_type="before"
             index=["issue", "p"],
             columns=["round"],
             values=["mds"],
-            aggfunc=np.var,
+            aggfunc="var",
         )
-        table_var.to_csv(os.path.join(output_directory, f"mds_variance_{x_type}.csv"))
-    except Exception:
-        pass
+        table_var.to_csv(output_directory / f"mds_variance_{x_type}.csv")
+    except Exception as e:
+        logger.exception(e)
 
     sql_2 = f"""SELECT issue.name, issue.id
 FROM issue
@@ -105,7 +113,7 @@ FROM (SELECT sum(ai.position * ai.power * ai.salience) AS numerator,
         AND i.id = {issue_id}
       GROUP BY m.id, r.id, i2.id, i.id) a
         """,
-            conn,
+            conn._state.conn,
             index_col="p",
             columns=["mds"],
         )
@@ -126,12 +134,12 @@ FROM (SELECT sum(ai.position * ai.power * ai.salience) AS numerator,
             lgd = plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.0)
 
             plt.figure.savefig(
-                os.path.join(output_directory, f"mds_{name}_{x_type}.png"),
+                output_directory / f"mds_{name}_{x_type}.png",
                 bbox_extra_artists=(lgd,),
                 bbox_inches="tight",
             )
-        except Exception:
-            pass
+        except Exception as e:
+            logger.exception(e)
 
 
 if __name__ == "__main__":

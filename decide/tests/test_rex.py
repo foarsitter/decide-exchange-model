@@ -9,7 +9,7 @@ from decide.model.equalgain import EqualGainModel
 
 
 @pytest.fixture
-def model_factory():
+def model_factory() -> ModelFactory:
     input_data = """'#A'	'Actor-1'	'Actor-1'	''
 '#A'	'Actor-2'	'Actor-2'	''
 '#P'	'Issue-1'	'Issue-1'	'Issue-1'
@@ -136,14 +136,22 @@ def test_rex_2(model_factory) -> None:
     nbs_supply_i_delta = abs(exchange.i.nbs_0 - nbs_supply_i_adjusted)
     nbs_supply_j_delta = abs(exchange.j.nbs_0 - nbs_supply_j_adjusted)
 
-    loss_actor_j_supply_issue = nbs_supply_j_delta * exchange.j.supply.salience * exchange.j.supply.power
-    gain_actor_i_demand_issue = nbs_supply_j_delta * exchange.i.demand.salience * exchange.i.demand.power
+    loss_actor_j_supply_issue = (
+        nbs_supply_j_delta * exchange.j.supply.salience * exchange.j.supply.power
+    )
+    gain_actor_i_demand_issue = (
+        nbs_supply_j_delta * exchange.i.demand.salience * exchange.i.demand.power
+    )
 
     assert loss_actor_j_supply_issue == pytest.approx(Decimal(1000 / 7))
     assert gain_actor_i_demand_issue == pytest.approx(Decimal(6000 / 7))
 
-    loss_actor_i_supply_issue = nbs_supply_i_delta * exchange.i.supply.salience * exchange.i.supply.power
-    gain_actor_j_demand_issue = nbs_supply_i_delta * exchange.j.demand.salience * exchange.j.demand.power
+    loss_actor_i_supply_issue = (
+        nbs_supply_i_delta * exchange.i.supply.salience * exchange.i.supply.power
+    )
+    gain_actor_j_demand_issue = (
+        nbs_supply_i_delta * exchange.j.demand.salience * exchange.j.demand.power
+    )
 
     assert loss_actor_i_supply_issue == pytest.approx(Decimal(12500 / 7))
     assert gain_actor_j_demand_issue == pytest.approx(Decimal(22500 / 7))
@@ -154,7 +162,9 @@ def test_rex_2(model_factory) -> None:
 
     assert z > y
     # if y < z: issue 2
-    s = exchange.i.supply.salience / (exchange.i.supply.salience + exchange.i.opposite_actor.demand.salience)
+    s = exchange.i.supply.salience / (
+        exchange.i.supply.salience + exchange.i.opposite_actor.demand.salience
+    )
 
     delta_2_uj = loss_actor_j_supply_issue / (s * exchange.i.opposite_actor.demand.salience)
 

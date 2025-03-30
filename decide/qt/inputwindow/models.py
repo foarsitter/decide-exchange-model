@@ -2,7 +2,7 @@ import uuid
 from decimal import Decimal
 from typing import NoReturn
 
-from PyQt5 import QtWidgets
+from PyQt6.QtWidgets import QLabel
 from typesystem.base import ValidationResult
 
 from decide.data import types
@@ -59,11 +59,11 @@ class ActorInputModel(BaseInputModel):
         self._comment = ""
         self.key = "actor_input"
 
-    def as_dict(self):
+    def as_dict(self) -> dict[str, Decimal | str]:
         return {"id": self.name, "power": self.power, "comment": self.comment}
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self._name
 
     @name.setter
@@ -71,7 +71,7 @@ class ActorInputModel(BaseInputModel):
         self.set_name(value)
 
     @property
-    def power(self):
+    def power(self) -> Decimal:
         return self._power
 
     @power.setter
@@ -91,7 +91,7 @@ class ActorInputModel(BaseInputModel):
             signals.actor_changed.send(self, key="power", value=value)
 
     @property
-    def comment(self):
+    def comment(self) -> str:
         return self._comment
 
     @comment.setter
@@ -116,7 +116,7 @@ class IssueInputModel(BaseInputModel):
         self._comment = ""
         self.key = "issue_input"
 
-    def as_dict(self):
+    def as_dict(self) -> dict[str, Decimal | str]:
         return {
             "name": self.name,
             "lower": self.lower,
@@ -125,15 +125,15 @@ class IssueInputModel(BaseInputModel):
         }
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self._name
 
     @property
-    def lower(self):
+    def lower(self) -> Decimal:
         return self._lower
 
     @property
-    def upper(self):
+    def upper(self) -> Decimal:
         return self._upper
 
     @name.setter
@@ -167,7 +167,7 @@ class IssueInputModel(BaseInputModel):
             signals.issue_changed.send(self, key="upper", value=value)
 
     @property
-    def comment(self):
+    def comment(self) -> str:
         return self._comment
 
     @comment.setter
@@ -188,10 +188,10 @@ class ActorIssueInputModel(BaseInputModel):
         self.actor = actor
         self.issue = issue
 
-        self.actor_input = QtWidgets.QLabel(actor.name)
-        self.issue_input = QtWidgets.QLabel(issue.name)
+        self.actor_input = QLabel(actor.name)
+        self.issue_input = QLabel(issue.name)
 
-        self.power_input = QtWidgets.QLabel(str(actor.power))
+        self.power_input = QLabel(str(actor.power))
 
         self.position_input = DoubleInput()
         self.position_input.valueChanged.connect(self.set_position)
@@ -206,7 +206,7 @@ class ActorIssueInputModel(BaseInputModel):
         self._position = Decimal("0.0")
         self._salience = Decimal("0.0")
 
-    def as_dict(self):
+    def as_dict(self) -> dict[str, Decimal | str]:
         return {
             "position": self.position,
             "salience": self.salience,
@@ -216,28 +216,28 @@ class ActorIssueInputModel(BaseInputModel):
         }
 
     @property
-    def position(self):
+    def position(self) -> Decimal:
         return self._position
 
     @property
-    def salience(self):
+    def salience(self) -> Decimal:
         return self._salience
 
     @property
-    def power(self):
+    def power(self) -> Decimal:
         return self._power
 
-    def set_position(self, value: Decimal, silence=False) -> None:
+    def set_position(self, value: Decimal, silence: bool = False) -> None:
         self._position = value
         if self.is_valid() and not silence:
             signals.actor_issue_changed.send(self, key="position", value=value)
 
-    def set_power(self, value: Decimal, silence=False) -> None:
+    def set_power(self, value: Decimal, silence: bool = False) -> None:
         self._power = value
         if self.is_valid() and not silence:
             signals.actor_issue_changed.send(self, key="power", value=value)
 
-    def set_salience(self, value: Decimal, silence=False) -> None:
+    def set_salience(self, value: Decimal, silence: bool = False) -> None:
         self._salience = value
         if self.is_valid() and not silence:
             signals.actor_issue_changed.send(self, key="salience", value=value)

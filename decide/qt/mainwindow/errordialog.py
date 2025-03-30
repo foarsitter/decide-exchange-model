@@ -2,9 +2,13 @@ import logging
 import sys
 
 import requests
-from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QDialog
-from PyQt5.QtWidgets import QMessageBox
+from PyQt6 import QtWidgets
+from PyQt6.QtWidgets import QCheckBox
+from PyQt6.QtWidgets import QDialog
+from PyQt6.QtWidgets import QLabel
+from PyQt6.QtWidgets import QMessageBox
+from PyQt6.QtWidgets import QPlainTextEdit
+from PyQt6.QtWidgets import QPushButton
 
 from decide import log_filename
 from decide.qt.mainwindow.settings import ProgramSettings
@@ -14,7 +18,7 @@ from decide.qt.utils import exception_hook
 class ErrorDialog(QDialog):
     """Dialog to send error information to me."""
 
-    def __init__(self, message="", *args, **kwargs) -> None:
+    def __init__(self, message: str = "", *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
         self.settings = ProgramSettings()
@@ -40,13 +44,13 @@ class ErrorDialog(QDialog):
         self.setWindowTitle("Error reporting tool")
         self.show()
 
-    def add_widget(self, widget) -> None:
+    def add_widget(self, widget: QCheckBox | QLabel | QPlainTextEdit | QPushButton) -> None:
         self.main.addWidget(widget)
 
-    def add_label(self, text) -> None:
+    def add_label(self, text: str) -> None:
         self.add_widget(QtWidgets.QLabel(text))
 
-    def add_message_box(self, message):
+    def add_message_box(self, message) -> QPlainTextEdit:
         self.add_widget(QtWidgets.QLabel("What happened?"))
 
         textarea = QtWidgets.QPlainTextEdit()
@@ -56,21 +60,21 @@ class ErrorDialog(QDialog):
 
         return textarea
 
-    def add_input_file(self):
+    def add_input_file(self) -> QCheckBox:
         checkbox = QtWidgets.QCheckBox(self.settings.input_filename)
         checkbox.setChecked(True)
         self.add_widget(checkbox)
 
         return checkbox
 
-    def add_settings(self):
-        checkbox = QtWidgets.QCheckBox(self.settings.settings_file)
+    def add_settings(self) -> QCheckBox:
+        checkbox = QtWidgets.QCheckBox(str(self.settings.settings_file))
         checkbox.setChecked(True)
         self.add_widget(checkbox)
 
         return checkbox
 
-    def add_send_button(self):
+    def add_send_button(self) -> QPushButton:
         button = QtWidgets.QPushButton()
         button.setText("Send error report")
         button.clicked.connect(self.send_error_report)
@@ -83,14 +87,14 @@ class ErrorDialog(QDialog):
             self,
             "Confirm sending",
             "Are you sure you want to send the message with the attachments?",
-            QMessageBox.Yes | QMessageBox.No,
-            QMessageBox.No,
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No,
         )
 
         settings = None
         input_data = None
 
-        if confirm == QMessageBox.Yes:
+        if confirm == QMessageBox.StandardButton.Yes:
             files = {}
 
             if self.settings_checkbox.isChecked():

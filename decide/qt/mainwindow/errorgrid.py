@@ -2,8 +2,8 @@ import logging
 import os
 import sys
 
-from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QDialog
+from PyQt6 import QtWidgets
+from PyQt6.QtWidgets import QDialog
 
 from decide import input_folder
 from decide import log_filename
@@ -74,9 +74,7 @@ def main() -> None:
     app = QtWidgets.QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(True)
 
-    data_file = InputDataFile.open(
-        os.path.join(input_folder, "kopenhagen_with_errors.csv"),
-    )
+    data_file = InputDataFile.open(input_folder / "kopenhagen_with_errors.csv")
 
     ErrorGrid(data_file)
 

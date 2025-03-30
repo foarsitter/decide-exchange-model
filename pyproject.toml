@@ -4,55 +4,53 @@ requires = [ "hatchling" ]
 
 [project]
 name = "decide-exchange-model"
-version = "2025.1.1-dev"
+version = "2025.3.0"
 description = "Decide exchange model"
 readme = "README.md"
 authors = [ { "name" = "Jelmer Draaijer", "email" = "info@jelmert.nl" } ]
-requires-python = ">=3.9,<3.12"
+requires-python = "==3.13.*"
 
 classifiers = [
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.9",
-  "Programming Language :: Python :: 3.10",
-  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
-  "blinker==1.5",
-  "matplotlib==3.6",
-  "numpy==1.23.4",
-  "pandas==1.5",
+  "blinker==1.9.0",
+  "matplotlib==3.10.7",
+  "numpy==2.3.4",
+  "pandas==2.3.3",
   "peewee==3.14.4",
-  "pyqt5==5.15.11",
-  "pyqt5-qt5==5.15.2",
+  "pyqt6==6.10.0",
   "requests",
+  "structlog==25.5",
+  "typer==0.20",
   "typesystem==0.2.5",
 ]
 
+scripts.decide-cli = "decide.cli:main"
+gui-scripts.decide-gui = "decide.gui:main"
 packages = [ { include = "decide" } ]
 
 [dependency-groups]
-#[tool.poetry.scripts]
-#decide-cli = 'decide.cli:main'
-#decide-gui = 'decide.gui:main'
-
 dev = [
-  "pre-commit-uv>=4.1.4",
-  "pytest>=8.3.5",
-  "pytest-qt>=4.4",
-  "pytest-xvfb>=3",
-  "ruff>=0.11.2",
-  "toml>=0.10.2",
+  "coverage==7.11.0",
+  "pre-commit-uv==4.2.0",
+  "pyrefly==0.40.0",
+  "pytest==8.4.2",
+  "pytest-qt==4.5.0",
+  "pytest-xvfb==3.1.1",
+  "ruff==0.14.3",
+  "toml==0.10.2",
 ]
 
 [tool.hatch.build.targets.wheel]
 packages = [ "decide" ]
 
 [tool.ruff]
-# Assume Python 3.9
-target-version = "py39"
+target-version = "py313"
 
 # Same as Black.
-line-length = 120
+line-length = 100
 indent-width = 4
 
 # Exclude a variety of commonly ignored directories.
@@ -106,7 +104,7 @@ format.docstring-code-line-length = "dynamic"
 # to be opt-out in the future.
 format.docstring-code-format = false
 lint.select = [ "ALL" ]
-lint.ignore = [ "D" ]
+lint.ignore = [ "ANN", "D" ]
 # Allow fix for all enabled rules (when `--fix`) is provided.
 lint.fixable = [ "ALL" ]
 lint.unfixable = [  ]
@@ -114,3 +112,6 @@ lint.unfixable = [  ]
 lint.dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
 lint.isort.force-single-line = true
+
+[tool.pyrefly]
+project-includes = [ "**/*.py*" ]

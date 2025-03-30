@@ -37,7 +37,7 @@ def get_all_actors_by_data_set_id_sql(data_set_id) -> str:
     GROUP BY a.name, a.id"""
 
 
-def list_to_sql_param(list_object):
+def list_to_sql_param(list_object) -> str:
     """In some way the database API of python does not handle IN(?) very well.
     Therefor we need to create a string of our values
     :param list_object:'
@@ -47,7 +47,7 @@ def list_to_sql_param(list_object):
 
 
 def handle_data_frame(df, file_name, title) -> None:
-    df.to_csv(file_name.format("csv"))
+    df.to_csv(str(file_name).format("csv"))
 
     plt = df.plot()  # .bar()
 
@@ -55,7 +55,7 @@ def handle_data_frame(df, file_name, title) -> None:
     plt.set_title(title)
     plt.set_xticks(df.index)
     plt.figure.savefig(
-        file_name.format("png"),
+        str(file_name).format("png"),
         bbox_extra_artists=(lgd,),
         bbox_inches="tight",
     )

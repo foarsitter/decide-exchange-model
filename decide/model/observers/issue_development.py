@@ -2,14 +2,13 @@ import copy
 import csv
 import math
 import os
+from _csv import Writer
 from collections import OrderedDict
 from collections import defaultdict
 
-import matplotlib as mpl
-
-mpl.use("Qt5Agg")
-
 import matplotlib.pyplot as plt
+from pandas.io.json._json import Writer
+from typing_extensions import Writer
 
 from decide.model import base
 from decide.model import calculations
@@ -22,8 +21,8 @@ class IssueDevelopment(observer.Observer):
     def __init__(
         self,
         observable: observer.Observable,
-        write_voting_position=True,
-        summary_only=False,
+        write_voting_position: bool = True,
+        summary_only: bool = False,
     ) -> None:
         super().__init__(observable=observable)
 
@@ -68,7 +67,7 @@ class IssueDevelopment(observer.Observer):
 
         self.denominator += 1
 
-    def _de_normalize_value(self, value):
+    def _de_normalize_value(self, value: float):
         return self.issue_obj.de_normalize(value)
 
     def _de_normalize_list_value(self, values, _map=None):
@@ -79,7 +78,7 @@ class IssueDevelopment(observer.Observer):
                 values[_] = self.issue_obj.de_normalize(value)
         return values
 
-    def _create_directories(self, repetition) -> None:
+    def _create_directories(self, repetition: str) -> None:
         """Create the directories
         :param repetition:
         :return:
@@ -205,7 +204,7 @@ class IssueDevelopment(observer.Observer):
                 writer = csv.writer(csv_file, delimiter=";", lineterminator="\n")
                 self.write_issue_after_iterations_to_file(repetition, writer, issue)
 
-    def write_issue_after_iterations_to_file(self, repetition, writer, issue) -> None:
+    def write_issue_after_iterations_to_file(self, repetition, writer: Writer, issue) -> None:
         self.issue_obj = self.model_ref.issues[issue]  # type: Issue
 
         heading = ["rnd-" + str(x) for x in range(len(self.preference_history[issue]["nbs"]))]
@@ -357,7 +356,12 @@ class IssueDevelopment(observer.Observer):
             for actor_id, value in od.items():
                 actor_issue = self.model_ref.actor_issues[self.issue_obj][actor_id]
                 writer.writerow(
-                    [actor_id, actor_issue.salience, actor_issue.power, *self._de_normalize_list_value(value)],
+                    [
+                        actor_id,
+                        actor_issue.salience,
+                        actor_issue.power,
+                        *self._de_normalize_list_value(value),
+                    ],
                 )
 
         writer.writerow([])
@@ -401,7 +405,9 @@ class IssueDevelopment(observer.Observer):
 
                 self.issue_obj = self.model_ref.issues[issue]  # type: Issue
 
-                heading = ["rnd-" + str(x) for x in range(len(self.preference_history_sum[issue]["nbs"]))]
+                heading = [
+                    "rnd-" + str(x) for x in range(len(self.preference_history_sum[issue]["nbs"]))
+                ]
 
                 writer.writerow([self.issue_obj])
                 writer.writerow([])
@@ -634,7 +640,9 @@ class IssueDevelopment(observer.Observer):
                         "voting",
                     )
 
-    def _write_history_sum(self, writer, heading, issue, data, label) -> None:
+    def _write_history_sum(
+        self, writer: Writer, heading: list[str], issue, data, label: str
+    ) -> None:
         plt.clf()
 
         var_rows = []
@@ -677,7 +685,7 @@ class IssueDevelopment(observer.Observer):
         )
 
     @property
-    def _get_salt(self):
+    def _get_salt(self) -> str:
         model_name = "random"
         from decide.model.equalgain import EqualGainModel
 

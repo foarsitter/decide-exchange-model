@@ -1,9 +1,15 @@
+from pathlib import Path
 from typing import NoReturn
 
-from PyQt5 import QtCore
-from PyQt5 import QtWidgets
+from PyQt6 import QtCore
+from PyQt6 import QtWidgets
+from PyQt6.QtGui import QAction
+from PyQt6.QtWidgets import QMenu
 
 from decide.data import types
+from decide.data.database import ActorIssue
+from decide.data.types import ActorIssue
+from decide.model.base import ActorIssue
 from decide.qt import utils
 
 
@@ -20,7 +26,7 @@ class DynamicFormLayout(QtWidgets.QGridLayout):
         self.objects = []
         self.row_pointer = 0
 
-        self.setAlignment(QtCore.Qt.AlignTop)
+        self.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
 
     def clear(self) -> None:
         """Set the parent of all child widgets to None so they will be deleted."""
@@ -116,7 +122,9 @@ class ActorIssueWidget(DynamicFormLayout):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
-    def set_actor_issues(self, actor_issues=list[types.ActorIssue]) -> None:
+    def set_actor_issues(
+        self, actor_issues: type[list[ActorIssue]] = list[types.ActorIssue]
+    ) -> None:
         self.set_values(actor_issues)
 
         heading = ["Issue", "Actor", "Position", "Salience", "Power"]
@@ -165,7 +173,7 @@ class SummaryWidget(DynamicFormLayout):
     def update_widget(self) -> None:
         self.clear()
 
-        self.add_text_row("Input", self.settings.input_filename, self.test_callback)
+        self.add_text_row("Input", str(self.settings.input_filename), self.test_callback)
 
         if self.settings.output_directory is None or self.settings.output_directory == "None":
             self.add_text_row(
@@ -176,7 +184,7 @@ class SummaryWidget(DynamicFormLayout):
         else:
             self.add_text_row(
                 "Output directory",
-                self.settings.output_directory,
+                str(self.settings.output_directory),
                 self.test_callback,
             )
 
@@ -187,9 +195,9 @@ class SummaryWidget(DynamicFormLayout):
             "You can make use of the variable {rounds} and {repetitions} in run name",
         )
 
-        settings = self.main_window.settings  # type: ProgramSettings
+        settings = self.main_window.settings
 
-        self.add_text_row("p-values", ", ".join(settings.model_variations))
+        self.add_text_row("p-values", ", ".join(settings.model_variations()))
 
         output_selection = []
 
@@ -213,7 +221,7 @@ class SummaryWidget(DynamicFormLayout):
 
         self.main_window.set_start_button_state()
 
-    def add_text_row(self, label, value, callback=None) -> None:
+    def add_text_row(self, label: str, value: str, callback=None) -> None:
         if callback:
             value_x = "..." + value[-50:] if len(value) > 50 else value
 
@@ -237,51 +245,49 @@ class MenuBar(QtWidgets.QMenuBar):
         self.settings = main_window.settings
 
         file_menu = self.addMenu("&File")
-        # output_menu = self.addMenu("&Output")
 
-        self.output_sqlite = QtWidgets.QAction("&sqlite", self)
+        self.output_sqlite = QAction("&sqlite", self)
         self.output_sqlite.setCheckable(True)
         self.output_sqlite.setChecked(True)
 
-        self.issue_development_csv = QtWidgets.QAction("Issue development (.csv)", self)
+        self.issue_development_csv = QAction("Issue development (.csv)", self)
         self.issue_development_csv.setCheckable(True)
         self.issue_development_csv.setChecked(True)
 
-        self.externalities_csv = QtWidgets.QAction("Externalities (.csv)", self)
+        self.externalities_csv = QAction("Externalities (.csv)", self)
         self.externalities_csv.setCheckable(True)
         self.externalities_csv.setChecked(True)
 
-        self.exchanges_csv = QtWidgets.QAction("Exchanges (.csv)", self)
+        self.exchanges_csv = QAction("Exchanges (.csv)", self)
         self.exchanges_csv.setCheckable(True)
         self.exchanges_csv.setChecked(True)
 
-        self.voting_positions = QtWidgets.QAction("Show voting positions", self)
+        self.voting_positions = QAction("Show voting positions", self)
         self.voting_positions.setCheckable(True)
         self.voting_positions.setChecked(True)
 
-        self.summary_only = QtWidgets.QAction("Summary only (.csv)", self)
+        self.summary_only = QAction("Summary only (.csv)", self)
         self.summary_only.setCheckable(True)
         self.summary_only.setChecked(True)
 
-        self.open_data_view = QtWidgets.QAction("New data file", self)
+        self.open_data_view = QAction("New data file", self)
         self.open_data_view.triggered.connect(self.main_window.open_data_view)
 
-        open_action = QtWidgets.QAction("&Open data file", self)
+        open_action = QAction("&Open data file", self)
         open_action.triggered.connect(self.main_window.open_input_data)
 
-        edit_action = QtWidgets.QAction("&Edit data file", self)
+        edit_action = QAction("&Edit data file", self)
         edit_action.triggered.connect(
             self.main_window.open_current_input_window_with_current_data,
         )
 
-        save_settings = QtWidgets.QAction("&Save settings", self)
+        save_settings = QAction("&Save settings", self)
         save_settings.triggered.connect(self.main_window.save_settings)
 
-        output_dir_action = QtWidgets.QAction("&Set output directory", self)
+        output_dir_action = QAction("&Set output directory", self)
         output_dir_action.triggered.connect(self.main_window.select_output_dir)
 
-        # debug = self.addMenu("Debug")
-        log_action = QtWidgets.QAction("Show log window", self)
+        log_action = QAction("Show log window", self)
         log_action.triggered.connect(self.main_window.show_debug_dialog)
 
         file_menu.addAction(open_action)
@@ -294,29 +300,28 @@ class MenuBar(QtWidgets.QMenuBar):
         file_menu.addAction(output_dir_action)
         file_menu.addSeparator()
         file_menu.addAction(log_action)
-        # debug.addAction(log_action)
 
-        # error_report = QtWidgets.QAction("Send error report", self)
-        # error_report.triggered.connect(self.main_window.show_error_report_dialog)
-        # debug.addAction(error_report)
+        error_report = QAction("Send error report", self)
+        error_report.triggered.connect(self.main_window.show_error_report_dialog)
+        file_menu.addAction(error_report)
 
-        # error_report_2 = QtWidgets.QAction("Trigger error", self)
-        # error_report_2.triggered.connect(self.trigger_error)
-        # debug.addAction(error_report_2)
+        error_report_2 = QAction("Trigger error", self)
+        error_report_2.triggered.connect(self.trigger_error)
+        file_menu.addAction(error_report_2)
 
-    def recently_opened_menu(self, menu: QtWidgets.QMenu) -> None:
-        sub_menu = QtWidgets.QMenu("Recently opened", menu)
+    def recently_opened_menu(self, menu: QMenu) -> None:
+        sub_menu = QMenu("Recently opened", menu)
         menu.addMenu(sub_menu)
 
         for item in self.settings.recently_opened:
-            action = QtWidgets.QAction(item, self)
+            action = QAction(item, self)
             action.triggered.connect(self.open_input_data)
             sub_menu.addAction(action)
 
     def open_input_data(self) -> None:
-        sender = self.sender()  # type: QtWidgets.QAction
+        sender = self.sender()
 
-        self.main_window.init_ui_data(sender.text())
+        self.main_window.init_ui_data(Path(sender.text()))
 
     def trigger_error(self) -> NoReturn:
         msg = "Error triggered"
@@ -343,7 +348,7 @@ class MenuBar(QtWidgets.QMenuBar):
             if hasattr(self.settings, key):
                 attr = getattr(self, key)
 
-                if isinstance(attr, QtWidgets.QAction):
+                if isinstance(attr, QAction):
                     setattr(self.settings, key, value.isChecked())
                 else:
                     setattr(self.settings, key, value.value())

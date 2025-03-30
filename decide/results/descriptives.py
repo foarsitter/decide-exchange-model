@@ -1,12 +1,18 @@
 import logging
 import os
+from pathlib import Path
+from zipfile import Path
 
 import pandas as pd
+from click.types import Path
+from matplotlib.path import Path
 from pandas.errors import DataError
+from peewee import DatabaseProxy
 
 from decide import data_folder
 from decide.data.database import Manager
 from decide.data.database import connection
+from decide.log import logger
 from decide.results.helpers import handle_data_frame
 from decide.results.helpers import list_to_sql_param
 
@@ -14,7 +20,9 @@ pd.set_option("display.max_rows", 500)
 pd.set_option("display.max_columns", 500)
 
 
-def write_summary_result(conn, model_run_ids, output_directory) -> None:
+def write_summary_result(
+    conn: DatabaseProxy, model_run_ids: list[int], output_directory: Path
+) -> None:
     sql = f"""SELECT COUNT(*)   exchanges_count,
            SUM(ea.eu) utility_sum,
            AVG(ea.eu)        utility_avg,
@@ -31,13 +39,11 @@ def write_summary_result(conn, model_run_ids, output_directory) -> None:
 
     df = pd.read_sql_query(
         sql=sql,
-        con=conn,
+        con=conn._state.conn,
         index_col=["actor", "p"],
     )
 
-    # %%
-
-    file_name = os.path.join(output_directory, "exchanges_count.{}")
+    file_name = output_directory / "exchanges_count.{}"
 
     try:
         handle_data_frame(
@@ -51,7 +57,7 @@ def write_summary_result(conn, model_run_ids, output_directory) -> None:
             title="AVG count of the executed exchanges for a repetition",
         )
     except DataError as ex:
-        logging.exception(ex)
+        logger.exception(ex)
     try:
         handle_data_frame(
             df=pd.pivot_table(
@@ -60,7 +66,7 @@ def write_summary_result(conn, model_run_ids, output_directory) -> None:
                 columns=["actor"],
                 values=["utility_sum"],
             ),
-            file_name=os.path.join(output_directory, "expected_utility_sum.{}"),
+            file_name=output_directory / "expected_utility_sum.{}",
             title="AVG Sum of the expected utility per repetition",
         )
 
@@ -71,11 +77,11 @@ def write_summary_result(conn, model_run_ids, output_directory) -> None:
                 columns=["actor"],
                 values=["utility_avg"],
             ),
-            file_name=os.path.join(output_directory, "expected_utility_avg.{}"),
+            file_name=output_directory / "expected_utility_avg.{}",
             title="Average of the expected utility",
         )
     except DataError as ex:
-        logging.exception(ex)
+        logger.exception(ex)
 
 
 if __name__ == "__main__":

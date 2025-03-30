@@ -1,24 +1,18 @@
+import json
 import logging
-import os
 import sys
 import time
 import xml.etree.ElementTree as ET
+from json import JSONDecodeError
+from pathlib import Path
 
-from PyQt5 import QtCore
-from PyQt5 import QtWidgets
+from PyQt6 import QtCore
+from PyQt6 import QtWidgets
+from PyQt6.QtCore import QProcess
 
+from decide import decide_base_path
 from decide import log_filename
-from decide.cli import init_output_directory
-from decide.data.modelfactory import ModelFactory
 from decide.data.reader import InputDataFile
-from decide.model.equalgain import EqualGainModel
-from decide.model.observers.exchanges_writer import ExchangesWriter
-from decide.model.observers.externalities import Externalities
-from decide.model.observers.issue_development import IssueDevelopment
-from decide.model.observers.logger import Logger
-from decide.model.observers.observer import Observable
-from decide.model.observers.sqliteobserver import SQLiteObserver
-from decide.model.utils import ModelLoop
 from decide.qt import utils
 from decide.qt.mainwindow.helpers import esc
 from decide.qt.mainwindow.helpers import normalize
@@ -32,101 +26,6 @@ from decide.qt.mainwindow.widgets import SummaryWidget
 from decide.qt.utils import show_user_error
 
 
-class Worker(QtCore.QObject):
-    """Worker to execute the model in a thread so the window does not freeze."""
-
-    finished = QtCore.pyqtSignal(str)
-    update = QtCore.pyqtSignal(int, int, int, float)
-
-    def __init__(self, settings: ProgramSettings) -> None:
-        super().__init__()
-
-        self.settings = settings
-        self.break_loop = False
-
-    @QtCore.pyqtSlot()
-    def run_model(self) -> None:
-        settings = self.settings
-
-        factory = ModelFactory(
-            date_file=InputDataFile.open(settings.input_filename),
-            actor_whitelist=settings.selected_actors,
-            issue_whitelist=settings.selected_issues,
-        )
-
-        parent_output_directory = init_output_directory(*settings.output_path)
-
-        model = factory(
-            model_klass=EqualGainModel,
-            randomized_value=settings.model_variations[0],
-        )
-
-        safe_model_as_input(model, os.path.join(parent_output_directory, "input.csv"))
-        safe_settings_as_csv(
-            self.settings,
-            os.path.join(parent_output_directory, "settings.csv"),
-        )
-
-        event_handler = init_event_handlers(model, parent_output_directory, settings)
-
-        event_handler.before_model()
-
-        model_variations = list(settings.model_variations)
-
-        for variation, p in enumerate(model_variations, 0):
-            output_directory = init_output_directory(parent_output_directory, p)
-
-            event_handler.update_output_directory(output_directory)
-
-            event_handler.before_repetitions(
-                repetitions=settings.repetitions,
-                iterations=settings.iterations,
-                randomized_value=p,
-            )
-
-            start_time = time.time()
-
-            for repetition in range(settings.repetitions):
-                model = factory(model_klass=EqualGainModel, randomized_value=p)
-
-                event_handler.update_model_ref(model)
-
-                model_loop = ModelLoop(model, event_handler, repetition)
-
-                event_handler.before_iterations(repetition)
-
-                for iteration_number in range(settings.iterations):
-                    if self.break_loop:
-                        break
-
-                    self.update.emit(
-                        variation,
-                        repetition,
-                        iteration_number,
-                        start_time,
-                    )
-
-                    model_loop.loop()
-
-                event_handler.after_iterations(repetition)
-
-                if self.break_loop:
-                    break
-
-            if not self.break_loop:
-                event_handler.after_repetitions()
-
-                logging.info(f"tie count is {model.tie_count}")
-
-        if not self.break_loop:
-            event_handler.update_output_directory(parent_output_directory)
-            event_handler.after_model()
-        self.finished.emit(parent_output_directory)
-
-    def stop(self) -> None:
-        self.break_loop = True
-
-
 class ProgramData(QtCore.QObject):
     """Central object for the data used for displaying."""
 
@@ -137,23 +36,6 @@ class ProgramData(QtCore.QObject):
         self.issues = {}
         self.actors = {}
         self.actor_issues = {}
-
-
-def init_event_handlers(model, output_directory, settings):
-    """:type model: decide.model.base.AbstractModel
-    :type output_directory: str
-    :type settings: ProgramSettings
-    """
-    event_handler = Observable(model_ref=model, output_directory=output_directory)
-
-    Logger(event_handler)
-
-    SQLiteObserver(event_handler, settings.output_directory)
-    Externalities(event_handler, summary_only=True)
-    ExchangesWriter(event_handler, summary_only=True)
-    IssueDevelopment(event_handler, write_voting_position=True, summary_only=True)
-
-    return event_handler
 
 
 class DecideMainWindow(QtWidgets.QMainWindow):
@@ -177,8 +59,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
         self.progress_dialog = None
 
-        self.thread = QtCore.QThread()
-        self.worker = None
+        self.process = QProcess()
 
         self.overview_widget = SummaryWidget(
             self,
@@ -192,7 +73,10 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
         self.load_settings()
 
-        self.init_ui_data(self.settings.input_filename)
+        if self.settings.input_filename:
+            path = Path(self.settings.input_filename)
+            self.init_ui_data(path)
+        self.start_time = time.time()
 
     def init_ui(self) -> None:
         self.statusBar().showMessage("Ready")
@@ -240,13 +124,13 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
         overview_box = QtWidgets.QGroupBox("Overview")
         overview_box.setLayout(self.overview_widget)
-        self.overview_widget.setAlignment(QtCore.Qt.AlignTop)
+        self.overview_widget.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
 
         right = QtWidgets.QVBoxLayout()
         right.addWidget(settings_box, 1)
         right.addWidget(overview_box, 1)
         right.addWidget(self.start, 1)
-        right.setAlignment(QtCore.Qt.AlignTop)
+        right.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
 
         main.addLayout(left, 1)
         main.addLayout(right, 1)
@@ -286,16 +170,14 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
     def open_input_data(self) -> None:
         """Open the file, parse the data and update the layout."""
-        file_name, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Select input data")
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Select input data")
 
-        if file_name:
-            self.load_input_data(file_name)
+        if filename:
+            self.load_input_data(Path(filename))
 
-    def load_input_data(self, file_name) -> None:
-        self.statusBar().showMessage(f"Input file set to {file_name} ")
-
-        self.init_ui_data(file_name)
-
+    def load_input_data(self, filename: Path) -> None:
+        self.statusBar().showMessage(f"Input file set to {filename.absolute().resolve()} ")
+        self.init_ui_data(filename)
         self.overview_widget.update_widget()
 
     def open_current_input_window_with_current_data(self) -> None:
@@ -310,7 +192,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
     def select_output_dir(self) -> None:
         """Output directory."""
-        self.settings.output_directory = str(
+        self.settings.output_directory = Path(
             QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory"),
         )
         self.statusBar().showMessage(
@@ -320,7 +202,11 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         self.overview_widget.update_widget()
 
     def set_start_button_state(self) -> None:
-        if self.settings.input_filename and self.settings.output_directory and not self.thread.isRunning():
+        if (
+            self.settings.input_filename
+            and self.settings.output_directory
+            and self.process.state() == QProcess.ProcessState.NotRunning
+        ):
             self.start.setEnabled(True)
             self.start.setDisabled(False)
         else:
@@ -335,12 +221,12 @@ class DecideMainWindow(QtWidgets.QMainWindow):
 
         register_app(ex)
 
-    def init_ui_data(self, file_name) -> None:
-        if file_name:
-            if not os.path.isfile(file_name):
+    def init_ui_data(self, filename: Path) -> None:
+        if filename:
+            if not filename.is_file():
                 show_user_error(self, "Selected file does not exists")
             else:
-                data_file = InputDataFile.open(file_name)
+                data_file = InputDataFile.open(filename)
 
                 if data_file.is_valid:
                     self.data.actors = data_file.actors
@@ -349,89 +235,150 @@ class DecideMainWindow(QtWidgets.QMainWindow):
                     self.update_data_widgets()
 
                     # update the settings
-                    self.settings.set_input_filename(file_name)
+                    self.settings.set_input_filename(filename)
                     self.settings.save()
                 else:
                     error_list = "\n".join(
-                        [f"line: {line_no}, {message}" for line_no, message in data_file.errors.items()],
+                        [
+                            f"line: {line_no}, {message}"
+                            for line_no, message in data_file.errors.items()
+                        ],
                     )
 
                     show_user_error(
                         self,
-                        f"Your input file contains errors. The red rows are not valid. Hover with your mouse over the row for more information.\n{error_list}",
+                        f"Your input file contains errors. The red rows are not valid."
+                        f" Hover with your mouse over the row for more information.\n{error_list}",
                     )
                     from decide.qt.mainwindow.errorgrid import ErrorGrid
 
                     ErrorGrid(data_file, self)
 
+    def handle_stderr(self) -> None:
+        data = self.process.readAllStandardError()
+        stderr = bytes(data).decode("utf8")
+        self.message(stderr)
+
+    def message(self, s) -> None:
+        print(s)
+
+    def handle_stdout(self):
+        data = self.process.readAllStandardOutput()
+        stdout = bytes(data).decode("utf8")
+
+        try:
+            data = json.loads(stdout)
+            event = data.get("event")
+
+            if event == "Progress":
+                self.update_progress(
+                    progress=data["progress"],
+                )
+        except JSONDecodeError:
+            self.message(stdout)
+
+    def handle_state(self, state):
+        states = {
+            QProcess.ProcessState.NotRunning: "Not running",
+            QProcess.ProcessState.Starting: "Starting",
+            QProcess.ProcessState.Running: "Running",
+        }
+        state_name = states[state]
+        self.message(f"State changed: {state_name}")
+
     def run_safe(self) -> None:
-        self.worker = Worker(self.settings)
-        self.worker.moveToThread(self.thread)
-        self.worker.finished.connect(self.finished)
-        self.worker.finished.connect(self.thread.quit)
-        self.worker.update.connect(self.update_progress)
-        self.thread.started.connect(self.worker.run_model)
-        self.thread.start()
+        path = self.settings.output_path()
+        path.mkdir(parents=True, exist_ok=True)
 
-    def update_progress(self, variation, repetition, iteration, start_time) -> None:
-        x = variation * self.settings.repetitions * self.settings.iterations
+        update_settings_with_ui_values(
+            self.settings,
+            path / "settings.csv",
+        )
+        self.process = QProcess()
+        self.process.finished.connect(self.finished)
+        self.process.readyReadStandardOutput.connect(self.handle_stdout)
+        self.process.readyReadStandardError.connect(self.handle_stderr)
+        self.process.stateChanged.connect(self.handle_state)
+        self.start_time = time.time()
+        self.process.start(
+            "python",
+            [
+                str(x)
+                for x in [
+                    f"{decide_base_path}/cli.py",
+                    "--input-file",
+                    self.settings.input_filename,
+                    "--repetitions",
+                    self.settings.repetitions,
+                    "--iterations",
+                    self.settings.iterations,
+                    "--start",
+                    self.settings.start,
+                    "--step",
+                    self.settings.step,
+                    "--stop",
+                    self.settings.stop,
+                    "--output-dir",
+                    self.settings.output_directory,
+                    "--name",
+                    self.settings.run_name,
+                ]
+            ],
+        )
 
-        value = x + (repetition * self.settings.iterations) + iteration
+    def update_progress(self, progress: int) -> None:
+        self.progress_dialog.setValue(progress)
 
-        self.progress_dialog.setValue(value)
-        repetitions = self.settings.repetitions
+        if self.start_time:
+            time_expired = time.time() - self.start_time
 
-        if repetition > 0 and repetitions > 100 and repetition % 20 == 0:
-            time_expired = time.time() - start_time
+            avg_time_per_repetition = time_expired / progress
 
-            avg_time_per_repetition = time_expired / repetition
+            estimated_time_needed_seconds = avg_time_per_repetition * self.settings.repetitions
 
-            estimated_time_needed_seconds = avg_time_per_repetition * repetitions
-
-            estimated_time_left = estimated_time_needed_seconds - (repetition * avg_time_per_repetition)
+            estimated_time_left = estimated_time_needed_seconds - (
+                progress * avg_time_per_repetition
+            )
 
             self.statusBar().showMessage(
                 f"{estimated_time_left / 60:.0f} minutes remaining ",
             )
 
-    def finished(self, output_directory) -> None:
+    def finished(self) -> None:
         self._clean_progress_dialog()
 
-        if not self.worker.break_loop:
-            button_reply = QtWidgets.QMessageBox.question(
-                self,
-                "Done",
-                "Done running the calculations. Open the result directory?",
-                QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
-                QtWidgets.QMessageBox.No,
-            )
+        button_reply = QtWidgets.QMessageBox.question(
+            self,
+            "Done",
+            "Done running the calculations. Open the result directory?",
+            QtWidgets.QMessageBox.StandardButton.Yes | QtWidgets.QMessageBox.StandardButton.No,
+            QtWidgets.QMessageBox.StandardButton.No,
+        )
 
-            if button_reply == QtWidgets.QMessageBox.Yes:
-                utils.open_file_natively(output_directory)
+        if button_reply == QtWidgets.QMessageBox.StandardButton.Yes:
+            utils.open_file_natively(self.settings.output_directory)
 
     def _clean_progress_dialog(self) -> None:
         self.progress_dialog.setValue(
-            self.settings.iterations * self.settings.repetitions * len(self.settings.model_variations),
+            self.settings.iterations
+            * self.settings.repetitions
+            * len(self.settings.model_variations()),
         )
         self.progress_dialog.hide()
 
     def run(self) -> None:
-        # store the current state of the app
-
         self.save_settings()
 
-        output_dir = os.path.join(*self.settings.output_path)
-
-        if os.path.isdir(output_dir):
+        if self.settings.output_path().is_dir():
             button_reply = QtWidgets.QMessageBox.question(
                 self,
                 "Output directory already exists",
-                f"The given directory {output_dir} already exists. Proceed?",
-                QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
-                QtWidgets.QMessageBox.No,
+                f"The given directory {self.settings.output_directory} already exists. Proceed?",
+                QtWidgets.QMessageBox.StandardButton.Yes | QtWidgets.QMessageBox.StandardButton.No,
+                QtWidgets.QMessageBox.StandardButton.No,
             )
 
-            if button_reply == QtWidgets.QMessageBox.No:
+            if button_reply == QtWidgets.QMessageBox.StandardButton.No:
                 return
 
         self.setWindowTitle("Decide Exchange Model")
@@ -445,7 +392,9 @@ class DecideMainWindow(QtWidgets.QMainWindow):
             "Task in progress",
             "Cancel",
             0,
-            self.settings.repetitions * self.settings.iterations * len(self.settings.model_variations),
+            self.settings.repetitions
+            * self.settings.iterations
+            * len(self.settings.model_variations()),
             self,
         )
 
@@ -456,7 +405,9 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         bar.setFormat("%v/%m (%p%)")
         bar.setMinimum(0)
         bar.setMaximum(
-            self.settings.iterations * self.settings.repetitions * len(self.settings.model_variations),
+            self.settings.iterations
+            * self.settings.repetitions
+            * len(self.settings.model_variations()),
         )
         self.progress_dialog.setBar(bar)
 
@@ -465,7 +416,7 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         self.progress_dialog.show()
 
     def load_settings(self) -> None:
-        if os.path.isfile(self.settings.settings_file):
+        if self.settings.settings_file.is_file():
             try:
                 self.settings.load()
                 self.menu_bar.load()
@@ -482,35 +433,13 @@ class DecideMainWindow(QtWidgets.QMainWindow):
         self.settings.save()
 
     def cancel(self) -> None:
-        self.worker.stop()
+        self.process.kill()
 
 
-def main() -> None:
-    logging.basicConfig(
-        filename=log_filename,
-        filemode="a",
-        level=logging.INFO,
-        format=" %(asctime)s - %(levelname)s - %(message)s",
-    )
-
-    qtapp = QtWidgets.QApplication([])
-    qtapp.setQuitOnLastWindowClosed(True)
-
-    DecideMainWindow()
-
-    sys.excepthook = utils.exception_hook
-
-    qtapp.exec_()
-
-
-if __name__ == "__main__":
-    main()
-
-
-def safe_settings_as_csv(settings: ProgramSettings, filename) -> None:
+def update_settings_with_ui_values(settings: ProgramSettings, filename: Path) -> None:
     items = ["salience_weight", "fixed_weight", "iterations", "repetitions"]
 
-    with open(filename, "w") as file:
+    with filename.open("w") as file:
         for item in items:
             value = settings.__dict__[item]
 
@@ -520,52 +449,18 @@ def safe_settings_as_csv(settings: ProgramSettings, filename) -> None:
             file.write("\t".join([esc(item), esc(value), "\n"]))
 
 
-def safe_model_as_input(model, filename) -> None:
-    with open(filename, "w") as file:
-        for actor in model.actors.values():
-            file.write(
-                "\t".join(
-                    [
-                        esc("#A"),
-                        esc(actor.name),
-                        esc(actor.name),
-                        esc(actor.comment),
-                        "\n",
-                    ],
-                ),
-            )
+def main() -> None:
+    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
-        for issue in model.issues.values():
-            file.write(
-                "\t".join(
-                    [
-                        esc("#P"),
-                        esc(issue.name),
-                        esc(issue.name),
-                        esc(issue.comment),
-                        "\n",
-                    ],
-                ),
-            )
+    qtapp = QtWidgets.QApplication([])
+    qtapp.setQuitOnLastWindowClosed(True)
 
-            file.write("\t".join([esc("#M"), esc(issue.name), str(issue.lower), "\n"]))
+    DecideMainWindow()
 
-            file.write("\t".join([esc("#M"), esc(issue.name), str(issue.upper), "\n"]))
+    sys.excepthook = utils.exception_hook
 
-        for actor_issues in model.actor_issues.values():
-            for actor_issue in actor_issues.values():
-                actor_issue = actor_issue  # type: ActorIssue
+    qtapp.exec()
 
-                file.write(
-                    "\t".join(
-                        [
-                            esc("#D"),
-                            esc(actor_issue.actor.name),
-                            esc(actor_issue.issue.name),
-                            normalize(actor_issue.position),
-                            normalize(actor_issue.salience),
-                            normalize(actor_issue.power),
-                            "\n",
-                        ],
-                    ),
-                )
+
+if __name__ == "__main__":
+    main()

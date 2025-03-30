@@ -1,10 +1,8 @@
-import os
+from pathlib import Path
 
-__version__ = "2022.1.28"
+decide_base_path = Path(__file__).parent
 
-decide_base_path = os.path.dirname(os.path.abspath(__file__))
+log_filename = decide_base_path / "decide.log"
 
-log_filename = os.path.join(decide_base_path, "decide.log")
-
-data_folder = os.path.join(decide_base_path, "..", "data")
-input_folder = os.path.join(data_folder, "input")
+data_folder = decide_base_path.parent / "data"
+input_folder = data_folder / "input"

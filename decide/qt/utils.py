@@ -4,7 +4,7 @@ import subprocess
 import sys
 import traceback
 
-from PyQt5 import QtWidgets
+from PyQt6.QtWidgets import QMessageBox
 
 from decide.qt import app
 
@@ -26,13 +26,13 @@ def exception_hook(exctype, ex, _traceback) -> None:
     from decide.qt.mainwindow.errordialog import ErrorDialog
 
     error_dialog = ErrorDialog(tb_text, parent=app)
-    sys.exit(error_dialog.exec_())
+    sys.exit(error_dialog.exec())
 
 
-def exception_to_string(ex):
+def exception_to_string(ex) -> str:
     tb_lines = traceback.format_exception(ex.__class__, ex, ex.__traceback__)
     return "".join(tb_lines)
 
 
 def show_user_error(self, message: str) -> None:
-    QtWidgets.QMessageBox.about(self, "Input data invalid", str(message))
+    QMessageBox.about(self, "Input data invalid", str(message))

@@ -26,7 +26,7 @@ def nash_bargaining_solution(actor_issues, denominator):
     return numerator / denominator
 
 
-def nbs_variance(actor_issues, nbs):
+def nbs_variance(actor_issues, nbs) -> float:
     r"""Calculate the distance between the position of the actor and the current Nash bargaining solution.
 
     :math:`O_var = \\frac{\\sum_{i=1}^n C_{id} S_{id} X_{id} }{\\sum_{i=1}^n C_{id} S_{id} }`
@@ -42,7 +42,7 @@ def nbs_variance(actor_issues, nbs):
     return t * t2
 
 
-def calc_nbs_denominator(actor_issues):
+def calc_nbs_denominator(actor_issues) -> int:
     r"""Calculate the denominator for this issue.
 
     :math:`\\sum_{i=1}^n C_{id} S_{id}`
@@ -127,7 +127,9 @@ def reverse_move(actor_issues, actor: base.AbstractExchangeActor, exchange_ratio
     :param exchange_ratio:
     :return:
     """
-    return (exchange_ratio * sum_salience_power(actor_issues)) / (actor.supply.power * actor.supply.salience)
+    return (exchange_ratio * sum_salience_power(actor_issues)) / (
+        actor.supply.power * actor.supply.salience
+    )
 
 
 def by_exchange_ratio(supply_actor: base.AbstractExchangeActor, supply_exchange_ratio):
@@ -179,7 +181,7 @@ def exchange_ratio(delta_x, salience, power, denominator):
     return (delta_x * salience * power) / denominator
 
 
-def sum_salience_power(actor_issues):
+def sum_salience_power(actor_issues) -> int:
     """Helper method to calculate the sum of the power * salience of all the ActorIssues
     :param actor_issues:
     :return:
@@ -194,11 +196,12 @@ def expected_utility(actor, demand_exchange_ratio, supply_exchange_ratio):
     :return:
     """
     return abs(
-        demand_exchange_ratio * actor.supply.salience - supply_exchange_ratio * actor.demand.salience,
+        demand_exchange_ratio * actor.supply.salience
+        - supply_exchange_ratio * actor.demand.salience,
     )
 
 
-def is_gain_equal(eui, euj, threshold=1e-20) -> bool:
+def is_gain_equal(eui, euj, threshold: float = 1e-20) -> bool:
     """:param eui: The utility gain of actor i
     :param euj: The utility gain of actor j
     :param threshold: The threshold where the diff needs to be below
@@ -270,7 +273,7 @@ def position_by_nbs(actor_issues, exchange_actor, nbs, denominator):
     return (nbs * denominator - sum_c_s_x) / (exchange_actor.c * exchange_actor.s)
 
 
-def average_and_variance(values: list):
+def average_and_variance(values: list) -> tuple[float, float] | tuple[int, int]:
     count = len(values)
 
     if count == 0:
@@ -283,7 +286,7 @@ def average_and_variance(values: list):
     return average, variance
 
 
-def exchange_ratio_by_expected_utility(delta_q, sq, sp, utility=0):
+def exchange_ratio_by_expected_utility(delta_q, sq, sp, utility: int = 0):
     """Calculates the exchange ratio by a gain of 0.
     Used for the new model
     :param utility: Always 0
@@ -295,7 +298,7 @@ def exchange_ratio_by_expected_utility(delta_q, sq, sp, utility=0):
     return (utility + (delta_q * sq)) / sp
 
 
-def new_start_position(salience, x, y, salience_weight=0.4, fixed_weight=0.1):
+def new_start_position(salience, x, y, salience_weight: float = 0.4, fixed_weight: float = 0.1):
     sw = decimal.Decimal(salience_weight)
     fw = decimal.Decimal(fixed_weight)
     swv = (1 - salience) * sw * y

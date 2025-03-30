@@ -12,7 +12,7 @@ class DictionaryIndexMixin:
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(self.get_hash_field())
 
     def __eq__(self, other):

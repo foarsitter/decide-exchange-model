@@ -10,7 +10,7 @@ from decide.data import types
 
 
 def test_cop2() -> None:
-    data_file = reader.InputDataFile.open(os.path.join(input_folder, "cop21.csv"))
+    data_file = reader.InputDataFile.open(input_folder / "cop21.csv")
 
     assert len(data_file.errors) == 0
     assert len(data_file.rows) == 235

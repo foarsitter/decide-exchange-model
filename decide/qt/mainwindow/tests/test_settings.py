@@ -27,10 +27,10 @@ def test_model_variations(qtbot) -> None:
     program_settings.start = 0.0
     program_settings.stop = 0.0
 
-    assert program_settings.model_variations == ["0.00"]
+    assert program_settings.model_variations() == ["0.00"]
 
     program_settings.start = 0.0
     program_settings.step = 0.05
     program_settings.stop = 0.10
 
-    assert program_settings.model_variations == ["0.00", "0.05", "0.10"]
+    assert program_settings.model_variations() == ["0.00", "0.05", "0.10"]
