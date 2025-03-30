@@ -35,14 +35,12 @@ jobs:
         if: steps.check-parent-commit.outputs.sha
         uses: salsify/action-detect-and-tag-new-version@v2.0.3
         with:
-          version-command: |
-            bash -o pipefail -c "uvx bump-my-version show -i patch new_version'"
+          version-command: uv run -q python version.py current
 
       - name: Bump version for developmental release
         if: "! steps.check-version.outputs.tag"
         run: |
-          version=$(uvx bump-my-version show -i patch new_version) &&
-          uvx bump-my-version bump --new-version $version.dev.$(date +%s) pyproject.toml
+          version=$(uv run -q python version.py dev)
 
       - name: Build package
         run: uv build
