@@ -2,9 +2,9 @@ import logging
 import sys
 
 import requests
-from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QDialog
 from PyQt5.QtWidgets import QMessageBox
+from PyQt6 import QtWidgets
+from PyQt6.QtWidgets import QDialog
 
 from decide import log_filename
 from decide.qt.mainwindow.settings import ProgramSettings
@@ -83,14 +83,14 @@ class ErrorDialog(QDialog):
             self,
             "Confirm sending",
             "Are you sure you want to send the message with the attachments?",
-            QMessageBox.Yes | QMessageBox.No,
-            QMessageBox.No,
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No,
         )
 
         settings = None
         input_data = None
 
-        if confirm == QMessageBox.Yes:
+        if confirm == QMessageBox.StandardButton.Yes:
             files = {}
 
             if self.settings_checkbox.isChecked():

@@ -2,8 +2,8 @@ import logging
 import os
 import sys
 
-from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QDialog
+from PyQt6 import QtWidgets
+from PyQt6.QtWidgets import QDialog
 
 from decide import input_folder
 from decide import log_filename
