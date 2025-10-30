@@ -5,14 +5,20 @@ import os
 from _csv import Writer
 from collections import OrderedDict
 from collections import defaultdict
+from pathlib import Path
 
 import matplotlib.pyplot as plt
-from pandas.io.json._json import Writer
-from typing_extensions import Writer
 
 from decide.model import base
 from decide.model import calculations
 from decide.model.observers import observer
+
+"""
+model (p=0.0, p=1.0) for each:
+    repetition: (1..n) times
+        iteration: (1..n) times
+            loop: for each possible exchange
+"""
 
 
 class IssueDevelopment(observer.Observer):
@@ -205,7 +211,7 @@ class IssueDevelopment(observer.Observer):
                 self.write_issue_after_iterations_to_file(repetition, writer, issue)
 
     def write_issue_after_iterations_to_file(self, repetition, writer: Writer, issue) -> None:
-        self.issue_obj = self.model_ref.issues[issue]  # type: Issue
+        self.issue_obj = self.model_ref.issues[issue]
 
         heading = ["rnd-" + str(x) for x in range(len(self.preference_history[issue]["nbs"]))]
 
@@ -403,7 +409,7 @@ class IssueDevelopment(observer.Observer):
             ) as csv_file:
                 writer = csv.writer(csv_file, delimiter=";", lineterminator="\n")
 
-                self.issue_obj = self.model_ref.issues[issue]  # type: Issue
+                self.issue_obj = self.model_ref.issues[issue]
 
                 heading = [
                     "rnd-" + str(x) for x in range(len(self.preference_history_sum[issue]["nbs"]))
@@ -643,8 +649,6 @@ class IssueDevelopment(observer.Observer):
     def _write_history_sum(
         self, writer: Writer, heading: list[str], issue, data, label: str
     ) -> None:
-        plt.clf()
-
         var_rows = []
 
         for actor, value in sorted(data[issue].items()):
@@ -673,16 +677,23 @@ class IssueDevelopment(observer.Observer):
 
         lgd = plt.legend(loc="upper left", bbox_to_anchor=(1, 1))
         plt.title(self.issue_obj)
+
+        # write summary charts
+        filename = "{}/issues/{}/charts/{}/".format(
+            self.output_directory,
+            "summary",
+            label,
+        )
+
+        Path(filename).mkdir(parents=True, exist_ok=True)
+
         plt.savefig(
-            "{}/issues/{}/charts/{}.{}.png".format(
-                self.output_directory,
-                "summary",
-                self.issue_obj.issue_id,
-                label,
-            ),
+            f"{filename}/{self.issue_obj.issue_id}.png",
             bbox_extra_artists=(lgd,),
             bbox_inches="tight",
         )
+
+        plt.clf()
 
     @property
     def _get_salt(self) -> str:

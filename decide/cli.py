@@ -63,7 +63,7 @@ def init_event_handlers(
         # csv handlers
         Externalities(event_handler, summary_only=True)
         ExchangesWriter(event_handler, summary_only=True)
-        IssueDevelopment(event_handler, write_voting_position=True, summary_only=True)
+        IssueDevelopment(event_handler, write_voting_position=True)
 
     return event_handler
 
