@@ -161,6 +161,8 @@ class ProgramSettings(QtCore.QObject):
             self._save_xml()
 
     def set_input_filename(self, value: Path) -> None:
+        self.input_filename = value
+
         value = str(value.absolute().resolve())
 
         if value in self.recently_opened:
@@ -168,7 +170,7 @@ class ProgramSettings(QtCore.QObject):
 
         self.recently_opened.insert(0, value)
 
-        self.input_filename = value
+
 
     def _save_xml(self) -> None:
         file_path = self.settings_file_path()
