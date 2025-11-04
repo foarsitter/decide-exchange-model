@@ -4,7 +4,7 @@ requires = [ "hatchling" ]
 
 [project]
 name = "decide-exchange-model"
-version = "2025.3.0"
+version = "2025.3.1"
 description = "Decide exchange model"
 readme = "README.md"
 authors = [ { "name" = "Jelmer Draaijer", "email" = "info@jelmert.nl" } ]

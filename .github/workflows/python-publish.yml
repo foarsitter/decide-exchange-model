@@ -9,6 +9,7 @@ jobs:
     name: release
     runs-on: ubuntu-latest
     permissions:
+      contents: write
       id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
     steps:
       - name: Check out the repository
