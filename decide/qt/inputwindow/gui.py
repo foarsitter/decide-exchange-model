@@ -195,7 +195,8 @@ class InputWindow(QMainWindow):
                 actor_powers[actor_issue.actor] = actor_issue.power
 
         for actor in data_file.actors.values():
-            actor_input = self.actor_widget.add_actor(actor.id, actor_powers[actor.id])
+            power = actor_powers.get(actor.id, 0)
+            actor_input = self.actor_widget.add_actor(actor.id, power)
 
             actor_input.comment = str(actor.comment)
 
