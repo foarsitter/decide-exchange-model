@@ -24,7 +24,7 @@ dependencies = [
   "requests",
   "structlog==25.5",
   "typer==0.20",
-  "typesystem==0.2.5",
+  "typesystem==0.4.1",
 ]
 
 scripts.decide-cli = "decide.cli:main"

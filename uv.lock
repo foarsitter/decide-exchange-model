@@ -149,7 +149,7 @@ wheels = [
 
 [[package]]
 name = "decide-exchange-model"
-version = "2025.3.0"
+version = "2025.3.1"
 source = { editable = "." }
 dependencies = [
     { name = "blinker" },
@@ -187,7 +187,7 @@ requires-dist = [
     { name = "requests" },
     { name = "structlog", specifier = "==25.5" },
     { name = "typer", specifier = "==0.20" },
-    { name = "typesystem", specifier = "==0.2.5" },
+    { name = "typesystem", specifier = "==0.4.1" },
 ]
 
 [package.metadata.requires-dev]
@@ -784,11 +784,11 @@ wheels = [
 
 [[package]]
 name = "typesystem"
-version = "0.2.5"
+version = "0.4.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/7a/bd/21bdedb651f3371a3f085d5bb6af5b3c1b045c2a8b36df5a6ca59be61506/typesystem-0.2.5.tar.gz", hash = "sha256:12a727df6d06bced9cad60e171de4c56bbfc31c02b7c340e45656fb6e9c3db84", size = 22948, upload-time = "2021-09-04T09:23:15.982Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/27/18/a7b20cbb52c5e65150121b3176b8cc9aa00d0b61ab8aeb195166a754a482/typesystem-0.4.1.tar.gz", hash = "sha256:cc3f03d101fadbb60356993ce600fdfbf4bbce90ce5cb444766962be33f53ce1", size = 22709, upload-time = "2021-11-18T11:53:58.433Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/bd/5e/cad1a7e7232a870934d6fe7ab6658e0e7d699542fe19b657b313133a2b65/typesystem-0.2.5-py3-none-any.whl", hash = "sha256:08f0b2f284be7ea801dd7f2dafc711bb945e4ae33c2dd926816c40e13f303c2f", size = 28764, upload-time = "2021-09-04T09:23:15.068Z" },
+    { url = "https://files.pythonhosted.org/packages/4f/a9/1939fae0d2cf8c2a4eb441f81c0edc922e177be13d480f391ae1699e674a/typesystem-0.4.1-py3-none-any.whl", hash = "sha256:26b2368d00fc981fbe7aef85ea1f44f90132e10a33b2f0ea3f3b5774774fee8d", size = 28407, upload-time = "2021-11-18T11:53:57.158Z" },
 ]
 
 [[package]]
