@@ -35,7 +35,7 @@ packages = [ { include = "decide" } ]
 dev = [
   "coverage==7.11.0",
   "pre-commit-uv==4.2.0",
-  "pyrefly==0.40.0",
+  "pyrefly==0.40.1",
   "pytest==8.4.2",
   "pytest-qt==4.5.0",
   "pytest-xvfb==3.1.1",
