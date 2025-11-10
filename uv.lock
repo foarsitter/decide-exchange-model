@@ -149,7 +149,7 @@ wheels = [
 
 [[package]]
 name = "decide-exchange-model"
-version = "2025.3.0"
+version = "2025.3.1"
 source = { editable = "." }
 dependencies = [
     { name = "blinker" },
@@ -182,7 +182,7 @@ requires-dist = [
     { name = "matplotlib", specifier = "==3.10.7" },
     { name = "numpy", specifier = "==2.3.4" },
     { name = "pandas", specifier = "==2.3.3" },
-    { name = "peewee", specifier = "==3.14.4" },
+    { name = "peewee", specifier = "==3.18.3" },
     { name = "pyqt6", specifier = "==6.10.0" },
     { name = "requests" },
     { name = "structlog", specifier = "==25.5" },
@@ -431,9 +431,9 @@ wheels = [
 
 [[package]]
 name = "peewee"
-version = "3.14.4"
+version = "3.18.3"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/c9/51/3b2ded25a1cd51d1096bda8e0d1474712fe71efd374ae39b86c73a83d648/peewee-3.14.4.tar.gz", hash = "sha256:9e356b327c2eaec6dd42ecea6f4ddded025793dba906a3d065a0452e726c51a2", size = 2292581, upload-time = "2021-03-19T15:53:58.538Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/6f/60/58e7a307a24044e0e982b99042fcd5a58d0cd928d9c01829574d7553ee8d/peewee-3.18.3.tar.gz", hash = "sha256:62c3d93315b1a909360c4b43c3a573b47557a1ec7a4583a71286df2a28d4b72e", size = 3026296, upload-time = "2025-11-03T16:43:46.678Z" }
 
 [[package]]
 name = "pillow"
