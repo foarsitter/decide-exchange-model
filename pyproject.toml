@@ -33,7 +33,7 @@ packages = [ { include = "decide" } ]
 
 [dependency-groups]
 dev = [
-  "coverage==7.11.0",
+  "coverage==7.11.3",
   "pre-commit-uv==4.2.0",
   "pyrefly==0.40.0",
   "pytest==8.4.2",
