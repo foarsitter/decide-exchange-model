@@ -19,7 +19,7 @@ dependencies = [
   "matplotlib==3.10.7",
   "numpy==2.3.4",
   "pandas==2.3.3",
-  "peewee==3.14.4",
+  "peewee==3.18.3",
   "pyqt6==6.10.0",
   "requests",
   "structlog==25.5",
