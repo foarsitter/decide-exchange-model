@@ -116,7 +116,7 @@ def issues_param(args: str) -> list[str]:
     return issues
 
 
-def p_values_param(p: str, start: str, step: str, stop: str) -> list[float]:
+def p_values_param(p: list[str] | None, start: str, step: str, stop: str) -> list[float]:
     p_values = []
 
     if start and step and stop:
@@ -130,10 +130,7 @@ def p_values_param(p: str, start: str, step: str, stop: str) -> list[float]:
         ]
 
     elif p:
-        if ";" in p:
-            p_values += p.split(";")
-        else:
-            p_values.append(p)
+        p_values += p
 
     return p_values
 
@@ -150,7 +147,7 @@ def main(  # noqa: PLR0913
             "--input_file",
             help="The location of the csv input file. ",
         ),
-    ] = input_folder / "rechts.csv",
+    ] = input_folder / "sample_data.txt",
     model: Annotated[
         Literal["equal", "random"],
         typer.Option(
@@ -171,7 +168,9 @@ def main(  # noqa: PLR0913
             help="The number of round the model needs to be executed",
         ),
     ] = 10,
-    p: Annotated[str | None, typer.Option("--p", "-p", help="Randomized Equal Gain")] = None,
+    p: Annotated[
+        list[str] | None, typer.Option("--p", "-p", help="Randomized Equal Gain")
+    ] = None,
     start: Annotated[str, typer.Option("--start")] = "0.0",
     step: Annotated[str, typer.Option("--step")] = "0.00",
     stop: Annotated[str, typer.Option("--stop")] = "0.00",
@@ -187,6 +186,8 @@ def main(  # noqa: PLR0913
         typer.Option("--database", help="The SQLite database"),
     ] = None,
 ) -> None:
+    if p is None:
+        p = []
     p_values = p_values_param(p, start, step, stop)
 
     data_file = InputDataFile.open(input_file)
